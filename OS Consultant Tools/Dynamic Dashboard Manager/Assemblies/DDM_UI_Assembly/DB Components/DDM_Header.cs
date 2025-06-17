@@ -299,7 +299,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return componentCollection;
         }
 
-        internal static WsDynamicComponentCollection Get_DynamicNavConfigItems_DynamicComponents(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace,
+        internal static WsDynamicComponentCollection Get_Dynamic_Header_Components(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace,
             DashboardMaintUnit maintUnit, WsDynamicDashboardEx dynamicDashboardEx, Dictionary<string, string> customSubstVarsAlreadyResolved)
         {
             var componentCollection = api.GetDynamicComponentsForDynamicDashboard(si, workspace, dynamicDashboardEx, String.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -279,7 +279,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cubes_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cubes_DT, selectQuery, parameters);
 
                 }
 
@@ -370,7 +370,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube", SqlDbType.VarChar) { Value = Cube}
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, scen_Types_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, scen_Types_DT, selectQuery, parameters);
 
                 }
 
@@ -403,7 +403,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
 
                 }
 
@@ -436,7 +436,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
 
                 }
 
@@ -469,7 +469,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
 
                 }
 
@@ -500,7 +500,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
 
                 }
 
@@ -535,7 +535,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Config_DT, selectQuery, parameters);
 
                 }
 
@@ -576,7 +576,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
                 }
 
                 return cube_Model_Activities_DT;
@@ -615,7 +615,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
                 }
 
                 return cube_Model_Activities_DT;
@@ -650,7 +650,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
                 }
 
                 // set default selection for returned activity list to top of the list
@@ -690,7 +690,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
                 }
 
                 // set default selection for returned activity list to top of the list
@@ -742,7 +742,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
                         };
-                        sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
+                        sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
                     }
                 }
                 else if (runType == "update")
@@ -775,7 +775,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             new SqlParameter("@Approval_Step_ID", SqlDbType.Int) { Value = Approval_Step_ID.XFConvertToInt()}
 
                         };
-                        sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
+                        sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
                     }
                 }
 
@@ -812,7 +812,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Model_Activities_DT, selectQuery, parameters);
 
                     return cube_Model_Activities_DT;
                 }
@@ -852,7 +852,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Model_List_By_Activity_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_List_By_Activity_DT, selectQuery, parameters);
 
                 }
 
@@ -891,7 +891,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt16(Activity_ID) }
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Model_List_By_Activity_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_List_By_Activity_DT, selectQuery, parameters);
 
                 }
 
@@ -929,7 +929,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt16(Activity_ID) }
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, src_Model_List_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, src_Model_List_DT, selectQuery, parameters);
 
                 }
 
@@ -971,7 +971,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt16(Activity_ID) }
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, tgt_Model_List_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, tgt_Model_List_DT, selectQuery, parameters);
 
                 }
 
@@ -1011,7 +1011,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt16(Activity_ID) },
                         new SqlParameter("@Model_ID", SqlDbType.Int) { Value = Convert.ToInt16(Model_ID) }
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Calc_List_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Calc_List_DT, selectQuery, parameters);
 
                 }
 
@@ -1048,7 +1048,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) }
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Model_List_By_Cube_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_List_By_Cube_DT, selectQuery, parameters);
 
                 }
 
@@ -1085,7 +1085,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
 
                 }
 
@@ -1123,7 +1123,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(cubeID) }
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
 
                 }
 
@@ -1162,7 +1162,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(cubeID) }
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Model_Group_Seq_List_By_Cube_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_Group_Seq_List_By_Cube_DT, selectQuery, parameters);
 
                 }
 
@@ -1205,7 +1205,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Activity_ID}
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
 
                 }
 
@@ -1245,7 +1245,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Activity_ID}
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
 
                 }
 
@@ -1288,7 +1288,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, FMM_WF_Channels_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, FMM_WF_Channels_DT, selectQuery, parameters);
 
                 }
 
@@ -1324,7 +1324,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, FMM_WF_DU_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, FMM_WF_DU_DT, selectQuery, parameters);
 
                 }
 
@@ -1358,7 +1358,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, FMM_WF_DU_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, FMM_WF_DU_DT, selectQuery, parameters);
 
                 }
 
@@ -1453,7 +1453,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@rootprofilename", SqlDbType.NVarChar,100) { Value = rootProfileName }
                     };
 
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, dt, select_sql, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, dt, select_sql, parameters);
                 }
 
                 foreach (DataRow row in dt.Rows)
@@ -1523,7 +1523,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cubeID.XFConvertToInt() }
 						//new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = activityID.XFConvertToInt() }
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, approval_config_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, approval_config_DT, selectQuery, parameters);
 
                 }
 
@@ -1555,7 +1555,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, register_config_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, register_config_DT, selectQuery, parameters);
 
                 }
 
@@ -1598,7 +1598,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = activityID.XFConvertToInt() },
                         };
-                        sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, register_config_DT, selectQuery, parameters);
+                        sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, register_config_DT, selectQuery, parameters);
 
                     }
                 }
@@ -1634,7 +1634,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = activityID.XFConvertToInt() }, // in the update case, activityID is actually the approval_step_activity_ID. It's weird
 	                    };
-                        sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, register_config_DT, selectQuery, parameters);
+                        sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, register_config_DT, selectQuery, parameters);
 
                     }
                 }
@@ -1704,7 +1704,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                     };
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sqlDataAdapter, WFProfile_DT, selectQuery, parameters);
+                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, WFProfile_DT, selectQuery, parameters);
 
                 }
 

@@ -37,7 +37,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                // Label & Menu hide/show
 		                "DDM_App_Header_MenuLabel" => DDM_Header.Get_DynamicNavMenuLabel_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
 		                // configurable header items
-		                //"DDM_App_Header_ConfigItems" => DDM_Header.Get_DynamicNavConfigItems_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+		                "DDM_App_Header_ConfigItems" => DDM_Header.Get_DynamicNavConfigItems_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
 		
 		
 		
@@ -79,12 +79,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		
 		                // Dynamic Navigation Menu
 		                "0a_DDM_Profile_Config_Header" => DDM_Header.Get_DynamicNavMenuLabel_Actions_DynamicComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		                // General Navigation header
-		                "DDM_App_Header" => DDM_Header.Get_DynamicNavMenu_Actions_DynamicComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
 		                // Label & Menu hide/show
-		                "DDM_App_Header_MenuLabel" => DDM_Header.Get_DynamicNavMenuLabel_Actions_DynamicComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+		                //"DDM_App_Header_MenuLabel" => DDM_Header.Get_Dynamic_Menu_Label(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
 		                // configurable header items
-		                "DDM_App_Header_ConfigItems" => DDM_Header.Get_DynamicNavConfigItems_DynamicComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.Get_Dynamic_Header_Components(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
 		
 		
 		                // Dynamic Content
