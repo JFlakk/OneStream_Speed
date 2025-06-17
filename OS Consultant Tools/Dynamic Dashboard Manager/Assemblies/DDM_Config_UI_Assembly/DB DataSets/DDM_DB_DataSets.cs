@@ -31,10 +31,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         /// <param name="api">API object.</param>
         /// <param name="args">Dashboard dataset arguments.</param>
         /// <returns>Object result, typically a DataTable or DataSet.</returns>
+        private SessionInfo si;
+        private BRGlobals globals;
+        private object api;
+        private DashboardExtenderArgs args;
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardDataSetArgs args)
         {
             try
             {
+                this.si = si;
+                this.globals = globals;
+                this.api = api;
+                this.args = args;
                 switch (args.FunctionType)
                 {
                     case DashboardDataSetFunctionType.GetDataSetNames:
@@ -48,12 +56,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // Return WF Root Profiles
                         if (args.DataSetName.XFEqualsIgnoreCase("Get_Root_WF_Profiles"))
                         {
-                            return Get_Root_WF_Profiles(si, globals, api);
+                            return Get_Root_WF_Profiles();
                         }
                         // Return WF Profile Hierarchy for selected root profile
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_WF_Profile_TreeView"))
                         {
-                            return Get_WF_Profile_Hierarchy(si, globals, api, args.CustomSubstVars);
+                            return Get_WF_Profile_Hierarchy();
                         }
                         // Return WF Profile Menu Options for selected profile
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_WF_Profile_Menu_Options"))
@@ -85,7 +93,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         /// <summary>
         /// Retrieves the root workflow profiles (HierarchyLevel = 1, not templates).
         /// </summary>
-        private DataTable Get_Root_WF_Profiles(SessionInfo si, BRGlobals globals, object api)
+        private DataTable Get_Root_WF_Profiles()
         {
             try
             {
@@ -111,7 +119,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         /// <summary>
         /// Retrieves the workflow profile hierarchy as a tree structure for a given root profile.
         /// </summary>
-        private DataSet Get_WF_Profile_Hierarchy(SessionInfo si, BRGlobals globals, object api, Dictionary<string, string> CustomSubstVars)
+        private DataSet Get_WF_Profile_Hierarchy()
         {
             try
             {
@@ -224,7 +232,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         /// <summary>
         /// Retrieves menu options for the current workflow profile.
         /// </summary>
-        private DataTable Get_WF_Profile_Menu_Options(SessionInfo si, BRGlobals globals, object api)
+        private DataTable Get_WF_Profile_Menu_Options()
         {
             try
             {

@@ -24,21 +24,59 @@ using OpenXmlPowerTools;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.DDM_Config_Data
 {
+    /// <summary>
+    /// Main class for handling Dynamic Dashboard Manager configuration data operations.
+    /// Provides methods for saving, updating, and validating dashboard menu options and header options.
+    /// </summary>
     public class MainClass
     {
         #region "Global Variables"
+        /// <summary>
+        /// Stores the sort order for each menu header option by ID.
+        /// </summary>
         public Dictionary<int, int> Global_Menu_Header_Options_Sort_Order_Dict { get; set; } = new Dictionary<int, int>();
+
+        /// <summary>
+        /// Stores the sort order for each menu option by ID.
+        /// </summary>
         public Dictionary<int, int> Global_Menu_Options_Sort_Order_Dict { get; set; } = new Dictionary<int, int>();
+
+        /// <summary>
+        /// Stores the name for each menu option by ID.
+        /// </summary>
         public Dictionary<int, String> Global_Menu_Option_Name_Dict { get; set; } = new Dictionary<int, String>();
+
+        /// <summary>
+        /// Indicates if duplicate menu options exist.
+        /// </summary>
         public bool Duplicate_Menu_Options { get; set; } = false;
+
+        /// <summary>
+        /// Indicates if duplicate menu option sort orders exist.
+        /// </summary>
         public bool Duplicate_Menu_Options_Sort_Order { get; set; } = false;
+
+        /// <summary>
+        /// Indicates if duplicate menu header option sort orders exist.
+        /// </summary>
         public bool Duplicate_Menu_Header_Options_Sort_Order { get; set; } = false;
+
         private SessionInfo si;
         private BRGlobals globals;
         private object api;
         private DashboardExtenderArgs args;
         private StringBuilder debugString;
         #endregion
+
+        /// <summary>
+        /// Main entry point for the Dashboard Extender business rule.
+        /// Handles different function types such as saving data or handling component selection changes.
+        /// </summary>
+        /// <param name="si">Session information</param>
+        /// <param name="globals">Global variables</param>
+        /// <param name="api">API object</param>
+        /// <param name="args">Dashboard extender arguments</param>
+        /// <returns>Result object depending on the function type</returns>
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
             try
@@ -99,21 +137,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-
-        //Save Calc Config Rows Function - New Adds will also insert into MCM_Dest_Cell 
-        //        private XFSqlTableEditorSaveDataTaskResult Save_Calc_Config_Rows(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
-        //		{
-        //            try
-        //            {
-
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-        //            }
-        //		}
-
-        //Save DDM Profile Config Menu Options Rows Function - New Adds will also insert into MCM_Dest_Cell 
+        /// <summary>
+        /// Saves menu options rows for a DDM profile configuration.
+        /// Handles insert, update, and delete operations, and checks for duplicates.
+        /// </summary>
+        /// <returns>Result of the save operation</returns>
         private XFSqlTableEditorSaveDataTaskResult Save_DDM_Profile_Config_Menu_Options_Rows()
         {
             try
@@ -190,7 +218,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-        //Save DDM Profile Config Menu Options Rows Function - New Adds will also insert into MCM_Dest_Cell 
+
+        /// <summary>
+        /// Saves general DDM profile configuration rows.
+        /// Handles insert, update, and delete operations.
+        /// </summary>
+        /// <returns>Result of the save operation</returns>
         private XFSqlTableEditorSaveDataTaskResult Save_DDM_Profile_Config_Rows()
         {
             try
@@ -262,7 +295,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        //Save DDM Profile Config Menu Options Rows Function - New Adds will also insert into MCM_Dest_Cell 
+        /// <summary>
+        /// Saves menu header option rows for a DDM profile configuration.
+        /// Handles insert, update, and delete operations.
+        /// </summary>
+        /// <returns>Result of the save operation</returns>
         private XFSqlTableEditorSaveDataTaskResult Save_DDM_Profile_Config_Menu_Header_Option_Rows()
         {
             try
@@ -328,6 +365,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
+        /// <summary>
+        /// Checks for duplicate menu options and sort orders.
+        /// Updates global dictionaries and sets duplicate flags.
+        /// </summary>
+        /// <param name="wfProfile_ID">Profile ID</param>
+        /// <param name="Dup_Process_Step">Process step (e.g., "Initiate", "Update Row")</param>
+        /// <param name="DDL_Process">DDL process type (optional)</param>
+        /// <param name="Modified_Menu_Options_DataRow">Modified data row (optional)</param>
         private void Duplicate_Menu_Options_Check(int wfProfile_ID, String Dup_Process_Step, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_Menu_Options_DataRow)
         {
             switch (Dup_Process_Step)
@@ -438,6 +483,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
+        /// <summary>
+        /// Checks for duplicate menu header options and sort orders.
+        /// Updates global dictionaries and sets duplicate flags.
+        /// </summary>
+        /// <param name="wfProfile_ID">Profile ID</param>
+        /// <param name="Dup_Process_Step">Process step (e.g., "Initiate", "Update Row")</param>
+        /// <param name="DDL_Process">DDL process type (optional)</param>
+        /// <param name="Modified_Menu_Options_DataRow">Modified data row (optional)</param>
         private void Duplicate_Menu_Header_Options_Check(int wfProfile_ID, String Dup_Process_Step, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_Menu_Options_DataRow)
         {
             switch (Dup_Process_Step)
@@ -548,6 +601,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 		
+        /// <summary>
+        /// Handles saving a new profile configuration when a dashboard component selection changes.
+        /// Inserts a new row into the DDM_Profile_Config table if needed.
+        /// </summary>
+        /// <param name="si">Session information</param>
+        /// <param name="globals">Global variables</param>
+        /// <param name="api">API object</param>
+        /// <param name="args">Dashboard extender arguments</param>
+        /// <returns>Result of the selection change operation</returns>
         private XFSelectionChangedTaskResult Save_New_Profile_Config(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
             try
