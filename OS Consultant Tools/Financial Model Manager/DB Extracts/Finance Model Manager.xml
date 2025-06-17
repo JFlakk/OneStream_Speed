@@ -2,7 +2,10 @@
 <OneStreamXF version="8.5.1.17017">
     <applicationWorkspacesRoot>
         <workspaces>
-            <workspace name="OS Build Tools" description="" notes="" accessGroup="Everyone" maintenanceGroup="Everyone" isShareableWorkspace="true" sharedWorkspaceNames="" companyName="" versionNum="" author="" namespacePrefix="Default" importsNamespace1="" importsNamespace2="" importsNamespace3="" importsNamespace4="" importsNamespace5="" importsNamespace6="" importsNamespace7="" importsNamespace8="" wsAssemblyService="" text1="" text2="" text3="" text4="" text5="" text6="" text7="" text8="">
+            <workspace name="OS Consultant Tools" description="" notes="" accessGroup="Everyone" maintenanceGroup="Everyone" isShareableWorkspace="true" sharedWorkspaceNames="" companyName="" versionNum="" author="" namespacePrefix="" importsNamespace1="" importsNamespace2="" importsNamespace3="" importsNamespace4="" importsNamespace5="" importsNamespace6="" importsNamespace7="" importsNamespace8="" wsAssemblyService="" text1="" text2="" text3="" text4="" text5="" text6="" text7="" text8="">
+                <WorkspaceDefinition>
+                    <SubstitutionVariableItems />
+                </WorkspaceDefinition>
                 <maintenanceUnits>
                     <maintenanceUnit name="Finance Model Manager" description="" uiPlatformType="WpfOrSilverlight" accessGroup="Everyone" maintenanceGroup="Everyone" wsAssemblyService="">
                         <fileResources>
