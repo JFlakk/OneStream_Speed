@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -267,7 +267,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             changed_Task_Result = Save_Model_Grp_Assign("New");
                             return changed_Task_Result;
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_WF_DU_Model_Group_Assignments"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Calc_Unit_Assign"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
                             changed_Task_Result = Save_Calc_Unit_Assign("New");
@@ -280,7 +280,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             changed_Task_Result = Save_Appr_Step("New");
                             return changed_Task_Result;
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Appr_Step_Activity_Config"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Act_Appr_Step_Config"))
                         {
 
                             // Implement Dashboard Component Selection Changed logic here.
@@ -293,16 +293,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             changed_Task_Result = Save_Act_Appr_Step_Config(runType);
                             return changed_Task_Result;
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Process_Bulk_WF_DU"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Process_Bulk_Calc_Unit"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
                             changed_Task_Result = Process_Bulk_Calc_Unit();
                             return changed_Task_Result;
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Process_Cube_Config_Copy"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Process_Copy_Cube_Config"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            Process_Cube_Config_Copy(ref changed_Task_Result);
+                            Process_Copy_Cube_Config(ref changed_Task_Result);
                             return changed_Task_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Copy_Reg_Config"))
@@ -311,10 +311,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             changed_Task_Result = Process_Bulk_Calc_Unit();
                             return changed_Task_Result;
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Process_Activity_Config_Copy"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Process_Copy_Act_Config"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            Process_Activity_Config_Copy(ref changed_Task_Result);
+                            Process_Copy_Act_Config(ref changed_Task_Result);
                             return changed_Task_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Process_Model_Copy"))
@@ -421,7 +421,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             xfRow.ModifiedDataRow.SetValue("Update_User", si.UserName, XFDataType.Text);
 
                             // Add new row to DataTable
-                            DataRow new_config_Row = FMM_Calc_Config_DT.NewRow();
+                            var new_config_Row = FMM_Calc_Config_DT.NewRow();
                             foreach (DataColumn dc in FMM_Calc_Config_DT.Columns)
                             {
                                 if (xfRow.ModifiedDataRow.Items.ContainsKey(dc.ColumnName))
@@ -4771,7 +4771,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         }
         #endregion
         #region "Copy Models"
-        private void Process_Cube_Config_Copy(ref XFSelectionChangedTaskResult XFCopyTaskResult)
+        private void Process_Copy_Cube_Config(ref XFSelectionChangedTaskResult XFCopyTaskResult)
         {
             var src_Cube_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Cube_ID", "0"));
             var tgt_Cube_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_Cube_ID", "0"));
@@ -4801,12 +4801,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var tgt_FMM_Src_Cell_DT = new DataTable();
             var src_FMM_Model_Grps_DT = new DataTable();
             var tgt_FMM_Model_Grps_DT = new DataTable();
-            var src_FMM_Model_Group_Assign_Model_DT = new DataTable();
-            var tgt_FMM_Model_Group_Assign_Model_DT = new DataTable();
+            var src_FMM_Model_Grp_Assign_DT = new DataTable();
+            var tgt_FMM_Model_Grp_Assign_DT = new DataTable();
             var src_FMM_Calc_Unit_Config_DT = new DataTable();
             var tgt_FMM_Calc_Unit_Config_DT = new DataTable();
-            var src_FMM_WF_DU_Assign_Model_Group_DT = new DataTable();
-            var tgt_FMM_WF_DU_Assign_Model_Group_DT = new DataTable();
+            var src_FMM_Calc_Unit_Assign_DT = new DataTable();
+            var tgt_FMM_Calc_Unit_Assign_DT = new DataTable();
             var tgt_FMM_Cube_Config_DT = new DataTable();
             #endregion
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -4832,7 +4832,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sqa_fmm_dest_cell = new SQA_FMM_Dest_Cell(si, connection);
                 var sqa_FMM_Dest_Cell = new SqlDataAdapter();
                 var sqa_fmm_model_grp_assign = new SQA_FMM_Model_Grp_Assign(si, connection);
-                var sqa_FMM_Model_Group_Assign_Model = new SqlDataAdapter();
+                var sqa_FMM_Model_Grp_Assign = new SqlDataAdapter();
                 var sqa_fmm_model_grps = new SQA_FMM_Model_Grps(si, connection);
                 var sqa_FMM_Model_Grps = new SqlDataAdapter();
                 var sqa_fmm_models = new SQA_FMM_Models(si, connection);
@@ -4894,7 +4894,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Reg_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Reg_Config,
+                    sql_fmm_get_datasets, sqa_fmm_reg_config,
                     ref src_FMM_Reg_Config_DT, ref tgt_FMM_Reg_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -4902,7 +4902,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Col_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Col_Config,
+                    sql_fmm_get_datasets, sqa_fmm_col_config,
                     ref src_FMM_Col_Config_DT, ref tgt_FMM_Col_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -4910,7 +4910,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Models_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Models,
+                    sql_fmm_get_datasets, sqa_fmm_models,
                     ref src_FMM_Models_DT, ref tgt_FMM_Models_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -4918,7 +4918,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Calc_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Calc_Config,
+                    sql_fmm_get_datasets, sqa_fmm_calc_config,
                     ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -4926,7 +4926,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Dest_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Dest_Cell,
+                    sql_fmm_get_datasets, sqa_fmm_dest_cell,
                     ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -4934,7 +4934,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Src_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Src_Cell,
+                    sql_fmm_get_datasets, sqa_fmm_src_cell,
                     ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -4942,32 +4942,32 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Model_Grps_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Model_Grps,
+                    sql_fmm_get_datasets, sqa_fmm_model_grps,
                     ref src_FMM_Model_Grps_DT, ref tgt_FMM_Model_Grps_DT, sql_FMM_Get_Max_ID
                 );
 
                 // Call for Get_FMM_Model_Group_Assign_Model_Data
-                Get_FMM_Model_Group_Assign_Model_Data(
+                Get_FMM_Model_Grp_Assign_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Model_Grp_Assign,
-                    ref src_FMM_Model_Group_Assign_Model_DT, ref tgt_FMM_Model_Group_Assign_Model_DT, sql_FMM_Get_Max_ID
+                    sql_fmm_get_datasets, sqa_fmm_model_grp_assign,
+                    ref src_FMM_Model_Grp_Assign_DT, ref tgt_FMM_Model_Grp_Assign_DT, sql_FMM_Get_Max_ID
                 );
 
                 // Call for Get_FMM_Calc_Unit_Config_Data
                 Get_FMM_Calc_Unit_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Calc_Unit_Config,
+                    sql_fmm_get_datasets, sqa_fmm_calc_unit_config,
                     ref src_FMM_Calc_Unit_Config_DT, ref tgt_FMM_Calc_Unit_Config_DT, sql_FMM_Get_Max_ID
                 );
 
                 // Call for Get_FMM_WF_DU_Assign_Model_Group_Data
-                Get_FMM_WF_DU_Assign_Model_Group_Data(
+                Get_FMM_Calc_Unit_Assign_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_WF_DU_Assign_Model_Group,
-                    ref src_FMM_WF_DU_Assign_Model_Group_DT, ref tgt_FMM_WF_DU_Assign_Model_Group_DT, sql_FMM_Get_Max_ID
+                    sql_fmm_get_datasets, sqa_fmm_calc_unit_assign,
+                    ref src_FMM_Calc_Unit_Assign_DT, ref tgt_FMM_Calc_Unit_Assign_DT, sql_FMM_Get_Max_ID
                 );
                 #endregion
 
@@ -5047,26 +5047,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 }
                 sqa_fmm_act_config.Update_FMM_Act_Config(si, tgt_FMM_Act_Config_DT, sqa_FMM_Act_Config);
-                sqa_fmm_unit_config.Update_FMM_Unit_Config(si, tgt_FMM_Unit_Config_DT, sql_Data_Adapter_FMM_Unit_Config);
-                sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sql_Data_Adapter_FMM_Acct_Config);
-                SQA_FMM_Reg_Config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sql_Data_Adapter_FMM_Reg_Config);
-                SQA_FMM_Col_Config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sql_Data_Adapter_FMM_Col_Config);
-                SQA_FMM_Appr_Config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sql_Data_Adapter_FMM_Appr_Config);
-                SQA_FMM_Appr_Step_Config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sql_Data_Adapter_FMM_Appr_Step_Config);
-                SQA_FMM_Models.Update_FMM_Models(si, tgt_FMM_Models_DT, sql_Data_Adapter_FMM_Models);
-                SQA_FMM_Calc_Config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sql_Data_Adapter_FMM_Calc_Config);
-                SQA_FMM_Dest_Cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sql_Data_Adapter_FMM_Dest_Cell);
-                SQA_FMM_Src_Cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sql_Data_Adapter_FMM_Src_Cell);
-                SQA_FMM_Model_Grp_Assign.Update_FMM_Model_Group_Assign_Model(si, tgt_FMM_Model_Group_Assign_Model_DT, sql_Data_Adapter_FMM_Model_Group_Assign_Model);
-                SQA_FMM_Calc_Unit_Config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sql_Data_Adapter_FMM_Calc_Unit_Config);
-                SQA_FMM_WF_DU_Assign_Model_Group.Update_FMM_WF_DU_Assign_Model_Group(si, tgt_FMM_WF_DU_Assign_Model_Group_DT, sql_Data_Adapter_FMM_WF_DU_Assign_Model_Group);
-                SQA_FMM_Calc_Unit_Config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sql_Data_Adapter_FMM_Calc_Unit_Config);
-                SQA_FMM_Model_Grps.Update_FMM_Model_Grps(si, tgt_FMM_Model_Grps_DT, sql_Data_Adapter_FMM_Model_Grps);
-                SQA_FMM_Cube_Config.Update_FMM_Cube_Config(si, tgt_FMM_Cube_Config_DT, sql_Data_Adapter_FMM_Cube_Config);
+                sqa_fmm_unit_config.Update_FMM_Unit_Config(si, tgt_FMM_Unit_Config_DT, sqa_FMM_Unit_Config);
+                sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sqa_FMM_Acct_Config);
+                sqa_fmm_reg_config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sqa_FMM_Reg_Config);
+                sqa_fmm_col_config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sqa_FMM_Col_Config);
+                sqa_fmm_appr_config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sqa_FMM_Appr_Config);
+                sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa_FMM_Appr_Step_Config);
+                sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa_FMM_Models);
+                sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa_FMM_Calc_Config);
+                sqa_fmm_dest_cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa_FMM_Dest_Cell);
+                sqa_fmm_src_cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sqa_FMM_Src_Cell);
+                sqa_fmm_model_grp_assign.Update_FMM_Model_Grp_Assign(si, tgt_FMM_Model_Grp_Assign_DT, sqa_FMM_Model_Grp_Assign);
+                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa_FMM_Calc_Unit_Config);
+                sqa_fmm_calc_unit_assign.Update_FMM_Calc_Unit_Assign(si, tgt_FMM_Calc_Unit_Assign_DT, sqa_FMM_Calc_Unit_Assign);
+                sqa_fmm_model_grps.Update_FMM_Model_Grps(si, tgt_FMM_Model_Grps_DT, sqa_FMM_Model_Grps);
+                sqa_fmm_cube_config.Update_FMM_Cube_Config(si, tgt_FMM_Cube_Config_DT, sqa_FMM_Cube_Config);
             }
         }
 
-        private void Process_Activity_Config_Copy(ref XFSelectionChangedTaskResult XFCopyTaskResult)
+        private void Process_Copy_Act_Config(ref XFSelectionChangedTaskResult XFCopyTaskResult)
         {
             var src_Cube_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Cube_ID", "0"));
             var tgt_Cube_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_Cube_ID", "0"));
@@ -5097,12 +5096,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var tgt_FMM_Src_Cell_DT = new DataTable();
             var src_FMM_Model_Grps_DT = new DataTable();
             var tgt_FMM_Model_Grps_DT = new DataTable();
-            var src_FMM_Model_Group_Assign_Model_DT = new DataTable();
-            var tgt_FMM_Model_Group_Assign_Model_DT = new DataTable();
+            var src_FMM_Model_Grp_Assign_DT = new DataTable();
+            var tgt_FMM_Model_Grp_Assign_DT = new DataTable();
             var src_FMM_Calc_Unit_Config_DT = new DataTable();
             var tgt_FMM_Calc_Unit_Config_DT = new DataTable();
-            var src_FMM_WF_DU_Assign_Model_Group_DT = new DataTable();
-            var tgt_FMM_WF_DU_Assign_Model_Group_DT = new DataTable();
+            var src_FMM_Calc_Unit_Assign_DT = new DataTable();
+            var tgt_FMM_Calc_Unit_Assign_DT = new DataTable();
+            var src_FMM_Cube_Config_DT = new DataTable();
             var tgt_FMM_Cube_Config_DT = new DataTable();
             #endregion
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -5127,25 +5127,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sqa_FMM_Cube_Config = new SqlDataAdapter();
                 var sqa_fmm_dest_cell = new SQA_FMM_Dest_Cell(si, connection);
                 var sqa_FMM_Dest_Cell = new SqlDataAdapter();
-                var SQA_FMM_Model_Grp_Assign = new SQA_FMM_Model_Grp_Assign(si, connection);
-                var sql_Data_Adapter_FMM_Model_Group_Assign_Model = new SqlDataAdapter();
-                var SQA_FMM_Model_Grps = new SQA_FMM_Model_Grps(si, connection);
-                var sql_Data_Adapter_FMM_Model_Grps = new SqlDataAdapter();
-                var SQA_FMM_Models = new SQA_FMM_Models(si, connection);
-                var sql_Data_Adapter_FMM_Models = new SqlDataAdapter();
-                var SQA_FMM_Reg_Config = new SQA_FMM_Reg_Config(si, connection);
-                var sql_Data_Adapter_FMM_Reg_Config = new SqlDataAdapter();
-                var SQA_FMM_Src_Cell = new SQA_FMM_Src_Cell(si, connection);
-                var sql_Data_Adapter_FMM_Src_Cell = new SqlDataAdapter();
-                var SQA_FMM_Unit_Config = new SQA_FMM_Unit_Config(si, connection);
-                var sql_Data_Adapter_FMM_Unit_Config = new SqlDataAdapter();
-                var SQA_FMM_WF_DU_Assign_Model_Group = new SQA_FMM_WF_DU_Assign_Model_Group(si, connection);
-                var sql_Data_Adapter_FMM_WF_DU_Assign_Model_Group = new SqlDataAdapter();
-                var SQA_FMM_Calc_Unit_Config = new SQA_FMM_Calc_Unit_Config(si, connection);
-                var sql_Data_Adapter_FMM_Calc_Unit_Config = new SqlDataAdapter();
+                var sqa_fmm_model_grp_assign = new SQA_FMM_Model_Grp_Assign(si, connection);
+                var sqa_FMM_Model_Group_Assign = new SqlDataAdapter();
+                var sqa_fmm_model_grps = new SQA_FMM_Model_Grps(si, connection);
+                var sqa_FMM_Model_Grps = new SqlDataAdapter();
+                var sqa_fmm_models = new SQA_FMM_Models(si, connection);
+                var sqa_FMM_Models = new SqlDataAdapter();
+                var sqa_fmm_reg_config = new SQA_FMM_Reg_Config(si, connection);
+                var sqa_FMM_Reg_Config = new SqlDataAdapter();
+                var sqa_fmm_src_cell = new SQA_FMM_Src_Cell(si, connection);
+                var sqa_FMM_Src_Cell = new SqlDataAdapter();
+                var sqa_fmm_unit_config = new SQA_FMM_Unit_Config(si, connection);
+                var sqa_FMM_Unit_Config = new SqlDataAdapter();
+                var sqa_fmm_calc_unit_assign = new SQA_FMM_Calc_Unit_Assign(si, connection);
+                var sqa_FMM_Calc_Unit_Assign = new SqlDataAdapter();
+                var sqa_fmm_calc_unit_config = new SQA_FMM_Calc_Unit_Config(si, connection);
+                var sqa_FMM_Calc_Unit_Config = new SqlDataAdapter();
                 #endregion
                 connection.Open();
-                #region "Get MCM Data"
+                #region "Get FMM Data"
                 // Call for Get_FMM_Act_Config_Data
                 Get_FMM_Act_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
@@ -5158,7 +5158,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Unit_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Unit_Config,
+                    sql_fmm_get_datasets, sqa_fmm_unit_config,
                     ref src_FMM_Unit_Config_DT, ref tgt_FMM_Unit_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5166,7 +5166,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Acct_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Acct_Config,
+                    sql_fmm_get_datasets, sqa_fmm_acct_config,
                     ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5174,7 +5174,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Appr_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Appr_Config,
+                    sql_fmm_get_datasets, sqa_fmm_appr_config,
                     ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5190,7 +5190,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Reg_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Reg_Config,
+                    sql_fmm_get_datasets, sqa_fmm_reg_config,
                     ref src_FMM_Reg_Config_DT, ref tgt_FMM_Reg_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5198,7 +5198,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Col_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Col_Config,
+                    sql_fmm_get_datasets, sqa_fmm_col_config,
                     ref src_FMM_Col_Config_DT, ref tgt_FMM_Col_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5206,7 +5206,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Models_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Models,
+                    sql_fmm_get_datasets, sqa_fmm_models,
                     ref src_FMM_Models_DT, ref tgt_FMM_Models_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5214,7 +5214,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Calc_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Calc_Config,
+                    sql_fmm_get_datasets, sqa_fmm_calc_config,
                     ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5222,7 +5222,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Dest_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Dest_Cell,
+                    sql_fmm_get_datasets, sqa_fmm_dest_cell,
                     ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5230,7 +5230,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Src_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Src_Cell,
+                    sql_fmm_get_datasets, sqa_fmm_src_cell,
                     ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_FMM_Get_Max_ID
                 );
 
@@ -5238,32 +5238,32 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Model_Grps_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Model_Grps,
+                    sql_fmm_get_datasets, sqa_fmm_model_grps,
                     ref src_FMM_Model_Grps_DT, ref tgt_FMM_Model_Grps_DT, sql_FMM_Get_Max_ID
                 );
 
                 // Call for Get_FMM_Model_Group_Assign_Model_Data
-                Get_FMM_Model_Group_Assign_Model_Data(
+                Get_FMM_Model_Grp_Assign_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Model_Grp_Assign,
-                    ref src_FMM_Model_Group_Assign_Model_DT, ref tgt_FMM_Model_Group_Assign_Model_DT, sql_FMM_Get_Max_ID
+                    sql_fmm_get_datasets, sqa_fmm_model_grp_assign,
+                    ref src_FMM_Model_Grp_Assign_DT, ref tgt_FMM_Model_Grp_Assign_DT, sql_FMM_Get_Max_ID
                 );
 
                 // Call for Get_FMM_Calc_Unit_Config_Data
                 Get_FMM_Calc_Unit_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_Calc_Unit_Config,
+                    sql_fmm_get_datasets, sqa_fmm_calc_unit_config,
                     ref src_FMM_Calc_Unit_Config_DT, ref tgt_FMM_Calc_Unit_Config_DT, sql_FMM_Get_Max_ID
                 );
 
                 // Call for Get_FMM_WF_DU_Assign_Model_Group_Data
-                Get_FMM_WF_DU_Assign_Model_Group_Data(
+                Get_FMM_Calc_Unit_Assign_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_fmm_get_datasets, SQA_FMM_WF_DU_Assign_Model_Group,
-                    ref src_FMM_WF_DU_Assign_Model_Group_DT, ref tgt_FMM_WF_DU_Assign_Model_Group_DT, sql_FMM_Get_Max_ID
+                    sql_fmm_get_datasets, sqa_fmm_calc_unit_assign,
+                    ref src_FMM_Calc_Unit_Assign_DT, ref tgt_FMM_Calc_Unit_Assign_DT, sql_FMM_Get_Max_ID
                 );
                 #endregion
 
@@ -5343,22 +5343,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 }
                 sqa_fmm_act_config.Update_FMM_Act_Config(si, tgt_FMM_Act_Config_DT, sqa_FMM_Act_Config);
-                SQA_FMM_Unit_Config.Update_FMM_Unit_Config(si, tgt_FMM_Unit_Config_DT, sql_Data_Adapter_FMM_Unit_Config);
-                SQA_FMM_Acct_Config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sql_Data_Adapter_FMM_Acct_Config);
-                SQA_FMM_Reg_Config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sql_Data_Adapter_FMM_Reg_Config);
-                SQA_FMM_Col_Config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sql_Data_Adapter_FMM_Col_Config);
-                SQA_FMM_Appr_Config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sql_Data_Adapter_FMM_Appr_Config);
-                SQA_FMM_Appr_Step_Config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sql_Data_Adapter_FMM_Appr_Step_Config);
-                SQA_FMM_Models.Update_FMM_Models(si, tgt_FMM_Models_DT, sql_Data_Adapter_FMM_Models);
-                SQA_FMM_Calc_Config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sql_Data_Adapter_FMM_Calc_Config);
-                SQA_FMM_Dest_Cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sql_Data_Adapter_FMM_Dest_Cell);
-                SQA_FMM_Src_Cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sql_Data_Adapter_FMM_Src_Cell);
-                SQA_FMM_Model_Grp_Assign.Update_FMM_Model_Group_Assign_Model(si, tgt_FMM_Model_Group_Assign_Model_DT, sql_Data_Adapter_FMM_Model_Group_Assign_Model);
-                SQA_FMM_Calc_Unit_Config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sql_Data_Adapter_FMM_Calc_Unit_Config);
-                SQA_FMM_WF_DU_Assign_Model_Group.Update_FMM_WF_DU_Assign_Model_Group(si, tgt_FMM_WF_DU_Assign_Model_Group_DT, sql_Data_Adapter_FMM_WF_DU_Assign_Model_Group);
-                SQA_FMM_Calc_Unit_Config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sql_Data_Adapter_FMM_Calc_Unit_Config);
-                SQA_FMM_Model_Grps.Update_FMM_Model_Grps(si, tgt_FMM_Model_Grps_DT, sql_Data_Adapter_FMM_Model_Grps);
-                SQA_FMM_Cube_Config.Update_FMM_Cube_Config(si, tgt_FMM_Cube_Config_DT, sql_Data_Adapter_FMM_Cube_Config);
+                sqa_fmm_unit_config.Update_FMM_Unit_Config(si, tgt_FMM_Unit_Config_DT, sqa_FMM_Unit_Config);
+                sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sqa_FMM_Acct_Config);
+                sqa_fmm_reg_config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sqa_FMM_Reg_Config);
+                sqa_fmm_col_config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sqa_FMM_Col_Config);
+                sqa_fmm_appr_config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sqa_FMM_Appr_Config);
+                sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa_FMM_Appr_Step_Config);
+                sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa_FMM_Models);
+                sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa_FMM_Calc_Config);
+                sqa_fmm_dest_cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa_FMM_Dest_Cell);
+                sqa_fmm_src_cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sqa_FMM_Src_Cell);
+                sqa_fmm_model_grp_assign.Update_FMM_Model_Grp_Assign(si, tgt_FMM_Model_Grp_Assign_DT, sqa_FMM_Model_Group_Assign);
+                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa_FMM_Calc_Unit_Config);
+                sqa_fmm_calc_unit_assign.Update_FMM_Calc_Unit_Assign(si, tgt_FMM_Calc_Unit_Assign_DT, sqa_FMM_Calc_Unit_Assign);
+                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa_FMM_Calc_Unit_Config);
+                sqa_fmm_model_grps.Update_FMM_Model_Grps(si, tgt_FMM_Model_Grps_DT, sqa_FMM_Model_Grps);
+                sqa_fmm_cube_config.Update_FMM_Cube_Config(si, tgt_FMM_Cube_Config_DT, sqa_FMM_Cube_Config);
             }
         }
 
@@ -5510,28 +5510,28 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		        SELECT *
 		        FROM FMM_Act_Config
 				{tgt_Where_Clause}";
-            sqa_fmm_act_Config.Fill_FMM_Act_Config_DT(si, tgt_SQA, tgt_FMM_Act_Config_DT, tgt_sql, tgt_FMM_Act_Config_params);
+            sqa_fmm_act_config.Fill_FMM_Act_Config_DT(si, tgt_SQA, tgt_FMM_Act_Config_DT, tgt_sql, tgt_FMM_Act_Config_params);
 
             Global_FMM_Act_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Act_Config", "Act_ID");
         }
-        private void Get_FMM_Unit_Config_Data(SqlParameter[] src_FMM_Unit_Config_params, SqlParameter[] tgt_FMM_Unit_Config_params, SQL_FMM_Get_DataSets sql_fmm_get_datasets, SQA_FMM_Unit_Config SQA_FMM_Unit_Config, ref DataTable src_FMM_Unit_Config_DT, ref DataTable tgt_FMM_Unit_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Unit_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_FMM_Get_DataSets sql_fmm_get_datasets, SQA_FMM_Unit_Config SQA_FMM_Unit_Config, ref DataTable src_FMM_Unit_Config_DT, ref DataTable tgt_FMM_Unit_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
         {
             var src_SQA = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string src_Where_Clause = Construct_Where_Clause(src_FMM_Unit_Config_params);
-            string src_FMM_Unit_Config_selectQuery = $@"
+            string src_Where_Clause = Construct_Where_Clause(src_sqlparams);
+            string src_sql = $@"
 		        SELECT *
 		        FROM FMM_Unit_Config
 		        {src_Where_Clause}";
-            sql_fmm_get_datasets.Fill_Get_FMM_DT(si, src_FMM_Unit_Config_sqlDataAdapter, src_FMM_Unit_Config_DT, src_FMM_Unit_Config_selectQuery, src_FMM_Unit_Config_params);
+            sql_fmm_get_datasets.Fill_Get_FMM_DT(si, src_SQA, src_FMM_Unit_Config_DT, src_sql, src_sqlparams);
 
-            var tgt_FMM_Unit_Config_sqlDataAdapter = new SqlDataAdapter();
-            string tgt_Where_Clause = Construct_Where_Clause(tgt_FMM_Unit_Config_params);
-            string tgt_FMM_Unit_Config_selectQuery = $@"
+            var tgt_SQA = new SqlDataAdapter();
+            string tgt_Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            string tgt_sql = $@"
 		        SELECT *
 		        FROM FMM_Unit_Config
 		        {tgt_Where_Clause}";
-            SQA_FMM_Unit_Config.Fill_FMM_Unit_Config_DT(si, tgt_FMM_Unit_Config_sqlDataAdapter, tgt_FMM_Unit_Config_DT, tgt_FMM_Unit_Config_selectQuery, tgt_FMM_Unit_Config_params);
+            SQA_FMM_Unit_Config.Fill_FMM_Unit_Config_DT(si, tgt_SQA, tgt_FMM_Unit_Config_DT, tgt_sql, tgt_sqlparams);
 
             Global_FMM_Unit_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Unit_Config", "Unit_ID");
         }
@@ -5594,7 +5594,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		        SELECT *
 		        FROM FMM_Appr_Step_Config
 		        {tgt_Where_Clause}";
-            SQA_FMM_Appr_Step_Config.Fill_FMM_Appr_Step_Config_DT(si, tgt_FMM_Appr_Step_Config_sqlDataAdapter, tgt_FMM_Appr_Step_Config_DT, tgt_FMM_Appr_Step_Config_selectQuery, tgt_FMM_Appr_Step_Config_params);
+            sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, tgt_FMM_Appr_Step_Config_sqlDataAdapter, tgt_FMM_Appr_Step_Config_DT, tgt_FMM_Appr_Step_Config_selectQuery, tgt_FMM_Appr_Step_Config_params);
 
             Global_FMM_Appr_Step_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Appr_Step_Config", "Appr_Step_ID");
         }
@@ -5745,26 +5745,26 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             Global_FMM_Model_Grps_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Model_Grps", "Model_Grp_ID");
         }
-        private void Get_FMM_Model_Group_Assign_Model_Data(SqlParameter[] src_FMM_Model_Group_Assign_Model_parameters, SqlParameter[] tgt_FMM_Model_Group_Assign_Model_parameters, SQL_FMM_Get_DataSets sql_fmm_get_datasets, SQA_FMM_Model_Grp_Assign SQA_FMM_Model_Grp_Assign, ref DataTable src_FMM_Model_Group_Assign_Model_DT, ref DataTable tgt_FMM_Model_Group_Assign_Model_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Model_Grp_Assign_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_FMM_Get_DataSets sql_fmm_get_datasets, SQA_FMM_Model_Grp_Assign SQA_FMM_Model_Grp_Assign, ref DataTable src_FMM_Model_Grp_Assign_DT, ref DataTable tgt_FMM_Model_Grp_Assign_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
         {
-            var src_FMM_Model_Group_Assign_Model_sqlDataAdapter = new SqlDataAdapter();
+            var src_SQA = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string src_Where_Clause = Construct_Where_Clause(src_FMM_Model_Group_Assign_Model_parameters);
-            string src_FMM_Model_Group_Assign_Model_selectQuery = $@"
+            string src_Where_Clause = Construct_Where_Clause(src_sqlparams);
+            string src_sql = $@"
 		        SELECT *
 		        FROM FMM_Model_Group_Assign_Model
 		        {src_Where_Clause}";
-            sql_fmm_get_datasets.Fill_Get_FMM_DT(si, src_FMM_Model_Group_Assign_Model_sqlDataAdapter, src_FMM_Model_Group_Assign_Model_DT, src_FMM_Model_Group_Assign_Model_selectQuery, src_FMM_Model_Group_Assign_Model_parameters);
+            sql_fmm_get_datasets.Fill_Get_FMM_DT(si, src_SQA, src_FMM_Model_Grp_Assign_DT, src_sql, src_sqlparams);
 
-            var tgt_FMM_Model_Group_Assign_Model_sqlDataAdapter = new SqlDataAdapter();
-            string tgt_Where_Clause = Construct_Where_Clause(tgt_FMM_Model_Group_Assign_Model_parameters);
-            string tgt_FMM_Model_Group_Assign_Model_selectQuery = $@"
+            var tgt_SQA = new SqlDataAdapter();
+            string tgt_Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            string tgt_sql = $@"
 		        SELECT *
 		        FROM FMM_Model_Group_Assign_Model
 		        {tgt_Where_Clause}";
-            SQA_FMM_Model_Grp_Assign.Fill_FMM_Model_Group_Assign_Model_DT(si, tgt_FMM_Model_Group_Assign_Model_sqlDataAdapter, tgt_FMM_Model_Group_Assign_Model_DT, tgt_FMM_Model_Group_Assign_Model_selectQuery, tgt_FMM_Model_Group_Assign_Model_parameters);
+            SQA_FMM_Model_Grp_Assign.Fill_FMM_Model_Grp_Assign_DT(si, tgt_SQA, tgt_FMM_Model_Grp_Assign_DT, tgt_sql, tgt_sqlparams);
 
-            Global_FMM_Model_Group_Assign_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Model_Group_Assign_Model", "Model_Group_Assign_ID");
+            Global_FMM_Model_Group_Assign_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Model_Grp_Assign", "Model_Group_Assign_ID");
         }
         private void Get_FMM_Calc_Unit_Config_Data(SqlParameter[] src_FMM_Calc_Unit_Config_params, SqlParameter[] tgt_FMM_Calc_Unit_Config_params, SQL_FMM_Get_DataSets sql_fmm_get_datasets, SQA_FMM_Calc_Unit_Config SQA_FMM_Calc_Unit_Config, ref DataTable src_FMM_Calc_Unit_Config_DT, ref DataTable tgt_FMM_Calc_Unit_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
         {
@@ -5787,26 +5787,26 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             Global_FMM_Calc_Unit_Config_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
         }
-        private void Get_FMM_WF_DU_Assign_Model_Group_Data(SqlParameter[] src_FMM_WF_DU_Assign_Model_Group_parameters, SqlParameter[] tgt_FMM_WF_DU_Assign_Model_Group_parameters, SQL_FMM_Get_DataSets sql_fmm_get_datasets, SQA_FMM_WF_DU_Assign_Model_Group SQA_FMM_WF_DU_Assign_Model_Group, ref DataTable src_FMM_WF_DU_Assign_Model_Group_DT, ref DataTable tgt_FMM_WF_DU_Assign_Model_Group_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Calc_Unit_Assign_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_FMM_Get_DataSets sql_fmm_get_datasets, SQA_FMM_Calc_Unit_Assign sqa_fmm_calc_unit_assign, ref DataTable src_FMM_Calc_Unit_Assign_DT, ref DataTable tgt_FMM_Calc_Unit_Assign_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
         {
-            var src_FMM_WF_DU_Assign_Model_Group_sqlDataAdapter = new SqlDataAdapter();
+            var src_SQA = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string src_Where_Clause = Construct_Where_Clause(src_FMM_WF_DU_Assign_Model_Group_parameters);
-            string src_FMM_WF_DU_Assign_Model_Group_selectQuery = $@"
+            string src_Where_Clause = Construct_Where_Clause(src_sqlparams);
+            string src_sql = $@"
 		        SELECT *
-		        FROM FMM_WF_DU_Assign_Model_Group
+		        FROM FMM_Calc_Unit_Assign
 		        {src_Where_Clause}";
-            sql_fmm_get_datasets.Fill_Get_FMM_DT(si, src_FMM_WF_DU_Assign_Model_Group_sqlDataAdapter, src_FMM_WF_DU_Assign_Model_Group_DT, src_FMM_WF_DU_Assign_Model_Group_selectQuery, src_FMM_WF_DU_Assign_Model_Group_parameters);
+            sql_fmm_get_datasets.Fill_Get_FMM_DT(si, src_SQA, src_FMM_Calc_Unit_Assign_DT, src_sql, src_sqlparams);
 
-            var tgt_FMM_WF_DU_Assign_Model_Group_sqlDataAdapter = new SqlDataAdapter();
-            string tgt_Where_Clause = Construct_Where_Clause(tgt_FMM_WF_DU_Assign_Model_Group_parameters);
-            string tgt_FMM_WF_DU_Assign_Model_Group_selectQuery = $@"
+            var tgt_SQA = new SqlDataAdapter();
+            string tgt_Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            string tgt_sql = $@"
 		        SELECT *
-		        FROM FMM_WF_DU_Assign_Model_Group
+		        FROM FMM_Calc_Unit_Assign
 		        {tgt_Where_Clause}";
-            SQA_FMM_WF_DU_Assign_Model_Group.Fill_FMM_WF_DU_Assign_Model_Group_DT(si, tgt_FMM_WF_DU_Assign_Model_Group_sqlDataAdapter, tgt_FMM_WF_DU_Assign_Model_Group_DT, tgt_FMM_WF_DU_Assign_Model_Group_selectQuery, tgt_FMM_WF_DU_Assign_Model_Group_parameters);
+            sqa_fmm_calc_unit_assign.Fill_FMM_Calc_Unit_Assign_DT(si, tgt_SQA, tgt_FMM_Calc_Unit_Assign_DT, tgt_sql, tgt_sqlparams);
 
-            Global_FMM_Calc_Unit_Assign_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_WF_DU_Assign_Model_Group", "Calc_Unit_Assign_ID");
+            Global_FMM_Calc_Unit_Assign_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Calc_Unit_Assign", "Calc_Unit_Assign_ID");
         }
         #endregion
 
