@@ -61,19 +61,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             return Get_WFProfile_TreeView();
                         }
                         // Return WF Profile Menu Options for selected profile
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Menu_Options"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Menus"))
                         {
-                            return Get_WFProfile_Menu_Options();
+                            return Get_WFProfile_Menus();
                         }
                         // Return WF Profile Name/ID List for lookup in Table Editor
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Name_ID"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Names"))
                         {
-                            return Get_WFProfile_Name_ID();
+                            return Get_WFProfile_Names();
                         }
                         // Return WF Profile Header Items for selected profile/menu option
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Header_Items"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Headers"))
                         {
-                            return Get_WFProfile_Header_Items();
+                            return Get_WFProfile_Headers();
                         }
                         break;
                 }
@@ -86,7 +86,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        #region "Get WF Profile Data"
+        #region "Get WF Profiles"
         /// <summary>
         /// Retrieves the root workflow profiles (HierarchyLevel = 1, not templates).
         /// </summary>
@@ -114,6 +114,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
+		#endregion
+		
+		#region "Get WFProfile TreeView"
 
         /// <summary>
         /// Retrieves the workflow profile hierarchy as a tree view for the selected root profile.
@@ -233,11 +236,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
+		#endregion
 
+		#region "Get WFProfile Menus"
         /// <summary>
         /// Retrieves the menu options for a given workflow profile.
         /// </summary>
-        private DataTable Get_WFProfile_Menu_Options()
+        private DataTable Get_WFProfile_Menus()
         {
             try
             {
@@ -274,11 +279,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
+		#endregion
 
         /// <summary>
         /// Retrieves a list of workflow profile names and IDs (not templates).
         /// </summary>
-        private DataTable Get_WFProfile_Name_ID()
+        private DataTable Get_WFProfile_Names()
         {
             try
             {
@@ -292,7 +298,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
                 {
                     DataTable dt = BRApi.Database.ExecuteSql(dbConnApp, sql, false);
-                    dt.TableName = "WFProfile_Name_ID_List";
+                    dt.TableName = "WFProfile_Names";
                     return dt;
                 }
             }
@@ -302,23 +308,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
+		#region "Get WF Profile Headers"
         /// <summary>
         /// Retrieves header configuration options for a given workflow profile and menu option.
         /// </summary>
-        private DataTable Get_WFProfile_Header_Items()
+        private DataTable Get_WFProfile_Headers()
         {
             try
             {
                 var wfUserPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
-                var WFProfile_Header_Config_DT = new DataTable("WFProfile_Header_Items");
+                var WFProfile_Header_Config_DT = new DataTable("WFProfile_Headers");
                 string optionID = null;
 
                 // Define the SQL Statement
                 var sql = @"
                     SELECT *
-                    FROM DDM_Profile_Config_Menu_Header_Options
+                    FROM DDM_Config_Menu_Header
                     WHERE DDM_Profile_ID = @ProfileKey
-                        AND DDM_Profile_Menu_Option_ID = @OptionID";
+                    AND DDM_Menu_ID = @OptionID";
 
                 // Return the DataTable
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);

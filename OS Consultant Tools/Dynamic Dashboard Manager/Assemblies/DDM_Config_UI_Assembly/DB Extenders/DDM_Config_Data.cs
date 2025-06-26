@@ -70,11 +70,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         /// Main entry point for the Dashboard Extender business rule.
         /// Handles different function types such as saving data or handling component selection changes.
         /// </summary>
-        /// <param name="si">Session information</param>
-        /// <param name="globals">Global variables</param>
-        /// <param name="api">API object</param>
-        /// <param name="args">Dashboard extender arguments</param>
-        /// <returns>Result object depending on the function type</returns>
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
             try
@@ -132,14 +127,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         /// Saves DDM Profile Config Menu Options Rows.
         /// Handles insert, update, and duplicate checks for menu options.
         /// </summary>
-        /// <returns>Result of the save operation</returns>
         private XFSqlTableEditorSaveDataTaskResult Save_DDM_Config_Menu_Rows()
         {
             try
             {
                 var save_Data_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var saveDataTaskInfo = args.SqlTableEditorSaveDataTaskInfo;
-                int os_DDM_Profile_Menu_ID = 0;
+                int os_DDM_Menu_ID = 0;
                 int wfProfile_ID = Convert.ToInt32(args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Profile_ID", "0"));
 
                 // Check for duplicates before processing rows.
@@ -157,9 +151,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         {
                             connection.Open();
                             var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
-                            os_DDM_Profile_Menu_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config_Menu", "DDM_Menu_ID");
+                            os_DDM_Menu_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config_Menu", "DDM_Menu_ID");
                         }
-                        xfRow.ModifiedDataRow.SetValue("DDM_Menu_ID", os_DDM_Profile_Menu_ID, XFDataType.Int16);
+                        xfRow.ModifiedDataRow.SetValue("DDM_Menu_ID", os_DDM_Menu_ID, XFDataType.Int16);
                         xfRow.ModifiedDataRow.SetValue("Status", "In Process", XFDataType.Text);
                         xfRow.ModifiedDataRow.SetValue("Create_Date", DateTime.Now, XFDataType.DateTime);
                         xfRow.ModifiedDataRow.SetValue("Create_User", si.UserName, XFDataType.Text);
@@ -209,7 +203,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var save_Data_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var saveDataTaskInfo = args.SqlTableEditorSaveDataTaskInfo;
-                int os_DDM_Profile_Menu_ID = 0;
+                int os_DDM_Menu_ID = 0;
 
                 // Loop through each row in the table editor that was added or updated prior to hitting save
                 foreach (XFEditedDataRow xfRow in saveDataTaskInfo.EditedDataRows)
@@ -222,9 +216,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         {
                             connection.Open();
                             var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
-                            os_DDM_Profile_Menu_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Profile_Config_Menu_Options", "DDM_Profile_Menu_ID");
+                            os_DDM_Menu_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config_Menu", "DDM_Menu_ID");
                         }
-                        xfRow.ModifiedDataRow.SetValue("DDM_Menu_ID", os_DDM_Profile_Menu_ID, XFDataType.Int16);
+                        xfRow.ModifiedDataRow.SetValue("DDM_Menu_ID", os_DDM_Menu_ID, XFDataType.Int16);
                         xfRow.ModifiedDataRow.SetValue("Status", "In Process", XFDataType.Text);
                         xfRow.ModifiedDataRow.SetValue("Create_Date", DateTime.Now, XFDataType.DateTime);
                         xfRow.ModifiedDataRow.SetValue("Create_User", si.UserName, XFDataType.Text);
@@ -276,14 +270,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var save_Data_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var saveDataTaskInfo = args.SqlTableEditorSaveDataTaskInfo;
-                int os_DDM_Profile_Menu_Header_Option_ID = 0;
+                int os_DDM_Menu_Header_ID = 0;
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
                     var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
-                    os_DDM_Profile_Menu_Header_Option_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Profile_Config_Menu_Header_Options", "DDM_Profile_Menu_Header_Option_ID");
+                    os_DDM_Menu_Header_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config_Menu_Header", "DDM_Menu_Header_ID");
                 }
 
                 // Loops through each row in the table editor that was added or updated prior to hitting save
@@ -292,13 +286,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                     {
                         // Handle insert logic for new menu header row.
-                        xfRow.ModifiedDataRow.SetValue("DDM_Profile_Menu_Header_Option_ID", os_DDM_Profile_Menu_Header_Option_ID, XFDataType.Int16);
+                        xfRow.ModifiedDataRow.SetValue("DDM_Menu_Header_ID", os_DDM_Menu_Header_ID, XFDataType.Int16);
                         xfRow.ModifiedDataRow.SetValue("Create_Date", DateTime.Now, XFDataType.DateTime);
                         xfRow.ModifiedDataRow.SetValue("Create_User", si.UserName, XFDataType.Text);
                         xfRow.ModifiedDataRow.SetValue("Update_Date", DateTime.Now, XFDataType.DateTime);
                         xfRow.ModifiedDataRow.SetValue("Update_User", si.UserName, XFDataType.Text);
 
-                        os_DDM_Profile_Menu_Header_Option_ID++; // Increment for each new row
+                        os_DDM_Menu_Header_ID++; // Increment for each new row
                     }
                     else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
                     {
@@ -329,7 +323,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        /// <summary>
+        #region "Duplicate Menu Check"
+		/// <summary>
         /// Checks for duplicate menu options and sort orders.
         /// This method is used to identify duplicates during the save process.
         /// </summary>
@@ -439,6 +434,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Duplicate_Menu_Options = false;
             }
         }
+		#endregion
 
         /// <summary>
         /// Checks for duplicate menu header options and sort orders.
@@ -463,7 +459,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Define the select query and parameters
                             string sql = @"
 						        					SELECT *
-						       						FROM DDM_Profile_Config_Menu_Options
+						       						FROM DDM_Config_Menu
 						       						WHERE DDM_Profile_ID = @DDM_Profile_ID";
                             // Create an array of SqlParameter objects
                             var sqlparams = new SqlParameter[]
@@ -475,7 +471,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             foreach (DataRow menu_Row in DDM_Config_Menu_DT.Rows)
                             {
-                                int menu_ID = (int)menu_Row["DDM_Profile_Menu_ID"];
+                                int menu_ID = (int)menu_Row["DDM_Menu_ID"];
                                 int sortOrder = (int)menu_Row["DDM_Menu_Order"];
                                 string menu_Name = (string)menu_Row["DDM_Menu_Name"];
 
@@ -489,7 +485,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     // Check for duplicate menu options when the process step is "Initiate"
                     if (DDL_Process == "Insert")
                     {
-                        int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Profile_Menu_ID"];
+                        int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
                         int sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
                         string menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Name"];
 
@@ -499,7 +495,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                     else if (DDL_Process == "Update")
                     {
-                        int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Profile_Menu_ID"];
+                        int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
                         int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_Order"];
                         int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
                         string orig_menu_Name = (string)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_Name"];
@@ -575,13 +571,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         connection.Open();
 
                         // Create a new DataTable
-                        var sql_DS_DataAdapter = new SqlDataAdapter();
-                        var DDM_Profile_Config_Count_DT = new DataTable();
+                        var sqa = new SqlDataAdapter();
+                        var DDM_Config_Count_DT = new DataTable();
                         // Define the select query and parameters
                         var sql = @"
-				        					SELECT Count(*) as Count
-				       						FROM DDM_Config
-				       						WHERE DDM_Profile_Name = @wf_Profile_ID";
+                                            SELECT Count(*) as Count
+                                            FROM DDM_Config
+                                            WHERE DDM_Profile_Name = @wf_Profile_ID";
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
@@ -589,15 +585,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@wf_Profile_ID", SqlDbType.UniqueIdentifier) { Value = wf_Profile_ID }
                         };
 
-                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sql_DS_DataAdapter, DDM_Profile_Config_Count_DT, sql, sqlparams);
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, DDM_Config_Count_DT, sql, sqlparams);
 
-                        if (Convert.ToInt32(DDM_Profile_Config_Count_DT.Rows[0]["Count"]) > 0)
+                        if (Convert.ToInt32(DDM_Config_Count_DT.Rows[0]["Count"]) > 0)
 
                         // Example: Get the max ID for the "MCM_Calc_Config" table
                         new_Profile_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config", "DDM_Profile_ID");
+						BRApi.ErrorLog.LogMessage(si,$"Hit {new_Profile_Config_ID}");
                         var sqa_ddm_config = new SQA_DDM_Config(si, connection);
                         var DDM_Config_DT = new DataTable();
-                        var sqa = new SqlDataAdapter();
 
                         // Fill the DataTable with the current data from MCM_Dest_Cell
                         sql = @"
@@ -613,10 +609,28 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						
                         sqa_ddm_config.Fill_DDM_Config_DT(si, sqa, DDM_Config_DT, sql, sqlparams);
 
+
+
+                        // Query WorkflowProfileHierarchy for the given wf_Profile_ID
+                        var wfProfile_Step_Type_DT = new DataTable();
+                        sql = @"
+                            SELECT *
+                            FROM WorkflowProfileHierarchy
+                            WHERE ProfileKey = @ProfileKey";
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@ProfileKey", SqlDbType.UniqueIdentifier) { Value = wf_Profile_ID }
+                        };
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, wfProfile_Step_Type_DT, sql, sqlparams);
+
                         DataRow newRow = DDM_Config_DT.NewRow();
                         newRow["DDM_Profile_ID"] = new_Profile_Config_ID;
                         newRow["DDM_Profile_Name"] = wf_Profile_ID;
-                        newRow["DDM_Profile_Step_Type"] = "Import";
+                        // Determine DDM_Profile_Step_Type based on wfProfile_Step_Type_DT
+                        if (wfProfile_Step_Type_DT.Rows.Count > 0)
+                        {
+                            newRow["DDM_Profile_Step_Type"] = wfProfile_Step_Type_DT.Rows[0]["ProfileType"];
+                        }
                         newRow["Status"] = "In Process";
                         newRow["Create_Date"] = DateTime.Now;
                         newRow["Create_User"] = si.UserName;
