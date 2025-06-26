@@ -70,6 +70,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         /// Main entry point for the Dashboard Extender business rule.
         /// Handles different function types such as saving data or handling component selection changes.
         /// </summary>
+        /// <param name="si">Session information</param>
+        /// <param name="globals">Global variables</param>
+        /// <param name="api">API object</param>
+        /// <param name="args">Dashboard extender arguments</param>
+        /// <returns>Result object depending on the function type</returns>
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
             try
@@ -127,6 +132,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         /// Saves DDM Profile Config Menu Options Rows.
         /// Handles insert, update, and duplicate checks for menu options.
         /// </summary>
+        /// <returns>Result of the save operation</returns>
         private XFSqlTableEditorSaveDataTaskResult Save_DDM_Config_Menu_Rows()
         {
             try
@@ -410,7 +416,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                                          .ToList();
             foreach (var kvp in GBL_Menu_Order_Dict)
             {
-                //BRApi.ErrorLog.LogMessage(si, "Hit Dist List: " + kvp.Value);
+
             }
             if (dup_Menu_SortOrders.Count > 0)
             {
@@ -521,9 +527,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                                          .ToList();
             foreach (var kvp in GBL_Menu_Order_Dict)
             {
-                //BRApi.ErrorLog.LogMessage(si, "Hit Dist List: " + kvp.Value);
+
             }
-            //BRApi.ErrorLog.LogMessage(si, "Hit: " + dup_Menu_SortOrders.Count);
+
             if (dup_Menu_SortOrders.Count > 0)
             {
                 Duplicate_Menu_Options_Sort_Order = true;
@@ -586,7 +592,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sql_DS_DataAdapter, DDM_Profile_Config_Count_DT, sql, sqlparams);
 
                         if (Convert.ToInt32(DDM_Profile_Config_Count_DT.Rows[0]["Count"]) > 0)
-                            BRApi.ErrorLog.LogMessage(si, "Hit Max: " + new_Profile_Config_ID);
+
                         // Example: Get the max ID for the "MCM_Calc_Config" table
                         new_Profile_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config", "DDM_Profile_ID");
                         var sqa_ddm_config = new SQA_DDM_Config(si, connection);

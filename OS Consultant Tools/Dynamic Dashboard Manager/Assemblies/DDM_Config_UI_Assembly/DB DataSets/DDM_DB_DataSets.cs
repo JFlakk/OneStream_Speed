@@ -19,22 +19,21 @@ using OneStream.Stage.Engine;
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.DDM_DB_DataSets
 {
     /// <summary>
-    /// Main entry class for Dynamic Dashboard Manager DataSets.
+    /// MainClass provides data retrieval methods for Dynamic Dashboard Manager datasets.
     /// </summary>
     public class MainClass
     {
-        /// <summary>
-        /// Main entry point for Dashboard DataSet rule.
-        /// </summary>
-        /// <param name="si">Session information.</param>
-        /// <param name="globals">Business rule globals.</param>
-        /// <param name="api">API object.</param>
-        /// <param name="args">Dashboard dataset arguments.</param>
-        /// <returns>Object result, typically a DataTable or DataSet.</returns>
+        #region "Global Variables"
         private SessionInfo si;
         private BRGlobals globals;
         private object api;
-        private DashboardExtenderArgs args;
+        private DashboardDataSetArgs args;
+        #endregion
+
+        /// <summary>
+        /// Main entry point for the Dashboard DataSet business rule.
+        /// Handles requests for dataset names and data retrieval based on function type and dataset name.
+        /// </summary>
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardDataSetArgs args)
         {
             try
@@ -46,37 +45,35 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 switch (args.FunctionType)
                 {
                     case DashboardDataSetFunctionType.GetDataSetNames:
-                        // Return available dataset names
-                        // var names = new List<string>();
-                        // names.Add("MyDataSet");
+                        // Return available dataset names if needed
+                        // var names = new List<string> { "MyDataSet" };
                         // return names;
                         break;
-
                     case DashboardDataSetFunctionType.GetDataSet:
                         // Return WF Root Profiles
-                        if (args.DataSetName.XFEqualsIgnoreCase("Get_Root_WF_Profiles"))
+                        if (args.DataSetName.XFEqualsIgnoreCase("Get_Root_WFProfiles"))
                         {
-                            return Get_Root_WF_Profiles();
+                            return Get_Root_WFProfiles();
                         }
                         // Return WF Profile Hierarchy for selected root profile
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WF_Profile_TreeView"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_TreeView"))
                         {
-                            return Get_WF_Profile_Hierarchy();
+                            return Get_WFProfile_TreeView();
                         }
                         // Return WF Profile Menu Options for selected profile
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WF_Profile_Menu_Options"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Menu_Options"))
                         {
-                            return Get_WF_Profile_Menu_Options(si, globals, api);
+                            return Get_WFProfile_Menu_Options();
                         }
-                        // Return WF Profile Name/ID List for lookup
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WF_Profile_Name_ID"))
+                        // Return WF Profile Name/ID List for lookup in Table Editor
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Name_ID"))
                         {
-                            return Get_WF_Profile_Name_ID(si, globals, api);
+                            return Get_WFProfile_Name_ID();
                         }
-                        // Return WF Profile Header Items
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WF_Profile_Header_Items"))
+                        // Return WF Profile Header Items for selected profile/menu option
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Header_Items"))
                         {
-                            return Get_WF_Profile_Header_Items(si, globals, api);
+                            return Get_WFProfile_Header_Items();
                         }
                         break;
                 }
@@ -84,29 +81,31 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
             catch (Exception ex)
             {
+                // Log and rethrow exceptions for error handling
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
 
         #region "Get WF Profile Data"
-
         /// <summary>
         /// Retrieves the root workflow profiles (HierarchyLevel = 1, not templates).
         /// </summary>
-        private DataTable Get_Root_WF_Profiles()
+        private DataTable Get_Root_WFProfiles()
         {
             try
             {
-                var Select_sql = @"
+                // Define the SQL Statement
+                var sql = @"
                     SELECT ProfileName
                     FROM WorkflowProfileHierarchy
                     WHERE HierarchyLevel = 1
                         AND IsTemplate = 0 ";
 
+                // Return the DataTable
                 using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
                 {
-                    DataTable dt = BRApi.Database.ExecuteSql(dbConnApp, Select_sql, false);
-                    dt.TableName = "Root_WF_Profiles";
+                    DataTable dt = BRApi.Database.ExecuteSql(dbConnApp, sql, false);
+                    dt.TableName = "Root_WFProfiles";
                     return dt;
                 }
             }
@@ -117,21 +116,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
         /// <summary>
-        /// Retrieves the workflow profile hierarchy as a tree structure for a given root profile.
+        /// Retrieves the workflow profile hierarchy as a tree view for the selected root profile.
         /// </summary>
-        private DataSet Get_WF_Profile_Hierarchy()
+        private DataSet Get_WFProfile_TreeView()
         {
             try
             {
-                BRApi.ErrorLog.LogMessage(si, "Hit Here");
                 var hierarchy = new XFTreeItemCollection();
                 var hierarchy_mbrs = new List<XFTreeItem>();
                 var parent_child = new Dictionary<string, string>();
-                string rootProfileName = CustomSubstVars.XFGetValue("BL_DDM_Root_WF_Profiles");
+                string rootProfileName = args.CustomSubstVars.XFGetValue("BL_DDM_Root_WFProfiles");
 
                 var dt = new DataTable();
 
-                var select_sql = @"
+                // Define the SQL Statement
+                var sql = @"
                     WITH RecursiveCTE AS (
                         SELECT 
                             prof.ProfileKey,
@@ -164,31 +163,33 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         parentProf.ProfileName as ParentProfileName, 
                         rcte.HierarchyLevel,
                         rcte.HierarchyIndex,
-                        WFM.DDM_Profile_ID
+                        DDM.DDM_Profile_ID
                     FROM 
                         RecursiveCTE rcte
                     LEFT JOIN 
                         WorkflowProfileHierarchy parentProf ON rcte.ParentProfileKey = parentProf.ProfileKey
                     LEFT JOIN
-                        DDM_Profile_Config WFM ON WFM.DDM_Profile_Name = rcte.ProfileKey
+                        DDM_Config DDM ON DDM.DDM_Profile_Name = rcte.ProfileKey
                     ORDER BY 
                         rcte.HierarchyLevel DESC, 
                         rcte.HierarchyIndex";
 
+                // Return the DataTable
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_DDM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
 
-                    var parameters = new SqlParameter[]
+                    var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@rootprofilename", SqlDbType.NVarChar,100) { Value = rootProfileName }
                     };
 
-                    sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, dt, select_sql, parameters);
+                    sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
 
+                // Build the tree structure from the DataTable
                 foreach (DataRow row in dt.Rows)
                 {
                     var hierarchy_children_mbrs = new List<XFTreeItem>();
@@ -196,9 +197,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     string profileKey = row["ProfileKey"].ToString();
                     string parentprofileName = row["ParentProfileName"].ToString();
                     string parentprofileKey = row["ParentProfileKey"].ToString();
-                    var Bold_WF_Profile = row["DDM_Profile_ID"] != DBNull.Value;
+                    var Bold_WFProfile = true;
+                    if (row["DDM_Profile_ID"] == DBNull.Value)
+                    {
+                        Bold_WFProfile = false;
+                    }
                     parent_child.Add(profileKey, parentprofileKey);
-
                     var childProfiles = parent_child.Where(pair => pair.Value == profileKey)
                                         .Select(pair => pair.Key)
                                         .ToList();
@@ -206,15 +210,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         foreach (var childProfile in childProfiles)
                         {
+                            // Create an XFTreeItem for each child profile
                             var childXFTreeItem = hierarchy_mbrs.Find(item => item.UniqueName == childProfile);
                             hierarchy_children_mbrs.Add(childXFTreeItem);
                         }
-                        var wfprofile_xftreeitem = new XFTreeItem(profileKey, profileName, string.Empty, Bold_WF_Profile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
+                        var wfprofile_xftreeitem = new XFTreeItem(profileKey, profileName, string.Empty, Bold_WFProfile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
                         hierarchy_mbrs.Add(wfprofile_xftreeitem);
                     }
                     else
                     {
-                        var wfprofile_xftreeitem = new XFTreeItem(profileKey, profileName, string.Empty, Bold_WF_Profile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
+                        var wfprofile_xftreeitem = new XFTreeItem(profileKey, profileName, string.Empty, Bold_WFProfile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
                         hierarchy_mbrs.Add(wfprofile_xftreeitem);
                     }
                 }
@@ -230,37 +235,39 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
         /// <summary>
-        /// Retrieves menu options for the current workflow profile.
+        /// Retrieves the menu options for a given workflow profile.
         /// </summary>
-        private DataTable Get_WF_Profile_Menu_Options()
+        private DataTable Get_WFProfile_Menu_Options()
         {
             try
             {
                 var wfUserPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
-                var wf_Profile_Config_DT = new DataTable("wf_Profile_Config");
-
-                var select_sql = @"
-                    Select Menu.DDM_Profile_Menu_Option_ID, Menu.DDM_Menu_Option_Name
-                    FROM DDM_Profile_Config Cnfg
-                    JOIN DDM_Profile_Config_Menu_Options Menu
-                        ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
+                var WFProfile_Config_DT = new DataTable("WFProfile_Config");
+                // Define the SQL Statement
+                var sql = @"
+                    Select Menu.DDM_Menu_ID, Menu.DDM_Menu_Name
+                    FROM DDM_Config Cnfg
+                    JOIN DDM_Config_Menu Menu
+                    ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
                     WHERE Cnfg.DDM_Profile_Name = @ProfileKey
-                    ORDER BY DDM_Menu_Option_Sort_Order";
+                    ORDER BY DDM_Menu_Order";
 
+                // Return the DataTable
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_DDM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
 
-                    var parameters = new SqlParameter[]
+                    // Add the parameter for ProfileKey
+                    var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@ProfileKey", SqlDbType.UniqueIdentifier) { Value = wfUserPk.ProfileKey }
                     };
 
-                    sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, wf_Profile_Config_DT, select_sql, parameters);
+                    sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, WFProfile_Config_DT, sql, sqlparams);
                 }
-                return wf_Profile_Config_DT;
+                return WFProfile_Config_DT;
             }
             catch (Exception ex)
             {
@@ -271,19 +278,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         /// <summary>
         /// Retrieves a list of workflow profile names and IDs (not templates).
         /// </summary>
-        private DataTable Get_WF_Profile_Name_ID(SessionInfo si, BRGlobals globals, object api)
+        private DataTable Get_WFProfile_Name_ID()
         {
             try
             {
-                var Select_sql = @"
+                // Define the SQL Statement
+                var sql = @"
                     SELECT ProfileName, ProfileKey
                     FROM WorkflowProfileHierarchy
                     WHERE IsTemplate = 0 ";
 
+                // Return the DataTable
                 using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
                 {
-                    DataTable dt = BRApi.Database.ExecuteSql(dbConnApp, Select_sql, false);
-                    dt.TableName = "WF_Profile_Name_ID_List";
+                    DataTable dt = BRApi.Database.ExecuteSql(dbConnApp, sql, false);
+                    dt.TableName = "WFProfile_Name_ID_List";
                     return dt;
                 }
             }
@@ -294,44 +303,46 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
         /// <summary>
-        /// Retrieves header configuration options for the current workflow profile and menu option.
+        /// Retrieves header configuration options for a given workflow profile and menu option.
         /// </summary>
-        private DataTable Get_WF_Profile_Header_Items(SessionInfo si, BRGlobals globals, object api)
+        private DataTable Get_WFProfile_Header_Items()
         {
             try
             {
                 var wfUserPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
-                var wf_Profile_Header_Config_DT = new DataTable("wf_Profile_Header_Items");
+                var WFProfile_Header_Config_DT = new DataTable("WFProfile_Header_Items");
                 string optionID = null;
 
-                var select_sql = @"
+                // Define the SQL Statement
+                var sql = @"
                     SELECT *
                     FROM DDM_Profile_Config_Menu_Header_Options
                     WHERE DDM_Profile_ID = @ProfileKey
                         AND DDM_Profile_Menu_Option_ID = @OptionID";
 
+                // Return the DataTable
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_DDM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
 
-                    var parameters = new SqlParameter[]
+                    // Add the parameter for ProfileKey and selected menu option 
+                    var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@ProfileKey", SqlDbType.UniqueIdentifier) { Value = wfUserPk.ProfileKey },
                         new SqlParameter("@OptionID", SqlDbType.UniqueIdentifier) { Value = optionID }
                     };
 
-                    sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, wf_Profile_Header_Config_DT, select_sql, parameters);
+                    sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, WFProfile_Header_Config_DT, sql, sqlparams);
                 }
-                return wf_Profile_Header_Config_DT;
+                return WFProfile_Header_Config_DT;
             }
             catch (Exception ex)
             {
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-
         #endregion
     }
 }
