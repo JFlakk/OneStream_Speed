@@ -1,0 +1,114 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using Microsoft.CSharp;
+using Microsoft.Data.SqlClient;
+using OneStream.Finance.Database;
+using OneStream.Finance.Engine;
+using OneStream.Shared.Common;
+using OneStream.Shared.Database;
+using OneStream.Shared.Engine;
+using OneStream.Shared.Wcf;
+using OneStream.Stage.Database;
+using OneStream.Stage.Engine;
+using OneStreamWorkspacesApi;
+using OneStreamWorkspacesApi.V800;
+
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
+{
+    public class SQA_DDM_Config
+    {
+        private readonly SqlConnection _connection;
+
+        public SQA_DDM_Config(SessionInfo si, SqlConnection connection)
+        {
+            _connection = connection;
+        }
+
+        public void Fill_DDM_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string selectQuery, params SqlParameter[] parameters)
+        {
+            using (SqlCommand command = new SqlCommand(selectQuery, _connection))
+            {
+                command.CommandType = CommandType.Text;
+                if (parameters != null)
+                {
+                    command.Parameters.AddRange(parameters);
+                }
+
+                sqa.SelectCommand = command;
+                sqa.Fill(dt);
+            }
+        }
+
+        public void Update_DDM_Config(SessionInfo si, DataTable dataTable, SqlDataAdapter sqa)
+        {
+            using (SqlTransaction transaction = _connection.BeginTransaction())
+            {
+                // Define the insert command and parameters
+                string insertQuery = @"
+                    INSERT INTO DDM_Config (
+                         DDM_Profile_ID, DDM_Profile_Name, DDM_Profile_Step_Type, 
+                         Status, Create_Date, Create_User, Update_Date, Update_User
+                    ) VALUES (
+                        @DDM_Profile_ID, @DDM_Profile_Name, @DDM_Profile_Step_Type, 
+                        @Status, @Create_Date, @Create_User, @Update_Date, @Update_User
+                    );";
+
+                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
+                sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
+                sqa.InsertCommand.Parameters.Add("@DDM_Profile_Name", SqlDbType.UniqueIdentifier).SourceColumn = "DDM_Profile_Name";
+                sqa.InsertCommand.Parameters.Add("@DDM_Profile_Step_Type", SqlDbType.NVarChar, 20).SourceColumn = "DDM_Profile_Step_Type";
+                sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
+                sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
+                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
+                sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
+                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
+
+                // Define the update command and parameters
+                string updateQuery = @"
+                    UPDATE dbo.DDM_Config SET
+                         DDM_Profile_Name = @DDM_Profile_Name, 
+                         DDM_Profile_Step_Type = @DDM_Profile_Step_Type, 
+                         Status = @Status, 
+                         Create_Date = @Create_Date, 
+                         Create_User = @Create_User, 
+                         Update_Date = @Update_Date, 
+                         Update_User = @Update_User
+                    WHERE DDM_Profile_ID = @DDM_Profile_ID;";
+
+                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
+                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add("@DDM_Profile_Name", SqlDbType.UniqueIdentifier).SourceColumn = "DDM_Profile_Name";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Profile_Step_Type", SqlDbType.NVarChar, 20).SourceColumn = "DDM_Profile_Step_Type";
+                sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
+                sqa.UpdateCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
+                sqa.UpdateCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
+                sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
+                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
+
+                // Define the delete command and parameters
+                string deleteQuery = @"
+                    DELETE FROM dbo.DDM_Config 
+                    WHERE DDM_Profile_ID = @DDM_Profile_ID;";
+
+                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
+
+                try
+                {
+                    sqa.Update(dataTable);
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+    }
+}
