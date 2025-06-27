@@ -36,6 +36,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
+                // Orchestrate dashboard logic here
                 return null;
             }
             catch (Exception ex)
@@ -69,10 +70,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             foreach (string param in ParamsToAdd.Keys)
             {
-                //				BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + ParamsToAdd[param]);
                 taskResult.ModifiedCustomSubstVars.Add(param, ParamsToAdd[param]);
             }
-
             return taskResult;
         }
 

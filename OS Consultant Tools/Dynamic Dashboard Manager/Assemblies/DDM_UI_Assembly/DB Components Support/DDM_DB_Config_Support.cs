@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -18,11 +18,10 @@ using OneStream.Stage.Engine;
 using OneStreamWorkspacesApi;
 using OneStreamWorkspacesApi.V800;
 using OneStreamWorkspacesApi.V820;
-using Workspace.OSConsultantTools.DDM_Config_UI_Assembly;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class DDM_Helper_Classes
+    public class DDM_DB_Config_Support
     {
         //Params
         public const string Param_CubeName = "IV_DDM_App_Cube_Name";
@@ -51,7 +50,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_MCM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     // Create a new DataTable
                     var sqlDataAdapter = new SqlDataAdapter();
                     // Define the select query and parameters
@@ -64,7 +63,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     {
                         new SqlParameter("@OS_Cube_ID", SqlDbType.Int) { Value = cubeId }
                     };
-                    sql_MCM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, cubes_DT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, cubes_DT, selectQuery, parameters);
 
                 }
                 if (cubes_DT.Rows.Count > 0)
@@ -155,7 +154,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
-                var sql_DDM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
+                var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
 
                 var sqlDataAdapter = new SqlDataAdapter();
 
@@ -170,7 +169,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 if (profileKey != null)
                 {
-                    sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, configProfileDT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, configProfileDT, selectQuery, parameters);
                 }
             }
 
@@ -191,7 +190,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var dbConnApp1 = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp1.ConnectionString))
                 {
-                    var sql_DDM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
 
                     var sqlDataAdapter = new SqlDataAdapter();
 
@@ -206,7 +205,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         new SqlParameter("@ProfileID", SqlDbType.Int) { Value = profileID }
                     };
 
-                    sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, configMenuOptionsDT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, configMenuOptionsDT, selectQuery, parameters);
                 }
             }
 
@@ -234,7 +233,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
             var ProfileKey = wfUnitPk.ProfileKey;
-            int configProfileID = DDM_Helper_Classes.getCurrentProfileID(si, ProfileKey);
+            int configProfileID = DDM_DB_Config_Support.getCurrentProfileID(si, ProfileKey);
 
             string menu_option = customSubstVarsAlreadyResolved.XFGetValue(Param_DashboardMenuOption, "1");
 
@@ -243,7 +242,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
-                var sql_DDM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
+                var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                 // Create a new DataTable
 
                 var sqlDataAdapter = new SqlDataAdapter();
@@ -264,7 +263,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 if (!String.IsNullOrEmpty(menu_option) && configProfileID != -1)
                 {
-                    sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, menu_Header_Options_DT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, menu_Header_Options_DT, selectQuery, parameters);
                 }
             }
 

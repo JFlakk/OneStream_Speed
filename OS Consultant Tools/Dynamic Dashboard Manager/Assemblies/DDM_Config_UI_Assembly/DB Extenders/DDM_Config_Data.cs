@@ -20,6 +20,8 @@ using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
 using OpenXmlPowerTools;
+using Workspace.OSConsultantTools.GBL_UI_Assembly;
+
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.DDM_Config_Data
 {

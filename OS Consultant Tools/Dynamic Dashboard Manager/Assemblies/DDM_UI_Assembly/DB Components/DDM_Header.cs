@@ -102,20 +102,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     // Add and set cubeName IV
                     var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
                     var ProfileKey = wfUnitPk.ProfileKey;
-                    int configProfileID = DDM_Helper_Classes.getCurrentProfileID(si, ProfileKey);
+                    int configProfileID = DDM_DB_Config_Support.getCurrentProfileID(si, ProfileKey);
 
-                    int menuOptionID = DDM_Helper_Classes.getSelectedMenuOption(si, args.SelectionChangedTaskInfo.CustomSubstVars);
+                    int menuOptionID = DDM_DB_Config_Support.getSelectedMenuOption(si, args.SelectionChangedTaskInfo.CustomSubstVars);
 
-                    DataTable configMenuOptionsDT = DDM_Helper_Classes.getConfigMenuOptions(si, configProfileID, menuOptionID);
+                    DataTable configMenuOptionsDT = DDM_DB_Config_Support.getConfigMenuOptions(si, configProfileID, menuOptionID);
 
                     // get cube name based on SI.
                     int cubeID = si.PovDataCellPk.CubeId;
-                    string cubeName = DDM_Helper_Classes.getCubeName(si, cubeID);
+                    string cubeName = DDM_DB_Config_Support.getCubeName(si, cubeID);
 
                     // add cubename IV
-                    loadResult.ModifiedCustomSubstVars.Add(DDM_Helper_Classes.Param_CubeName, cubeName);
+                    loadResult.ModifiedCustomSubstVars.Add(DDM_DB_Config_Support.Param_CubeName, cubeName);
 
-                    Dictionary<string, string> ParamsToAdd = DDM_Helper_Classes.getParamsToAdd(DDM_Helper_Classes.getHeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
+                    Dictionary<string, string> ParamsToAdd = DDM_DB_Config_Support.getParamsToAdd(DDM_DB_Config_Support.getHeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
 
                     foreach (string param in ParamsToAdd.Keys)
                     {
@@ -229,6 +229,32 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             return dynamicDashboardEx;
         }
+		
+        // menu label
+        internal static WsDynamicDashboardEx Get_DynamicHeader(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
+            WsDynamicComponentEx parentDynamicComponentEx, Dashboard storedDashboard, Dictionary<string, string> customSubstVarsAlreadyResolved)
+        {
+            var repeatArgsList = new List<WsDynamicComponentRepeatArgs>();
+
+            // get current showhide status of menu
+            string ShowHideStatus = customSubstVarsAlreadyResolved.XFGetValue(Param_ShowHideMenu, NavAction_Hide);
+
+            // add show/hide menu button to the items
+            Dictionary<string, string> nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+            {
+                [TmpParam_ShowHideMenu] = ShowHideStatus,
+            };
+            repeatArgsList.Add(new WsDynamicComponentRepeatArgs(ShowHideStatus, nextLevelTemplateSubstVarsToAdd));
+
+
+            var dynamicDashboardEx = api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
+
+            dynamicDashboardEx.DynamicDashboard.Tag = repeatArgsList;
+
+            api.SaveDynamicDashboardState(si, parentDynamicComponentEx.DynamicComponent, dynamicDashboardEx, WsDynamicItemStateType.MinimalWithTemplateParameters);
+
+            return dynamicDashboardEx;
+        }
 
         // config items
         internal static WsDynamicDashboardEx Get_DynamicNavConfigItems_Actions(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
@@ -312,7 +338,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 
             // add header items
-            DataTable headerItems = DDM_Helper_Classes.getHeaderItems(si, customSubstVarsAlreadyResolved);
+            DataTable headerItems = DDM_DB_Config_Support.getHeaderItems(si, customSubstVarsAlreadyResolved);
             //BRApi.ErrorLog.LogMessage(si, "headerItems: " + headerItems.Rows.Count);
             var tempColl = addHeaderItems(ref headerItems, si, workspace, api, dynamicDashboardEx, maintUnit);
 
@@ -399,8 +425,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                                 string defaultSelection = row[baseSearch + "_Default"].ToString();
 
-                                //tempComp.TemplateParameterValues = $"{TmpParam_BoundParameter}={defaultSelection}";
-
+                                //tempComp.TemplateParameterValues = $"{TmpParam_BoundParameter}={defaultSelection}"
 
                                 if (colSuffix == "Btn")
                                 {
@@ -493,6 +518,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                         WsDynamicComponentEx buttonCompEx = api.GetDynamicComponentForDynamicDashboard(si, ws, dynamicDashboardEx, tempComp, nameSuffix, templateSubVars, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
                         wsDynCompMembers.Add(new WsDynamicDbrdCompMemberEx(tempCompMember, buttonCompEx));
+						
 
                         break;
                     default:
