@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -119,12 +119,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Model_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("cubeID");
-                            var activityID = args.NameValuePairs.XFGetValue("activityID");
+                            var ActID = args.NameValuePairs.XFGetValue("ActID");
 
                             try
                             {
                                 Convert.ToInt16(cubeID);
-                                Convert.ToInt16(activityID);
+                                Convert.ToInt16(ActID);
 
                             }
                             catch
@@ -133,16 +133,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 return new DataTable();
                             }
 
-                            return Get_FMM_Model_List(cubeID, activityID);
+                            return Get_FMM_Model_List(cubeID, ActID);
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Src_Model_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            var activityID = args.NameValuePairs.XFGetValue("Activity_ID");
+                            var ActID = args.NameValuePairs.XFGetValue("Act_ID");
                             try
                             {
                                 Convert.ToInt16(cubeID);
-                                Convert.ToInt16(activityID);
+                                Convert.ToInt16(ActID);
 
                             }
                             catch
@@ -150,17 +150,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
                                 return new DataTable();
                             }
-                            return Get_FMM_Src_Model_List(cubeID, activityID);
+                            return Get_FMM_Src_Model_List(cubeID, ActID);
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Tgt_Model_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            var activityID = args.NameValuePairs.XFGetValue("Activity_ID");
+                            var ActID = args.NameValuePairs.XFGetValue("Act_ID");
 
                             try
                             {
                                 Convert.ToInt16(cubeID);
-                                Convert.ToInt16(activityID);
+                                Convert.ToInt16(ActID);
 
                             }
                             catch
@@ -169,14 +169,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 return new DataTable();
                             }
 
-                            return Get_FMM_Tgt_Model_List(cubeID, activityID);
+                            return Get_FMM_Tgt_Model_List(cubeID, ActID);
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Calc_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            var activityID = args.NameValuePairs.XFGetValue("Activity_ID");
+                            var ActID = args.NameValuePairs.XFGetValue("Act_ID");
                             var modelID = args.NameValuePairs.XFGetValue("Model_ID");
-                            return Get_FMM_Calc_List(cubeID, activityID, modelID);
+                            return Get_FMM_Calc_List(cubeID, ActID, modelID);
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_All_Model_Group_List"))
                         {
@@ -221,7 +221,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
 
                             string cubeID = args.NameValuePairs.XFGetValue("cubeID");
-                            //string activityID = args.NameValuePairs.XFGetValue("activityID");
+                            //string ActID = args.NameValuePairs.XFGetValue("ActID");
                             return Get_FMM_Approval_Config(cubeID);
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Register_Config"))
@@ -430,7 +430,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     string selectQuery = @"
 			        	SELECT DISTINCT CONCAT(Cube,' - ',Cube_Description) AS OS_Cube,Cube.Cube_ID
 						FROM FMM_Cube_Config Cube
-						JOIN FMM_Activity_Config Act
+						JOIN FMM_Act_Config Act
 						ON Cube.Cube_ID = Act.Cube_ID";
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
@@ -463,7 +463,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     string selectQuery = @"
 			        	SELECT DISTINCT CONCAT(Cube,' - ',Cube_Description) AS OS_Cube,Cube.Cube_ID
 						FROM FMM_Cube_Config Cube
-						JOIN FMM_Activity_Config Act
+						JOIN FMM_Act_Config Act
 						ON Cube.Cube_ID = Act.Cube_ID";
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
@@ -527,7 +527,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     string selectQuery = @"
 										SELECT DISTINCT CONCAT(Cube, ' - ', Cube_Description) AS OS_Cube, Cube.Cube_ID
 										FROM FMM_Cube_Config Cube
-										JOIN FMM_Activity_Config Act 
+										JOIN FMM_Act_Config Act 
 										ON Cube.Cube_ID = Act.Cube_ID 
 										AND Act.Calc_Type = 'Table'";
 
@@ -565,9 +565,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlDataAdapter = new SqlDataAdapter();
                     // Define the select query and parameters
                     string selectQuery = @"
-			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Activity_ID
+			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
 			       		FROM FMM_Cube_Config Con
-						JOIN FMM_Activity_Config Act
+						JOIN FMM_Act_Config Act
 						ON Con.Cube_ID = Act.Cube_ID
 						WHERE Con.Cube_ID = @Cube_ID
 						ORDER BY Cube,Scen_Type,Name";
@@ -594,7 +594,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
 
                 //BRApi.ErrorLog.LogMessage(si,"Hit Check Cube ID: " + Cube_ID);
-                var cube_Model_Activities_DT = new DataTable("Table_Activity_Config");
+                var cube_Model_Activities_DT = new DataTable("Table_Act_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -603,9 +603,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlDataAdapter = new SqlDataAdapter();
                     // Define the select query and parameters
                     string selectQuery = @"
-			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Activity_ID
+			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
 			       		FROM FMM_Cube_Config Con
-						JOIN FMM_Activity_Config Act
+						JOIN FMM_Act_Config Act
 						ON Con.Cube_ID = Act.Cube_ID
 						WHERE Con.Cube_ID = @Cube_ID
 						AND Act.Calc_Type = 'Table'
@@ -639,12 +639,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlDataAdapter = new SqlDataAdapter();
                     // Define the select query and parameters
                     string selectQuery = @"
-			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Activity_ID
+			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
 			       		FROM FMM_Cube_Config Con
-						JOIN FMM_Activity_Config Act
+						JOIN FMM_Act_Config Act
 						ON Con.Cube_ID = Act.Cube_ID
 						WHERE Con.Cube_ID = @Cube_ID
-						ORDER BY Activity_ID,Calc_Type,Name";
+						ORDER BY Act_ID,Calc_Type,Name";
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
@@ -679,12 +679,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlDataAdapter = new SqlDataAdapter();
                     // Define the select query and parameters
                     string selectQuery = @"
-			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Activity_ID
+			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
 			       		FROM FMM_Cube_Config Con
-						JOIN FMM_Activity_Config Act
+						JOIN FMM_Act_Config Act
 						ON Con.Cube_ID = Act.Cube_ID
 						WHERE Con.Cube_ID = @Cube_ID
-						ORDER BY Activity_ID,Calc_Type,Name";
+						ORDER BY Act_ID,Calc_Type,Name";
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
@@ -722,21 +722,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         var sqlDataAdapter = new SqlDataAdapter();
                         // Define the select query and parameters
                         string selectQuery = @"
-				        	Declare @CubeActivityResults Table (Activity nvarchar(100), Activity_ID int)
+				        	Declare @CubeActivityResults Table (Activity nvarchar(100), Act_ID int)
 
 							insert into @CubeActivityResults
-							SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Activity_ID
+							SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
 				       		FROM FMM_Cube_Config Con
-							JOIN FMM_Activity_Config Act
+							JOIN FMM_Act_Config Act
 							ON Con.Cube_ID = Act.Cube_ID
 							WHERE Con.Cube_ID = @Cube_ID
 							AND Act.Calc_Type IN ('Table','Cube')
 							ORDER BY Cube,Scen_Type,Name
 
-							Select CAR.Activity,CAR.Activity_ID From @CubeActivityResults CAR
+							Select CAR.Activity,CAR.Act_ID From @CubeActivityResults CAR
 							FULL JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON CAR.Activity_ID = ASAC.Activity_ID
-							Where ASAC.Approval_Step_Activity_ID is null";
+							ON CAR.Act_ID = ASAC.Act_ID
+							Where ASAC.Approval_Step_Act_ID is null";
                         // Create an array of SqlParameter objects
                         var parameters = new SqlParameter[]
                         {
@@ -754,19 +754,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         var sqlDataAdapter = new SqlDataAdapter();
                         // Define the select query and parameters
                         string selectQuery = @"
-				        	SELECT CONCAT(Con.Name, ' - ',Con.Calc_Type) AS Activity,Approval_Step_Activity_ID AS Activity_ID
+				        	SELECT CONCAT(Con.Name, ' - ',Con.Calc_Type) AS Activity,Approval_Step_Act_ID AS Act_ID
 				       		FROM FMM_Approval_Step_Activity_Config ASAC
-							FULL JOIN FMM_Activity_Config Con
-							ON Con.Activity_ID = ASAC.Activity_ID
+							FULL JOIN FMM_Act_Config Con
+							ON Con.Act_ID = ASAC.Act_ID
 							WHERE ASAC.Approval_ID = @Approval_ID
 							AND ASAC.Approval_Step_ID = @Approval_Step_ID
-							ORDER BY Approval_Step_Activity_ID";
+							ORDER BY Approval_Step_Act_ID";
 
-                        //						Description,Approval_Step_Activity_ID
+                        //						Description,Approval_Step_Act_ID
                         //				       		FROM FMM_Approval_Step_Activity_Config
                         //							WHERE Approval_ID = @Approval_ID
                         //							AND Approval_Step_ID = @Approval_Step_ID
-                        //							ORDER BY Approval_Step_Activity_ID
+                        //							ORDER BY Approval_Step_Act_ID
 
                         // Create an array of SqlParameter objects
                         var parameters = new SqlParameter[]
@@ -802,9 +802,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlDataAdapter = new SqlDataAdapter();
                     // Define the select query and parameters
                     string selectQuery = @"
-			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Activity_ID
+			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
 			       		FROM FMM_Cube_Config Con
-						JOIN FMM_Activity_Config Act
+						JOIN FMM_Act_Config Act
 						ON Con.Cube_ID = Act.Cube_ID
 						WHERE Act.Calc_Type IN ('Table','Cube')
 						ORDER BY Cube,Scen_Type,Name";
@@ -865,11 +865,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
 
-        private DataTable Get_FMM_Model_List(string Cube_ID, string Activity_ID)
+        private DataTable Get_FMM_Model_List(string Cube_ID, string Act_ID)
         {
             try
             {
-                //BRApi.ErrorLog.LogMessage(si,"Hit: " + Cube_ID + "-" + Activity_ID);
+                //BRApi.ErrorLog.LogMessage(si,"Hit: " + Cube_ID + "-" + Act_ID);
                 var Model_List_By_Activity_DT = new DataTable("Model_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -882,14 +882,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 			        	SELECT Name,Model_ID
 			       		FROM FMM_Models
 						WHERE Cube_ID = @Cube_ID
-						AND Activity_ID = @Activity_ID
+						AND Act_ID = @Act_ID
 						ORDER BY Name";
 
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
-                        new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt16(Activity_ID) }
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Convert.ToInt16(Act_ID) }
                     };
                     sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_List_By_Activity_DT, selectQuery, parameters);
 
@@ -903,11 +903,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Src_Model_List(string Cube_ID, string Activity_ID)
+        private DataTable Get_FMM_Src_Model_List(string Cube_ID, string Act_ID)
         {
             try
             {
-                //BRApi.ErrorLog.LogMessage(si,"Hit Src Model: " + Cube_ID + "-" + Activity_ID);
+                //BRApi.ErrorLog.LogMessage(si,"Hit Src Model: " + Cube_ID + "-" + Act_ID);
                 var src_Model_List_DT = new DataTable("Src_Model_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -920,14 +920,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 			        	SELECT Name,Model_ID
 			       		FROM FMM_Models
 						WHERE Cube_ID = @Cube_ID
-						AND Activity_ID = @Activity_ID
+						AND Act_ID = @Act_ID
 						ORDER BY Name";
 
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
-                        new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt16(Activity_ID) }
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Convert.ToInt16(Act_ID) }
                     };
                     sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, src_Model_List_DT, selectQuery, parameters);
 
@@ -941,11 +941,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Tgt_Model_List(string Cube_ID, string Activity_ID)
+        private DataTable Get_FMM_Tgt_Model_List(string Cube_ID, string Act_ID)
         {
             try
             {
-                //BRApi.ErrorLog.LogMessage(si,"Hit Tgt Model: " + Cube_ID + "-" + Activity_ID);
+                //BRApi.ErrorLog.LogMessage(si,"Hit Tgt Model: " + Cube_ID + "-" + Act_ID);
                 var tgt_Model_List_DT = new DataTable("Tgt_Model_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -955,21 +955,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlDataAdapter = new SqlDataAdapter();
                     // Define the select query and parameters
 
-                    // Handle empty or null Activity_ID, default to 0 if blank
-                    //int parsedActivityID = string.IsNullOrEmpty(Activity_ID) ? 0 : Convert.ToInt16(Activity_ID);
+                    // Handle empty or null Act_ID, default to 0 if blank
+                    //int parsedActID = string.IsNullOrEmpty(Act_ID) ? 0 : Convert.ToInt16(Act_ID);
 
                     string selectQuery = @"
 			        	SELECT Name,Model_ID
 			       		FROM FMM_Models
 						WHERE Cube_ID = @Cube_ID
-						AND Activity_ID = @Activity_ID
+						AND Act_ID = @Act_ID
 						ORDER BY Name";
 
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
-                        new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt16(Activity_ID) }
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Convert.ToInt16(Act_ID) }
                     };
                     sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, tgt_Model_List_DT, selectQuery, parameters);
 
@@ -983,11 +983,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Calc_List(string Cube_ID, string Activity_ID, string Model_ID)
+        private DataTable Get_FMM_Calc_List(string Cube_ID, string Act_ID, string Model_ID)
         {
             try
             {
-                //BRApi.ErrorLog.LogMessage(si,"Hit: " + Cube_ID + "-" + Activity_ID);
+                //BRApi.ErrorLog.LogMessage(si,"Hit: " + Cube_ID + "-" + Act_ID);
                 var Calc_List_DT = new DataTable("Calc_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -1000,7 +1000,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 			        	SELECT Name,OS_Calc_ID
 			       		FROM FMM_Calc_Config
 						WHERE Cube_ID = @Cube_ID
-						AND Activity_ID = @Activity_ID
+						AND Act_ID = @Act_ID
 						AND Model_ID = @Model_ID
 						ORDER BY Name";
 
@@ -1008,7 +1008,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var parameters = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
-                        new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt16(Activity_ID) },
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Convert.ToInt16(Act_ID) },
                         new SqlParameter("@Model_ID", SqlDbType.Int) { Value = Convert.ToInt16(Model_ID) }
                     };
                     sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Calc_List_DT, selectQuery, parameters);
@@ -1182,7 +1182,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             try
             {
                 var Cube_ID = globals.GetStringValue("IV_FMM_Cube_ID", "0");
-                var Activity_ID = globals.GetStringValue("IV_FMM_Activity_ID", "0");
+                var Act_ID = globals.GetStringValue("IV_FMM_Act_ID", "0");
                 //BRApi.ErrorLog.LogMessage(si,"Hit Cube ID: " + Cube_ID);
                 var Model_Group_List_By_Cube_DT = new DataTable("Register_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -1196,14 +1196,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 			        	SELECT Name as Name,Register_Config_ID as Reg_Config_ID
 			       		FROM FMM_Register_Config
 						WHERE Cube_ID = @Cube_ID
-						AND Activity_ID = @Activity_ID
+						AND Act_ID = @Act_ID
 						ORDER BY Name";
 
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
-                        new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Activity_ID}
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID}
                     };
                     sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
 
@@ -1222,7 +1222,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             try
             {
                 var Cube_ID = globals.GetStringValue("IV_FMM_Cube_ID", "0");
-                var Activity_ID = globals.GetStringValue("IV_FMM_Activity_ID", "0");
+                var Act_ID = globals.GetStringValue("IV_FMM_Act_ID", "0");
                 //BRApi.ErrorLog.LogMessage(si,"Hit Cube ID: " + Cube_ID);
                 var Model_Group_List_By_Cube_DT = new DataTable("Register_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -1236,14 +1236,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 			        	SELECT Name as Name,Register_Config_ID as Reg_Config_ID
 			       		FROM FMM_Register_Config
 						WHERE Cube_ID = @Cube_ID
-						AND Activity_ID = @Activity_ID
+						AND Act_ID = @Act_ID
 						ORDER BY Name";
 
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
-                        new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Activity_ID}
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID}
                     };
                     sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, Model_Group_List_By_Cube_DT, selectQuery, parameters);
 
@@ -1501,7 +1501,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         private DataTable Get_FMM_Approval_Config(string cubeID)
         {
 
-            //			BRApi.ErrorLog.LogMessage(si, "cube: " + cubeID + " activity: " + activityID);
+            //			BRApi.ErrorLog.LogMessage(si, "cube: " + cubeID + " activity: " + ActID);
 
             try
             {
@@ -1516,12 +1516,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     string selectQuery = @"
 			        	SELECT * FROM FMM_Approval_Config
 						WHERE Cube_ID = @Cube_ID";
-                    //AND Activity_ID = @Activity_ID";
+                    //AND Act_ID = @Act_ID";
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cubeID.XFConvertToInt() }
-						//new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = activityID.XFConvertToInt() }
+						//new SqlParameter("@Act_ID", SqlDbType.Int) { Value = ActID.XFConvertToInt() }
                     };
                     sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, approval_config_DT, selectQuery, parameters);
 
@@ -1572,14 +1572,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
             try
             {
-                var activityID = args.NameValuePairs.XFGetValue("Activity_ID", "0");
+                var ActID = args.NameValuePairs.XFGetValue("Act_ID", "0");
                 //var runType = args.CustomSubstVars.XFGetValue("IV_FMM_Display_Add_Update_Approval_Step_Activity") == "0b3b2a3_FMM_Approval_Steps_Activities_Row2b_Header" ? "Update" : "Add";
                 var AddUpdateDBName = args.NameValuePairs.XFGetValue("AddUpdateDBName");
                 var runType = AddUpdateDBName == "0b3b2a2_FMM_Approval_Steps_Activities_Row2b_Header" ? "Update" : "Add";
-                BRApi.ErrorLog.LogMessage(si, "get reg config actID: " + activityID + " runType: " + runType);
+                BRApi.ErrorLog.LogMessage(si, "get reg config actID: " + ActID + " runType: " + runType);
                 var register_config_DT = new DataTable("Register_Profiles");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
-                if (activityID != "0" && runType == "Add")
+                if (ActID != "0" && runType == "Add")
                 {
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
@@ -1591,18 +1591,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         string selectQuery = @"
 				        	SELECT Name,RegCon.Register_Config_ID FROM FMM_Register_Config RegCon
 							FULL JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.Activity_ID = ASAC.Activity_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
-							WHERE RegCon.Activity_ID = @Activity_ID AND ASAC.Register_Config_ID is NULL";
+							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
+							WHERE RegCon.Act_ID = @Act_ID AND ASAC.Register_Config_ID is NULL";
                         // Create an array of SqlParameter objects
                         var parameters = new SqlParameter[]
                         {
-                            new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = activityID.XFConvertToInt() },
+                            new SqlParameter("@Act_ID", SqlDbType.Int) { Value = ActID.XFConvertToInt() },
                         };
                         sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, register_config_DT, selectQuery, parameters);
 
                     }
                 }
-                else if (activityID != "0" && runType == "Update")
+                else if (ActID != "0" && runType == "Update")
                 {
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
@@ -1612,27 +1612,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // Define the select query and parameters
                         // get the current register config, and all of those that don't have associated entries (update)
                         string selectQuery = @"
-				        	Declare @initialResults Table (Name nvarchar(100), Register_Config_ID int, Activity_ID int)
-							Declare @trueActivityID int;
+				        	Declare @initialResults Table (Name nvarchar(100), Register_Config_ID int, Act_ID int)
+							Declare @trueActID int;
 							
 							Insert into @initialResults 
-							Select Name,RegCon.Register_Config_ID,RegCon.Activity_ID FROM FMM_Register_Config RegCon
+							Select Name,RegCon.Register_Config_ID,RegCon.Act_ID FROM FMM_Register_Config RegCon
 							Full JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.Activity_ID = ASAC.Activity_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
-							WHERE ASAC.Approval_Step_Activity_ID = @Activity_ID
+							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
+							WHERE ASAC.Approval_Step_Act_ID = @Act_ID
 
-							SELECT @trueActivityID = Activity_ID from @initialResults;
+							SELECT @trueActID = Act_ID from @initialResults;
 							
 							Select CONCAT('*',Name) As Name, Register_Config_ID from @initialResults
 							Union
 							SELECT Name,RegCon.Register_Config_ID FROM FMM_Register_Config RegCon
 							FULL JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.Activity_ID = ASAC.Activity_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
-							WHERE RegCon.Activity_ID = @trueActivityID AND ASAC.Register_Config_ID is NULL";
+							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
+							WHERE RegCon.Act_ID = @trueActID AND ASAC.Register_Config_ID is NULL";
                         // Create an array of SqlParameter objects
                         var parameters = new SqlParameter[]
                         {
-                            new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = activityID.XFConvertToInt() }, // in the update case, activityID is actually the approval_step_activity_ID. It's weird
+                            new SqlParameter("@Act_ID", SqlDbType.Int) { Value = ActID.XFConvertToInt() }, // in the update case, ActID is actually the approval_step_Act_ID. It's weird
 	                    };
                         sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, register_config_DT, selectQuery, parameters);
 
