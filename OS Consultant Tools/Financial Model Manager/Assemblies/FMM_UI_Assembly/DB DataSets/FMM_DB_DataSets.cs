@@ -45,14 +45,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // return names;
                         break;
                     case DashboardDataSetFunctionType.GetDataSet:
-                        if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Cube_List"))
+                        if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Cubes"))
                         {
-                            return Get_FMM_Cube_List();
+                            return Get_FMM_Cubes();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Scen_Type_List"))
-                        {
-                            var cube = args.NameValuePairs.XFGetValue("Cube");
-                            return Get_FMM_Scen_Type_List(cube);
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Scen_Types"))
+                        {                           
+                            return Get_FMM_Scen_Types();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Setup_Cube_Config_List"))
                         {
@@ -84,11 +83,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
                             return Get_FMM_Tgt_Activity_List(cubeID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Activity_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Act_Configs"))
                         {
-                            var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
+                         
                             //							var cubeID = args.CustomSubstVars.XFGetValue(IV_Cube_Name);
-                            return Get_FMM_Activity_List(cubeID);
+                            return Get_FMM_Act_Configs();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Table_Activity_List"))
                         {
@@ -260,11 +259,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Helper Queries"
         #region "Cube List Data Sets"
-        private DataTable Get_FMM_Cube_List()
+        private DataTable Get_FMM_Cubes()
         {
             try
             {
-                var cubes_DT = new DataTable("Cubes");
+                var dt = new DataTable("Cubes");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -280,11 +279,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cubes_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return cubes_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -296,11 +295,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Scenario Type Data Sets
 
-        private DataTable Get_FMM_Scen_Type_List(string Cube)
+        private DataTable Get_FMM_Scen_Types()
         {
             try
             {
-                var scen_Types_DT = new DataTable("Scen_Types");
+                var cube = args.NameValuePairs.XFGetValue("Cube");
+                var dt = new DataTable("Scen_Types");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -310,53 +310,53 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Define the select query and sqlparams
                     var sql = @"
 										WITH ScenType_List AS (
-										    SELECT 'Actual' AS ScenType
+										    SELECT 'Actual' As Name
 										    UNION ALL
-										    SELECT 'Administration' AS ScenType
+										    SELECT 'Administration' As Name
 										    UNION ALL
-										    SELECT 'Budget' AS ScenType
+										    SELECT 'Budget' As Name
 										    UNION ALL
-										    SELECT 'Control' AS ScenType
+										    SELECT 'Control' As Name
 										    UNION ALL
-										    SELECT 'Flash' AS ScenType
+										    SELECT 'Flash' As Name
 										    UNION ALL
-										    SELECT 'Forecast' AS ScenType
+										    SELECT 'Forecast' As Name
 										    UNION ALL
-										    SELECT 'FXModel' AS ScenType
+										    SELECT 'FXModel' As Name
 										    UNION ALL
-										    SELECT 'History' AS ScenType
+										    SELECT 'History' As Name
 										    UNION ALL
-										    SELECT 'LongTerm' AS ScenType
+										    SELECT 'LongTerm' As Name
 										    UNION ALL
-										    SELECT 'Model' AS ScenType
+										    SELECT 'Model' As Name
 										    UNION ALL
-										    SELECT 'Operational' AS ScenType
+										    SELECT 'Operational' As Name
 										    UNION ALL
-										    SELECT 'Plan' AS ScenType
+										    SELECT 'Plan' As Name
 										    UNION ALL
-										    SELECT 'Sustainability' AS ScenType
+										    SELECT 'Sustainability' As Name
 										    UNION ALL
-										    SELECT 'Target' AS ScenType -- fixed typo from 'Taget' to 'Target'
+										    SELECT 'Target' As Name -- fixed typo from 'Taget' to 'Target'
 										    UNION ALL
-										    SELECT 'Tax' AS ScenType
+										    SELECT 'Tax' As Name
 										    UNION ALL
-										    SELECT 'Variance' AS ScenType
+										    SELECT 'Variance' As Name
 										    UNION ALL
-										    SELECT 'ScenarioType1' AS ScenType
+										    SELECT 'ScenarioType1' As Name
 										    UNION ALL
-										    SELECT 'ScenarioType2' AS ScenType
+										    SELECT 'ScenarioType2' As Name
 										    UNION ALL
-										    SELECT 'ScenarioType3' AS ScenType
+										    SELECT 'ScenarioType3' As Name
 										    UNION ALL
-										    SELECT 'ScenarioType4' AS ScenType
+										    SELECT 'ScenarioType4' As Name
 										    UNION ALL
-										    SELECT 'ScenarioType5' AS ScenType
+										    SELECT 'ScenarioType5' As Name
 										    UNION ALL
-										    SELECT 'ScenarioType6' AS ScenType
+										    SELECT 'ScenarioType6' As Name
 										    UNION ALL
-										    SELECT 'ScenarioType7' AS ScenType
+										    SELECT 'ScenarioType7' As Name
 										    UNION ALL
-										    SELECT 'ScenarioType8' AS ScenType
+										    SELECT 'ScenarioType8' As Name
 										)
 										SELECT ScenType
 										FROM ScenType_List Scen
@@ -371,11 +371,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube", SqlDbType.VarChar) { Value = Cube}
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, scen_Types_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return scen_Types_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -553,11 +553,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Activity List"
 
-        private DataTable Get_FMM_Activity_List(string Cube_ID)
+        private DataTable Get_FMM_Act_Configs()
         {
             try
             {
-                var cube_Model_Activities_DT = new DataTable("Activity_List");
+                var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
+				var dt = new DataTable("Activity_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -566,7 +567,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
+			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Act,Act_ID
 			       		FROM FMM_Cube_Config Con
 						JOIN FMM_Act_Config Act
 						ON Con.Cube_ID = Act.Cube_ID
@@ -575,12 +576,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
-                        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
+                        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cubeID.XFConvertToInt()}
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Model_Activities_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
 
-                return cube_Model_Activities_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -595,7 +596,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
 
                 //BRApi.ErrorLog.LogMessage(si,"Hit Check Cube ID: " + Cube_ID);
-                var cube_Model_Activities_DT = new DataTable("Table_Act_Config");
+                var dt = new DataTable("Table_Act_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -616,10 +617,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Model_Activities_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
 
-                return cube_Model_Activities_DT;
+                return dt;
             }
             catch (Exception ex)
             {

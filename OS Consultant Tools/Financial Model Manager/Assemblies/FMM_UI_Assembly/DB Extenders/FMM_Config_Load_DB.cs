@@ -32,8 +32,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {"BL_FMM_Setup_Cube_ID", "IV_FMM_Cube_ID"},
             {"BL_FMM_Cube_ID", "IV_FMM_Cube_ID"},
             {"BL_FMM_Table_Cube_ID", "IV_FMM_Cube_ID"},
-            {"BL_FMM_Activity_ID", "IV_FMM_Activity_ID"},
-            {"BL_FMM_Table_Activity_ID", "IV_FMM_Activity_ID"},
+            {"BL_FMM_Act_ID", "IV_FMM_Act_ID"},
+            {"BL_FMM_Table_Act_ID", "IV_FMM_Act_ID"},
             {"BL_FMM_Model_ID", "IV_FMM_Model_ID"},
             {"BL_FMM_Model_Group_Seq_ID", "IV_FMM_Model_Group_Seq_ID"},
             {"BL_FMM_Model_Group_ID","IV_FMM_Model_Group_ID"}
@@ -66,20 +66,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         private Dictionary<int, string[]> UnitAcctConfig = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_Table_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Table_Activity_ID"}},
+            {1, new string[] {"BL_FMM_Table_Act_ID"}},
             {2, new string[] {"IV_FMM_Unit_ID"}}
         };
 
         private Dictionary<int, string[]> RegisterConfig = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_Table_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Table_Activity_ID"}}
+            {1, new string[] {"BL_FMM_Table_Act_ID"}}
         };
 
         private Dictionary<int, string[]> BuildModel = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Activity_ID"}},
+            {1, new string[] {"BL_FMM_Act_ID"}},
             {2, new string[] {"BL_FMM_Model_ID"}},
             {3, new string[] {"IV_FMM_OS_Calc_ID"}}
         };
@@ -99,24 +99,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         private Dictionary<int, string[]> AddCube = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_All_Cubes"}},
-            {1, new string[] {"BL_FMM_Cube_Config_Scen_Types"}}
+            {1, new string[] {"BL_FMM_Scen_Types"}}
         };
 
         private Dictionary<int, string[]> CopyModel = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_Src_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Src_Activity_ID"}},
+            {1, new string[] {"BL_FMM_Src_Act_ID"}},
             {2, new string[] {"BL_FMM_Src_Model_ID"}},
             {3, new string[] {"BL_FMM_Src_Calc_IDs"}},
             {4, new string[] {"BL_FMM_Tgt_Cube_ID"}},
-            {5, new string[] {"BL_FMM_Tgt_Activity_ID"}},
+            {5, new string[] {"BL_FMM_Tgt_Act_ID"}},
             {6, new string[] {"BL_FMM_Tgt_Model_ID"}}
         };
 
         private Dictionary<int, string[]> UpdateModel = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Activity_ID"}},
+            {1, new string[] {"BL_FMM_Act_ID"}},
             {2, new string[] {"BL_FMM_Model_ID"}},
         };
 
@@ -243,25 +243,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             if (cube_Settings_DT.Rows.Count > 0)
             {
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Cube", cube_Settings_DT.Rows[0]["Cube"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Scen_Type", cube_Settings_DT.Rows[0]["Scen_Type"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Entity_MFB", cube_Settings_DT.Rows[0]["Entity_MFB"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Description", cube_Settings_DT.Rows[0]["Cube_Description"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Create_Date", cube_Settings_DT.Rows[0]["Create_Date"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Create_User", cube_Settings_DT.Rows[0]["Create_User"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Update_Date", cube_Settings_DT.Rows[0]["Update_Date"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Update_User", cube_Settings_DT.Rows[0]["Update_User"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube", cube_Settings_DT.Rows[0]["Cube"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Scen_Type", cube_Settings_DT.Rows[0]["Scen_Type"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Entity_MFB", cube_Settings_DT.Rows[0]["Entity_MFB"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Descr", cube_Settings_DT.Rows[0]["Descr"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Create_Date", cube_Settings_DT.Rows[0]["Create_Date"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Create_User", cube_Settings_DT.Rows[0]["Create_User"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Update_Date", cube_Settings_DT.Rows[0]["Update_Date"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Update_User", cube_Settings_DT.Rows[0]["Update_User"].ToString());
             }
             else
             {
                 BRApi.ErrorLog.LogMessage(si, "No Cube_ID likely");
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Cube", string.Empty);
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Scen_Type", string.Empty);
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Entity_MFB", string.Empty);
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Create_Date", string.Empty);
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Create_User", string.Empty);
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Update_Date", string.Empty);
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Config_Update_User", string.Empty);
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube", string.Empty);
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Scen_Type", string.Empty);
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Entity_MFB", string.Empty);
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Create_Date", string.Empty);
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Create_User", string.Empty);
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Update_Date", string.Empty);
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Update_User", string.Empty);
             }
 
             return XF_Load_Dashboard_Task_Result;
@@ -292,13 +292,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 											JOIN FMM_Act_Config Act
 											ON Con.Cube_ID = Act.Cube_ID
 											WHERE Con.Cube_ID = @Cube_ID
-											AND Act.Activity_ID = @Activity_ID";
+											AND Act.Act_ID = @Act_ID";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Cube_ID","0"))},
-                        new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Activity_ID","0"))}
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Act_ID","0"))}
                     };
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, calc_Type_DT, sql, sqlparams);
@@ -349,7 +349,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             try
             {
                 cubeID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Cube_ID"));
-                activityID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Activity_ID"));
+                activityID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Act_ID"));
                 modelID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Model_ID"));
             }
             catch
@@ -371,14 +371,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				       	SELECT *
 				    	FROM FMM_Models
 						WHERE Cube_ID = @Cube_ID
-						AND Activity_ID = @Activity_ID
+						AND Act_ID = @Act_ID
 						AND Model_ID = @Model_ID";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cubeID},
-                        new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = activityID},
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = activityID},
                         new SqlParameter("@Model_ID", SqlDbType.Int) { Value = modelID},
 
                     };
@@ -581,7 +581,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
-                                    if (mappedParam == "IV_FMM_Activity_ID" && selectedDashboard == "0_FMM_Approval_Config")
+                                    if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Approval_Config")
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
@@ -602,7 +602,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
-                                if (mappedParam == "IV_FMM_Activity_ID" && selectedDashboard == "0_FMM_Approval_Config" && priorDependencyChanged)
+                                if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Approval_Config" && priorDependencyChanged)
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
@@ -650,7 +650,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 Get_Calc_Type(taskResult);
                             }
-                            if (mappedParam == "IV_FMM_Activity_ID" && selectedDashboard == "0_FMM_Approval_Config")
+                            if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Approval_Config")
                             {
                                 Get_Calc_Type(taskResult);
                             }
