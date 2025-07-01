@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -288,7 +288,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     string selectQuery = @"
 								        	SELECT Calc_Type
 								       		FROM FMM_Cube_Config Con
-											JOIN FMM_Activity_Config Act
+											JOIN FMM_Act_Config Act
 											ON Con.Cube_ID = Act.Cube_ID
 											WHERE Con.Cube_ID = @Cube_ID
 											AND Act.Activity_ID = @Activity_ID";
