@@ -1,4 +1,4 @@
-﻿﻿﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -399,7 +399,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Model_ID", SqlDbType.Int) { Value = Model_ID }
                     };
 
-                    sqa_fmm_calc_config.Fill_FMM_Calc_Config_DT(si, sqa, FMM_Calc_Config_DT, sql, sqlparams);
+                    sqa_fmm_calc_config.Fill_FMM_Calc_Config_DT(si, sqa,FMM_Calc_Config_DT, sql, sqlparams);
                     FMM_Calc_Config_DT.PrimaryKey = new DataColumn[] { FMM_Calc_Config_DT.Columns["OS_Calc_ID"] };
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -408,10 +408,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
                             createNewDestCell = true;
-                            var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                            var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
 
                             // Get the max ID for the "FMM_Calc_Config" table
-                            OS_Calc_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Calc_Config", "OS_Calc_ID");
+                            OS_Calc_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Config", "OS_Calc_ID");
                             GBL_OS_Calc_ID = OS_Calc_ID;
 
                             xfRow.ModifiedDataRow.SetValue("OS_Calc_ID", OS_Calc_ID, XFDataType.Int16);
@@ -451,7 +451,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 
                             //begin FMM_dest_cell updates logic
-                            OS_Dest_Cell_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Dest_Cell", "OS_Dest_Cell_ID");
+                            OS_Dest_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "OS_Dest_Cell_ID");
 
                             // Fill the DataTable with the current data from FMM_Dest_Cell
                             var sql_Dest_Cell = @"
@@ -622,7 +622,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     new SqlParameter("@OS_Calc_ID", SqlDbType.Int) { Value = GBL_OS_Calc_ID }
                     };
 
-                    sqa_fmm_dest_cell.Fill_FMM_Dest_Cell_DT(si, sqa, FMM_Dest_Cell_DT, sql, sqlparams);
+                    sqa_fmm_dest_cell.Fill_FMM_Dest_Cell_DT(si, sqa,FMM_Dest_Cell_DT, sql, sqlparams);
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
                     {
                         // Find the row to update and modify its data
@@ -705,7 +705,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             SaveRowType = "Insert";
 
 
-                            var sqlMaxIdGetter = new SQL_FMM_Get_Max_ID(si, connection);
+                            var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
 
                             // Example: Get the max ID for the "FMM_Calc_Config" table
                             OS_Src_Cell_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Src_Cell", "OS_Src_Cell_ID");
@@ -882,7 +882,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID }
                     };
-                    sqa_fmm_act_config.Fill_FMM_Act_Config_DT(si, sqa, FMM_Act_Config_DT, sql, sqlparams);
+                    sqa_fmm_act_config.Fill_FMM_Act_Config_DT(si, sqa,FMM_Act_Config_DT, sql, sqlparams);
 
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
                     {
@@ -890,7 +890,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
                             {
-                                var sqlMaxIdGetter = new SQL_FMM_Get_Max_ID(si, connection);
+                                var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
                                 Act_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Act_Config", "Act_ID");
 
                                 var newRow = FMM_Act_Config_DT.NewRow();
@@ -998,7 +998,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID }
                     };
-                    sqa_fmm_calc_unit_config.Fill_FMM_Calc_Unit_Config_DT(si, sqa, FMM_Calc_Unit_Config_DT, sql, sqlparams);
+                    sqa_fmm_calc_unit_config.Fill_FMM_Calc_Unit_Config_DT(si, sqa,FMM_Calc_Unit_Config_DT, sql, sqlparams);
 
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -1006,7 +1006,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Logic applied to new record inserts
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
-                            var sqlMaxIdGetter = new SQL_FMM_Get_Max_ID(si, connection);
+                            var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
                             Calc_Unit_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
 
                             var newRow = FMM_Calc_Unit_Config_DT.NewRow();
@@ -1131,7 +1131,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Logic applied to new record inserts
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
-                            var sqlMaxIdGetter = new SQL_FMM_Get_Max_ID(si, connection);
+                            var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
                             Unit_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Unit_Config", "Unit_ID");
                             BRApi.ErrorLog.LogMessage(si, "Hit: " + Cube_ID + " | " + Unit_ID);
                             var newRow = FMM_Unit_Config_DT.NewRow();
@@ -1252,7 +1252,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Logic applied to new record inserts
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
-                            var sqlMaxIdGetter = new SQL_FMM_Get_Max_ID(si, connection);
+                            var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
 
                             // Example: Get the max ID for the "FMM_Calc_Config" table
                             OS_Activity_Unit_Acct_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Acct_Config", "Acct_ID");
@@ -1391,7 +1391,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Logic applied to new record inserts
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
-                            var sqlMaxIdGetter = new SQL_FMM_Get_Max_ID(si, connection);
+                            var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
                             OS_Reg_Config_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Reg_Config", "Reg_Config_ID");
                             New_Reg_List.Add(OS_Reg_Config_ID);
                             var newRow = FMM_Reg_Config_DT.NewRow();
@@ -1619,7 +1619,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID }
                     };
-                    sqa_fmm_appr_config.Fill_FMM_Appr_Config_DT(si, sqa, FMM_Appr_Config_DT, sql, sqlparams);
+                    sqa_fmm_appr_config.Fill_FMM_Appr_Config_DT(si, sqa,FMM_Appr_Config_DT, sql, sqlparams);
 
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -1627,7 +1627,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Logic applied to new record inserts
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
-                            var sqlMaxIdGetter = new SQL_FMM_Get_Max_ID(si, connection);
+                            var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
                             OS_Appr_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
 
                             var newRow = FMM_Appr_Config_DT.NewRow();
@@ -1736,7 +1736,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
                         new SqlParameter("@Appr_ID", SqlDbType.Int) { Value = Appr_ID }
                     };
-                    sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, sqa, FMM_Appr_Step_Config_DT, sql, sqlparams);
+                    sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, sqa,FMM_Appr_Step_Config_DT, sql, sqlparams);
 
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -2702,21 +2702,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 connection.Open();
 
                 // Create a new DataTable
-                var sqa_DS = new SqlDataAdapter();
+                var sqa = new SqlDataAdapter();
                 var FMM_Calc_Config_DT = new DataTable();
                 // Define the select query and parameters
-                string sql_DS = @$"
+                string sql = @$"
                     SELECT MemberList_{number}_Dest_Filter
                     FROM FMM_Calc_Config
                     WHERE OS_Calc_ID = @OS_Calc_ID";
                 // Create an array of SqlParameter objects
-                var sqlparams_DS = new SqlParameter[]
+                var sqlparams = new SqlParameter[]
                 {
                     new SqlParameter("@OS_Calc_ID", SqlDbType.Int) { Value = GBL_OS_Calc_ID}
                 };
 
                 // Attempt to fill the data table and check for any issues
-                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa_DS, FMM_Calc_Config_DT, sql_DS, sqlparams_DS);
+                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Calc_Config_DT, sql, sqlparams);
 
                 foreach (DataRow Calc_Config_Row in FMM_Calc_Config_DT.Rows)
                 {
@@ -2746,19 +2746,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Act_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Act_Config
 		                        WHERE Cube_ID = @Cube_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID}
                             };
@@ -2766,7 +2766,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Act_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Act_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -2839,19 +2839,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Calc_Unit_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Calc_Unit_Config
 		                        WHERE Cube_ID = @Cube_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID}
                             };
@@ -2859,7 +2859,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Calc_Unit_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Calc_Unit_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -2938,20 +2938,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Unit_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Unit_Config
 		                        WHERE Cube_ID = @Cube_ID
 		                          AND Act_ID = @Act_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
                                 new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID }
@@ -2960,7 +2960,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Unit_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Unit_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -3036,21 +3036,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Acct_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Acct_Config
 		                        WHERE Cube_ID = @Cube_ID
 		                          AND Act_ID = @Act_ID
 		                          AND Unit_ID = @Unit_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
                                 new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID },
@@ -3060,7 +3060,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Acct_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Acct_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -3139,19 +3139,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Appr_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Appr_Config
 		                        WHERE Cube_ID = @Cube_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID }
                             };
@@ -3159,7 +3159,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Appr_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Appr_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -3244,20 +3244,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Appr_Step_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Appr_Step_Config
 		                        WHERE Cube_ID = @Cube_ID
 							      AND Appr_ID = @Appr_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
                                 new SqlParameter("@Appr_ID", SqlDbType.Int) { Value = Appr_ID }
@@ -3266,7 +3266,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Appr_Step_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Appr_Step_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -3354,20 +3354,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Reg_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Reg_Config
 		                        WHERE Cube_ID = @Cube_ID
 		                          AND Act_ID = @Act_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
                                 new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID }
@@ -3376,7 +3376,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Reg_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Reg_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -3452,21 +3452,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Col_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Col_Config
 		                        WHERE Cube_ID = @Cube_ID
 		                          AND Act_ID = @Act_ID
 								  AND Reg_Config_ID = @Reg_Config_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
                                 new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID },
@@ -3476,7 +3476,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Col_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Col_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -3540,21 +3540,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Calc_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Calc_Config
 		                        WHERE Cube_ID = @Cube_ID
 		                          AND Act_ID = @Act_ID
 		                          AND Model_ID = @Model_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
                                 new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID },
@@ -3564,7 +3564,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Calc_Config_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Calc_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -3642,7 +3642,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
                 BRApi.ErrorLog.LogMessage(si, "Hit Defaults 2");
-                var sqlMaxIdGetter = new SQL_FMM_Get_Max_ID(si, connection);
+                var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
                 var sqlAdapterMcmCubeActivityColConfig = new SQA_FMM_Col_Config(si, connection);
                 var sqlDataAdapter_colSetup = new SqlDataAdapter();
                 var FMM_Col_Config_DT = new DataTable();
@@ -3821,43 +3821,44 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
-                    var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                    var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     connection.Open();
 
                     // Create a new DataTable to check for existing records
-                    var sqa_DS = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
                     var FMM_Cube_Config_Count_DT = new DataTable();
 
                     // Query to check if the cube config already exists
-                    string sql_DS = @"
+                    var sql = @"
 		                SELECT Count(*) as Count
 		                FROM FMM_Cube_Config
 		                WHERE Cube = @Cube
 		                AND Scen_Type = @Scen_Type";
 
-                    var sqlparams_DS = new SqlParameter[]
+                    var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@Cube", SqlDbType.NVarChar, 50) { Value = Cube },
                         new SqlParameter("@Scen_Type", SqlDbType.NVarChar, 20) { Value = Scen_Type }
                     };
 
-                    SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Cube_Config_Count_DT, sql_DS, sqlparams_DS);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Cube_Config_Count_DT, sql, sqlparams);
 					
 					var sqa_fmm_cube_config = new SQA_FMM_Cube_Config(si, connection);
                     var FMM_Cube_Config_DT = new DataTable();
-                    var sqa = new SqlDataAdapter();
 
                     // Insert new cube config record
-                    string sql = "SELECT * FROM FMM_Cube_Config WHERE Cube_ID = @Cube_ID";
+                    sql = "SELECT * FROM FMM_Cube_Config WHERE Cube_ID = @Cube_ID";
 					// Define the variable to hold the parameters
-					SqlParameter[] sqlparams = null; 
+				    sqlparams = new SqlParameter[]
+				    {
+				    };
 
                     // If no existing record and RunType is "New", insert new record
                     if (RunType == "New")
                     {
                         // Get the next Cube_ID for the new record
-                        new_Cube_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Cube_Config", "Cube_ID");
+                        new_Cube_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Cube_Config", "Cube_ID");
 
 					    // Assign a new array with the parameter to the variable
 					    sqlparams = new SqlParameter[]
@@ -3865,7 +3866,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = new_Cube_ID }
 					    };
 
-                        sqa_fmm_cube_config.Fill_FMM_Cube_Config_DT(si, sqa, FMM_Cube_Config_DT, sql, sqlparams);
+                        sqa_fmm_cube_config.Fill_FMM_Cube_Config_DT(si, sqa,FMM_Cube_Config_DT, sql, sqlparams);
 
                         var newRow = FMM_Cube_Config_DT.NewRow();
                         newRow["Cube_ID"] = new_Cube_ID;
@@ -3900,7 +3901,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						    new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = new_Cube_ID }
 						};
 
-                        sqa_fmm_cube_config.Fill_FMM_Cube_Config_DT(si, sqa, FMM_Cube_Config_DT, sql, sqlparams);
+                        sqa_fmm_cube_config.Fill_FMM_Cube_Config_DT(si, sqa,FMM_Cube_Config_DT, sql, sqlparams);
 
                         // Update the existing row
                         if (FMM_Cube_Config_DT.Rows.Count > 0)
@@ -3971,13 +3972,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
-                        var sql_fmm_get_max_id = new SQL_FMM_Get_Max_ID(si, connection);
+                        var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
                         // Example: Get the max ID for the "FMM_Calc_Config" table
                         if (RunType == "New")
                         {
-                            new_Model_ID = sql_fmm_get_max_id.Get_Max_ID(si, "FMM_Models", "Model_ID");
+                            new_Model_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Models", "Model_ID");
                         }
                         else
                         {
@@ -4002,7 +4003,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         	new SqlParameter("@Model_ID", SqlDbType.Int) { Value = new_Model_ID }
                         };
 
-                        sqa_fmm_models.Fill_FMM_Models_DT(si, sqa, FMM_Models_DT, sql, sqlparams);
+                        sqa_fmm_models.Fill_FMM_Models_DT(si, sqa,FMM_Models_DT, sql, sqlparams);
                         if (RunType == "New")
                         {
                             var newRow = FMM_Models_DT.NewRow();
@@ -4061,11 +4062,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
-                        var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                        var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
                         // Example: Get the max ID for the "FMM_Calc_Config" table
-                        new_Model_Grp_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Model_Grps", "Model_Grp_ID");
+                        new_Model_Grp_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grps", "Model_Grp_ID");
 
                         var sqa_fmm_model_grps = new SQA_FMM_Model_Grps(si, connection);
                         var FMM_Model_Grps_DT = new DataTable();
@@ -4085,7 +4086,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Model_Grp_ID", SqlDbType.Int) { Value = new_Model_Grp_ID }
                         };
 
-                        sqa_fmm_model_grps.Fill_FMM_Model_Grps_DT(si, sqa, FMM_Model_Grps_DT, sql, sqlparams);
+                        sqa_fmm_model_grps.Fill_FMM_Model_Grps_DT(si, sqa,FMM_Model_Grps_DT, sql, sqlparams);
 
                         var newRow = FMM_Model_Grps_DT.NewRow();
                         newRow["Cube_ID"] = new_OS_Model_Grp_Cube_ID;
@@ -4128,11 +4129,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
-                        var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                        var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
                         // Example: Get the max ID for the "FMM_Calc_Config" table
-                        new_Model_Grp_Seq_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Model_Grp_Seqs", "Model_Grp_Seq_ID");
+                        new_Model_Grp_Seq_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grp_Seqs", "Model_Grp_Seq_ID");
 
                         var sqa_fmm_model_grp_seqs = new SQA_FMM_Model_Grp_Seqs(si, connection);
                         var FMM_Model_Grp_Seqs_DT = new DataTable();
@@ -4152,7 +4153,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new SqlParameter("@Model_Grp_Seq_ID", SqlDbType.Int) { Value = new_Model_Grp_Seq_ID }
                         };
 
-                        sqa_fmm_model_grp_seqs.Fill_FMM_Model_Grp_Seqs_DT(si, sqa, FMM_Model_Grp_Seqs_DT, sql, sqlparams);
+                        sqa_fmm_model_grp_seqs.Fill_FMM_Model_Grp_Seqs_DT(si, sqa,FMM_Model_Grp_Seqs_DT, sql, sqlparams);
 
                         var newRow = FMM_Model_Grp_Seqs_DT.NewRow();
                         newRow["Cube_ID"] = new_Cube_ID;
@@ -4201,11 +4202,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
-                        SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                        var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
                         // Example: Get the max ID for the "FMM_Calc_Config" table
-                        new_OS_Model_Group_Assign_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Model_Grp_Assign", "Model_Grp_Assign_ID");
+                        new_OS_Model_Group_Assign_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grp_Assign", "Model_Grp_Assign_ID");
 
                         var sqa_fmm_model_grp_assign = new SQA_FMM_Model_Grp_Assign(si, connection);
                         var FMM_Model_Grp_Assign_DT = new DataTable();
@@ -4225,7 +4226,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Model_Grp_ID", SqlDbType.Int) { Value = Model_Grp_ID }
                         };
 
-                        sqa_fmm_model_grp_assign.Fill_FMM_Model_Grp_Assign_DT(si, sqa, FMM_Model_Grp_Assign_DT, sql, sqlparams);
+                        sqa_fmm_model_grp_assign.Fill_FMM_Model_Grp_Assign_DT(si, sqa,FMM_Model_Grp_Assign_DT, sql, sqlparams);
 
                         // Split the Model_ID_List by comma and loop through each ID
                         var modelIds = Model_ID_List.Split(',');
@@ -4284,11 +4285,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
-                        SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                        var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
                         // Example: Get the max ID for the "FMM_Calc_Config" table
-                        new_Calc_Unit_Assign_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Calc_Unit_Assign", "Calc_Unit_Assign_ID");
+                        new_Calc_Unit_Assign_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Assign", "Calc_Unit_Assign_ID");
 
                         var sqa_fmm_calc_unit_assign = new SQA_FMM_Calc_Unit_Assign(si, connection);
                         var FMM_Calc_Unit_Assign_DT = new DataTable();
@@ -4308,7 +4309,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Model_Grp_Seq_ID", SqlDbType.Int) { Value = Model_Grp_Seq_ID }
                         };
 
-                        sqa_fmm_calc_unit_assign.Fill_FMM_Calc_Unit_Assign_DT(si, sqa, FMM_Calc_Unit_Assign_DT, sql, sqlparams);
+                        sqa_fmm_calc_unit_assign.Fill_FMM_Calc_Unit_Assign_DT(si, sqa,FMM_Calc_Unit_Assign_DT, sql, sqlparams);
 
                         // Split the Model_ID_List by comma and loop through each ID
                         var modelGroupIds = Model_Grp_ID_List.Split(',');
@@ -4375,12 +4376,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
-                        var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
-                        var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                        var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
+                        var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                         connection.Open();
 
                         // Get the max ID for the Appr_Step_Config table
-                        new_Appr_Step_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Appr_Step_Config", "Appr_Step_ID");
+                        new_Appr_Step_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Step_Config", "Appr_Step_ID");
 
                         var sqa_fmm_appr_step_config = new SQA_FMM_Appr_Step_Config(si, connection);
                         var FMM_Appr_Step_Config_DT = new DataTable();
@@ -4408,7 +4409,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new SqlParameter("@Register_Profile", SqlDbType.Int) { Value = Reg_Config_ID }
                         };
 
-                        sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, sqa, FMM_Appr_Step_Config_DT, sql, sqlparams);
+                        sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, sqa,FMM_Appr_Step_Config_DT, sql, sqlparams);
 
                         // Fill DataTable for Appr_Step_Config
                         sql = @"
@@ -4438,7 +4439,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID }
                         };
 
-                        SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa, FMM_Cube_Config_DT, selectCubeConfigQuery, cubeConfigParams);
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,FMM_Cube_Config_DT, selectCubeConfigQuery, cubeConfigParams);
 
                         var topCubeInfo = BRApi.Finance.Cubes.GetCubeInfo(si, FMM_Cube_Config_DT.Rows[0].Field<string>("Cube"));
                         var cubeScenarioType = ScenarioType.GetItem(FMM_Cube_Config_DT.Rows[0].Field<string>("Scen_Type"));
@@ -4486,7 +4487,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		                        rcte.HierarchyLevel DESC, 
 		                        rcte.HierarchyIndex";
 
-                        SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa, FMM_Appr_Step_WFProfile_DT, selectWFProfileQuery, new SqlParameter[]
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,FMM_Appr_Step_WFProfile_DT, selectWFProfileQuery, new SqlParameter[]
                         {
                             new SqlParameter("@rootprofilename", SqlDbType.NVarChar) { Value = rootProfileName }
                         });
@@ -4529,7 +4530,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             mapRow["Act_ID"] = Act_ID;
                             mapRow["Appr_ID"] = Appr_ID;
                             mapRow["Appr_Step_ID"] = newRow["Appr_Step_ID"];
-                            mapRow["Reg_Dtl_Cube_Map_ID"] = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Reg_Dtl_Cube_Map", "Reg_Dtl_Cube_Map_ID");
+                            mapRow["Reg_Dtl_Cube_Map_ID"] = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Reg_Dtl_Cube_Map", "Reg_Dtl_Cube_Map_ID");
                             mapRow["Acct"] = "AcctValue"; // replace with actual values
                             mapRow["Flow"] = "FlowValue";
                             mapRow["UD1"] = "UD1Value";
@@ -4601,12 +4602,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 if (RunType == "New" && Act_ID > 0 && Appr_ID > 0 && Appr_Step_ID >= 0 && Reg_Config_ID > 0) // new row
                 {
                     BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
-                    var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
-                    var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                    var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     connection.Open();
 
                     // Get the max ID for the Appr_Step_Config table
-                    int new_Appr_Step_Act_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Act_Appr_Step_Config", "Appr_Step_Act_ID");
+                    int new_Appr_Step_Act_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Act_Appr_Step_Config", "Appr_Step_Act_ID");
 
 
                     sqlparams = new SqlParameter[]
@@ -4617,7 +4618,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     };
 
-                    sqa_fmm_act_appr_step_config.Fill_FMM_Act_Appr_Step_Config_DT(si, sqa, FMM_Act_Appr_Step_Config_DT, sql, sqlparams);
+                    sqa_fmm_act_appr_step_config.Fill_FMM_Act_Appr_Step_Config_DT(si, sqa,FMM_Act_Appr_Step_Config_DT, sql, sqlparams);
 
                     string noneVal = "None";
                     FMM_Act_Appr_Step_Config_DT.Clear(); // clear data, because we only want the column information to create a new row.
@@ -4672,7 +4673,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     };
 
-                    sqa_fmm_act_appr_step_config.Fill_FMM_Act_Appr_Step_Config_DT(si, sqa, FMM_Act_Appr_Step_Config_DT, sql, sqlparams);
+                    sqa_fmm_act_appr_step_config.Fill_FMM_Act_Appr_Step_Config_DT(si, sqa,FMM_Act_Appr_Step_Config_DT, sql, sqlparams);
 
                     BRApi.ErrorLog.LogMessage(si, "mcm: " + FMM_Act_Appr_Step_Config_DT.Rows[0]["Reg_Config_ID"]);
                     // update existing row
@@ -4708,11 +4709,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                    var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                     connection.Open();
 
                     // Example: Get the max ID for the "FMM_Calc_Config" table
-                    new_Calc_Unit_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
+                    new_Calc_Unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
 
                     var sqa_fmm_calc_unit_config = new SQA_FMM_Calc_Unit_Config(si, connection);
                     var FMM_Calc_Unit_Config_DT = new DataTable();
@@ -4730,7 +4731,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID }
                     };
 
-                    sqa_fmm_calc_unit_config.Fill_FMM_Calc_Unit_Config_DT(si, sqa, FMM_Calc_Unit_Config_DT, sql, sqlparams);
+                    sqa_fmm_calc_unit_config.Fill_FMM_Calc_Unit_Config_DT(si, sqa,FMM_Calc_Unit_Config_DT, sql, sqlparams);
 
                     var EntDimPk = BRApi.Finance.Dim.GetDimPk(si, "DHP_ConsolEntities_Dim");
                     var Calc_Unit_EntList = BRApi.Finance.Members.GetMembersUsingFilter(si, EntDimPk, Calc_Unit_Entity_MFB, true);
@@ -4814,40 +4815,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
                 #region "Define SQL Adapter Classes"
-                var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
-                var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
+                var sqa = new SqlDataAdapter();
                 var sqa_fmm_acct_config = new SQA_FMM_Acct_Config(si, connection);
-                var sqa_FMM_Acct_Config = new SqlDataAdapter();
                 var sqa_fmm_act_config = new SQA_FMM_Act_Config(si, connection);
-                var sqa_FMM_Act_Config = new SqlDataAdapter();
                 var sqa_fmm_appr_config = new SQA_FMM_Appr_Config(si, connection);
-                var sqa_FMM_Appr_Config = new SqlDataAdapter();
                 var sqa_fmm_appr_step_config = new SQA_FMM_Appr_Step_Config(si, connection);
-                var sqa_FMM_Appr_Step_Config = new SqlDataAdapter();
                 var sqa_fmm_calc_config = new SQA_FMM_Calc_Config(si, connection);
-                var sqa_FMM_Calc_Config = new SqlDataAdapter();
                 var sqa_fmm_col_config = new SQA_FMM_Col_Config(si, connection);
-                var sqa_FMM_Col_Config = new SqlDataAdapter();
                 var sqa_fmm_cube_config = new SQA_FMM_Cube_Config(si, connection);
-                var sqa_FMM_Cube_Config = new SqlDataAdapter();
                 var sqa_fmm_dest_cell = new SQA_FMM_Dest_Cell(si, connection);
-                var sqa_FMM_Dest_Cell = new SqlDataAdapter();
                 var sqa_fmm_model_grp_assign = new SQA_FMM_Model_Grp_Assign(si, connection);
-                var sqa_FMM_Model_Grp_Assign = new SqlDataAdapter();
                 var sqa_fmm_model_grps = new SQA_FMM_Model_Grps(si, connection);
-                var sqa_FMM_Model_Grps = new SqlDataAdapter();
                 var sqa_fmm_models = new SQA_FMM_Models(si, connection);
-                var sqa_FMM_Models = new SqlDataAdapter();
                 var sqa_fmm_reg_config = new SQA_FMM_Reg_Config(si, connection);
-                var sqa_FMM_Reg_Config = new SqlDataAdapter();
                 var sqa_fmm_src_cell = new SQA_FMM_Src_Cell(si, connection);
-                var sqa_FMM_Src_Cell = new SqlDataAdapter();
                 var sqa_fmm_unit_config = new SQA_FMM_Unit_Config(si, connection);
-                var sqa_FMM_Unit_Config = new SqlDataAdapter();
                 var sqa_fmm_calc_unit_assign = new SQA_FMM_Calc_Unit_Assign(si, connection);
-                var sqa_FMM_Calc_Unit_Assign = new SqlDataAdapter();
                 var sqa_fmm_calc_unit_config = new SQA_FMM_Calc_Unit_Config(si, connection);
-                var sqa_FMM_Calc_Unit_Config = new SqlDataAdapter();
                 #endregion
                 connection.Open();
                 #region "Get FMM Data"
@@ -4855,120 +4841,120 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Act_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_act_config,
-                    ref src_FMM_Act_Config_DT, ref tgt_FMM_Act_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_act_config,
+                    ref src_FMM_Act_Config_DT, ref tgt_FMM_Act_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Unit_Config_Data
                 Get_FMM_Unit_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_unit_config,
-                    ref src_FMM_Unit_Config_DT, ref tgt_FMM_Unit_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_unit_config,
+                    ref src_FMM_Unit_Config_DT, ref tgt_FMM_Unit_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Acct_Config_Data
                 Get_FMM_Acct_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_acct_config,
-                    ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_acct_config,
+                    ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Appr_Config_Data
                 Get_FMM_Appr_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_appr_config,
-                    ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_appr_config,
+                    ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Appr_Step_Config_Data
                 Get_FMM_Appr_Step_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_appr_step_config,
-                    ref src_FMM_Appr_Step_Config_DT, ref tgt_FMM_Appr_Step_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_appr_step_config,
+                    ref src_FMM_Appr_Step_Config_DT, ref tgt_FMM_Appr_Step_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Reg_Config_Data
                 Get_FMM_Reg_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_reg_config,
-                    ref src_FMM_Reg_Config_DT, ref tgt_FMM_Reg_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_reg_config,
+                    ref src_FMM_Reg_Config_DT, ref tgt_FMM_Reg_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Col_Config_Data
                 Get_FMM_Col_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_col_config,
-                    ref src_FMM_Col_Config_DT, ref tgt_FMM_Col_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_col_config,
+                    ref src_FMM_Col_Config_DT, ref tgt_FMM_Col_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Models_Data
                 Get_FMM_Models_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_models,
-                    ref src_FMM_Models_DT, ref tgt_FMM_Models_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_models,
+                    ref src_FMM_Models_DT, ref tgt_FMM_Models_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Calc_Config_Data
                 Get_FMM_Calc_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_calc_config,
-                    ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_calc_config,
+                    ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Dest_Cell_Data
                 Get_FMM_Dest_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_dest_cell,
-                    ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_dest_cell,
+                    ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Src_Cell_Data
                 Get_FMM_Src_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_src_cell,
-                    ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_src_cell,
+                    ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Model_Grps_Data
                 Get_FMM_Model_Grps_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_model_grps,
-                    ref src_FMM_Model_Grps_DT, ref tgt_FMM_Model_Grps_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_model_grps,
+                    ref src_FMM_Model_Grps_DT, ref tgt_FMM_Model_Grps_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Model_Group_Assign_Model_Data
                 Get_FMM_Model_Grp_Assign_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_model_grp_assign,
-                    ref src_FMM_Model_Grp_Assign_DT, ref tgt_FMM_Model_Grp_Assign_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_model_grp_assign,
+                    ref src_FMM_Model_Grp_Assign_DT, ref tgt_FMM_Model_Grp_Assign_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Calc_Unit_Config_Data
                 Get_FMM_Calc_Unit_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_calc_unit_config,
-                    ref src_FMM_Calc_Unit_Config_DT, ref tgt_FMM_Calc_Unit_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_calc_unit_config,
+                    ref src_FMM_Calc_Unit_Config_DT, ref tgt_FMM_Calc_Unit_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Calc_Unit_Assign_Data
                 Get_FMM_Calc_Unit_Assign_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_calc_unit_assign,
-                    ref src_FMM_Calc_Unit_Assign_DT, ref tgt_FMM_Calc_Unit_Assign_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_calc_unit_assign,
+                    ref src_FMM_Calc_Unit_Assign_DT, ref tgt_FMM_Calc_Unit_Assign_DT, sql_gbl_get_max_id
                 );
                 #endregion
 
@@ -5047,22 +5033,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
 
                 }
-                sqa_fmm_act_config.Update_FMM_Act_Config(si, tgt_FMM_Act_Config_DT, sqa_FMM_Act_Config);
-                sqa_fmm_unit_config.Update_FMM_Unit_Config(si, tgt_FMM_Unit_Config_DT, sqa_FMM_Unit_Config);
-                sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sqa_FMM_Acct_Config);
-                sqa_fmm_reg_config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sqa_FMM_Reg_Config);
-                sqa_fmm_col_config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sqa_FMM_Col_Config);
-                sqa_fmm_appr_config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sqa_FMM_Appr_Config);
-                sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa_FMM_Appr_Step_Config);
-                sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa_FMM_Models);
-                sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa_FMM_Calc_Config);
-                sqa_fmm_dest_cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa_FMM_Dest_Cell);
-                sqa_fmm_src_cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sqa_FMM_Src_Cell);
-                sqa_fmm_model_grp_assign.Update_FMM_Model_Grp_Assign(si, tgt_FMM_Model_Grp_Assign_DT, sqa_FMM_Model_Grp_Assign);
-                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa_FMM_Calc_Unit_Config);
-                sqa_fmm_calc_unit_assign.Update_FMM_Calc_Unit_Assign(si, tgt_FMM_Calc_Unit_Assign_DT, sqa_FMM_Calc_Unit_Assign);
-                sqa_fmm_model_grps.Update_FMM_Model_Grps(si, tgt_FMM_Model_Grps_DT, sqa_FMM_Model_Grps);
-                sqa_fmm_cube_config.Update_FMM_Cube_Config(si, tgt_FMM_Cube_Config_DT, sqa_FMM_Cube_Config);
+                sqa_fmm_act_config.Update_FMM_Act_Config(si, tgt_FMM_Act_Config_DT, sqa);
+                sqa_fmm_unit_config.Update_FMM_Unit_Config(si, tgt_FMM_Unit_Config_DT, sqa);
+                sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sqa);
+                sqa_fmm_reg_config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sqa);
+                sqa_fmm_col_config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sqa);
+                sqa_fmm_appr_config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sqa);
+                sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa);
+                sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa);
+                sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa);
+                sqa_fmm_dest_cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa);
+                sqa_fmm_src_cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sqa);
+                sqa_fmm_model_grp_assign.Update_FMM_Model_Grp_Assign(si, tgt_FMM_Model_Grp_Assign_DT, sqa);
+                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa);
+                sqa_fmm_calc_unit_assign.Update_FMM_Calc_Unit_Assign(si, tgt_FMM_Calc_Unit_Assign_DT, sqa);
+                sqa_fmm_model_grps.Update_FMM_Model_Grps(si, tgt_FMM_Model_Grps_DT, sqa);
+                sqa_fmm_cube_config.Update_FMM_Cube_Config(si, tgt_FMM_Cube_Config_DT, sqa);
             }
         }
 
@@ -5110,40 +5096,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
                 #region "Define SQL Adapter Classes"
-                var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
-                var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
+                var sqa = new SqlDataAdapter();
                 var sqa_fmm_acct_config = new SQA_FMM_Acct_Config(si, connection);
-                var sqa_FMM_Acct_Config = new SqlDataAdapter();
                 var sqa_fmm_act_config = new SQA_FMM_Act_Config(si, connection);
-                var sqa_FMM_Act_Config = new SqlDataAdapter();
                 var sqa_fmm_appr_config = new SQA_FMM_Appr_Config(si, connection);
-                var sqa_FMM_Appr_Config = new SqlDataAdapter();
                 var sqa_fmm_appr_step_config = new SQA_FMM_Appr_Step_Config(si, connection);
-                var sqa_FMM_Appr_Step_Config = new SqlDataAdapter();
                 var sqa_fmm_calc_config = new SQA_FMM_Calc_Config(si, connection);
-                var sqa_FMM_Calc_Config = new SqlDataAdapter();
                 var sqa_fmm_col_config = new SQA_FMM_Col_Config(si, connection);
-                var sqa_FMM_Col_Config = new SqlDataAdapter();
                 var sqa_fmm_cube_config = new SQA_FMM_Cube_Config(si, connection);
-                var sqa_FMM_Cube_Config = new SqlDataAdapter();
                 var sqa_fmm_dest_cell = new SQA_FMM_Dest_Cell(si, connection);
-                var sqa_FMM_Dest_Cell = new SqlDataAdapter();
                 var sqa_fmm_model_grp_assign = new SQA_FMM_Model_Grp_Assign(si, connection);
-                var sqa_FMM_Model_Group_Assign = new SqlDataAdapter();
                 var sqa_fmm_model_grps = new SQA_FMM_Model_Grps(si, connection);
-                var sqa_FMM_Model_Grps = new SqlDataAdapter();
                 var sqa_fmm_models = new SQA_FMM_Models(si, connection);
-                var sqa_FMM_Models = new SqlDataAdapter();
                 var sqa_fmm_reg_config = new SQA_FMM_Reg_Config(si, connection);
-                var sqa_FMM_Reg_Config = new SqlDataAdapter();
                 var sqa_fmm_src_cell = new SQA_FMM_Src_Cell(si, connection);
-                var sqa_FMM_Src_Cell = new SqlDataAdapter();
                 var sqa_fmm_unit_config = new SQA_FMM_Unit_Config(si, connection);
-                var sqa_FMM_Unit_Config = new SqlDataAdapter();
                 var sqa_fmm_calc_unit_assign = new SQA_FMM_Calc_Unit_Assign(si, connection);
-                var sqa_FMM_Calc_Unit_Assign = new SqlDataAdapter();
                 var sqa_fmm_calc_unit_config = new SQA_FMM_Calc_Unit_Config(si, connection);
-                var sqa_FMM_Calc_Unit_Config = new SqlDataAdapter();
                 #endregion
                 connection.Open();
                 #region "Get FMM Data"
@@ -5151,120 +5122,120 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_FMM_Act_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_act_config,
-                    ref src_FMM_Act_Config_DT, ref tgt_FMM_Act_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_act_config,
+                    ref src_FMM_Act_Config_DT, ref tgt_FMM_Act_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Unit_Config_Data
                 Get_FMM_Unit_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_unit_config,
-                    ref src_FMM_Unit_Config_DT, ref tgt_FMM_Unit_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_unit_config,
+                    ref src_FMM_Unit_Config_DT, ref tgt_FMM_Unit_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Acct_Config_Data
                 Get_FMM_Acct_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_acct_config,
-                    ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_acct_config,
+                    ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Appr_Config_Data
                 Get_FMM_Appr_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_appr_config,
-                    ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_appr_config,
+                    ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Appr_Step_Config_Data
                 Get_FMM_Appr_Step_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_appr_step_config,
-                    ref src_FMM_Appr_Step_Config_DT, ref tgt_FMM_Appr_Step_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_appr_step_config,
+                    ref src_FMM_Appr_Step_Config_DT, ref tgt_FMM_Appr_Step_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Reg_Config_Data
                 Get_FMM_Reg_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_reg_config,
-                    ref src_FMM_Reg_Config_DT, ref tgt_FMM_Reg_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_reg_config,
+                    ref src_FMM_Reg_Config_DT, ref tgt_FMM_Reg_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Col_Config_Data
                 Get_FMM_Col_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_col_config,
-                    ref src_FMM_Col_Config_DT, ref tgt_FMM_Col_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_col_config,
+                    ref src_FMM_Col_Config_DT, ref tgt_FMM_Col_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Models_Data
                 Get_FMM_Models_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_models,
-                    ref src_FMM_Models_DT, ref tgt_FMM_Models_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_models,
+                    ref src_FMM_Models_DT, ref tgt_FMM_Models_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Calc_Config_Data
                 Get_FMM_Calc_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_calc_config,
-                    ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_calc_config,
+                    ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Dest_Cell_Data
                 Get_FMM_Dest_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_dest_cell,
-                    ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_dest_cell,
+                    ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Src_Cell_Data
                 Get_FMM_Src_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_src_cell,
-                    ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_src_cell,
+                    ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Model_Grps_Data
                 Get_FMM_Model_Grps_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_model_grps,
-                    ref src_FMM_Model_Grps_DT, ref tgt_FMM_Model_Grps_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_model_grps,
+                    ref src_FMM_Model_Grps_DT, ref tgt_FMM_Model_Grps_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Model_Group_Assign_Model_Data
                 Get_FMM_Model_Grp_Assign_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_model_grp_assign,
-                    ref src_FMM_Model_Grp_Assign_DT, ref tgt_FMM_Model_Grp_Assign_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_model_grp_assign,
+                    ref src_FMM_Model_Grp_Assign_DT, ref tgt_FMM_Model_Grp_Assign_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Calc_Unit_Config_Data
                 Get_FMM_Calc_Unit_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_calc_unit_config,
-                    ref src_FMM_Calc_Unit_Config_DT, ref tgt_FMM_Calc_Unit_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_calc_unit_config,
+                    ref src_FMM_Calc_Unit_Config_DT, ref tgt_FMM_Calc_Unit_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Calc_Unit_Assign_Data
                 Get_FMM_Calc_Unit_Assign_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    SQL_GBL_Get_DataSets, sqa_fmm_calc_unit_assign,
-                    ref src_FMM_Calc_Unit_Assign_DT, ref tgt_FMM_Calc_Unit_Assign_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, sqa_fmm_calc_unit_assign,
+                    ref src_FMM_Calc_Unit_Assign_DT, ref tgt_FMM_Calc_Unit_Assign_DT, sql_gbl_get_max_id
                 );
                 #endregion
 
@@ -5343,23 +5314,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
 
                 }
-                sqa_fmm_act_config.Update_FMM_Act_Config(si, tgt_FMM_Act_Config_DT, sqa_FMM_Act_Config);
-                sqa_fmm_unit_config.Update_FMM_Unit_Config(si, tgt_FMM_Unit_Config_DT, sqa_FMM_Unit_Config);
-                sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sqa_FMM_Acct_Config);
-                sqa_fmm_reg_config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sqa_FMM_Reg_Config);
-                sqa_fmm_col_config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sqa_FMM_Col_Config);
-                sqa_fmm_appr_config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sqa_FMM_Appr_Config);
-                sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa_FMM_Appr_Step_Config);
-                sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa_FMM_Models);
-                sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa_FMM_Calc_Config);
-                sqa_fmm_dest_cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa_FMM_Dest_Cell);
-                sqa_fmm_src_cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sqa_FMM_Src_Cell);
-                sqa_fmm_model_grp_assign.Update_FMM_Model_Grp_Assign(si, tgt_FMM_Model_Grp_Assign_DT, sqa_FMM_Model_Group_Assign);
-                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa_FMM_Calc_Unit_Config);
-                sqa_fmm_calc_unit_assign.Update_FMM_Calc_Unit_Assign(si, tgt_FMM_Calc_Unit_Assign_DT, sqa_FMM_Calc_Unit_Assign);
-                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa_FMM_Calc_Unit_Config);
-                sqa_fmm_model_grps.Update_FMM_Model_Grps(si, tgt_FMM_Model_Grps_DT, sqa_FMM_Model_Grps);
-                sqa_fmm_cube_config.Update_FMM_Cube_Config(si, tgt_FMM_Cube_Config_DT, sqa_FMM_Cube_Config);
+
+                sqa_fmm_act_config.Update_FMM_Act_Config(si, tgt_FMM_Act_Config_DT, sqa);
+                sqa_fmm_unit_config.Update_FMM_Unit_Config(si, tgt_FMM_Unit_Config_DT, sqa);
+                sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sqa);
+                sqa_fmm_reg_config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sqa);
+                sqa_fmm_col_config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sqa);
+                sqa_fmm_appr_config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sqa);
+                sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa);
+                sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa);
+                sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa);
+                sqa_fmm_dest_cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa);
+                sqa_fmm_src_cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sqa);
+                sqa_fmm_model_grp_assign.Update_FMM_Model_Grp_Assign(si, tgt_FMM_Model_Grp_Assign_DT, sqa);
+                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa);
+                sqa_fmm_calc_unit_assign.Update_FMM_Calc_Unit_Assign(si, tgt_FMM_Calc_Unit_Assign_DT, sqa);
+                sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa);
+                sqa_fmm_model_grps.Update_FMM_Model_Grps(si, tgt_FMM_Model_Grps_DT, sqa);
+                sqa_fmm_cube_config.Update_FMM_Cube_Config(si, tgt_FMM_Cube_Config_DT, sqa);
             }
         }
 
@@ -5415,14 +5387,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
                 #region "Define SQL Adapter Classes"
-                var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
-                var sql_FMM_Get_Max_ID = new SQL_FMM_Get_Max_ID(si, connection);
+                var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
+                var sqa = new SqlDataAdapter();
                 var SQA_FMM_Calc_Config = new SQA_FMM_Calc_Config(si, connection);
-                var sql_Data_Adapter_FMM_Calc_Config = new SqlDataAdapter();
                 var SQA_FMM_Dest_Cell = new SQA_FMM_Dest_Cell(si, connection);
-                var sql_Data_Adapter_FMM_Dest_Cell = new SqlDataAdapter();
                 var SQA_FMM_Src_Cell = new SQA_FMM_Src_Cell(si, connection);
-                var sql_Data_Adapter_FMM_Src_Cell = new SqlDataAdapter();
                 #endregion
                 connection.Open();
                 #region "Get MCM Data"
@@ -5436,8 +5406,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID },
                                          new SqlParameter("@Act_ID", SqlDbType.Int) { Value = tgt_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = tgt_Model_ID }},
-                    SQL_GBL_Get_DataSets, SQA_FMM_Calc_Config,
-                    ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, SQA_FMM_Calc_Config,
+                    ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Dest_Cell_Data
@@ -5449,8 +5419,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID },
                                          new SqlParameter("@Act_ID", SqlDbType.Int) { Value = tgt_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = tgt_Model_ID }},
-                    SQL_GBL_Get_DataSets, SQA_FMM_Dest_Cell,
-                    ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, SQA_FMM_Dest_Cell,
+                    ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_gbl_get_max_id
                 );
 
                 // Call for Get_FMM_Src_Cell_Data
@@ -5462,8 +5432,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID },
                                          new SqlParameter("@Act_ID", SqlDbType.Int) { Value = tgt_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = tgt_Model_ID }},
-                    SQL_GBL_Get_DataSets, SQA_FMM_Src_Cell,
-                    ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_FMM_Get_Max_ID
+                    sql_gbl_get_datasets, SQA_FMM_Src_Cell,
+                    ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_gbl_get_max_id
                 );
 
                 #endregion
@@ -5487,264 +5457,255 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
                 #endregion
 
-                SQA_FMM_Calc_Config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sql_Data_Adapter_FMM_Calc_Config);
-                SQA_FMM_Dest_Cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sql_Data_Adapter_FMM_Dest_Cell);
-                SQA_FMM_Src_Cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sql_Data_Adapter_FMM_Src_Cell);
+                SQA_FMM_Calc_Config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa);
+                SQA_FMM_Dest_Cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa);
+                SQA_FMM_Src_Cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sqa);
+
             }
         }
 
         #region "Get Data Functions"
-        private void Get_FMM_Act_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Act_Config sqa_fmm_act_config, ref DataTable src_FMM_Act_Config_DT, ref DataTable tgt_FMM_Act_Config_DT, SQL_GBL_Get_Max_ID sql_GBL_Get_Max_ID)
+        private void Get_FMM_Act_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Act_Config sqa_fmm_act_config, ref DataTable src_FMM_Act_Config_DT, ref DataTable tgt_FMM_Act_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var SQA = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
 		        SELECT *
 		        FROM FMM_Act_Config
 				{Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_GBL_DT(si, SQA, src_FMM_Act_Config_DT, sql, src_sqlparams);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Act_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
 		        SELECT *
 		        FROM FMM_Act_Config
 				{Where_Clause}";
-            sqa_fmm_act_config.Fill_FMM_Act_Config_DT(si, SQA, tgt_FMM_Act_Config_DT, sql, tgt_sqlparams);
+            sqa_fmm_act_config.Fill_FMM_Act_Config_DT(si, sqa,tgt_FMM_Act_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Act_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Act_Config", "Act_ID");
+            GBL_FMM_Act_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Act_Config", "Act_ID");
         }
-        private void Get_FMM_Unit_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Unit_Config SQA_FMM_Unit_Config, ref DataTable src_FMM_Unit_Config_DT, ref DataTable tgt_FMM_Unit_Config_DT, SQL_GBL_Get_Max_ID sql_GBL_Get_Max_ID)
+        private void Get_FMM_Unit_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Unit_Config SQA_FMM_Unit_Config, ref DataTable src_FMM_Unit_Config_DT, ref DataTable tgt_FMM_Unit_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var SQA = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
 		        SELECT *
 		        FROM FMM_Unit_Config
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_GBL_DT(si, SQA, src_FMM_Unit_Config_DT, sql, src_sqlparams);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Unit_Config_DT, sql, src_sqlparams);
 
-            Where_Clause = Construct_Where_Clause(sqlparams);
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
 		        SELECT *
 		        FROM FMM_Unit_Config
 		        {Where_Clause}";
-            SQA_FMM_Unit_Config.Fill_FMM_Unit_Config_DT(si, SQA, tgt_FMM_Unit_Config_DT, sql, tgt_sqlparams);
+            SQA_FMM_Unit_Config.Fill_FMM_Unit_Config_DT(si, sqa,tgt_FMM_Unit_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Unit_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Unit_Config", "Unit_ID");
+            GBL_FMM_Unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Unit_Config", "Unit_ID");
         }
-        private void Get_FMM_Acct_Config_Data(SqlParameter[] src_FMM_Acct_Config_params, SqlParameter[] tgt_FMM_Acct_Config_params, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Acct_Config SQA_FMM_Acct_Config, ref DataTable src_FMM_Acct_Config_DT, ref DataTable tgt_FMM_Acct_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Acct_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Acct_Config SQA_FMM_Acct_Config, ref DataTable src_FMM_Acct_Config_DT, ref DataTable tgt_FMM_Acct_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var SQA = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Acct_Config_params);
-            string src_FMM_Acct_Config_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Acct_Config
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Acct_Config_sqlDataAdapter, src_FMM_Acct_Config_DT, src_FMM_Acct_Config_selectQuery, src_FMM_Acct_Config_params);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Acct_Config_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Acct_Config_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Acct_Config_params);
-            string tgt_FMM_Acct_Config_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Acct_Config
 		        {Where_Clause}";
-            SQA_FMM_Acct_Config.Fill_FMM_Acct_Config_DT(si, tgt_FMM_Acct_Config_sqlDataAdapter, tgt_FMM_Acct_Config_DT, tgt_FMM_Acct_Config_selectQuery, tgt_FMM_Acct_Config_params);
+            SQA_FMM_Acct_Config.Fill_FMM_Acct_Config_DT(si, sqa, tgt_FMM_Acct_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Acct_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Acct_Config", "Acct_ID");
+            GBL_FMM_Acct_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Acct_Config", "Acct_ID");
         }
-        private void Get_FMM_Appr_Config_Data(SqlParameter[] src_FMM_Appr_Config_params, SqlParameter[] tgt_FMM_Appr_Config_params, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Appr_Config SQA_FMM_Appr_Config, ref DataTable src_FMM_Appr_Config_DT, ref DataTable tgt_FMM_Appr_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Appr_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Appr_Config SQA_FMM_Appr_Config, ref DataTable src_FMM_Appr_Config_DT, ref DataTable tgt_FMM_Appr_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Appr_Config_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Appr_Config_params);
-            string src_FMM_Appr_Config_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Appr_Config
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Appr_Config_sqlDataAdapter, src_FMM_Appr_Config_DT, src_FMM_Appr_Config_selectQuery, src_FMM_Appr_Config_params);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Appr_Config_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Appr_Config_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Appr_Config_params);
-            string tgt_FMM_Appr_Config_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Appr_Config
 		        {Where_Clause}";
-            SQA_FMM_Appr_Config.Fill_FMM_Appr_Config_DT(si, tgt_FMM_Appr_Config_sqlDataAdapter, tgt_FMM_Appr_Config_DT, tgt_FMM_Appr_Config_selectQuery, tgt_FMM_Appr_Config_params);
+            SQA_FMM_Appr_Config.Fill_FMM_Appr_Config_DT(si, sqa, tgt_FMM_Appr_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Appr_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
+            GBL_FMM_Appr_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
         }
-        private void Get_FMM_Appr_Step_Config_Data(SqlParameter[] src_FMM_Appr_Step_Config_params, SqlParameter[] tgt_FMM_Appr_Step_Config_params, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Appr_Step_Config sqa_fmm_appr_step_config, ref DataTable src_FMM_Appr_Step_Config_DT, ref DataTable tgt_FMM_Appr_Step_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Appr_Step_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Appr_Step_Config sqa_fmm_appr_step_config, ref DataTable src_FMM_Appr_Step_Config_DT, ref DataTable tgt_FMM_Appr_Step_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Appr_Step_Config_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Appr_Step_Config_params);
-            string src_FMM_Appr_Step_Config_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Appr_Step_Config
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Appr_Step_Config_sqlDataAdapter, src_FMM_Appr_Step_Config_DT, src_FMM_Appr_Step_Config_selectQuery, src_FMM_Appr_Step_Config_params);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Appr_Step_Config_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Appr_Step_Config_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Appr_Step_Config_params);
-            string tgt_FMM_Appr_Step_Config_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Appr_Step_Config
 		        {Where_Clause}";
-            sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, tgt_FMM_Appr_Step_Config_sqlDataAdapter, tgt_FMM_Appr_Step_Config_DT, tgt_FMM_Appr_Step_Config_selectQuery, tgt_FMM_Appr_Step_Config_params);
+            sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, sqa, tgt_FMM_Appr_Step_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Appr_Step_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Appr_Step_Config", "Appr_Step_ID");
+            GBL_FMM_Appr_Step_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Step_Config", "Appr_Step_ID");
         }
-        private void Get_FMM_Reg_Config_Data(SqlParameter[] src_FMM_Reg_Config_params, SqlParameter[] tgt_FMM_Reg_Config_params, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Reg_Config SQA_FMM_Reg_Config, ref DataTable src_FMM_Reg_Config_DT, ref DataTable tgt_FMM_Reg_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Reg_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Reg_Config SQA_FMM_Reg_Config, ref DataTable src_FMM_Reg_Config_DT, ref DataTable tgt_FMM_Reg_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Reg_Config_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Reg_Config_params);
-            string src_FMM_Reg_Config_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Reg_Config
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Reg_Config_sqlDataAdapter, src_FMM_Reg_Config_DT, src_FMM_Reg_Config_selectQuery, src_FMM_Reg_Config_params);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Reg_Config_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Reg_Config_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Reg_Config_params);
-            string tgt_FMM_Reg_Config_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Reg_Config
 		        {Where_Clause}";
-            SQA_FMM_Reg_Config.Fill_FMM_Reg_Config_DT(si, tgt_FMM_Reg_Config_sqlDataAdapter, tgt_FMM_Reg_Config_DT, tgt_FMM_Reg_Config_selectQuery, tgt_FMM_Reg_Config_params);
+            SQA_FMM_Reg_Config.Fill_FMM_Reg_Config_DT(si, sqa, tgt_FMM_Reg_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Reg_Config_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Reg_Config", "Reg_Config_ID");
+            GBL_FMM_Reg_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Reg_Config", "Reg_Config_ID");
         }
-        private void Get_FMM_Col_Config_Data(SqlParameter[] src_FMM_Col_Config_params, SqlParameter[] tgt_FMM_Col_Config_params, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Col_Config SQA_FMM_Col_Config, ref DataTable src_FMM_Col_Config_DT, ref DataTable tgt_FMM_Col_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Col_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Col_Config SQA_FMM_Col_Config, ref DataTable src_FMM_Col_Config_DT, ref DataTable tgt_FMM_Col_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Col_Config_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Col_Config_params);
-            string src_FMM_Col_Config_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Col_Config
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Col_Config_sqlDataAdapter, src_FMM_Col_Config_DT, src_FMM_Col_Config_selectQuery, src_FMM_Col_Config_params);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Col_Config_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Col_Config_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Col_Config_params);
-            string tgt_FMM_Col_Config_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Col_Config
 		        {Where_Clause}";
-            SQA_FMM_Col_Config.Fill_FMM_Col_Config_DT(si, tgt_FMM_Col_Config_sqlDataAdapter, tgt_FMM_Col_Config_DT, tgt_FMM_Col_Config_selectQuery, tgt_FMM_Col_Config_params);
+            SQA_FMM_Col_Config.Fill_FMM_Col_Config_DT(si, sqa, tgt_FMM_Col_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Col_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Col_Config", "Col_ID");
+            GBL_FMM_Col_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Col_Config", "Col_ID");
         }
-        private void Get_FMM_Models_Data(SqlParameter[] src_FMM_Models_parameters, SqlParameter[] tgt_FMM_Models_parameters, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Models SQA_FMM_Models, ref DataTable src_FMM_Models_DT, ref DataTable tgt_FMM_Models_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Models_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Models SQA_FMM_Models, ref DataTable src_FMM_Models_DT, ref DataTable tgt_FMM_Models_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Models_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Models_parameters);
-            string src_FMM_Models_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Models
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Models_sqlDataAdapter, src_FMM_Models_DT, src_FMM_Models_selectQuery, src_FMM_Models_parameters);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Models_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Models_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Models_parameters);
-            string tgt_FMM_Models_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Models
 		        {Where_Clause}";
-            SQA_FMM_Models.Fill_FMM_Models_DT(si, tgt_FMM_Models_sqlDataAdapter, tgt_FMM_Models_DT, tgt_FMM_Models_selectQuery, tgt_FMM_Models_parameters);
+            SQA_FMM_Models.Fill_FMM_Models_DT(si, sqa, tgt_FMM_Models_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Models_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Models", "Model_ID");
+            GBL_FMM_Models_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Models", "Model_ID");
         }
-        private void Get_FMM_Calc_Config_Data(SqlParameter[] src_FMM_Calc_Config_params, SqlParameter[] tgt_FMM_Calc_Config_params, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Config SQA_FMM_Calc_Config, ref DataTable src_FMM_Calc_Config_DT, ref DataTable tgt_FMM_Calc_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Calc_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Config SQA_FMM_Calc_Config, ref DataTable src_FMM_Calc_Config_DT, ref DataTable tgt_FMM_Calc_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Calc_Config_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Calc_Config_params);
-            string src_FMM_Calc_Config_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Calc_Config
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Calc_Config_sqlDataAdapter, src_FMM_Calc_Config_DT, src_FMM_Calc_Config_selectQuery, src_FMM_Calc_Config_params);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Calc_Config_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Calc_Config_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Calc_Config_params);
-            string tgt_FMM_Calc_Config_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Calc_Config
 		        {Where_Clause}";
-            SQA_FMM_Calc_Config.Fill_FMM_Calc_Config_DT(si, tgt_FMM_Calc_Config_sqlDataAdapter, tgt_FMM_Calc_Config_DT, tgt_FMM_Calc_Config_selectQuery, tgt_FMM_Calc_Config_params);
+            SQA_FMM_Calc_Config.Fill_FMM_Calc_Config_DT(si, sqa, tgt_FMM_Calc_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Calc_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Calc_Config", "OS_Calc_ID");
+            GBL_FMM_Calc_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Config", "OS_Calc_ID");
         }
-        private void Get_FMM_Dest_Cell_Data(SqlParameter[] src_FMM_Dest_Cell_parameters, SqlParameter[] tgt_FMM_Dest_Cell_parameters, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Dest_Cell SQA_FMM_Dest_Cell, ref DataTable src_FMM_Dest_Cell_DT, ref DataTable tgt_FMM_Dest_Cell_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Dest_Cell_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Dest_Cell SQA_FMM_Dest_Cell, ref DataTable src_FMM_Dest_Cell_DT, ref DataTable tgt_FMM_Dest_Cell_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Dest_Cell_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Dest_Cell_parameters);
-            string src_FMM_Dest_Cell_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Dest_Cell
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Dest_Cell_sqlDataAdapter, src_FMM_Dest_Cell_DT, src_FMM_Dest_Cell_selectQuery, src_FMM_Dest_Cell_parameters);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Dest_Cell_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Dest_Cell_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Dest_Cell_parameters);
-            string tgt_FMM_Dest_Cell_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Dest_Cell
 		        {Where_Clause}";
-            SQA_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, tgt_FMM_Dest_Cell_sqlDataAdapter, tgt_FMM_Dest_Cell_DT, tgt_FMM_Dest_Cell_selectQuery, tgt_FMM_Dest_Cell_parameters);
+            SQA_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, sqa, tgt_FMM_Dest_Cell_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Dest_Cell_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Dest_Cell", "OS_Dest_Cell_ID");
+            GBL_FMM_Dest_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "OS_Dest_Cell_ID");
         }
-        private void Get_FMM_Src_Cell_Data(SqlParameter[] src_FMM_Src_Cell_parameters, SqlParameter[] tgt_FMM_Src_Cell_parameters, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Src_Cell SQA_FMM_Src_Cell, ref DataTable src_FMM_Src_Cell_DT, ref DataTable tgt_FMM_Src_Cell_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Src_Cell_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Src_Cell SQA_FMM_Src_Cell, ref DataTable src_FMM_Src_Cell_DT, ref DataTable tgt_FMM_Src_Cell_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Src_Cell_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Src_Cell_parameters);
-            string src_FMM_Src_Cell_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Src_Cell
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Src_Cell_sqlDataAdapter, src_FMM_Src_Cell_DT, src_FMM_Src_Cell_selectQuery, src_FMM_Src_Cell_parameters);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Src_Cell_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Src_Cell_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Src_Cell_parameters);
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
 		        SELECT *
 		        FROM FMM_Src_Cell
 		        {Where_Clause}";
-            SQA_FMM_Src_Cell.Fill_FMM_Src_Cell_DT(si, tgt_FMM_Src_Cell_sqlDataAdapter, tgt_FMM_Src_Cell_DT, tgt_FMM_Src_Cell_selectQuery, tgt_FMM_Src_Cell_parameters);
+            SQA_FMM_Src_Cell.Fill_FMM_Src_Cell_DT(si, sqa, tgt_FMM_Src_Cell_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Src_Cell_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Src_Cell", "OS_Src_Cell_ID");
+            GBL_FMM_Src_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Src_Cell", "OS_Src_Cell_ID");
         }
-        private void Get_FMM_Model_Grps_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_FMM_Model_Grps_parameters, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Model_Grps SQA_FMM_Model_Grps, ref DataTable src_FMM_Model_Grps_DT, ref DataTable tgt_FMM_Model_Grps_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Model_Grps_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Model_Grps SQA_FMM_Model_Grps, ref DataTable src_FMM_Model_Grps_DT, ref DataTable tgt_FMM_Model_Grps_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_FMM_Model_Grps_sqlDataAdapter = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_FMM_Model_Grps_parameters);
-            string src_FMM_Model_Grps_selectQuery = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Model_Grps
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_FMM_Model_Grps_sqlDataAdapter, src_FMM_Model_Grps_DT, src_FMM_Model_Grps_selectQuery, src_FMM_Model_Grps_parameters);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Model_Grps_DT, sql, src_sqlparams);
 
-            var tgt_FMM_Model_Grps_sqlDataAdapter = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_FMM_Model_Grps_parameters);
-            string tgt_FMM_Model_Grps_selectQuery = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Model_Grps
 		        {Where_Clause}";
-            SQA_FMM_Model_Grps.Fill_FMM_Model_Grps_DT(si, tgt_FMM_Model_Grps_sqlDataAdapter, tgt_FMM_Model_Grps_DT, tgt_FMM_Model_Grps_selectQuery, tgt_FMM_Model_Grps_parameters);
+            SQA_FMM_Model_Grps.Fill_FMM_Model_Grps_DT(si, sqa,tgt_FMM_Model_Grps_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Model_Grps_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Model_Grps", "Model_Grp_ID");
+            GBL_FMM_Model_Grps_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grps", "Model_Grp_ID");
         }
-        private void Get_FMM_Model_Grp_Assign_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Model_Grp_Assign SQA_FMM_Model_Grp_Assign, ref DataTable src_FMM_Model_Grp_Assign_DT, ref DataTable tgt_FMM_Model_Grp_Assign_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Model_Grp_Assign_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Model_Grp_Assign SQA_FMM_Model_Grp_Assign, ref DataTable src_FMM_Model_Grp_Assign_DT, ref DataTable tgt_FMM_Model_Grp_Assign_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
             var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
@@ -5753,19 +5714,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		        SELECT *
 		        FROM FMM_Model_Grp_Assign
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa, src_FMM_Model_Grp_Assign_DT, sql, src_sqlparams);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Model_Grp_Assign_DT, sql, src_sqlparams);
 
-            var tgt_SQA = new SqlDataAdapter();
+            var tgt_sqa = new SqlDataAdapter();
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
 		        SELECT *
 		        FROM FMM_Model_Grp_Assign
 		        {Where_Clause}";
-            SQA_FMM_Model_Grp_Assign.Fill_FMM_Model_Grp_Assign_DT(si, sqa, tgt_FMM_Model_Grp_Assign_DT, sql, tgt_sqlparams);
+            SQA_FMM_Model_Grp_Assign.Fill_FMM_Model_Grp_Assign_DT(si, sqa,tgt_FMM_Model_Grp_Assign_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Model_Group_Assign_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Model_Grp_Assign", "Model_Group_Assign_ID");
+            GBL_FMM_Model_Group_Assign_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grp_Assign", "Model_Group_Assign_ID");
         }
-        private void Get_FMM_Calc_Unit_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Unit_Config SQA_FMM_Calc_Unit_Config, ref DataTable src_FMM_Calc_Unit_Config_DT, ref DataTable tgt_FMM_Calc_Unit_Config_DT, SQL_GBL_Get_Max_ID sql_GBL_Get_Max_ID)
+        private void Get_FMM_Calc_Unit_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Unit_Config SQA_FMM_Calc_Unit_Config, ref DataTable src_FMM_Calc_Unit_Config_DT, ref DataTable tgt_FMM_Calc_Unit_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
             var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
@@ -5774,37 +5735,36 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		        SELECT *
 		        FROM FMM_Calc_Unit_Config
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, src_FMM_Calc_Unit_Config_DT, sql, src_sqlparams);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Calc_Unit_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
 		        SELECT *
 		        FROM FMM_Calc_Unit_Config
 		        {Where_Clause}";
-            SQA_FMM_Calc_Unit_Config.Fill_FMM_Calc_Unit_Config_DT(si, sqa, tgt_FMM_Calc_Unit_Config_DT, sql, tgt_sqlparams);
+            SQA_FMM_Calc_Unit_Config.Fill_FMM_Calc_Unit_Config_DT(si, sqa,tgt_FMM_Calc_Unit_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Calc_Unit_ID = sql_GBL_Get_Max_ID.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
+            GBL_FMM_Calc_Unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
         }
-        private void Get_FMM_Calc_Unit_Assign_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Unit_Assign sqa_fmm_calc_unit_assign, ref DataTable src_FMM_Calc_Unit_Assign_DT, ref DataTable tgt_FMM_Calc_Unit_Assign_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void Get_FMM_Calc_Unit_Assign_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Unit_Assign sqa_fmm_calc_unit_assign, ref DataTable src_FMM_Calc_Unit_Assign_DT, ref DataTable tgt_FMM_Calc_Unit_Assign_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
-            var src_SQA = new SqlDataAdapter();
+            var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string Where_Clause = Construct_Where_Clause(src_sqlparams);
-            string src_sql = $@"
+            var Where_Clause = Construct_Where_Clause(src_sqlparams);
+            var sql = $@"
 		        SELECT *
 		        FROM FMM_Calc_Unit_Assign
 		        {Where_Clause}";
-            SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, src_SQA, src_FMM_Calc_Unit_Assign_DT, src_sql, src_sqlparams);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Calc_Unit_Assign_DT, sql, src_sqlparams);
 
-            var tgt_SQA = new SqlDataAdapter();
-            string Where_Clause = Construct_Where_Clause(tgt_sqlparams);
-            string tgt_sql = $@"
+            Where_Clause = Construct_Where_Clause(tgt_sqlparams);
+            sql = $@"
 		        SELECT *
 		        FROM FMM_Calc_Unit_Assign
 		        {Where_Clause}";
-            sqa_fmm_calc_unit_assign.Fill_FMM_Calc_Unit_Assign_DT(si, tgt_SQA, tgt_FMM_Calc_Unit_Assign_DT, tgt_sql, tgt_sqlparams);
+            sqa_fmm_calc_unit_assign.Fill_FMM_Calc_Unit_Assign_DT(si, sqa,tgt_FMM_Calc_Unit_Assign_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Calc_Unit_Assign_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Calc_Unit_Assign", "Calc_Unit_Assign_ID");
+            GBL_FMM_Calc_Unit_Assign_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Assign", "Calc_Unit_Assign_ID");
         }
         #endregion
 
@@ -6776,20 +6736,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                         using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                         {
-                            var SQL_GBL_Get_DataSets = new SQL_GBL_Get_DataSets(si, connection);
+                            var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                             connection.Open();
 
                             // Create a new DataTable
-                            var sqa_DS = new SqlDataAdapter();
+                            var sqa = new SqlDataAdapter();
                             var FMM_Models_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql_DS = @"
+                            string sql = @"
 		                        SELECT *
 		                        FROM FMM_Models
 		                        WHERE Cube_ID = @Cube_ID
 								AND Act_ID = @Act_ID";
                             // Create an array of SqlParameter objects
-                            var sqlparams_DS = new SqlParameter[]
+                            var sqlparams = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID},
                                 new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID}
@@ -6798,7 +6758,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_FMM_DT(si, sqa_DS, FMM_Models_DT, sql_DS, sqlparams_DS);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Models_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -6858,7 +6818,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                SQL_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, FMM_Model_Grps_DT, sql, sqlparams);
+                                SQL_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa,FMM_Model_Grps_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -6869,10 +6829,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
 
                             // Populate GBL_Model_Group_List_Dict and handle errors
-                            foreach (DataRow cube_Model_Group_Row in FMM_Model_Grps_DT.Rows)
+                            foreach (DataRow FMM_Model_Grp_Row in FMM_Model_Grps_DT.Rows)
                             {
-                                string Model_GroupKey = Cube_ID + "|" + (int)cube_Model_Group_Row["Model_Grp_ID"];
-                                GBL_Model_Grps_Dict.Add(Model_GroupKey, (string)cube_Model_Group_Row["Name"]);
+                                string Model_GroupKey = Cube_ID + "|" + (int)FMM_Model_Grp_Row["Model_Grp_ID"];
+                                GBL_Model_Grps_Dict.Add(Model_GroupKey, (string)FMM_Model_Grp_Row["Name"]);
                             }
                         }
                         break;

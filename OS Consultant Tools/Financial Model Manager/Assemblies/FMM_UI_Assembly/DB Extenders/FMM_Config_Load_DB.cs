@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -16,6 +16,7 @@ using OneStream.Shared.Engine;
 using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
+using Workspace.OSConsultantTools.GBL_UI_Assembly;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_Config_Load_DB
 {
@@ -216,23 +217,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_FMM_Get_DataSets = new SQL_FMM_Get_DataSets(si, connection);
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     // Create a new DataTable
 
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
                     // Define the select query and parameters
-                    string selectQuery = @"
+                    var sql = @"
 				       	SELECT *
 				    	FROM FMM_Cube_Config
 						WHERE Cube_ID = @Cube_ID";
 
                     // Create an array of SqlParameter objects
-                    var parameters = new SqlParameter[]
+                    var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt32(Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Cube_ID"))}
                     };
 
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, cube_Settings_DT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Settings_DT, sql, sqlparams);
                 }
             }
             catch
@@ -280,12 +281,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_FMM_Get_DataSets = new SQL_FMM_Get_DataSets(si, connection);
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     // Create a new DataTable
 
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
                     // Define the select query and parameters
-                    string selectQuery = @"
+                    var sql = @"
 								        	SELECT Calc_Type
 								       		FROM FMM_Cube_Config Con
 											JOIN FMM_Act_Config Act
@@ -294,13 +295,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 											AND Act.Activity_ID = @Activity_ID";
 
                     // Create an array of SqlParameter objects
-                    var parameters = new SqlParameter[]
+                    var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Cube_ID","0"))},
                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Activity_ID","0"))}
                     };
 
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, calc_Type_DT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, calc_Type_DT, sql, sqlparams);
                 }
             }
             catch
@@ -361,12 +362,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_FMM_Get_DataSets = new SQL_FMM_Get_DataSets(si, connection);
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     // Create a new DataTable
 
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
                     // Define the select query and parameters
-                    string selectQuery = @"
+                    var sql = @"
 				       	SELECT *
 				    	FROM FMM_Models
 						WHERE Cube_ID = @Cube_ID
@@ -374,7 +375,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						AND Model_ID = @Model_ID";
 
                     // Create an array of SqlParameter objects
-                    var parameters = new SqlParameter[]
+                    var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cubeID},
                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = activityID},
@@ -382,7 +383,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     };
 
-                    sql_FMM_Get_DataSets.Fill_Get_FMM_DT(si, sqlDataAdapter, ModelDT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, ModelDT, sql, sqlparams);
                 }
             }
             catch (Exception e)
