@@ -27,10 +27,10 @@
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.DDM_UI_Assembly.DDM_DB_DataSets}{Get_WF_Profile_Menu_Options}{}</methodQuery>
-                                <resultsTableName>wf_Profile_Config</resultsTableName>
-                                <displayMember>DDM_Menu_Option_Name</displayMember>
-                                <valueMember>DDM_Profile_Menu_Option_ID</valueMember>
+                                <methodQuery>{Workspace.Current.DDM_UI_Assembly.DDM_DB_DataSets}{Get_App_Menu}{}</methodQuery>
+                                <resultsTableName>DDM_Config_Menu</resultsTableName>
+                                <displayMember>DDM_Menu_Name</displayMember>
+                                <valueMember>DDM_Menu_ID</valueMember>
                                 <displayItems></displayItems>
                                 <valueItems></valueItems>
                                 <cubeName></cubeName>
@@ -47,8 +47,8 @@
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.DDM_Config_UI_Assembly.DDM_DB_DataSets}{Get_WF_Profile_Name_ID}{}</methodQuery>
-                                <resultsTableName>WF_Profile_Name_ID_List</resultsTableName>
+                                <methodQuery>{Workspace.Current.DDM_Config_UI_Assembly.DDM_DB_DataSets}{Get_WFProfile_Names}{}</methodQuery>
+                                <resultsTableName>WFProfile_Names</resultsTableName>
                                 <displayMember>ProfileName</displayMember>
                                 <valueMember>ProfileKey</valueMember>
                                 <displayItems></displayItems>
@@ -67,8 +67,8 @@
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.DDM_Config_UI_Assembly.DDM_DB_DataSets}{Get_Root_WF_Profiles}{}</methodQuery>
-                                <resultsTableName>Root_WF_Profiles</resultsTableName>
+                                <methodQuery>{Workspace.Current.DDM_Config_UI_Assembly.DDM_DB_DataSets}{Get_Root_WFProfiles}{}</methodQuery>
+                                <resultsTableName>Root_WFProfiles</resultsTableName>
                                 <displayMember>ProfileName</displayMember>
                                 <valueMember>ProfileName</valueMember>
                                 <displayItems></displayItems>
@@ -78,7 +78,7 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="DL_DDM_Menu_Option_Filter_Dim_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                            <parameter name="DL_DDM_Menu_Hdr_Fltr_Dim_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
                                 <defaultValue></defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -98,27 +98,7 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="DL_DDM_Profile_Menu_Header_Button_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
-                                <defaultValue></defaultValue>
-                                <resultFormatStringType>Default</resultFormatStringType>
-                                <resultCustomFormatString></resultCustomFormatString>
-                                <parameterCommandType>Unknown</parameterCommandType>
-                                <sqlQuery></sqlQuery>
-                                <dbLocation>Application</dbLocation>
-                                <externalDBConnName></externalDBConnName>
-                                <methodType>Unknown</methodType>
-                                <methodQuery></methodQuery>
-                                <resultsTableName></resultsTableName>
-                                <displayMember></displayMember>
-                                <valueMember></valueMember>
-                                <displayItems>,Save &amp; DM Seq 1,Save &amp; DM Seq 2,Complete WF,Revert WF, Open Dialog 1,Open Dialog 2,Open Dialog 3,Open Dialog 4, Generic DB Ext 1, Generic DB Ext 2,Generic DB Ext 3,Generic DB Ext 4</displayItems>
-                                <valueItems>,Save_DM_Seq_1,Save_DM_Seq_2,Complete_WF,Revert_WF, Open_Dialog_1,Open_Dialog_2,Open_Dialog_3,Open_Dialog_4, Generic_DB_Ext_1, Generic_DB_Ext_2,Generic_DB_Ext_3,Generic_DB_Ext_4</valueItems>
-                                <cubeName></cubeName>
-                                <dimType></dimType>
-                                <dimName></dimName>
-                                <memberFilter></memberFilter>
-                            </parameter>
-                            <parameter name="DL_DDM_Profile_Menu_Header_Option_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                            <parameter name="DL_DDM_Menu_Hdr_Option_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
                                 <defaultValue>Filter</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -138,7 +118,7 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="DL_DDM_Profile_Menu_Option_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                            <parameter name="DL_DDM_Menu_Option_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
                                 <defaultValue>Cube View</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -158,8 +138,8 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="DL_DDM_Profile_Step_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
-                                <defaultValue>Review</defaultValue>
+                            <parameter name="DL_DDM_Profile_Menu_Hdr_Button_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                                <defaultValue></defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
                                 <parameterCommandType>Unknown</parameterCommandType>
@@ -171,8 +151,8 @@
                                 <resultsTableName></resultsTableName>
                                 <displayMember></displayMember>
                                 <valueMember></valueMember>
-                                <displayItems>Review, Base_Input.Import,Base_Input.Forms,Base_Input.Adj,Base_Input.Review,Parent_Input.Forms,Parent_Input.Adj,Parent_Input.Review</displayItems>
-                                <valueItems>Review, Base_Input.Import,Base_Input.Forms,Base_Input.Adj,Base_Input.Review,Parent_Input.Forms,Parent_Input.Adj,Parent_Input.Review</valueItems>
+                                <displayItems>,Save &amp; DM Seq 1,Save &amp; DM Seq 2,Complete WF,Revert WF, Open Dialog 1,Open Dialog 2,Open Dialog 3,Open Dialog 4, Generic DB Ext 1, Generic DB Ext 2,Generic DB Ext 3,Generic DB Ext 4</displayItems>
+                                <valueItems>,Save_DM_Seq_1,Save_DM_Seq_2,Complete_WF,Revert_WF, Open_Dialog_1,Open_Dialog_2,Open_Dialog_3,Open_Dialog_4, Generic_DB_Ext_1, Generic_DB_Ext_2,Generic_DB_Ext_3,Generic_DB_Ext_4</valueItems>
                                 <cubeName></cubeName>
                                 <dimType></dimType>
                                 <dimName></dimName>
@@ -213,6 +193,26 @@
                                 <valueMember></valueMember>
                                 <displayItems>Profile Config</displayItems>
                                 <valueItems>0_DDM_Profile_Config</valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="DL_DDM_WFProfile_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                                <defaultValue>Review</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems>Review,Import,Forms,Adj,Base_Input.Review,Parent_Input.Review</displayItems>
+                                <valueItems>2, 50, 52,51,3,4</valueItems>
                                 <cubeName></cubeName>
                                 <dimType></dimType>
                                 <dimName></dimName>
@@ -758,26 +758,6 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="IV_DDM_App_UD1_MFB" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
-                                <defaultValue></defaultValue>
-                                <resultFormatStringType>Default</resultFormatStringType>
-                                <resultCustomFormatString></resultCustomFormatString>
-                                <parameterCommandType>Unknown</parameterCommandType>
-                                <sqlQuery></sqlQuery>
-                                <dbLocation>Application</dbLocation>
-                                <externalDBConnName></externalDBConnName>
-                                <methodType>Unknown</methodType>
-                                <methodQuery></methodQuery>
-                                <resultsTableName></resultsTableName>
-                                <displayMember></displayMember>
-                                <valueMember></valueMember>
-                                <displayItems></displayItems>
-                                <valueItems></valueItems>
-                                <cubeName></cubeName>
-                                <dimType></dimType>
-                                <dimName></dimName>
-                                <memberFilter></memberFilter>
-                            </parameter>
                             <parameter name="IV_DDM_App_UD1_Selection" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
                                 <defaultValue></defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
@@ -1178,26 +1158,6 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="IV_DDM_App_UD8_MFB" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
-                                <defaultValue></defaultValue>
-                                <resultFormatStringType>Default</resultFormatStringType>
-                                <resultCustomFormatString></resultCustomFormatString>
-                                <parameterCommandType>Unknown</parameterCommandType>
-                                <sqlQuery></sqlQuery>
-                                <dbLocation>Application</dbLocation>
-                                <externalDBConnName></externalDBConnName>
-                                <methodType>Unknown</methodType>
-                                <methodQuery></methodQuery>
-                                <resultsTableName></resultsTableName>
-                                <displayMember></displayMember>
-                                <valueMember></valueMember>
-                                <displayItems></displayItems>
-                                <valueItems></valueItems>
-                                <cubeName></cubeName>
-                                <dimType></dimType>
-                                <dimName></dimName>
-                                <memberFilter></memberFilter>
-                            </parameter>
                             <parameter name="IV_DDM_App_UD8_Selection" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
                                 <defaultValue></defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
@@ -1278,6 +1238,26 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
+                            <parameter name="IV_DDM_Menu_ID" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
                             <parameter name="IV_DDM_Menu_Width" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
                                 <defaultValue>Auto</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
@@ -1318,26 +1298,6 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="IV_DDM_Profile_Menu_Option_ID" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
-                                <defaultValue></defaultValue>
-                                <resultFormatStringType>Default</resultFormatStringType>
-                                <resultCustomFormatString></resultCustomFormatString>
-                                <parameterCommandType>Unknown</parameterCommandType>
-                                <sqlQuery></sqlQuery>
-                                <dbLocation>Application</dbLocation>
-                                <externalDBConnName></externalDBConnName>
-                                <methodType>Unknown</methodType>
-                                <methodQuery></methodQuery>
-                                <resultsTableName></resultsTableName>
-                                <displayMember></displayMember>
-                                <valueMember></valueMember>
-                                <displayItems></displayItems>
-                                <valueItems></valueItems>
-                                <cubeName></cubeName>
-                                <dimType></dimType>
-                                <dimName></dimName>
-                                <memberFilter></memberFilter>
-                            </parameter>
                             <parameter name="IV_DDM_Show_Hide_Menu_Btn" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
                                 <defaultValue>Show</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
@@ -1358,7 +1318,7 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="IV_DDM_trv_Root_WF_Profile_Detail" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                            <parameter name="IV_DDM_trv_WF_Profile" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
                                 <defaultValue></defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -1538,6 +1498,26 @@
                                 <dimName>|!IV_DDM_App_Scenario_Dim_Name!|</dimName>
                                 <memberFilter>|!IV_DDM_App_Scenario_MFB!|</memberFilter>
                             </parameter>
+                            <parameter name="ML_DDM_App_UD1" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
                             <parameter name="ML_DDM_App_UD1_Selection" description="" userPrompt="" parameterType="MemberList" sortOrder="0">
                                 <defaultValue>|!IV_DDM_App_UD1_ML_Default!|</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
@@ -1710,7 +1690,7 @@
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.DDM_Config_UI_Assembly.DDM_DB_DataSets}{Get_WF_Profile_TreeView}{}</methodQuery>
+                                <methodQuery>{Workspace.Current.DDM_Config_UI_Assembly.DDM_DB_DataSets}{Get_WFProfile_TreeView}{}</methodQuery>
                                 <resultsTableName></resultsTableName>
                                 <DashboardAdapterOptions>
                                     <CubeViewDataTableOptions>
@@ -1990,8 +1970,8 @@
                                 <adapterMembers />
                             </component>
                             <component name="btn_DDM_Profile_Config_Save_New" description="" xfText="Save Profile Config" toolTip="Save New Profile Config" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBRStageServer" selectionChangedUIActionType="CloseDialog" selectionChangedNavigationType="NoAction">
-                                <displayFormat>|!LV_FMM_btn_Format!|</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.DDM_UI_Assembly.DDM_Admin_Solution_Helper}{Save_New_Profile_Config}{}</selectionChangedTaskArgs>
+                                <displayFormat>|!LV_Std_btn_Format!|</displayFormat>
+                                <selectionChangedTaskArgs>{Workspace.Current.DDM_Config_UI_Assembly.DDM_Config_Data}{Save_New_Profile_Config}{}</selectionChangedTaskArgs>
                                 <dashboardsToHide>1_FMM_Model_Dialog_Add</dashboardsToHide>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -2119,35 +2099,35 @@
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0b1_DDM_Profile_Config_Col1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1_DDM_Profile_Config_Col1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0b1_DDM_Profile_Config_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1_DDM_Profile_Config_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0b2_DDM_Profile_Config_Col2" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2_DDM_Profile_Config_Col2" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0b2_DDM_Profile_Config_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2_DDM_Profile_Config_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0b2a_DDM_Profile_Config_Col2_Col1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2a_DDM_Profile_Config_Col2_Col1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0b2a_DDM_Profile_Config_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2a_DDM_Profile_Config_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0b2a_DDM_Profile_Config_Col2_Row1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2a_DDM_Profile_Config_Col2_Row1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0b2a1_DDM_Profile_Config_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2a1_DDM_Profile_Config_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0b2b_DDM_Profile_Config_Col2_Col2" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2b_DDM_Profile_Config_Col2_Col2" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0b2b_DDM_Profile_Config_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2b_DDM_Profile_Config_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0b2b1_DDM_Profile_Config_Col2_Col2_Row1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2b1_DDM_Profile_Config_Col2_Col2_Row1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0b2b1_DDM_Profile_Config_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2b1_DDM_Profile_Config_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0b2b2_DDM_Profile_Config_Col2_Col2_Row2" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2b2_DDM_Profile_Config_Col2_Col2_Row2" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0b2b2_DDM_Profile_Config_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2b2_DDM_Profile_Config_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0b2b3_DDM_Profile_Config_Col2_Col2_Row3" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2b3_DDM_Profile_Config_Col2_Col2_Row3" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0b2b3_DDM_Profile_Config_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b2b3_DDM_Profile_Config_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -2170,27 +2150,23 @@
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 1a_DDM_App_Menu" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a_DDM_App_Menu" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 1a_DDM_App_Content_CV" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a_DDM_App_Content_CV" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 1a_DDM_Profile_Config_Dialog_Add_Row1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a_DDM_Profile_Config_Dialog_Add_Row1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 1a_DDM_App_Content_DB" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a_DDM_App_Content_DB" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 1a1_DDM_Profile_Config_Dialog_Add_Col1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a1_DDM_Profile_Config_Dialog_Add_Col1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 1a_DDM_Profile_Config_Dialog_Add" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a_DDM_Profile_Config_Dialog_Add" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 1a2_DDM_Profile_Config_Dialog_Add_Col2" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a2_DDM_Profile_Config_Dialog_Add_Col2" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 1a1_DDM_Profile_Config_Dialog_Add" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a1_DDM_Profile_Config_Dialog_Add" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 1b_DDM_App_Content_CV" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1b_DDM_App_Content_CV" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
-                                <componentDefinition />
-                                <adapterMembers />
-                            </component>
-                            <component name="Embedded 1b_DDM_App_Content_DB" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1b_DDM_App_Content_DB" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 1a2_DDM_Profile_Config_Dialog_Add" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1a2_DDM_Profile_Config_Dialog_Add" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -2310,10 +2286,6 @@
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded Dynamic DDM_App_Dyn_Header_Col9" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="|!IV_DDM_App_Header_Col9!|" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
-                                <componentDefinition />
-                                <adapterMembers />
-                            </component>
                             <component name="Embedded Dynamic DDM_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="|!DL_DDM_Setup_Options!|" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
@@ -2354,9 +2326,9 @@
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="lbx_DDM_App_Menu" description="" xfText="Workflow Menu" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_DDM_App_Menu" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                            <component name="lbx_DDM_App_Menu" description="" xfText="Workflow Menu" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_DDM_App_Menu" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_lbx_Format!|, MarginBottom = 2, MarginLeft = 2, MarginRight = 2, MarginTop = 2, Width = |!IV_DDM_Menu_Width!|</displayFormat>
-                                <selectionChangedTaskArgs>{WS}{OnMenuSelectionChanged}{}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{WSMU}{OnMenuSelectionChanged}{}</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>DDM Dynamic App Dashboard (Workflow)</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
@@ -2369,7 +2341,7 @@
                                 <displayFormat>|!LV_Std_lbx_Format!|, Width = |!IV_DDM_Menu_Width!|</displayFormat>
                                 <adapterMembers />
                             </component>
-                            <component name="sp_BL_DDM_App_Menu_Options" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_DDM_App_Menu" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                            <component name="sp_BL_DDM_App_Menu" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_DDM_App_Menu" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
                             <component name="sp_BL_DDM_Root_WFProfiles" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_DDM_Root_WFProfiles" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
@@ -2405,26 +2377,26 @@
                             <component name="sp_IV_DDM_Display_Show_Menu_Btn" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Display_Show_Menu_Btn" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
+                            <component name="sp_IV_DDM_Menu_ID" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Menu_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
                             <component name="sp_IV_DDM_Menu_Width" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Menu_Width" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
                             <component name="sp_IV_DDM_Profile_ID" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Profile_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
-                            <component name="sp_IV_DDM_Profile_Menu_Option_ID" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Profile_Menu_Option_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
-                                <adapterMembers />
-                            </component>
                             <component name="sp_IV_DDM_Show_Hide_Menu_Btn" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Show_Hide_Menu_Btn" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
-                            <component name="sp_IV_DDM_trv_Root_WF_Profile_Detail" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_trv_Root_WF_Profile_Detail" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                            <component name="sp_IV_DDM_trv_WF_Profile" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_trv_WF_Profile" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
                             <component name="sp_ML_DDM_App_Entity_Selection" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="ML_DDM_App_Mbr_Selection" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
                             <component name="ted_DDM_Config" description="Workflow Config" xfText="" toolTip="" componentType="SqlTableEditor" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Profile_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
-                                <dashboardsToRedraw>0b2b2_DDM_Profile_Config_Col2_Col2_Row2, 0b2b3_DDM_Profile_Config_Col2_Col2_Row3</dashboardsToRedraw>
+                                <dashboardsToRedraw>0b2b2_DDM_Profile_Config_Content, 0b2b3_DDM_Profile_Config_Content</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFSqlTableEditorDefinition>
                                         <DbLocation>Application</DbLocation>
@@ -2435,7 +2407,7 @@
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames />
-                                        <WhereClause>DDM_Profile_Name = '|!IV_DDM_trv_Root_WF_Profile_Detail!|'</WhereClause>
+                                        <WhereClause>DDM_Profile_Name = '|!IV_DDM_trv_WF_Profile!|'</WhereClause>
                                         <OrderByClause />
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>true</DefaultForColumnsAreVisible>
@@ -2470,7 +2442,7 @@
                                                 <ColumnFormat>ColumnName = DDM_Profile_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = False, ColumnName = DDM_Profile_Name, DefaultValue = |!IV_DDM_trv_Root_WF_Profile_Detail!|, Description = [Profile Name], IsVisible = True, ParameterName = BL_DDM_Root_WF_Profile_List</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = False, ColumnName = DDM_Profile_Name, DefaultValue = |!IV_DDM_trv_WF_Profile!|, Description = [Profile Name], IsVisible = True, ParameterName = BL_DDM_Root_WFProfile_List</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Profile_Step_Type, Description = [Profile Step Type], IsVisible = True, ParameterName = DL_DDM_Profile_Step_Type</ColumnFormat>
@@ -2496,8 +2468,8 @@
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="ted_DDM_Config_Menu" description="Workflow Profile Config Menu Options" xfText="" toolTip="" componentType="SqlTableEditor" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Profile_Menu_Option_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
-                                <dashboardsToRedraw>0b2b3_DDM_Profile_Config_Col2_Col2_Row3</dashboardsToRedraw>
+                            <component name="ted_DDM_Config_Menu" description="Workflow Profile Config Menu Options - |!IV_DDM_Profile_ID!|" xfText="" toolTip="" componentType="SqlTableEditor" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_Menu_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <dashboardsToRedraw>0b2b3_DDM_Profile_Config_Content</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFSqlTableEditorDefinition>
                                         <DbLocation>Application</DbLocation>
@@ -2526,13 +2498,13 @@
                                         <AllowInserts>true</AllowInserts>
                                         <AllowDeletes>true</AllowDeletes>
                                         <SaveDataTaskType>ExecuteDashboardExtenderBusinessRule</SaveDataTaskType>
-                                        <SaveDataTaskArgs>{Workspace.Current.DDM_UI_Assembly.DDM_Admin_Config_Data_Helper}{Save_DDM_Profile_Config_Menu_Options_Rows}{}</SaveDataTaskArgs>
+                                        <SaveDataTaskArgs>{Workspace.Current.DDM_Config_UI_Assembly.DDM_Config_Data}{Save_DDM_Config_Menu_Rows}{}</SaveDataTaskArgs>
                                         <RetainTableColumnOrder>true</RetainTableColumnOrder>
                                         <ReadOnlyTextColor>
                                             <Name>XFReadOnlyText</Name>
                                             <Value>4284903039</Value>
                                         </ReadOnlyTextColor>
-                                        <ColumnNameForBoundParameter>DDM_Profile_Menu_Option_ID</ColumnNameForBoundParameter>
+                                        <ColumnNameForBoundParameter>DDM_Menu_ID</ColumnNameForBoundParameter>
                                         <DefaultForShowSearch>false</DefaultForShowSearch>
                                         <AllowMultiselect>false</AllowMultiselect>
                                         <RowsPerPage>-1</RowsPerPage>
@@ -2543,34 +2515,28 @@
                                                 <ColumnFormat>ColumnName = DDM_Profile_ID, DefaultValue = |!IV_DDM_Profile_ID!|, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Profile_Menu_Option_ID, IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_Sort_Order, Description = [Sort Order]</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_Order, Description = [Sort Order]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_Name, Description = [Option Name]</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_Name, Description = [Option Name]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_Type, Description = [Menu Option Type], ParameterName = DL_DDM_Profile_Menu_Option_Type</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_Option_Type, Description = [Option Type], IsVisible = True, ParameterName = DL_DDM_Menu_Option_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_Custom_Dashboard_Header, Description = [Custom Dashboard Header], IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_Custom_DB_Header, Description = [Custom Dashboard Header], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_Custom_Dashboard_Content, Description = [Custom Dashboard Content], IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_Custom_DB_Content, Description = [Custom Dashboard Content], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_Dashboard, Description = [Dashboard]</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_DB_Name, Description = [Option Dashboard Name]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_Dashboard_Name, Description = [Option Dashboard Name]</ColumnFormat>
-                                            </ColumnDefinition>
-                                            <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_CubeView, Description = [Cube View]</ColumnFormat>
-                                            </ColumnDefinition>
-                                            <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Option_CubeView_Name, Description = [Cube View Name]</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_CV_Name, Description = [Cube View Name]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = Status</ColumnFormat>
@@ -2593,19 +2559,19 @@
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="ted_DDM_Config_Menu_Header" description="Workflow Profile Config Header Options" xfText="" toolTip="" componentType="SqlTableEditor" templateParameterValues="" brText1="" brText2="" boundParameterName="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                            <component name="ted_DDM_Config_Menu_Hdr" description="Workflow Profile Config Header Options" xfText="" toolTip="" componentType="SqlTableEditor" templateParameterValues="" brText1="" brText2="" boundParameterName="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <componentDefinition>
                                     <XFSqlTableEditorDefinition>
                                         <DbLocation>Application</DbLocation>
                                         <ExternalDBConnName />
                                         <SchemaName />
-                                        <TableName>DDM_Config_Menu_Header</TableName>
+                                        <TableName>DDM_Config_Menu_Hdr</TableName>
                                         <ViewName />
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames />
-                                        <WhereClause>DDM_Profile_Menu_Option_ID = |!IV_DDM_Profile_Menu_Option_ID!|</WhereClause>
-                                        <OrderByClause>DDM_Menu_Option_Header_Sort_Order</OrderByClause>
+                                        <WhereClause>DDM_Menu_ID = |!IV_DDM_Menu_ID!|</WhereClause>
+                                        <OrderByClause>DDM_Menu_Hdr_Order</OrderByClause>
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>true</DefaultForColumnsAreVisible>
                                         <DefaultForAllowColumnUpdates>true</DefaultForAllowColumnUpdates>
@@ -2622,7 +2588,7 @@
                                         <AllowInserts>true</AllowInserts>
                                         <AllowDeletes>true</AllowDeletes>
                                         <SaveDataTaskType>ExecuteDashboardExtenderBusinessRule</SaveDataTaskType>
-                                        <SaveDataTaskArgs>{Workspace.Current.DDM_UI_Assembly.DDM_Admin_Config_Data_Helper}{Save_DDM_Profile_Config_Menu_Header_Option_Rows}{}</SaveDataTaskArgs>
+                                        <SaveDataTaskArgs>{Workspace.Current.DDM_Config_UI_Assembly.DDM_Config_Data}{Save_DDM_Config_Menu_Hdr_Rows}{}</SaveDataTaskArgs>
                                         <RetainTableColumnOrder>true</RetainTableColumnOrder>
                                         <ReadOnlyTextColor>
                                             <Name>XFReadOnlyText</Name>
@@ -2639,88 +2605,88 @@
                                                 <ColumnFormat>ColumnName = DDM_Profile_ID, DefaultValue = |!IV_DDM_Profile_ID!|, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Profile_Menu_Option_ID, DefaultValue = |!IV_DDM_Profile_Menu_Option_ID!|, IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_ID, DefaultValue = |!IV_DDM_Menu_ID!|, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Profile_Menu_Header_Option_ID, IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DDM_Menu_Hdr_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Option_Header_Sort_Order, Description = [Sort Order], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Order, Description = [Sort Order], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Option_Type, Description = [Option Type], IsVisible = True, ParameterName = DL_DDM_Profile_Menu_Header_Option_Type</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Option_Type, Description = [Option Type], IsVisible = True, ParameterName = DL_DDM_Menu_Hdr_Option_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Dim_Type, Description = [Dimension Type], IsVisible = True, ParameterName = DL_DDM_Menu_Option_Filter_Dim_Type</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Dim_Type, Description = [Dimension Type], IsVisible = True, ParameterName = DL_DDM_Menu_Hdr_Fltr_Dim_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Dim_Name, Description = [Dimension Name], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Dim_Name, Description = [Dimension Name], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_MFB, Description = [Mbr Filter], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_MFB, Description = [Mbr Filter], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Default, Description = [Default Mbr], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Default, Description = [Default Mbr], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Btn, Description = [Filter Btn?], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Btn, Description = [Filter Btn?], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Btn_Lbl, Description = [Filter Btn Label], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Btn_Lbl, Description = [Filter Btn Label], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Btn_ToolTip, Description = [Filter Btn Tool Tip], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Btn_ToolTip, Description = [Filter Btn Tool Tip], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Cbx, Description = [Filter Cbx?], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Cbx, Description = [Filter Cbx?], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Cbx_Lbl, Description = [Filter Cbx Label], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Cbx_Lbl, Description = [Filter Cbx Label], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Cbx_ToolTip, Description = [Filter Cbx Tool Tip], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Cbx_ToolTip, Description = [Filter Cbx Tool Tip], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Txt, Description = [Filter Txt?], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Txt, Description = [Filter Txt?], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Txt_Lbl, Description = [Filter Txt Label], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Txt_Lbl, Description = [Filter Txt Label], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Txt_ToolTip, Description = [Filter Txt Tool Tip], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Txt_ToolTip, Description = [Filter Txt Tool Tip], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Option_Btn_Type, Description = [Button Type], ParameterName = DL_DDM_Profile_Menu_Header_Button_Type</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_Type, Description = [Button Type], ParameterName = DL_DDM_Profile_Menu_Hdr_Button_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Btn_Lbl, Description = [Button Label]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_Lbl, Description = [Button Label]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Btn_ToolTip, Description = [Button Tool Tip]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_ToolTip, Description = [Button Tool Tip]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Btn_Image_URL, Description = [Button Image URL]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_Image_URL, Description = [Button Image URL]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Btn_ServerTask, Description = [Button Server Task]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_ServerTask, Description = [Button Server Task]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Btn_ServerTaskType, Description = [Button Server Task Type], ParameterName = DL_DDM_ServerTaskType_Selection</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_ServerTaskType, Description = [Button Server Task Type], ParameterName = DL_DDM_ServerTaskType_Selection</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Btn_DBOpen, Description = [Button Dialog DB to Open]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_DBOpen, Description = [Button Dialog DB to Open]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Btn_DBRefresh, Description = [DB to Refresh]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_DBRefresh, Description = [DB to Refresh]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Btn_BoundParameter, Description = [Btn Associated Bound Parameter]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Btn_BoundParameter, Description = [Btn Associated Bound Parameter]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Cbx_BoundParameter, Description = [Cbx Associated Bound Parameter]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Cbx_BoundParameter, Description = [Cbx Associated Bound Parameter]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Header_Filter_Txt_BoundParameter, Description = [Txt Associated Bound Parameter]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Txt_BoundParameter, Description = [Txt Associated Bound Parameter]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = False, ColumnName = Create_Date, Description = [Create Date]</ColumnFormat>
@@ -2744,8 +2710,12 @@
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="trv_DDM_WFProfiles" description="" xfText="" toolTip="" componentType="TreeView" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_trv_Root_WF_Profile_Detail" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
-                                <dashboardsToRedraw>0b2b_DDM_Profile_Config_Col2_Col2</dashboardsToRedraw>
+                            <component name="TestLabel_Copy" description="" xfText="Profile: |!IV_DDM_trv_WF_Profile!|" toolTip="" componentType="Label" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="trv_DDM_WFProfiles" description="" xfText="" toolTip="" componentType="TreeView" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_DDM_trv_WF_Profile" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <dashboardsToRedraw>0b2b_DDM_Profile_Config_Content</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFTreeViewDefinition TreeType="Search">
                                         <ShowImages>false</ShowImages>
@@ -2913,7 +2883,8 @@
                         <dashboardGroups>
                             <dashboardGroup name="DDM Admin (OnePlace)" description="WFM App Admin (OnePlace)" accessGroup="Administrators">
                                 <dashboards>
-                                    <dashboard name="DDM_App_Admin (OnePlace)" description="DDM Admin (OnePlace)" pageCaption="" dashboardType="TopLevelWithoutParameterPrompts" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="DDM_App_Admin (OnePlace)" description="DDM Admin (OnePlace)" pageCaption="" dashboardType="TopLevelWithoutParameterPrompts" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBRAllActions">
+                                        <loadDashboardTaskArgs>{Workspace.Current.DDM_Config_UI_Assembly.DDM_Config_Load_DB}{Load_DDM_Admin_Dashboard}{}</loadDashboardTaskArgs>
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -2931,24 +2902,24 @@
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="Embedded Dynamic DDM_Content" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0_DDM_Profile_Config" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_DDM_Show_Hide_Menu_Btn" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_DDM_Display_Hide_Menu_Btn" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_DDM_Display_Show_Menu_Btn" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_DDM_Root_WFProfiles" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_DDM_Menu_Width" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_DL_DDM_Setup_Options" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_IV_DDM_trv_Root_WF_Profile_Detail" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_DDM_trv_WF_Profile" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_DDM_Profile_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_IV_DDM_Profile_Menu_Option_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_DDM_Menu_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                 </dashboards>
                             </dashboardGroup>
                             <dashboardGroup name="DDM Dynamic Dashboard (WorkFlow)" description="" accessGroup="Administrators">
                                 <dashboards>
-                                    <dashboard name="DDM Dynamic App Dashboard (Workflow)" description="" pageCaption="" dashboardType="TopLevelWithoutParameterPrompts" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBROnce">
-                                        <loadDashboardTaskArgs>{WS}{OnLoadDynamicNavMenu}{}</loadDashboardTaskArgs>
+                                    <dashboard name="DDM Dynamic App Dashboard (Workflow)" description="" pageCaption="" dashboardType="TopLevelWithoutParameterPrompts" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBRAllActions">
+                                        <loadDashboardTaskArgs>{Workspace.Current.DDM_UI_Assembly.DDM_Load_DB}{Load_DDM_Dashboard}{}</loadDashboardTaskArgs>
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -2970,7 +2941,7 @@
                                             <componentMember name="sp_IV_DDM_App_Dynamic_DB" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_DDM_App_Display_Hide_Menu_Btn" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_DDM_App_Dynamic_App_Content_DB" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_BL_DDM_App_Menu_Options" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_BL_DDM_App_Menu" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="Embedded 0_DDM_App_Header" left="" top="" width="" height="" dockPosition="Top" />
                                             <componentMember name="Embedded 1_DDM_App_Content" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
@@ -2994,7 +2965,7 @@
                                                     <ColumnDefinition ColumnType="Component" Width="*" />
                                                 </ColumnDefinitions>
                                                 <RowDefinitions>
-                                                    <RowDefinition RowType="Component" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="80" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
@@ -3036,7 +3007,7 @@
                                         </DashboardDefinition>
                                         <componentMembers />
                                     </dashboard>
-                                    <dashboard name="1_DDM_App_Content" description="" pageCaption="" dashboardType="EmbeddedDynamic" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1_DDM_App_Content" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3050,33 +3021,16 @@
                                                     <ColumnDefinition ColumnType="Component" Width="*" />
                                                 </ColumnDefinitions>
                                                 <RowDefinitions>
-                                                    <RowDefinition RowType="Component" Height="800" />
+                                                    <RowDefinition RowType="Component" Height="*" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="Embedded 1a_DDM_App_Menu" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 1b_DDM_App_Content_DB" left="" top="" width="" height="" dockPosition="Left" />
-                                        </componentMembers>
-                                    </dashboard>
-                                    <dashboard name="1a_DDM_App_Menu" description="" pageCaption="" dashboardType="Embedded" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
-                                        <DashboardDefinition>
-                                            <ShowTitle>true</ShowTitle>
-                                            <Notes />
-                                            <DynamicDashboardDefinition>
-                                                <ComponentTemplateRepeatItems />
-                                            </DynamicDashboardDefinition>
-                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
-                                            <GridLayoutDefinition>
-                                                <ColumnDefinitions />
-                                                <RowDefinitions />
-                                            </GridLayoutDefinition>
-                                        </DashboardDefinition>
-                                        <componentMembers>
                                             <componentMember name="lbx_DDM_App_Menu" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 1a_DDM_App_Content_DB" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="1b_DDM_App_Content_CV" description="" pageCaption="" dashboardType="Embedded" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1a_DDM_App_Content_CV" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3085,15 +3039,19 @@
                                             </DynamicDashboardDefinition>
                                             <CustomControlDbrdDefinition RequiredInputParameters="" />
                                             <GridLayoutDefinition>
-                                                <ColumnDefinitions />
-                                                <RowDefinitions />
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="cv_DDM_Dyn_CV" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="1b_DDM_App_Content_DB" description="" pageCaption="" dashboardType="EmbeddedDynamic" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1a_DDM_App_Content_DB" description="" pageCaption="" dashboardType="EmbeddedDynamic" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3102,8 +3060,12 @@
                                             </DynamicDashboardDefinition>
                                             <CustomControlDbrdDefinition RequiredInputParameters="" />
                                             <GridLayoutDefinition>
-                                                <ColumnDefinitions />
-                                                <RowDefinitions />
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers />
@@ -3131,7 +3093,7 @@
                             </dashboardGroup>
                             <dashboardGroup name="DDM_Profile_Config" description="" accessGroup="Administrators">
                                 <dashboards>
-                                    <dashboard name="0_DDM_Profile_Config" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0_DDM_Profile_Config" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBRAllActions">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3154,7 +3116,7 @@
                                             <componentMember name="Embedded 0b_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0a_DDM_Profile_Config_Header" description="" pageCaption="" dashboardType="EmbeddedDynamic" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0a_DDM_Profile_Config_Header" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <displayFormat>|!LV_Std_Header_Format!|</displayFormat>
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
@@ -3237,11 +3199,12 @@
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_DDM_Setup_Options" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 0b1_DDM_Profile_Config_Col1" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 0b2_DDM_Profile_Config_Col2" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b2_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_DDM_trv_WF_Profile" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0b1_DDM_Profile_Config_Col1" description="" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0b1_DDM_Profile_Config_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3258,7 +3221,7 @@
                                             <componentMember name="lbx_DDM_Root_WFProfiles" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0b2_DDM_Profile_Config_Col2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0b2_DDM_Profile_Config_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3277,11 +3240,11 @@
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="Embedded 0b2a_DDM_Profile_Config_Col2_Col1" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 0b2b_DDM_Profile_Config_Col2_Col2" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b2a_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b2b_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0b2a_DDM_Profile_Config_Col2_Col1" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0b2a_DDM_Profile_Config_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3300,11 +3263,11 @@
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="Embedded 0b2a_DDM_Profile_Config_Col2_Row1" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b2a1_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="trv_DDM_WFProfiles" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0b2a_DDM_Profile_Config_Col2_Row1" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0b2a1_DDM_Profile_Config_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3329,7 +3292,7 @@
                                             <componentMember name="btn_DDM_Profile_Dialog_Delete" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0b2b_DDM_Profile_Config_Col2_Col2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0b2b_DDM_Profile_Config_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3349,12 +3312,12 @@
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="Embedded 0b2b1_DDM_Profile_Config_Col2_Col2_Row1" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 0b2b2_DDM_Profile_Config_Col2_Col2_Row2" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 0b2b3_DDM_Profile_Config_Col2_Col2_Row3" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b2b1_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b2b2_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b2b3_DDM_Profile_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0b2b1_DDM_Profile_Config_Col2_Col2_Row1" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0b2b1_DDM_Profile_Config_Content" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3375,7 +3338,7 @@
                                             <componentMember name="ted_DDM_Config" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0b2b2_DDM_Profile_Config_Col2_Col2_Row2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0b2b2_DDM_Profile_Config_Content" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3394,9 +3357,10 @@
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="ted_DDM_Config_Menu" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_DDM_Profile_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0b2b3_DDM_Profile_Config_Col2_Col2_Row3" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0b2b3_DDM_Profile_Config_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3414,13 +3378,12 @@
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="ted_DDM_Config_Menu_Header" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_IV_DDM_Profile_Menu_Option_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="ted_DDM_Config_Menu_Hdr" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_DDM_Menu_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="1_DDM_Profile_Config_Dialog_Add" description="Add New WF Profile Config" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBRAllActions">
+                                    <dashboard name="1_DDM_Profile_Config_Dialog_Add" description="Add New WF Profile Config" pageCaption="" dashboardType="TopLevelWithoutParameterPrompts" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <displayFormat>DialogDisplayStyle = Normal, DialogHeight = 300, DialogWidth = 450, EnableSystemClose = True</displayFormat>
-                                        <loadDashboardTaskArgs>{Workspace.Current.FMM_UI_Assembly.FMM_Load_Dashboard_Helper}{Load_FMM_Dashboard}{}</loadDashboardTaskArgs>
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3440,12 +3403,12 @@
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="Embedded 1a_DDM_Profile_Config_Dialog_Add_Row1" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_IV_DDM_trv_Root_WF_Profile_Detail" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 1a_DDM_Profile_Config_Dialog_Add" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_DDM_trv_WF_Profile" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_DDM_Profile_Config_Save_New" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="1a_DDM_Profile_Config_Dialog_Add_Row1" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1a_DDM_Profile_Config_Dialog_Add" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3465,11 +3428,11 @@
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="Embedded 1a1_DDM_Profile_Config_Dialog_Add_Col1" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 1a2_DDM_Profile_Config_Dialog_Add_Col2" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 1a1_DDM_Profile_Config_Dialog_Add" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 1a2_DDM_Profile_Config_Dialog_Add" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="1a1_DDM_Profile_Config_Dialog_Add_Col1" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1a1_DDM_Profile_Config_Dialog_Add" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -3490,7 +3453,7 @@
                                         </DashboardDefinition>
                                         <componentMembers />
                                     </dashboard>
-                                    <dashboard name="1a2_DDM_Profile_Config_Dialog_Add_Col2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1a2_DDM_Profile_Config_Dialog_Add" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />

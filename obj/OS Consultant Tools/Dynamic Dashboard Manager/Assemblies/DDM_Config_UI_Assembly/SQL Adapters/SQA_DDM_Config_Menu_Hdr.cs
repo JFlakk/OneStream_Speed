@@ -52,61 +52,71 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 // Define the insert query and selectqueryparams
                 string insertQuery = @"
-									INSERT INTO DDM_Config_Menu_Hdr
-									           (DDM_Profile_ID
-									           ,DDM_Menu_ID
-									           ,DDM_Menu_Hdr_ID
-									           ,DDM_Menu_Hdr_Order
-									           ,DDM_Menu_Hdr_Option_Type
-									           ,DDM_Menu_Hdr_Fltr_Dim_Type
-									           ,DDM_Menu_Hdr_Fltr_Dim_Name
-									           ,DDM_Menu_Hdr_Fltr_MFB
-									           ,DDM_Menu_Hdr_Fltr_Default
-									           ,DDM_Menu_Hdr_Fltr_Btn
-									           ,DDM_Menu_Hdr_Fltr_Btn_Lbl
-									           ,DDM_Menu_Hdr_Fltr_Cbx
-									           ,DDM_Menu_Hdr_Fltr_Cbx_Lbl
-									           ,DDM_Menu_Hdr_Fltr_Txt
-									           ,DDM_Menu_Hdr_Fltr_Txt_Lbl
-									           ,DDM_Menu_Hdr_Btn_Type
-									           ,DDM_Menu_Hdr_Btn_Lbl
-									           ,DDM_Menu_Hdr_Btn_ToolTip
-									           ,DDM_Menu_Hdr_Btn_Image_URL
-									           ,DDM_Menu_Hdr_Btn_ServerTask
-									           ,DDM_Menu_Hdr_Btn_DBOpen
-									           ,DDM_Menu_Hdr_Btn_DBRefresh
-									           ,Create_Date
-									           ,Create_User
-									           ,Update_Date
-									           ,Update_User)
-									     VALUES
-									           (@DDM_Profile_ID
-									           ,@DDM_Menu_ID
-									           ,@DDM_Menu_Hdr_ID
-									           ,@DDM_Menu_Option_Hdr_Sort_Order
-									           ,@DDM_Menu_Hdr_Option_Type
-									           ,@DDM_Menu_Hdr_Fltr_Dim_Type
-									           ,@DDM_Menu_Hdr_Fltr_Dim_Name
-									           ,@DDM_Menu_Hdr_Fltr_MFB
-									           ,@DDM_Menu_Hdr_Fltr_Default
-									           ,@DDM_Menu_Hdr_Fltr_Btn
-									           ,@DDM_Menu_Hdr_Fltr_Btn_Lbl
-									           ,@DDM_Menu_Hdr_Fltr_Cbx
-									           ,@DDM_Menu_Hdr_Fltr_Cbx_Lbl
-									           ,@DDM_Menu_Hdr_Fltr_Txt
-									           ,@DDM_Menu_Hdr_Fltr_Txt_Lbl
-									           ,@DDM_Menu_Hdr_Option_Btn_Type
-									           ,@DDM_Menu_Hdr_Btn_Lbl
-									           ,@DDM_Menu_Hdr_Btn_ToolTip
-									           ,@DDM_Menu_Hdr_Btn_Image_URL
-									           ,@DDM_Menu_Hdr_Btn_ServerTask
-									           ,@DDM_Menu_Hdr_Btn_DBOpen
-									           ,@DDM_Menu_Hdr_Btn_DBRefresh
-									           ,@Create_Date
-									           ,@Create_User
-									           ,@Update_Date
-									           ,@Update_User)";
-
+                    INSERT INTO DDM_Config_Menu_Hdr
+                           (DDM_Profile_ID
+                           ,DDM_Menu_ID
+                           ,DDM_Menu_Hdr_ID
+                           ,DDM_Menu_Hdr_Order
+                           ,DDM_Menu_Hdr_Option_Type
+                           ,DDM_Menu_Hdr_Fltr_Dim_Type
+                           ,DDM_Menu_Hdr_Fltr_Dim_Name
+                           ,DDM_Menu_Hdr_Fltr_MFB
+                           ,DDM_Menu_Hdr_Fltr_Default
+                           ,DDM_Menu_Hdr_Fltr_Btn
+                           ,DDM_Menu_Hdr_Fltr_Btn_Lbl
+                           ,DDM_Menu_Hdr_Fltr_Btn_ToolTip
+                           ,DDM_Menu_Hdr_Fltr_Cbx
+                           ,DDM_Menu_Hdr_Fltr_Cbx_Lbl
+                           ,DDM_Menu_Hdr_Fltr_Cbx_ToolTip
+                           ,DDM_Menu_Hdr_Fltr_BtnCbx_BoundParam
+                           ,DDM_Menu_Hdr_Fltr_Txt
+                           ,DDM_Menu_Hdr_Fltr_Txt_Lbl
+                           ,DDM_Menu_Hdr_Fltr_Txt_ToolTip
+                           ,DDM_Menu_Hdr_Fltr_Txt_BoundParam
+                           ,DDM_Menu_Hdr_Btn_Type
+                           ,DDM_Menu_Hdr_Btn_Lbl
+                           ,DDM_Menu_Hdr_Btn_ToolTip
+                           ,DDM_Menu_Hdr_Btn_Image_URL
+                           ,DDM_Menu_Hdr_Btn_ServerTask
+                           ,DDM_Menu_Hdr_Btn_DBOpen
+                           ,DDM_Menu_Hdr_Btn_DBRefresh
+                           ,Create_Date
+                           ,Create_User
+                           ,Update_Date
+                           ,Update_User)
+                     VALUES
+                           (@DDM_Profile_ID
+                           ,@DDM_Menu_ID
+                           ,@DDM_Menu_Hdr_ID
+                           ,@DDM_Menu_Hdr_Order
+                           ,@DDM_Menu_Hdr_Option_Type
+                           ,@DDM_Menu_Hdr_Fltr_Dim_Type
+                           ,@DDM_Menu_Hdr_Fltr_Dim_Name
+                           ,@DDM_Menu_Hdr_Fltr_MFB
+                           ,@DDM_Menu_Hdr_Fltr_Default
+                           ,@DDM_Menu_Hdr_Fltr_Btn
+                           ,@DDM_Menu_Hdr_Fltr_Btn_Lbl
+                           ,@DDM_Menu_Hdr_Fltr_Btn_ToolTip
+                           ,@DDM_Menu_Hdr_Fltr_Cbx
+                           ,@DDM_Menu_Hdr_Fltr_Cbx_Lbl
+                           ,@DDM_Menu_Hdr_Fltr_Cbx_ToolTip
+                           ,@DDM_Menu_Hdr_Fltr_BtnCbx_BoundParam
+                           ,@DDM_Menu_Hdr_Fltr_Txt
+                           ,@DDM_Menu_Hdr_Fltr_Txt_Lbl
+                           ,@DDM_Menu_Hdr_Fltr_Txt_ToolTip
+                           ,@DDM_Menu_Hdr_Fltr_Txt_BoundParam
+                           ,@DDM_Menu_Hdr_Btn_Type
+                           ,@DDM_Menu_Hdr_Btn_Lbl
+                           ,@DDM_Menu_Hdr_Btn_ToolTip
+                           ,@DDM_Menu_Hdr_Btn_Image_URL
+                           ,@DDM_Menu_Hdr_Btn_ServerTask
+                           ,@DDM_Menu_Hdr_Btn_DBOpen
+                           ,@DDM_Menu_Hdr_Btn_DBRefresh
+                           ,@Create_Date
+                           ,@Create_User
+                           ,@Update_Date
+                           ,@Update_User)";
+                
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_ID";
@@ -123,10 +133,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Cbx", SqlDbType.Bit).SourceColumn = "DDM_Menu_Hdr_Fltr_Cbx";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Cbx_Lbl", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Cbx_Lbl";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Cbx_ToolTip", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Cbx_ToolTip";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_BtnCbx_BoundParam", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_BtnCbx_BoundParam";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Txt", SqlDbType.Bit).SourceColumn = "DDM_Menu_Hdr_Fltr_Txt";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Txt_Lbl", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Txt_Lbl";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Txt_ToolTip", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Txt_ToolTip";
-                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Option_Btn_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Option_Btn_Type";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Txt_BoundParam", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Txt_BoundParam";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Btn_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Btn_Type";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Btn_Lbl", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Btn_Lbl";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Btn_ToolTip", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Btn_ToolTip";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_Btn_Image_URL", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Btn_Image_URL";
@@ -138,37 +150,38 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
                 sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar).SourceColumn = "Update_User";
 
-                // Define the update query and selectqueryparams (similar to the insert query, but with a WHERE clause)
                 string updateQuery = @"
-								UPDATE DDM_Config_Menu_Hdr
-								   SET DDM_Menu_Option_Hdr_Sort_Order = @DDM_Menu_Option_Hdr_Sort_Order
-								      ,DDM_Menu_Hdr_Option_Type = @DDM_Menu_Hdr_Option_Type
-								      ,DDM_Menu_Hdr_Fltr_Dim_Type = @DDM_Menu_Hdr_Fltr_Dim_Type
-								      ,DDM_Menu_Hdr_Fltr_Dim_Name = @DDM_Menu_Hdr_Fltr_Dim_Name
-								      ,DDM_Menu_Hdr_Fltr_MFB = @DDM_Menu_Hdr_Fltr_MFB
-								      ,DDM_Menu_Hdr_Fltr_Default = @DDM_Menu_Hdr_Fltr_Default
-								      ,DDM_Menu_Hdr_Fltr_Btn = @DDM_Menu_Hdr_Fltr_Btn
-								      ,DDM_Menu_Hdr_Fltr_Btn_Lbl = @DDM_Menu_Hdr_Fltr_Btn_Lbl
-								      ,DDM_Menu_Hdr_Fltr_Btn_ToolTip = @DDM_Menu_Hdr_Fltr_Btn_ToolTip
-								      ,DDM_Menu_Hdr_Fltr_Cbx = @DDM_Menu_Hdr_Fltr_Cbx
-								      ,DDM_Menu_Hdr_Fltr_Cbx_Lbl = @DDM_Menu_Hdr_Fltr_Cbx_Lbl
-								      ,DDM_Menu_Hdr_Fltr_Cbx_ToolTip = @DDM_Menu_Hdr_Fltr_Cbx_ToolTip
-								      ,DDM_Menu_Hdr_Fltr_Txt = @DDM_Menu_Hdr_Fltr_Txt
-								      ,DDM_Menu_Hdr_Fltr_Txt_Lbl = @DDM_Menu_Hdr_Fltr_Txt_Lbl
-								      ,DDM_Menu_Hdr_Fltr_Txt_ToolTip = @DDM_Menu_Hdr_Fltr_Txt_ToolTip
-								      ,DDM_Menu_Hdr_Option_Btn_Type = @DDM_Menu_Hdr_Option_Btn_Type
-								      ,DDM_Menu_Hdr_Btn_Lbl = @DDM_Menu_Hdr_Btn_Lbl
-								      ,DDM_Menu_Hdr_Btn_ToolTip = @DDM_Menu_Hdr_Btn_ToolTip
-								      ,DDM_Menu_Hdr_Btn_Image_URL = @DDM_Menu_Hdr_Btn_Image_URL
-								      ,DDM_Menu_Hdr_Btn_ServerTask = @DDM_Menu_Hdr_Btn_ServerTask
-								      ,DDM_Menu_Hdr_Btn_DBOpen = @DDM_Menu_Hdr_Btn_DBOpen
-								      ,DDM_Menu_Hdr_Btn_DBRefresh = @DDM_Menu_Hdr_Btn_DBRefresh
-								      ,Update_Date = @Update_Date
-								      ,Update_User = @Update_User
-								 WHERE DDM_Menu_ID = @DDM_Menu_ID
-								 AND DDM_Profile_ID = @DDM_Profile_ID
-								 AND DDM_Menu_Hdr_ID = @DDM_Menu_Hdr_ID";
-
+                    UPDATE DDM_Config_Menu_Hdr
+                       SET DDM_Menu_Hdr_Order = @DDM_Menu_Hdr_Order
+                          ,DDM_Menu_Hdr_Option_Type = @DDM_Menu_Hdr_Option_Type
+                          ,DDM_Menu_Hdr_Fltr_Dim_Type = @DDM_Menu_Hdr_Fltr_Dim_Type
+                          ,DDM_Menu_Hdr_Fltr_Dim_Name = @DDM_Menu_Hdr_Fltr_Dim_Name
+                          ,DDM_Menu_Hdr_Fltr_MFB = @DDM_Menu_Hdr_Fltr_MFB
+                          ,DDM_Menu_Hdr_Fltr_Default = @DDM_Menu_Hdr_Fltr_Default
+                          ,DDM_Menu_Hdr_Fltr_Btn = @DDM_Menu_Hdr_Fltr_Btn
+                          ,DDM_Menu_Hdr_Fltr_Btn_Lbl = @DDM_Menu_Hdr_Fltr_Btn_Lbl
+                          ,DDM_Menu_Hdr_Fltr_Btn_ToolTip = @DDM_Menu_Hdr_Fltr_Btn_ToolTip
+                          ,DDM_Menu_Hdr_Fltr_Cbx = @DDM_Menu_Hdr_Fltr_Cbx
+                          ,DDM_Menu_Hdr_Fltr_Cbx_Lbl = @DDM_Menu_Hdr_Fltr_Cbx_Lbl
+                          ,DDM_Menu_Hdr_Fltr_Cbx_ToolTip = @DDM_Menu_Hdr_Fltr_Cbx_ToolTip
+                          ,DDM_Menu_Hdr_Fltr_BtnCbx_BoundParam = @DDM_Menu_Hdr_Fltr_BtnCbx_BoundParam
+                          ,DDM_Menu_Hdr_Fltr_Txt = @DDM_Menu_Hdr_Fltr_Txt
+                          ,DDM_Menu_Hdr_Fltr_Txt_Lbl = @DDM_Menu_Hdr_Fltr_Txt_Lbl
+                          ,DDM_Menu_Hdr_Fltr_Txt_ToolTip = @DDM_Menu_Hdr_Fltr_Txt_ToolTip
+                          ,DDM_Menu_Hdr_Fltr_Txt_BoundParam = @DDM_Menu_Hdr_Fltr_Txt_BoundParam
+                          ,DDM_Menu_Hdr_Btn_Type = @DDM_Menu_Hdr_Btn_Type
+                          ,DDM_Menu_Hdr_Btn_Lbl = @DDM_Menu_Hdr_Btn_Lbl
+                          ,DDM_Menu_Hdr_Btn_ToolTip = @DDM_Menu_Hdr_Btn_ToolTip
+                          ,DDM_Menu_Hdr_Btn_Image_URL = @DDM_Menu_Hdr_Btn_Image_URL
+                          ,DDM_Menu_Hdr_Btn_ServerTask = @DDM_Menu_Hdr_Btn_ServerTask
+                          ,DDM_Menu_Hdr_Btn_DBOpen = @DDM_Menu_Hdr_Btn_DBOpen
+                          ,DDM_Menu_Hdr_Btn_DBRefresh = @DDM_Menu_Hdr_Btn_DBRefresh
+                          ,Update_Date = @Update_Date
+                          ,Update_User = @Update_User
+                     WHERE DDM_Menu_ID = @DDM_Menu_ID
+                     AND DDM_Profile_ID = @DDM_Profile_ID
+                     AND DDM_Menu_Hdr_ID = @DDM_Menu_Hdr_ID";
+                
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
@@ -185,10 +198,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Cbx", SqlDbType.Bit).SourceColumn = "DDM_Menu_Hdr_Fltr_Cbx";
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Cbx_Lbl", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Cbx_Lbl";
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Cbx_ToolTip", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Cbx_ToolTip";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_BtnCbx_BoundParam", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_BtnCbx_BoundParam";
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Txt", SqlDbType.Bit).SourceColumn = "DDM_Menu_Hdr_Fltr_Txt";
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Txt_Lbl", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Txt_Lbl";
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Txt_ToolTip", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Txt_ToolTip";
-                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Option_Btn_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Option_Btn_Type";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Fltr_Txt_BoundParam", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Fltr_Txt_BoundParam";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Btn_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Btn_Type";
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Btn_Lbl", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Btn_Lbl";
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Btn_ToolTip", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Btn_ToolTip";
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Hdr_Btn_Image_URL", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Hdr_Btn_Image_URL";
@@ -201,13 +216,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the delete query and selectqueryparams
                 string deleteQuery = @"
 					             DELETE FROM DDM_Config_Menu_Hdr
-					             WHERE DDM_Profile_ID = @DDM_Profile_ID 
-								 AND DDM_Menu_ID = @DDM_Menu_ID
-								 AND DDM_Menu_Hdr_ID = @DDM_Menu_Hdr_ID";
+					             WHERE DDM_Menu_Hdr_ID = @DDM_Menu_Hdr_ID";
 
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Menu_Hdr_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_Hdr_ID", SourceVersion = DataRowVersion.Original });
 
                 try

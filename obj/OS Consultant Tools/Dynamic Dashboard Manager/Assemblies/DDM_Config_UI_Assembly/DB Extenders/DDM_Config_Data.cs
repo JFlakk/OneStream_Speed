@@ -34,7 +34,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         /// <summary>
         /// Stores the sort order for each menu header option by ID.
         /// </summary>
-        public Dictionary<int, int> GBL_Menu_Header_Options_Sort_Order_Dict { get; set; } = new Dictionary<int, int>();
+        public Dictionary<int, int> GBL_Menu_Hdr_Options_Sort_Order_Dict { get; set; } = new Dictionary<int, int>();
 
         /// <summary>
         /// Stores the sort order for each menu option by ID.
@@ -59,7 +59,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         /// <summary>
         /// Indicates if duplicate menu header option sort orders exist.
         /// </summary>
-        public bool Duplicate_Menu_Header_Options_Sort_Order { get; set; } = false;
+        public bool Duplicate_Menu_Hdr_Options_Sort_Order { get; set; } = false;
 
         private SessionInfo si;
         private BRGlobals globals;
@@ -99,10 +99,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Save menu rows for DDM config.
                             save_Data_Task_Result = Save_DDM_Config_Menu_Rows();
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_DDM_Config_Menu_Header_Rows"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_DDM_Config_Menu_Hdr_Rows"))
                         {
                             // Save menu header rows for DDM config.
-                            save_Data_Task_Result = Save_DDM_Config_Menu_Header_Rows();
+                            save_Data_Task_Result = Save_DDM_Config_Menu_Hdr_Rows();
                         }
                         return save_Data_Task_Result;
 
@@ -266,20 +266,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         /// Saves DDM Profile Config Menu Header Rows.
         /// This method handles the saving of menu header rows for DDM config.
         /// </summary>
-        private XFSqlTableEditorSaveDataTaskResult Save_DDM_Config_Menu_Header_Rows()
+        private XFSqlTableEditorSaveDataTaskResult Save_DDM_Config_Menu_Hdr_Rows()
         {
             try
             {
                 var save_Data_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var saveDataTaskInfo = args.SqlTableEditorSaveDataTaskInfo;
-                int os_DDM_Menu_Header_ID = 0;
+                int os_DDM_Menu_Hdr_ID = 0;
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
                     var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
-                    os_DDM_Menu_Header_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config_Menu_Header", "DDM_Menu_Header_ID");
+                    os_DDM_Menu_Hdr_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config_Menu_Hdr", "DDM_Menu_Hdr_ID");
                 }
 
                 // Loops through each row in the table editor that was added or updated prior to hitting save
@@ -288,13 +288,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                     {
                         // Handle insert logic for new menu header row.
-                        xfRow.ModifiedDataRow.SetValue("DDM_Menu_Header_ID", os_DDM_Menu_Header_ID, XFDataType.Int16);
+                        xfRow.ModifiedDataRow.SetValue("DDM_Menu_Hdr_ID", os_DDM_Menu_Hdr_ID, XFDataType.Int16);
                         xfRow.ModifiedDataRow.SetValue("Create_Date", DateTime.Now, XFDataType.DateTime);
                         xfRow.ModifiedDataRow.SetValue("Create_User", si.UserName, XFDataType.Text);
                         xfRow.ModifiedDataRow.SetValue("Update_Date", DateTime.Now, XFDataType.DateTime);
                         xfRow.ModifiedDataRow.SetValue("Update_User", si.UserName, XFDataType.Text);
 
-                        os_DDM_Menu_Header_ID++; // Increment for each new row
+                        os_DDM_Menu_Hdr_ID++; // Increment for each new row
                     }
                     else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
                     {
@@ -442,7 +442,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         /// Checks for duplicate menu header options and sort orders.
         /// This method is used to identify duplicates for menu header options during the save process.
         /// </summary>
-        private void Duplicate_Menu_Header_Options_Check(int wfProfile_ID, String Dup_Process_Step, [Optional] String DDL_Process, [Optional] XFEditedDataRow Config_Menu_DataRow)
+        private void Duplicate_Menu_Hdr_Options_Check(int wfProfile_ID, String Dup_Process_Step, [Optional] String DDL_Process, [Optional] XFEditedDataRow Config_Menu_DataRow)
         {
             switch (Dup_Process_Step)
             {
@@ -560,7 +560,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var save_Data_Task_Result = new XFSelectionChangedTaskResult();
 				
-                var wf_Profile_ID = Guid.Parse(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_trv_Root_WF_Profile_Detail", Guid.Empty.ToString()));
+                var wf_Profile_ID = Guid.Parse(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_trv_WF_Profile", Guid.Empty.ToString()));
 
                 int new_Profile_Config_ID = 0;
                 if (new_Profile_Config_ID == 0)

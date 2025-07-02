@@ -220,7 +220,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 //            var XF_Load_Dashboard_Task_Result = new XFLoadDashboardTaskResult();
 //            XF_Load_Dashboard_Task_Result = Load_Dashboard_Task_Result;
 
-//            var menu_Header_Options_DT = new DataTable("menu_Header_Options");
+//            var Menu_Hdr_Options_DT = new DataTable("Menu_Hdr_Options");
 
 //            var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
 //            using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -232,7 +232,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 //                // Define the select query and parameters
 //                string selectQuery = @"
 //							        	Select *
-//										FROM DDM_Profile_Config_Menu_Header_Options
+//										FROM DDM_Profile_Config_Menu_Hdr_Options
 //										WHERE DDM_Profile_ID = @DDM_Profile_ID
 //										AND DDM_Profile_Menu_Option_ID = @DDM_Profile_Menu_Option_ID
 //										ORDER BY DDM_Menu_Option_Header_Sort_Order";
@@ -244,9 +244,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 //                    new SqlParameter("@DDM_Profile_Menu_Option_ID", SqlDbType.Int) { Value = menu_row["DDM_Profile_Menu_Option_ID"]}
 //                };
 
-//                sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, menu_Header_Options_DT, selectQuery, parameters);
+//                sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, Menu_Hdr_Options_DT, selectQuery, parameters);
 //            }
-//            if (menu_Header_Options_DT.Rows.Count > 0)
+//            if (Menu_Hdr_Options_DT.Rows.Count > 0)
 //            {
 //                BRApi.ErrorLog.LogMessage(si, "Hit > 1 Row");
 //                //XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("DL_MCM_Calc_Type",calc_Type_DT.Rows[0]["Calc_Type"].ToString());
@@ -259,119 +259,119 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 //            int header_option_cnt = 0;
 //            // Loop through each row in the DataTable
-//            foreach (DataRow row in menu_Header_Options_DT.Rows)
+//            foreach (DataRow row in Menu_Hdr_Options_DT.Rows)
 //            {
 //                header_option_cnt += 1;
 //                // Check specific conditions and set substitution variables accordingly
-//                if (row["DDM_Menu_Header_Option_Type"].ToString() == "Filter")
+//                if (row["DDM_Menu_Hdr_Option_Type"].ToString() == "Filter")
 //                {
-//                    UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString());
-//                    UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Dim_Name", row["DDM_Menu_Header_Filter_Dim_Name"].ToString());
-//                    UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_MFB", row["DDM_Menu_Header_Filter_MFB"].ToString());
-//                    //UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result,$"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Default",row["DDM_Menu_Header_Filter_Default"].ToString());
-//                    if (row["DDM_Menu_Header_Filter_Btn"].ToString() == "True")
+//                    UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString());
+//                    UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Dim_Name", row["DDM_Menu_Hdr_Fltr_Dim_Name"].ToString());
+//                    UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_MFB", row["DDM_Menu_Hdr_Fltr_MFB"].ToString());
+//                    //UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result,$"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Default",row["DDM_Menu_Hdr_Fltr_Default"].ToString());
+//                    if (row["DDM_Menu_Hdr_Fltr_Btn"].ToString() == "True")
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Btn_Visible", "True");
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Btn_Label", row["DDM_Menu_Header_Filter_Btn_Lbl"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Btn_ToolTip", row["DDM_Menu_Header_Filter_Btn_ToolTip"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Btn_Visible", "True");
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Btn_Label", row["DDM_Menu_Hdr_Fltr_Btn_Lbl"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Btn_ToolTip", row["DDM_Menu_Hdr_Fltr_Btn_ToolTip"].ToString());
 //                    }
 //                    else
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Btn_Visible", "False");
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Btn_Label", String.Empty);
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Btn_ToolTip", String.Empty);
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Btn_Visible", "False");
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Btn_Label", String.Empty);
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Btn_ToolTip", String.Empty);
 //                    }
 
-//                    if (row["DDM_Menu_Header_Filter_Cbx"].ToString() == "True")
+//                    if (row["DDM_Menu_Hdr_Fltr_Cbx"].ToString() == "True")
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Cbx_Visible", "True");
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Cbx_Label", row["DDM_Menu_Header_Filter_Cbx_Lbl"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Cbx_ToolTip", row["DDM_Menu_Header_Filter_Cbx_ToolTip"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Cbx_Visible", "True");
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Cbx_Label", row["DDM_Menu_Hdr_Fltr_Cbx_Lbl"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Cbx_ToolTip", row["DDM_Menu_Hdr_Fltr_Cbx_ToolTip"].ToString());
 //                    }
 //                    else
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Cbx_Visible", "False");
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Cbx_Label", String.Empty);
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Cbx_ToolTip", String.Empty);
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Cbx_Visible", "False");
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Cbx_Label", String.Empty);
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Cbx_ToolTip", String.Empty);
 //                    }
-//                    if (row["DDM_Menu_Header_Filter_Txt"].ToString() == "True")
+//                    if (row["DDM_Menu_Hdr_Fltr_Txt"].ToString() == "True")
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Txt_Visible", "True");
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Txt_Label", row["DDM_Menu_Header_Filter_Txt_Lbl"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Txt_ToolTip", row["DDM_Menu_Header_Filter_Txt_ToolTip"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Txt_Visible", "True");
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Txt_Label", row["DDM_Menu_Hdr_Fltr_Txt_Lbl"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Txt_ToolTip", row["DDM_Menu_Hdr_Fltr_Txt_ToolTip"].ToString());
 //                    }
 //                    else
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Txt_Visible", "False");
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Txt_Label", String.Empty);
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Filter_Dim_Type"].ToString() + "_Txt_ToolTip", String.Empty);
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Txt_Visible", "False");
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Txt_Label", String.Empty);
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Fltr_Dim_Type"].ToString() + "_Txt_ToolTip", String.Empty);
 //                    }
 //                }
-//                else if (row["DDM_Menu_Header_Option_Type"].ToString() == "Button")
+//                else if (row["DDM_Menu_Hdr_Option_Type"].ToString() == "Button")
 //                {
-//                    bool Generic_DBExt = row["DDM_Menu_Header_Option_Btn_Type"].ToString().IndexOf("Generic_DBExt", StringComparison.OrdinalIgnoreCase) >= 0;
+//                    bool Generic_DBExt = row["DDM_Menu_Hdr_Option_Btn_Type"].ToString().IndexOf("Generic_DBExt", StringComparison.OrdinalIgnoreCase) >= 0;
 
 //                    if (Generic_DBExt)
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Header_Btn_Lbl"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Header_Btn_ToolTip"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Header_Btn_Image_URL"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Header_Btn_ServerTask"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Header_Btn_DBOpen"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Header_Btn_DBRefresh"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Hdr_Btn_Lbl"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Hdr_Btn_ToolTip"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Hdr_Btn_Image_URL"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Hdr_Btn_ServerTask"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Hdr_Btn_DBOpen"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Hdr_Btn_DBRefresh"].ToString());
 //                    }
 
-//                    bool Open_Dialog = row["DDM_Menu_Header_Option_Btn_Type"].ToString().IndexOf("Open_Dialog", StringComparison.OrdinalIgnoreCase) >= 0;
+//                    bool Open_Dialog = row["DDM_Menu_Hdr_Option_Btn_Type"].ToString().IndexOf("Open_Dialog", StringComparison.OrdinalIgnoreCase) >= 0;
 
 //                    if (Open_Dialog)
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Header_Btn_Lbl"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Header_Btn_ToolTip"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Header_Btn_Image_URL"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Header_Btn_ServerTask"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Header_Btn_DBOpen"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Header_Btn_DBRefresh"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Hdr_Btn_Lbl"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Hdr_Btn_ToolTip"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Hdr_Btn_Image_URL"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Hdr_Btn_ServerTask"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Hdr_Btn_DBOpen"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Hdr_Btn_DBRefresh"].ToString());
 //                    }
 
-//                    bool Save_DM_Seq = row["DDM_Menu_Header_Option_Btn_Type"].ToString().IndexOf("Save_DM_Seq", StringComparison.OrdinalIgnoreCase) >= 0;
+//                    bool Save_DM_Seq = row["DDM_Menu_Hdr_Option_Btn_Type"].ToString().IndexOf("Save_DM_Seq", StringComparison.OrdinalIgnoreCase) >= 0;
 
 //                    if (Save_DM_Seq)
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Header_Btn_Lbl"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Header_Btn_ToolTip"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Header_Btn_Image_URL"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Header_Btn_ServerTask"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Header_Btn_DBOpen"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Header_Btn_DBRefresh"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Hdr_Btn_Lbl"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Hdr_Btn_ToolTip"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Hdr_Btn_Image_URL"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Hdr_Btn_ServerTask"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Hdr_Btn_DBOpen"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Hdr_Btn_DBRefresh"].ToString());
 //                    }
 
-//                    bool Complete_WF = row["DDM_Menu_Header_Option_Btn_Type"].ToString().IndexOf("Complete_WF", StringComparison.OrdinalIgnoreCase) >= 0;
+//                    bool Complete_WF = row["DDM_Menu_Hdr_Option_Btn_Type"].ToString().IndexOf("Complete_WF", StringComparison.OrdinalIgnoreCase) >= 0;
 
 //                    if (Complete_WF)
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Header_Btn_Lbl"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Header_Btn_ToolTip"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Header_Btn_Image_URL"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Header_Btn_ServerTask"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Header_Btn_DBOpen"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Header_Btn_DBRefresh"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Hdr_Btn_Lbl"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Hdr_Btn_ToolTip"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Hdr_Btn_Image_URL"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Hdr_Btn_ServerTask"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Hdr_Btn_DBOpen"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Hdr_Btn_DBRefresh"].ToString());
 //                    }
 
-//                    bool Revert_WF = row["DDM_Menu_Header_Option_Btn_Type"].ToString().IndexOf("Revert_WF", StringComparison.OrdinalIgnoreCase) >= 0;
+//                    bool Revert_WF = row["DDM_Menu_Hdr_Option_Btn_Type"].ToString().IndexOf("Revert_WF", StringComparison.OrdinalIgnoreCase) >= 0;
 
 //                    if (Revert_WF)
 //                    {
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Header_Btn_Lbl"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Header_Btn_ToolTip"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Header_Btn_Image_URL"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Header_Btn_ServerTask"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Header_Btn_DBOpen"].ToString());
-//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Header_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Header_Btn_DBRefresh"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_Header_Col" + header_option_cnt.ToString(), $"0ax_DDM_App_Dyn_DB_Header_Btn_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Text", row["DDM_Menu_Hdr_Btn_Lbl"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ToolTip", row["DDM_Menu_Hdr_Btn_ToolTip"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_Image_URL", row["DDM_Menu_Hdr_Btn_Image_URL"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_ServerTask", row["DDM_Menu_Hdr_Btn_ServerTask"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Open", row["DDM_Menu_Hdr_Btn_DBOpen"].ToString());
+//                        UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, $"IV_DDM_App_" + row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() + "_DB_To_Refresh", row["DDM_Menu_Hdr_Btn_DBRefresh"].ToString());
 //                    }
 
 //                }

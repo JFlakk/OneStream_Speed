@@ -384,7 +384,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
 				
                 //WsDynamicDbrdCompMemberEx tempCompEx = new WsDynamicDbrdCompMemberEx();
 
-                string baseSearch = "DDM_Menu_Header_";
+                string baseSearch = "DDM_Menu_Hdr_";
 
                 string optType = row[baseSearch + "Option_Type"].ToString();
 
@@ -517,7 +517,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
                         compDefinition.SetElementValue("ImageFileSourceType", "DashboardFile");
                         compDefinition.SetElementValue("ImageUrlOrFullFileName", row[baseSearch + "_Image_URL"].ToString());
 
-                        tempComp.Component.SelectionChangedUIActionType = row["DDM_Menu_Header_Option_Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
+                        tempComp.Component.SelectionChangedUIActionType = row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
 
                         tempComp.Component.SelectionChangedTaskType = serverTaskTypeResolver.ContainsKey(row[baseSearch + "_ServerTaskType"].ToString()) ? serverTaskTypeResolver[row[baseSearch + "_ServerTaskType"].ToString()] : XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;
                         //tempComp.SelectionChangedTaskType = XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;

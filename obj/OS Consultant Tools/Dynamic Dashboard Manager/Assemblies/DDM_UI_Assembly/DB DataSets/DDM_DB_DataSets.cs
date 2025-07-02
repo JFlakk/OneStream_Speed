@@ -325,7 +325,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 // Define the SQL Statement
                 var sql = @"
                     SELECT *
-                    FROM DDM_Config_Menu_Header
+                    FROM DDM_Config_Menu_Hdr
                     WHERE DDM_Profile_ID = @ProfileKey
                     AND DDM_Menu_ID = @OptionID";
 

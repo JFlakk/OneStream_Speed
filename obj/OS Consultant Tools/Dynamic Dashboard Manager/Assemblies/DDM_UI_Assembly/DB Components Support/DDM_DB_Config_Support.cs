@@ -87,7 +87,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             foreach (DataRow item in headerItems.Rows)
             {
 
-                string baseSearch = "DDM_Menu_Header_";
+                string baseSearch = "DDM_Menu_Hdr_";
 
                 string optType = item[baseSearch + "Option_Type"].ToString();
 
@@ -237,7 +237,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             string menu_option = customSubstVarsAlreadyResolved.XFGetValue(Param_DashboardMenuOption, "1");
 
-            var menu_Header_Options_DT = new DataTable("menu_Header_Options");
+            var Menu_Hdr_Options_DT = new DataTable("Menu_Hdr_Options");
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -249,10 +249,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the select query and parameters
                 string selectQuery = @"
 							        	Select *
-										FROM DDM_Config_Menu_Header
+										FROM DDM_Config_Menu_Hdr
 										WHERE DDM_Profile_ID = @DDM_Profile_ID
 										AND DDM_Menu_ID = @DDM_Menu_ID
-										ORDER BY DDM_Menu_Header_Order";
+										ORDER BY DDM_Menu_Hdr_Order";
 
                 // Create an array of SqlParameter objects
                 var parameters = new SqlParameter[]
@@ -263,11 +263,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 if (!String.IsNullOrEmpty(menu_option) && configProfileID != -1)
                 {
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, menu_Header_Options_DT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, Menu_Hdr_Options_DT, selectQuery, parameters);
                 }
             }
 
-            return menu_Header_Options_DT;
+            return Menu_Hdr_Options_DT;
         }
 
     }

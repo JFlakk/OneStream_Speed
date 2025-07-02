@@ -87,8 +87,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
                 var default_WF_Profile = get_Default_WF_Profile(si, globals, api, db_args, new_root_Profile, default_root_Profile);
                 BRApi.ErrorLog.LogMessage(si, "Hit: " + default_WF_Profile);
-                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_trv_Root_WF_Profile_Detail", default_WF_Profile);
-                var prior_WF_Profile = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("IV_DDM_trv_Root_WF_Profile_Detail", "NA");
+                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_trv_WF_Profile", default_WF_Profile);
+                var prior_WF_Profile = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("IV_DDM_trv_WF_Profile", "NA");
                 var new_WF_Profile = true;
                 if ((default_WF_Profile == prior_WF_Profile) && (default_WF_Profile != "NA"))
                 {
@@ -134,8 +134,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                     var default_WF_Profile = get_Default_WF_Profile(si, globals, api, db_args, new_root_Profile, default_root_Profile);
                     BRApi.ErrorLog.LogMessage(si, "Hit: " + default_WF_Profile);
-                    Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_trv_Root_WF_Profile_Detail", default_WF_Profile);
-                    var prior_WF_Profile = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("IV_DDM_trv_Root_WF_Profile_Detail", "NA");
+                    Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_trv_WF_Profile", default_WF_Profile);
+                    var prior_WF_Profile = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("IV_DDM_trv_WF_Profile", "NA");
                     var new_WF_Profile = true;
                     if ((default_WF_Profile == prior_WF_Profile) && (default_WF_Profile != "NA"))
                     {
@@ -247,7 +247,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 if (new_root_Profile == false)
                 {
-                    return db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("IV_DDM_trv_Root_WF_Profile_Detail", "NA");
+                    return db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("IV_DDM_trv_WF_Profile", "NA");
                 }
                 else
                 {
