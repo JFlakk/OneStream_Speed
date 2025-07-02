@@ -200,23 +200,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        var sql_DDM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
+                        var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                         // Create a new DataTable
 
-                        var sqlDataAdapter = new SqlDataAdapter();
-                        // Define the select query and parameters
-                        string selectQuery = @"
-				       						SELECT ProfileName 
-		        							FROM WorkflowProfileHierarchy
-		        							WHERE HierarchyLevel = 1
-											AND IsTemplate = 0 ";
+                        var sqa = new SqlDataAdapter();
+                        // Define the select query and sqlparams
+                        var sql = @"
+		       						SELECT ProfileName 
+        							FROM WorkflowProfileHierarchy
+        							WHERE HierarchyLevel = 1
+									AND IsTemplate = 0 ";
 
                         // Create an array of SqlParameter objects
-                        var parameters = new SqlParameter[]
+                        var sqlparams = new SqlParameter[]
                         {
                         };
 
-                        sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, root_Profile_DT, selectQuery, parameters);
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, root_Profile_DT, sql, sqlparams);
                     }
                     // Check if the DataTable has any rows
                     if (root_Profile_DT.Rows.Count > 0)
@@ -256,12 +256,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        var sql_DDM_Get_DataSets = new SQL_DDM_Get_DataSets(si, connection);
+                        var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                         // Create a new DataTable
 
-                        var sqlDataAdapter = new SqlDataAdapter();
-                        // Define the select query and parameters
-                        string selectQuery = @"
+                        var sqa = new SqlDataAdapter();
+                        // Define the select query and sqlparams
+                        string sql = @"
 										SELECT prof.ProfileKey,prof.ProfileName
 										FROM WorkflowProfileHierarchy prof
 										WHERE prof.HierarchyLevel = 1
@@ -269,12 +269,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 										AND prof.ProfileName = @root_ProfileName";
 
                         // Create an array of SqlParameter objects
-                        var parameters = new SqlParameter[]
+                        var sqlparams = new SqlParameter[]
                         {
                         new SqlParameter("@root_ProfileName", SqlDbType.NVarChar,100) { Value = root_ProfileName }
                         };
 
-                        sql_DDM_Get_DataSets.Fill_Get_DDM_DataTable(si, sqlDataAdapter, wf_Profile_DT, selectQuery, parameters);
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, wf_Profile_DT, sql, sqlparams);
                     }
                     // Check if the DataTable has any rows
                     if (wf_Profile_DT.Rows.Count > 0)

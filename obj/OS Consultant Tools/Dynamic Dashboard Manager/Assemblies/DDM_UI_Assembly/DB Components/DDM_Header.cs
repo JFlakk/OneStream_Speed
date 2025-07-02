@@ -397,9 +397,6 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
 
                 var tempComp = new DashboardDbrdCompMemberEx();
 					
-//var new_params = new WsDynamicParameterCollection();
-//					new_params.Parameters.Add(new_params.GetParameterUsingBasedOnName("ML_App").DynamicParameterEx.DynamicParameter.
-
                 string storedCompName_servertaskbtn = "btn_DDM_App_Complete_WF";
 
 
@@ -407,7 +404,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
                 switch (optType)
                 {
                     case "Filter":
-                        baseSearch += "Filter";
+                        baseSearch += "Fltr";
 
 
 
@@ -417,7 +414,6 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
                             {
 
                                 tempComp = api.GetStoredComponentForDynamicDashboard(si,ws,dynamicDashboardEx.DynamicDashboard, colSuffix.ToLower() + "_DDM_Generic");
-								//tempComp.Component.
                                 tempComp.Component.ApplyParamValueToCurrentDbrd = true;
                                 //								tempComp.DisplayFormat = "|!LV_Std_btn_Format!|";
 
@@ -517,7 +513,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
                         compDefinition.SetElementValue("ImageFileSourceType", "DashboardFile");
                         compDefinition.SetElementValue("ImageUrlOrFullFileName", row[baseSearch + "_Image_URL"].ToString());
 
-                        tempComp.Component.SelectionChangedUIActionType = row["DDM_Menu_Hdr_Option_Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
+                        tempComp.Component.SelectionChangedUIActionType = row["DDM_Menu_Hdr_Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
 
                         tempComp.Component.SelectionChangedTaskType = serverTaskTypeResolver.ContainsKey(row[baseSearch + "_ServerTaskType"].ToString()) ? serverTaskTypeResolver[row[baseSearch + "_ServerTaskType"].ToString()] : XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;
                         //tempComp.SelectionChangedTaskType = XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;

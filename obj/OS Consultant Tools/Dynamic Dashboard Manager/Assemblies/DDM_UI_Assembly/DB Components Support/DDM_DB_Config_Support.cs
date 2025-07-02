@@ -93,7 +93,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 if (optType == "Filter")
                 {
-                    baseSearch += "Filter";
+                    baseSearch += "Fltr";
 
                     foreach (string colSuffix in DDM_Header.dashboardTypeResolver.Keys)
                     {
