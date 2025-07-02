@@ -336,7 +336,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             //			}
             //			BRApi.ErrorLog.LogMessage(si, "xml data: " + testStr);
 
-
+			
             // add header items
             DataTable headerItems = DDM_DB_Config_Support.getHeaderItems(si, customSubstVarsAlreadyResolved);
             //BRApi.ErrorLog.LogMessage(si, "headerItems: " + headerItems.Rows.Count);
@@ -369,7 +369,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string BP_CompReplacement = "";
                 WsDynamicDbrdCompMember tempCompMember = new WsDynamicDbrdCompMember();
                 XElement compDefinition = null;
+				
+					
+var new_param = new WsDynamicParameter();
+var test = new WsDynamicItemNameKey();
+test = new_param.CreateDynamicItemNameKey();
+				new_param.Parameter = new DashboardParameter();
+				new_param.Parameter.Name = "ML_DDM_App_UD1_Selection";
+				new_param.Parameter.DimTypeName = "UD1";
+BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
+				
+				
 
+				
                 //WsDynamicDbrdCompMemberEx tempCompEx = new WsDynamicDbrdCompMemberEx();
 
                 string baseSearch = "DDM_Menu_Header_";
@@ -383,8 +395,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         { TmpParam_BoundParameter, BP_CompReplacement }
                     };
 
-                DashboardComponent tempComp = null;
-
+                var tempComp = new DashboardDbrdCompMemberEx();
+					
+//var new_params = new WsDynamicParameterCollection();
+//					new_params.Parameters.Add(new_params.GetParameterUsingBasedOnName("ML_App").DynamicParameterEx.DynamicParameter.
 
                 string storedCompName_servertaskbtn = "btn_DDM_App_Complete_WF";
 
@@ -401,17 +415,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         {
                             if ((bool)row[baseSearch + "_" + colSuffix])
                             {
-                                tempComp = EngineDashboardComponents.GetComponent(api.DbConnAppOrFW, ws.UniqueID, maintUnit.UniqueID, colSuffix.ToLower() + "_DDM_Generic", false, true);
 
-                                tempComp.ApplyParamValueToCurrentDbrd = true;
+                                tempComp = api.GetStoredComponentForDynamicDashboard(si,ws,dynamicDashboardEx.DynamicDashboard, colSuffix.ToLower() + "_DDM_Generic");
+								//tempComp.Component.
+                                tempComp.Component.ApplyParamValueToCurrentDbrd = true;
                                 //								tempComp.DisplayFormat = "|!LV_Std_btn_Format!|";
 
-                                tempComp.DashboardComponentType = dashboardTypeResolver[colSuffix];
-                                tempComp.Text = row[baseSearch + "_" + colSuffix + "_Lbl"].ToString();
-                                tempComp.ToolTip = row[baseSearch + "_" + colSuffix + "_ToolTip"].ToString();
+                                tempComp.Component.DashboardComponentType = dashboardTypeResolver[colSuffix];
+                                tempComp.Component.Text = row[baseSearch + "_" + colSuffix + "_Lbl"].ToString();
+                                tempComp.Component.ToolTip = row[baseSearch + "_" + colSuffix + "_ToolTip"].ToString();
                                 string dimType = row[baseSearch + "_Dim_Type"].ToString();
 
-                                BP_CompReplacement = row[baseSearch + "_" + colSuffix + "_BoundParameter"].ToString();
+                                BP_CompReplacement = new_param.Parameter.Name; //row[baseSearch + "_" + colSuffix + "_BoundParameter"].ToString();
 
                                 if (BP_CompReplacement == "")
                                 {
@@ -420,7 +435,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                                 }
 
-                                tempComp.BoundParameterName = "~!" + TmpParam_BoundParameter + "!~";
+                                //tempComp.BoundParameterName = "~!" + TmpParam_BoundParameter + "!~";
+								
                                 //								tempComp.BoundParameterName = BP_CompReplacement;
 
                                 string defaultSelection = row[baseSearch + "_Default"].ToString();
@@ -429,17 +445,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                                 if (colSuffix == "Btn")
                                 {
-                                    if (!String.IsNullOrEmpty(tempComp.XmlData))
+                                    if (!String.IsNullOrEmpty(tempComp.Component.XmlData))
                                     {
-                                        compDefinition = XElement.Parse(tempComp.XmlData);
+                                        compDefinition = XElement.Parse(tempComp.Component.XmlData);
                                     }
                                     else
                                     {
                                         compDefinition = buildButtonXML(optType);
                                     }
 
-                                    tempComp.SelectionChangedUIActionType = XFSelectionChangedUIActionType.Refresh;
-                                    tempComp.DashboardsToRedraw = "DDM_App_Content,DDM_App_Header"; //TODO: Update to use row btn dashboard refresh if necessary
+                                    tempComp.Component.SelectionChangedUIActionType = XFSelectionChangedUIActionType.Refresh;
+                                    tempComp.Component.DashboardsToRedraw = "DDM_App_Content,DDM_App_Header"; //TODO: Update to use row btn dashboard refresh if necessary
 
                                     compDefinition.SetAttributeValue("ButtonType", "SelectMemberDialog"); // TODO: Check if DashboardComponentType.MemberSelectDialog is the same thing as this. Would likely still need to update through XML though for underlying
 
@@ -457,7 +473,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                                 if (compDefinition != null)
                                 {
-                                    tempComp.XmlData = compDefinition.ToString();
+                                    tempComp.Component.XmlData = compDefinition.ToString();
                                 }
 
                                 nameSuffix = "test" + Random.Shared.NextInt64(0, 10);
@@ -467,7 +483,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                         { TmpParam_BoundParameter, BP_CompReplacement }
                                     };
 
-                                WsDynamicComponentEx filterCompEx = api.GetDynamicComponentForDynamicDashboard(si, ws, dynamicDashboardEx, tempComp, nameSuffix, templateSubVars, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
+                                WsDynamicComponentEx filterCompEx = api.GetDynamicComponentForDynamicDashboard(si, ws, dynamicDashboardEx, tempComp.Component, nameSuffix, templateSubVars, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
                                 wsDynCompMembers.Add(new WsDynamicDbrdCompMemberEx(tempCompMember, filterCompEx));
 
                                 // add a secondary button component to handle text entry
@@ -482,41 +498,41 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         break;
                     case "Button":
                         baseSearch += "Btn";
-                        tempComp = EngineDashboardComponents.GetComponent(api.DbConnAppOrFW, ws.UniqueID, maintUnit.UniqueID, "btn_DDM_Generic", false, true);
+                        tempComp = api.GetStoredComponentForDynamicDashboard(si,ws,dynamicDashboardEx.DynamicDashboard, "btn_DDM_Generic");
 
 
-                        tempComp.DashboardComponentType = DashboardComponentType.Button;
+                        tempComp.Component.DashboardComponentType = DashboardComponentType.Button;
 
-                        if (!String.IsNullOrEmpty(tempComp.XmlData))
+                        if (!String.IsNullOrEmpty(tempComp.Component.XmlData))
                         {
-                            compDefinition = XElement.Parse(tempComp.XmlData);
+                            compDefinition = XElement.Parse(tempComp.Component.XmlData);
                         }
                         else
                         {
                             compDefinition = buildButtonXML(optType);
                         }
 
-                        tempComp.Text = row[baseSearch + "_Lbl"].ToString();
-                        tempComp.ToolTip = row[baseSearch + "_ToolTip"].ToString();
+                        tempComp.Component.Text = row[baseSearch + "_Lbl"].ToString();
+                        tempComp.Component.ToolTip = row[baseSearch + "_ToolTip"].ToString();
                         compDefinition.SetElementValue("ImageFileSourceType", "DashboardFile");
                         compDefinition.SetElementValue("ImageUrlOrFullFileName", row[baseSearch + "_Image_URL"].ToString());
 
-                        tempComp.SelectionChangedUIActionType = row["DDM_Menu_Header_Option_Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
+                        tempComp.Component.SelectionChangedUIActionType = row["DDM_Menu_Header_Option_Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
 
-                        tempComp.SelectionChangedTaskType = serverTaskTypeResolver.ContainsKey(row[baseSearch + "_ServerTaskType"].ToString()) ? serverTaskTypeResolver[row[baseSearch + "_ServerTaskType"].ToString()] : XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;
+                        tempComp.Component.SelectionChangedTaskType = serverTaskTypeResolver.ContainsKey(row[baseSearch + "_ServerTaskType"].ToString()) ? serverTaskTypeResolver[row[baseSearch + "_ServerTaskType"].ToString()] : XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;
                         //tempComp.SelectionChangedTaskType = XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;
-                        tempComp.SelectionChangedTaskArgs = row[baseSearch + "_ServerTask"].ToString();
+                        tempComp.Component.SelectionChangedTaskArgs = row[baseSearch + "_ServerTask"].ToString();
 
 
-                        tempComp.DashboardsToRedraw = row[baseSearch + "_DBRefresh"].ToString();
-                        tempComp.DashboardForDialog = row[baseSearch + "_DBOpen"].ToString();
+                        tempComp.Component.DashboardsToRedraw = row[baseSearch + "_DBRefresh"].ToString();
+                        tempComp.Component.DashboardForDialog = row[baseSearch + "_DBOpen"].ToString();
 
                         if (compDefinition != null)
                         {
-                            tempComp.XmlData = compDefinition.ToString();
+                            tempComp.Component.XmlData = compDefinition.ToString();
                         }
 
-                        WsDynamicComponentEx buttonCompEx = api.GetDynamicComponentForDynamicDashboard(si, ws, dynamicDashboardEx, tempComp, nameSuffix, templateSubVars, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
+                        WsDynamicComponentEx buttonCompEx = api.GetDynamicComponentForDynamicDashboard(si, ws, dynamicDashboardEx, tempComp.Component, nameSuffix, templateSubVars, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
                         wsDynCompMembers.Add(new WsDynamicDbrdCompMemberEx(tempCompMember, buttonCompEx));
 						
 

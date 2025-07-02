@@ -160,7 +160,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 string selectQuery = @"
 										Select DDM_Profile_ID
-										From DDM_Profile_Config
+										From DDM_Config
 										Where DDM_Profile_Name = @OS_ProfileKey";
 
                 var parameters = new SqlParameter[] {
@@ -196,8 +196,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     string selectQuery = @"
 											Select *
-											From DDM_Profile_Config_Menu_Options
-											Where DDM_Profile_Menu_Option_ID = @Menu_Option
+											From DDM_Config_Menu
+											Where DDM_Menu_ID = @Menu_Option
 											And DDM_Profile_ID = @ProfileID";
 
                     var parameters = new SqlParameter[] {
@@ -249,16 +249,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the select query and parameters
                 string selectQuery = @"
 							        	Select *
-										FROM DDM_Profile_Config_Menu_Header_Options
+										FROM DDM_Config_Menu_Header
 										WHERE DDM_Profile_ID = @DDM_Profile_ID
-										AND DDM_Profile_Menu_Option_ID = @DDM_Profile_Menu_Option_ID
-										ORDER BY DDM_Menu_Option_Header_Sort_Order";
+										AND DDM_Menu_ID = @DDM_Menu_ID
+										ORDER BY DDM_Menu_Header_Order";
 
                 // Create an array of SqlParameter objects
                 var parameters = new SqlParameter[]
                 {
                     new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { Value = configProfileID},
-                    new SqlParameter("@DDM_Profile_Menu_Option_ID", SqlDbType.Int) { Value = menu_option}
+                    new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = menu_option}
                 };
 
                 if (!String.IsNullOrEmpty(menu_option) && configProfileID != -1)

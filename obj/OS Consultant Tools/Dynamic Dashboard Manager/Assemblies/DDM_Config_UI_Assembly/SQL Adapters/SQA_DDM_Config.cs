@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -29,14 +29,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             _connection = connection;
         }
 
-        public void Fill_DDM_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string selectQuery, params SqlParameter[] parameters)
+        public void Fill_DDM_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string selectQuery, params SqlParameter[] sqlparams)
         {
             using (SqlCommand command = new SqlCommand(selectQuery, _connection))
             {
                 command.CommandType = CommandType.Text;
-                if (parameters != null)
+                if (sqlparams != null)
                 {
-                    command.Parameters.AddRange(parameters);
+                    command.Parameters.AddRange(sqlparams);
                 }
 
                 sqa.SelectCommand = command;
@@ -44,11 +44,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        public void Update_DDM_Config(SessionInfo si, DataTable dataTable, SqlDataAdapter sqa)
+        public void Update_DDM_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
-                // Define the insert command and parameters
+                // Define the insert command and sqlparams
                 string insertQuery = @"
                     INSERT INTO DDM_Config (
                          DDM_Profile_ID, DDM_Profile_Name, DDM_Profile_Step_Type, 
@@ -68,7 +68,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
                 sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
 
-                // Define the update command and parameters
+                // Define the update command and sqlparams
                 string updateQuery = @"
                     UPDATE dbo.DDM_Config SET
                          DDM_Profile_Name = @DDM_Profile_Name, 
@@ -90,7 +90,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
                 sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
 
-                // Define the delete command and parameters
+                // Define the delete command and sqlparams
                 string deleteQuery = @"
                     DELETE FROM dbo.DDM_Config 
                     WHERE DDM_Profile_ID = @DDM_Profile_ID;";
@@ -100,7 +100,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 try
                 {
-                    sqa.Update(dataTable);
+                    sqa.Update(dt);
                     transaction.Commit();
                 }
                 catch (Exception)

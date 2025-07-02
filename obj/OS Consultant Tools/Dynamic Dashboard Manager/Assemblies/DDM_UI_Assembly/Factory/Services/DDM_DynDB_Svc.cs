@@ -33,16 +33,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                // Dynamic Navigation Menu
 		                "0a_DDM_Profile_Config_Header" => DDM_Header.Get_DynamicNavMenuLabel_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
 		                // General header
-		                "DDM_App_Header" => DDM_Header.Get_DynamicNavMenu_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+		                "0_DDM_App_Header" => DDM_Header.Get_DynamicNavMenu_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
 		                // Label & Menu hide/show
-		                "DDM_App_Header_MenuLabel" => DDM_Header.Get_DynamicNavMenuLabel_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+		                "0a_DDM_App_Header_MenuLabel" => DDM_Header.Get_DynamicNavMenuLabel_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
 		                // configurable header items
-		                "DDM_App_Header_ConfigItems" => DDM_Header.Get_DynamicNavConfigItems_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.Get_DynamicHeader(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
 		
 		
 		
 		                // Dynamic Content
-		                "DDM_App_Content" => DDM_Content.Get_DynamicContent_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+		                "1a_DDM_App_Content_DB" => DDM_Content.Get_DynamicContent_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
 		
 		                //                // Color Dynamic
 		                //                "2000_ColorDynamic_Content" => ColorDynamicDashboard.Get_2000_ColorDynamic_Content_DynamicDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
@@ -147,7 +147,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    return api.GetDynamicParametersForDynamicComponent(si, workspace, dynamicComponentEx, string.Empty, null, TriStateBool.FalseValue, WsDynamicItemStateType.Unknown);
+                    return api.GetDynamicParametersForDynamicComponent(si, workspace, dynamicComponentEx,string.Empty,dynamicComponentEx.TemplateSubstVars, TriStateBool.FalseValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
                 }
 
                 return null;

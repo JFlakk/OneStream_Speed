@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -30,7 +30,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
 
-        public void Fill_DDM_Config_Menu_DataTable(SessionInfo si, SqlDataAdapter adapter, DataTable dataTable, string selectQuery, params SqlParameter[] parameters)
+        public void Fill_DDM_Config_Menu_DataTable(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string selectQuery, params SqlParameter[] parameters)
         {
             using (SqlCommand command = new SqlCommand(selectQuery, _connection))
             {
@@ -40,12 +40,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     command.Parameters.AddRange(parameters);
                 }
 
-                adapter.SelectCommand = command;
-                adapter.Fill(dataTable);
+                sqa.SelectCommand = command;
+                sqa.Fill(dt);
+				command.Parameters.Clear();
             }
         }
 
-        public void Update_DDM_Config_Menu(SessionInfo si, DataTable dataTable, SqlDataAdapter adapter)
+        public void Update_DDM_Config_Menu(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
@@ -56,12 +57,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			           ,DDM_Menu_ID
 			           ,DDM_Menu_Order
 			           ,DDM_Menu_Name
-			           ,DDM_Menu_Custom_DB
+			           ,DDM_Menu_Option_Type
 			           ,DDM_Menu_Custom_DB_Header
 			           ,DDM_Menu_Custom_DB_Content
-			           ,DDM_Menu_DB
 			           ,DDM_Menu_DB_Name
-			           ,DDM_Menu_CV
 			           ,DDM_Menu_CV_Name
 			           ,Status
 			           ,Create_Date
@@ -73,12 +72,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			           ,DDM_Menu_ID
 			           ,DDM_Menu_Order
 			           ,DDM_Menu_Name
-			           ,DDM_Menu_Custom_DB
+			           ,DDM_Menu_Option_Type
 			           ,DDM_Menu_Custom_DB_Header
 			           ,DDM_Menu_Custom_DB_Content
-			           ,DDM_Menu_DB
 			           ,DDM_Menu_DB_Name
-			           ,DDM_Menu_CV
 			           ,DDM_Menu_CV_Name
 			           ,Status
 			           ,Create_Date
@@ -86,35 +83,31 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			           ,Update_Date
 			           ,Update_User)";
 
-                adapter.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                adapter.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_ID";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_Order", SqlDbType.Int).SourceColumn = "DDM_Menu_Order";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Name";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_Custom_DB", SqlDbType.Bit).SourceColumn = "DDM_Menu_Custom_DB";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Header";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_Custom_DB_Content", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Content";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_DB", SqlDbType.Bit).SourceColumn = "DDM_Menu_DB";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_DB_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_DB_Name";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_CV", SqlDbType.Bit).SourceColumn = "DDM_Menu_CV";
-                adapter.InsertCommand.Parameters.Add("@DDM_Menu_CV_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_CV_Name";
-                adapter.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar).SourceColumn = "Status";
-                adapter.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
-                adapter.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar).SourceColumn = "Create_User";
-                adapter.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                adapter.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar).SourceColumn = "Update_User";
+                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
+                sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_ID";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Order", SqlDbType.Int).SourceColumn = "DDM_Menu_Order";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Name";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Option_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Option_Type";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Header";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Custom_DB_Content", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Content";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_DB_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_DB_Name";
+                sqa.InsertCommand.Parameters.Add("@DDM_Menu_CV_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_CV_Name";
+                sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar).SourceColumn = "Status";
+                sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
+                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar).SourceColumn = "Create_User";
+                sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
+                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar).SourceColumn = "Update_User";
 
                 // Define the update query and parameters (similar to the insert query, but with a WHERE clause)
                 string updateQuery = @"
 								   UPDATE DDM_Config_Menu
 								   SET DDM_Menu_Order = @DDM_Menu_Order
 								      ,DDM_Menu_Name = @DDM_Menu_Name
-								      ,DDM_Menu_Custom_DB = @DDM_Menu_Custom_DB
+								      ,DDM_Menu_Option_Type = @DDM_Menu_Option_Type
 								      ,DDM_Menu_Custom_DB_Header = @DDM_Menu_Custom_DB_Header
 								      ,DDM_Menu_Custom_DB_Content = @DDM_Menu_Custom_DB_Content
-								      ,DDM_Menu_DB = @DDM_Menu_DB
 								      ,DDM_Menu_DB_Name = @DDM_Menu_DB_Name
-								      ,DDM_Menu_CV = @DDM_Menu_CV
 								      ,DDM_Menu_CV_Name = @DDM_Menu_CV_Name
 								      ,Status = @Status
 								      ,Update_Date = @Update_Date
@@ -122,34 +115,32 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 								 WHERE DDM_Menu_ID = @DDM_Menu_ID
 								 AND DDM_Profile_ID = @DDM_Profile_ID";
 
-                adapter.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
-                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_Order", SqlDbType.Int).SourceColumn = "DDM_Menu_Order";
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Name";
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_Custom_DB", SqlDbType.Bit).SourceColumn = "DDM_Menu_Custom_DB";
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Header";
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_Custom_DB_Content", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Content";
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_DB", SqlDbType.Bit).SourceColumn = "DDM_Menu_DB";
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_DB_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_DB_Name";
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_CV", SqlDbType.Bit).SourceColumn = "DDM_Menu_CV";
-                adapter.UpdateCommand.Parameters.Add("@DDM_Menu_CV_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_CV_Name";
-                adapter.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar).SourceColumn = "Status";
-                adapter.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                adapter.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar).SourceColumn = "Update_User";
+                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
+                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Order", SqlDbType.Int).SourceColumn = "DDM_Menu_Order";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Name";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Option_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Option_Type";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Header";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Custom_DB_Content", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Content";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_DB_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_DB_Name";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_CV_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_CV_Name";
+                sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar).SourceColumn = "Status";
+                sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
+                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar).SourceColumn = "Update_User";
 
                 // Define the delete query and parameters
                 string deleteQuery = @"
 		            DELETE FROM [dbo].[DDM_Config_Menu]
 		            WHERE [DDM_Profile_ID] = @DDM_Profile_ID AND [DDM_Menu_ID] = @DDM_Menu_ID";
 
-                adapter.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                adapter.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
-                adapter.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
+                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {
-                    adapter.Update(dataTable);
+                    sqa.Update(dt);
                     transaction.Commit();
                 }
                 catch (Exception)
