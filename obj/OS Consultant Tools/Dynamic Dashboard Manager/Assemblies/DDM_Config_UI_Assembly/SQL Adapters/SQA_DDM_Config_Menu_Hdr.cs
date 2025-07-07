@@ -43,6 +43,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
 				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
@@ -56,7 +57,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                            (DDM_Profile_ID
                            ,DDM_Menu_ID
                            ,DDM_Menu_Hdr_ID
-                           ,Order
+                           ,Sort_Order
                            ,Option_Type
                            ,Fltr_Dim_Type
                            ,Fltr_Dim_Name
@@ -88,7 +89,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                            (@DDM_Profile_ID
                            ,@DDM_Menu_ID
                            ,@DDM_Menu_Hdr_ID
-                           ,@Order
+                           ,@Sort_Order
                            ,@Option_Type
                            ,@Fltr_Dim_Type
                            ,@Fltr_Dim_Name
@@ -121,7 +122,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_ID";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_Hdr_ID";
-                sqa.InsertCommand.Parameters.Add("@Order", SqlDbType.Int).SourceColumn = "Order";
+                sqa.InsertCommand.Parameters.Add("@Sort_Order", SqlDbType.Int).SourceColumn = "Sort_Order";
                 sqa.InsertCommand.Parameters.Add("@Option_Type", SqlDbType.NVarChar).SourceColumn = "Option_Type";
                 sqa.InsertCommand.Parameters.Add("@Fltr_Dim_Type", SqlDbType.NVarChar).SourceColumn = "Fltr_Dim_Type";
                 sqa.InsertCommand.Parameters.Add("@Fltr_Dim_Name", SqlDbType.NVarChar).SourceColumn = "Fltr_Dim_Name";
@@ -152,7 +153,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 string updateQuery = @"
                     UPDATE DDM_Config_Menu_Hdr
-                       SET Order = @Order
+                       SET Sort_Order = @Sort_Order
                           ,Option_Type = @Option_Type
                           ,Fltr_Dim_Type = @Fltr_Dim_Type
                           ,Fltr_Dim_Name = @Fltr_Dim_Name
@@ -178,15 +179,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                           ,Btn_DBRefresh = @Btn_DBRefresh
                           ,Update_Date = @Update_Date
                           ,Update_User = @Update_User
-                     WHERE DDM_Menu_ID = @DDM_Menu_ID
-                     AND DDM_Profile_ID = @DDM_Profile_ID
-                     AND DDM_Menu_Hdr_ID = @DDM_Menu_Hdr_ID";
+                     WHERE DDM_Menu_Hdr_ID = @DDM_Menu_Hdr_ID";
                 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_Hdr_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_Hdr_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add("@Order", SqlDbType.Int).SourceColumn = "Order";
+                sqa.UpdateCommand.Parameters.Add("@Sort_Order", SqlDbType.Int).SourceColumn = "Sort_Order";
                 sqa.UpdateCommand.Parameters.Add("@Option_Type", SqlDbType.NVarChar).SourceColumn = "Option_Type";
                 sqa.UpdateCommand.Parameters.Add("@Fltr_Dim_Type", SqlDbType.NVarChar).SourceColumn = "Fltr_Dim_Type";
                 sqa.UpdateCommand.Parameters.Add("@Fltr_Dim_Name", SqlDbType.NVarChar).SourceColumn = "Fltr_Dim_Name";
@@ -225,6 +222,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

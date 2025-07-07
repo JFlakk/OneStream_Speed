@@ -53,19 +53,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
             var ProfileKey = wfUnitPk.ProfileKey;
-            int configProfileID = DDM_DB_Config_Support.getCurrentProfileID(si, ProfileKey);
+            int configProfileID = DDM_Support.getCurrentProfileID(si, ProfileKey);
 
-            int menuOptionID = DDM_DB_Config_Support.getSelectedMenuOption(si, args.SelectionChangedTaskInfo.CustomSubstVars);
+            int menuOptionID = DDM_Support.getSelectedMenuOption(si, args.SelectionChangedTaskInfo.CustomSubstVars);
 
 
-            Dictionary<string, string> ParamsToAdd = DDM_DB_Config_Support.getParamsToAdd(DDM_DB_Config_Support.getHeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
+            Dictionary<string, string> ParamsToAdd = DDM_Support.getParamsToAdd(DDM_Support.getHeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
 
             // get cube name based on SI.
             int cubeID = si.PovDataCellPk.CubeId;
-            string cubeName = DDM_DB_Config_Support.getCubeName(si, cubeID);
+            string cubeName = DDM_Support.getCubeName(si, cubeID);
 
             // add cubename IV
-            taskResult.ModifiedCustomSubstVars.Add(DDM_DB_Config_Support.Param_CubeName, cubeName);
+            taskResult.ModifiedCustomSubstVars.Add(DDM_Support.Param_CubeName, cubeName);
 
 
             foreach (string param in ParamsToAdd.Keys)
@@ -81,26 +81,26 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
             var ProfileKey = wfUnitPk.ProfileKey;
-            int configProfileID = DDM_DB_Config_Support.getCurrentProfileID(si, ProfileKey);
+            int configProfileID = DDM_Support.getCurrentProfileID(si, ProfileKey);
 
-            int menuOptionID = DDM_DB_Config_Support.getSelectedMenuOption(si, customSubstVarsAlreadyResolved);
+            int menuOptionID = DDM_Support.getSelectedMenuOption(si, customSubstVarsAlreadyResolved);
 
-            DataTable configMenuOptionsDT = DDM_DB_Config_Support.getConfigMenuOptions(si, configProfileID, menuOptionID);
+            DataTable configMenuOptionsDT = DDM_Support.getConfigMenuOptions(si, configProfileID, menuOptionID);
             string dashboardName = "Default";
             string cubeViewName = "Default";
 
             if (configMenuOptionsDT.Rows.Count > 0)
             {
-                string optType = configMenuOptionsDT.Rows[0]["DDM_Option_Type"].ToString();
+                string optType = configMenuOptionsDT.Rows[0]["Option_Type"].ToString();
 
                 if (optType == "Dashboard")
                 {
-                    dashboardName = configMenuOptionsDT.Rows[0]["DDM_DB_Name"].ToString();
+                    dashboardName = configMenuOptionsDT.Rows[0]["DB_Name"].ToString();
                 }
                 else if (optType == "Cube View")
                 {
                     dashboardName = CV_DashboardName;
-                    cubeViewName = configMenuOptionsDT.Rows[0]["DDM_CVName"].ToString();
+                    cubeViewName = configMenuOptionsDT.Rows[0]["CV_Name"].ToString();
                 }
             }
 

@@ -102,20 +102,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     // Add and set cubeName IV
                     var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
                     var ProfileKey = wfUnitPk.ProfileKey;
-                    int configProfileID = DDM_DB_Config_Support.getCurrentProfileID(si, ProfileKey);
+                    int configProfileID = DDM_Support.getCurrentProfileID(si, ProfileKey);
 
-                    int menuOptionID = DDM_DB_Config_Support.getSelectedMenuOption(si, args.SelectionChangedTaskInfo.CustomSubstVars);
+                    int menuOptionID = DDM_Support.getSelectedMenuOption(si, args.SelectionChangedTaskInfo.CustomSubstVars);
 
-                    DataTable configMenuOptionsDT = DDM_DB_Config_Support.getConfigMenuOptions(si, configProfileID, menuOptionID);
+                    DataTable configMenuOptionsDT = DDM_Support.getConfigMenuOptions(si, configProfileID, menuOptionID);
 
                     // get cube name based on SI.
                     int cubeID = si.PovDataCellPk.CubeId;
-                    string cubeName = DDM_DB_Config_Support.getCubeName(si, cubeID);
+                    string cubeName = DDM_Support.getCubeName(si, cubeID);
 
                     // add cubename IV
-                    loadResult.ModifiedCustomSubstVars.Add(DDM_DB_Config_Support.Param_CubeName, cubeName);
+                    loadResult.ModifiedCustomSubstVars.Add(DDM_Support.Param_CubeName, cubeName);
 
-                    Dictionary<string, string> ParamsToAdd = DDM_DB_Config_Support.getParamsToAdd(DDM_DB_Config_Support.getHeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
+                    Dictionary<string, string> ParamsToAdd = DDM_Support.getParamsToAdd(DDM_Support.getHeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
 
                     foreach (string param in ParamsToAdd.Keys)
                     {
@@ -338,7 +338,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 			
             // add header items
-            DataTable headerItems = DDM_DB_Config_Support.getHeaderItems(si, customSubstVarsAlreadyResolved);
+            DataTable headerItems = DDM_Support.getHeaderItems(si, customSubstVarsAlreadyResolved);
             //BRApi.ErrorLog.LogMessage(si, "headerItems: " + headerItems.Rows.Count);
             var tempColl = addHeaderItems(ref headerItems, si, workspace, api, dynamicDashboardEx, maintUnit);
 
@@ -379,9 +379,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 //WsDynamicDbrdCompMemberEx tempCompEx = new WsDynamicDbrdCompMemberEx();
 
-                string baseSearch = "DDM_Menu_Hdr_";
+                string baseSearch = "";
 
-                string optType = row[baseSearch + "Option_Type"].ToString();
+                string optType = row["Option_Type"].ToString();
 
                 var nameSuffix = "test" + Random.Shared.NextInt64(0, 10); // TODO: Come up with a better name suffix. They might be able to be all the same?
 
@@ -428,8 +428,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                 new_param.Parameter = new DashboardParameter();
                                 new_param.Parameter.DimTypeName = dimType;
                                 new_param.Parameter.Name = $"ML_DDM_App_{dimType}_Selection";
-                                new_param.Parameter.ParameterType = ParameterType.MemberList;
-                                new_param.Parameter.Cube = 
+                                new_param.Parameter.ParameterType = DashboardParamType.MemberList;
+                                new_param.Parameter.CubeName = "Test";
+								new_param.Parameter.MemberFilter = "Test";
+								new_param.Parameter.DimName = "Test";
 
                                 BP_CompReplacement = new_param.Parameter.Name; //row[baseSearch + "_" + colSuffix + "_BoundParameter"].ToString();
 

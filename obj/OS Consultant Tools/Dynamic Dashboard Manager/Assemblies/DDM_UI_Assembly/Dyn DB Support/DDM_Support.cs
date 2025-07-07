@@ -21,7 +21,7 @@ using OneStreamWorkspacesApi.V820;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class DDM_DB_Config_Support
+    public class DDM_Support
     {
         //Params
         public const string Param_CubeName = "IV_DDM_App_Cube_Name";
@@ -52,18 +52,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     // Create a new DataTable
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
                     // Define the select query and parameters
-                    string selectQuery = @"
-			        	SELECT Name
-			       		FROM Cube
-			       		WHERE CubeId = @OS_Cube_ID";
+                    var sql = @"SELECT Name
+					       		FROM Cube
+					       		WHERE CubeId = @OS_Cube_ID";
                     // Create an array of SqlParameter objects
                     var parameters = new SqlParameter[]
                     {
                         new SqlParameter("@OS_Cube_ID", SqlDbType.Int) { Value = cubeId }
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, cubes_DT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cubes_DT, sql, parameters);
 
                 }
                 if (cubes_DT.Rows.Count > 0)
@@ -87,9 +86,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             foreach (DataRow item in headerItems.Rows)
             {
 
-                string baseSearch = "DDM_Menu_Hdr_";
+                string baseSearch = "";
 
-                string optType = item[baseSearch + "Option_Type"].ToString();
+                string optType = item["Option_Type"].ToString();
 
                 if (optType == "Filter")
                 {
@@ -233,7 +232,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
             var ProfileKey = wfUnitPk.ProfileKey;
-            int configProfileID = DDM_DB_Config_Support.getCurrentProfileID(si, ProfileKey);
+            int configProfileID = DDM_Support.getCurrentProfileID(si, ProfileKey);
 
             string menu_option = customSubstVarsAlreadyResolved.XFGetValue(Param_DashboardMenuOption, "1");
 
@@ -252,7 +251,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 										FROM DDM_Config_Menu_Hdr
 										WHERE DDM_Profile_ID = @DDM_Profile_ID
 										AND DDM_Menu_ID = @DDM_Menu_ID
-										ORDER BY Order";
+										ORDER BY Sort_Order";
 
                 // Create an array of SqlParameter objects
                 var parameters = new SqlParameter[]

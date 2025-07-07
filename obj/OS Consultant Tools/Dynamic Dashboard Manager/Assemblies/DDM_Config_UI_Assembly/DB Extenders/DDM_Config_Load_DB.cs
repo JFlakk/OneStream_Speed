@@ -142,42 +142,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_WF_Profile = false;
                     }
                 }
-                //				else if ((db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.GetValueOrEmpty("DL_MCM_Setup_Options") == "0_MCM_Build_Model" ||
-                //					     db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.GetValueOrEmpty("DL_MCM_Setup_Options") == "0_MCM_Build_Model_Group") &&
-                //					     db_args.PrimaryDashboard.Name == "MCM_App_Admin (OnePlace)")
-                //				{
-                //					BRApi.ErrorLog.LogMessage(si,"hit Initial 3: " + db_args.PrimaryDashboard.Name);
-                //					//Get Default Cube/Scenario Type ID for first time user logs in
-                //					//string default_Cube_ID = Get_Default_Cube()
-                //					string Cube_ID = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("BL_MCM_Cube_Settings","1");
-                //					//Get Default Activity ID if user hasn't selected one for the Cube ID
-                //					//string default_Activity_ID = Get_Default_Cube()
-                //					string Activity_ID = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("BL_MCM_Cube_Model_Activity_List","1");
-                //					if (Activity_ID.Length == 0)
-                //					{
-                //						Activity_ID = "1";
-                //						Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("BL_MCM_Cube_Model_Activity_List",Activity_ID);
-                //					}
-
-                //					//Get Default Activity ID if user hasn't selected one for the Cube ID
-                //					//string default_Activity_ID = Get_Default_Cube()
-                //					string Activity_Model = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("BL_MCM_Models","1");
-                //					BRApi.ErrorLog.LogMessage(si,"hit Activity: " + Activity_ID + "-" + Cube_ID);
-                //					//Get Calc Type from Cube/Activity ID
-                //					Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_MCM_OS_Cube_ID",Cube_ID);
-                //					globals.SetStringValue("IV_MCM_OS_Cube_ID",Cube_ID);
-                //					Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_MCM_Cube_Model_Activity_ID",Activity_ID);
-                //					globals.SetStringValue("IV_MCM_Cube_Model_Activity_ID",Activity_ID);
-                //					Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_MCM_Models",Activity_Model);
-                //					Load_Dashboard_Task_Result = Get_Calc_Type(si,globals,api,db_args,Load_Dashboard_Task_Result);
-                //					Load_Dashboard_Task_Result = Load_Cube_Settings(si,globals,api,db_args,Load_Dashboard_Task_Result);
-                //					if (db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.GetValueOrEmpty("DL_MCM_Setup_Options") == "0_MCM_Build_Model_Group")
-                //					{
-                //						string Model_Group = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("BL_MCM_Model_Groups","0");
-                //						globals.SetStringValue("IV_MCM_Model_Group",Model_Group);
-                //						Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_MCM_Model_Group",Model_Group);
-                //					}
-                //				}
             }
 
             return Load_Dashboard_Task_Result;

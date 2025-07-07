@@ -43,6 +43,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
 				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
@@ -55,7 +56,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 	            INSERT INTO DDM_Config_Menu
 			           (DDM_Profile_ID
 			           ,DDM_Menu_ID
-			           ,Order
+			           ,Sort_Order
 			           ,Name
 			           ,Option_Type
 			           ,Custom_DB_Header
@@ -70,7 +71,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					VALUES
 		                (@DDM_Profile_ID
 			           ,DDM_Menu_ID
-			           ,Order
+			           ,Sort_Order
 			           ,Name
 			           ,Option_Type
 			           ,Custom_DB_Header
@@ -86,7 +87,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_ID";
-                sqa.InsertCommand.Parameters.Add("@Order", SqlDbType.Int).SourceColumn = "Order";
+                sqa.InsertCommand.Parameters.Add("@Sort_Order", SqlDbType.Int).SourceColumn = "Sort_Order";
                 sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar).SourceColumn = "Name";
                 sqa.InsertCommand.Parameters.Add("@Option_Type", SqlDbType.NVarChar).SourceColumn = "Option_Type";
                 sqa.InsertCommand.Parameters.Add("@Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "Custom_DB_Header";
@@ -102,7 +103,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the update query and parameters (similar to the insert query, but with a WHERE clause)
                 string updateQuery = @"
 								   UPDATE DDM_Config_Menu
-								   SET Order = @Order
+								   SET Sort_Order = @Sort_Order
 								      ,Name = @Name
 								      ,Option_Type = @Option_Type
 								      ,Custom_DB_Header = @Custom_DB_Header
@@ -112,13 +113,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 								      ,Status = @Status
 								      ,Update_Date = @Update_Date
 								      ,Update_User = @Update_User
-								 WHERE DDM_Menu_ID = @DDM_Menu_ID
-								 AND DDM_Profile_ID = @DDM_Profile_ID";
+								 WHERE DDM_Menu_ID = @DDM_Menu_ID";
 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add("@Order", SqlDbType.Int).SourceColumn = "Order";
+				sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add("@Sort_Order", SqlDbType.Int).SourceColumn = "Sort_Order";
                 sqa.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar).SourceColumn = "Name";
                 sqa.UpdateCommand.Parameters.Add("@Option_Type", SqlDbType.NVarChar).SourceColumn = "Option_Type";
                 sqa.UpdateCommand.Parameters.Add("@Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "Custom_DB_Header";
@@ -132,16 +131,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the delete query and parameters
                 string deleteQuery = @"
 		            DELETE FROM [dbo].[DDM_Config_Menu]
-		            WHERE [DDM_Profile_ID] = @DDM_Profile_ID AND [DDM_Menu_ID] = @DDM_Menu_ID";
+		            WHERE [DDM_Menu_ID] = @DDM_Menu_ID";
 
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {
                     sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {
