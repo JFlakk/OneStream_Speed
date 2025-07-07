@@ -180,7 +180,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return profileID;
         }
 
-        public static DataTable getConfigMenuOptions(SessionInfo si, int profileID, int SelectedMenuOption)
+        public static DataTable getConfigMenu(SessionInfo si, int profileID, int SelectedMenuOption)
         {
 
             var configMenuOptionsDT = new DataTable("configMenuOptionsDT");

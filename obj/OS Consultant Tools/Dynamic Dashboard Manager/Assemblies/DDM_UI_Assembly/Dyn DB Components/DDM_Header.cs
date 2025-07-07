@@ -621,17 +621,5 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             return null;
         }
-
-        public static XFSelectionChangedTaskResult printHello(SessionInfo si, DashboardExtenderArgs args)
-        {
-            XFSelectionChangedTaskResult temp = new XFSelectionChangedTaskResult();
-            temp.ChangeCustomSubstVarsInDashboard = true;
-            temp.IsOK = true;
-            temp.Message = "Hello";
-            BRApi.ErrorLog.LogMessage(si, "Here in hello");
-
-            temp.ShowMessageBox = true;
-            return temp;
-        }
     }
 }
