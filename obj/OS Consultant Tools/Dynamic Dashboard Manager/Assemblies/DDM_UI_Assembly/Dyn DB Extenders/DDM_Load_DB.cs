@@ -181,26 +181,6 @@ BRApi.ErrorLog.LogMessage(si, $"Hit {sql}");
             return XF_Load_Dashboard_Task_Result;
         }
 
-        private void SetDynamicDBParameter(XFLoadDashboardTaskResult result, DataRow row)
-        {
-            if (row["Option_Type"].ToString().XFEqualsIgnoreCase("Custom Dashboard"))
-            {
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_DB", "0_DDM_App_Dyn_Custom_DB");
-            }
-            else if (row["Option_Type"].ToString().XFEqualsIgnoreCase("Cube View"))
-            {
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_DB", "0_DDM_App_Dyn_DB");
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_App_Content_DB", "0b2_DDM_App_Dyn_CV_Content_Col2");
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_Cube_View", row["CV_Name"].ToString());
-            }
-            else if (row["Option_Type"].ToString().XFEqualsIgnoreCase("Dashboard"))
-            {
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_DB", "0_DDM_App_Dyn_DB");
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_App_Content_DB", "0b2_DDM_App_Dyn_CV_Content_Col2");
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_Dashboard", row["DB_Name"].ToString());
-            }
-        }
-
 
         private void UpdateCustomSubstVar(XFLoadDashboardTaskResult result, string key, string value)
         {
@@ -218,18 +198,6 @@ BRApi.ErrorLog.LogMessage(si, $"Hit {sql}");
         #endregion
 
         #endregion
-
-        public XFSelectionChangedTaskResult printHello(SessionInfo si, DashboardExtenderArgs args)
-        {
-            XFSelectionChangedTaskResult temp = new XFSelectionChangedTaskResult();
-            temp.ChangeCustomSubstVarsInDashboard = true;
-            temp.IsOK = true;
-            temp.Message = "Hello";
-            BRApi.ErrorLog.LogMessage(si, "Here in hello");
-
-            temp.ShowMessageBox = true;
-            return temp;
-        }
 
         #endregion
     }

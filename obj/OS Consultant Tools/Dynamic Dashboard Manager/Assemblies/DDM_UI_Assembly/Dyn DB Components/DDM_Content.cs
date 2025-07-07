@@ -25,11 +25,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     {
 
         //Params
-        private const string Param_CubeViewName = "IV_DDM_App_Cube_View_Name_Test";
+        private const string Param_CubeViewName = "IV_DDM_App_CV_Name";
 
-        private const string Param_DashboardName = "IV_DDM_App_Dynamic_DB_Name";
+        private const string Param_DashboardName = "IV_1a_DDM_App_Content_DB";
 
-        private const string CV_DashboardName = "DDM_Dyn_Dashboard_CV";
+        private const string CV_DashboardName = "1a_DDM_App_Content_CV";
 
         public object Main(SessionInfo si)
         {
@@ -109,7 +109,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             var nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>
             {
                 [Param_DashboardName] = dashboardName,
-                [Param_CubeViewName] = cubeViewName,
+                [Param_CubeViewName] = cubeViewName
 
             };
             repeatArgsList.Add(new WsDynamicComponentRepeatArgs(dashboardName, nextLevelTemplateSubstVarsToAdd));

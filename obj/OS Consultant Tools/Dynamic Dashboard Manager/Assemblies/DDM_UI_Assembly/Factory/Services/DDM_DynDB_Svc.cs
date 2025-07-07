@@ -43,17 +43,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		
 		                // Dynamic Content
 		                "1a_DDM_App_Content_DB" => DDM_Content.Get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		
-		                //                // Color Dynamic
-		                //                "2000_ColorDynamic_Content" => ColorDynamicDashboard.Get_2000_ColorDynamic_Content_DynamicDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		
-		                //                // Dynamic Navigation Menu
-		                //                "0210_DynamicNavMenu_Actions" => DynamicNavMenuDashboard.Get_0210_DynamicNavMenu_Actions_DynamicDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		
-		                //                // Dynamic Adv Filters
-		                //                "0220_AdvFilters_Content" => DynamicAdvFiltersDashboard.Get_0220_AdvFilters_Content_DynamicDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		                //                "0200_SectionContent" => DynamicAdvFiltersDashboard.Get_0200_SectionContent_DynamicDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		
+				
 		                _ => api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject)
 		            };
 				}
