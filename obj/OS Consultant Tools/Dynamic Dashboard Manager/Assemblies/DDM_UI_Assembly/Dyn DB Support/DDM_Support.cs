@@ -43,10 +43,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public static string getCubeName(SessionInfo si, int cubeId)
         {
-            string cubeName = "";
+            var cubeName = string.Empty;
             try
             {
-                var cubes_DT = new DataTable("Cubes");
+                var dt = new DataTable("Cubes");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -58,16 +58,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					       		FROM Cube
 					       		WHERE CubeId = @OS_Cube_ID";
                     // Create an array of SqlParameter objects
-                    var parameters = new SqlParameter[]
+                    var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@OS_Cube_ID", SqlDbType.Int) { Value = cubeId }
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cubes_DT, sql, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
-                if (cubes_DT.Rows.Count > 0)
+                if (dt.Rows.Count > 0)
                 {
-                    cubeName = cubes_DT.Rows[0]["Name"].ToString();
+                    cubeName = dt.Rows[0]["Name"].ToString();
                 }
 
                 return cubeName;
@@ -81,14 +81,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public static Dictionary<string, string> getParamsToAdd(DataTable headerItems)
         {
-            Dictionary<string, string> paramVals = new Dictionary<string, string>();
+            var paramVals = new Dictionary<string, string>();
 
             foreach (DataRow item in headerItems.Rows)
             {
 
-                string baseSearch = "";
+                var baseSearch = string.Empty;
 
-                string optType = item["Option_Type"].ToString();
+                var optType = item["Option_Type"].ToString();
 
                 if (optType == "Filter")
                 {

@@ -25,8 +25,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     {
 
         //Params
-        private const string TmpParam_DashboardName = "IV_DDM_App_Dynamic_DB_Name_Test";
-        private const string TmpParam_CubeViewName = "IV_DDM_App_Cube_View_Name_Test";
+        private const string Param_CubeViewName = "IV_DDM_App_Cube_View_Name_Test";
 
         private const string Param_DashboardName = "IV_DDM_App_Dynamic_DB_Name";
 
@@ -62,7 +61,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             // get cube name based on SI.
             int cubeID = si.PovDataCellPk.CubeId;
-            string cubeName = DDM_Support.getCubeName(si, cubeID);
+            var cubeName = DDM_Support.getCubeName(si, cubeID);
 
             // add cubename IV
             taskResult.ModifiedCustomSubstVars.Add(DDM_Support.Param_CubeName, cubeName);
@@ -75,42 +74,42 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return taskResult;
         }
 
-        internal static WsDynamicDashboardEx Get_DynamicContent_Actions(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
+        internal static WsDynamicDashboardEx Get_DynamicContent(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
             WsDynamicComponentEx parentDynamicComponentEx, Dashboard storedDashboard, Dictionary<string, string> customSubstVarsAlreadyResolved)
         {
 
             var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
             var ProfileKey = wfUnitPk.ProfileKey;
-            int configProfileID = DDM_Support.getCurrentProfileID(si, ProfileKey);
+            int curr_Profile_ID = DDM_Support.getCurrentProfileID(si, ProfileKey);
 
             int menuOptionID = DDM_Support.getSelectedMenuOption(si, customSubstVarsAlreadyResolved);
 
-            DataTable configMenuOptionsDT = DDM_Support.getConfigMenuOptions(si, configProfileID, menuOptionID);
-            string dashboardName = "Default";
-            string cubeViewName = "Default";
+            var config_Menu_DT = DDM_Support.getConfigMenu(si, curr_Profile_ID, menuOptionID);
+            var dashboardName = "Default";
+            var cubeViewName = "Default";
 
-            if (configMenuOptionsDT.Rows.Count > 0)
+            if (config_Menu_DT.Rows.Count > 0)
             {
-                string optType = configMenuOptionsDT.Rows[0]["Option_Type"].ToString();
+                var optType = config_Menu_DT.Rows[0]["Option_Type"].ToString();
 
                 if (optType == "Dashboard")
                 {
-                    dashboardName = configMenuOptionsDT.Rows[0]["DB_Name"].ToString();
+                    dashboardName = config_Menu_DT.Rows[0]["DB_Name"].ToString();
                 }
                 else if (optType == "Cube View")
                 {
                     dashboardName = CV_DashboardName;
-                    cubeViewName = configMenuOptionsDT.Rows[0]["CV_Name"].ToString();
+                    cubeViewName = config_Menu_DT.Rows[0]["CV_Name"].ToString();
                 }
             }
 
             var repeatArgsList = new List<WsDynamicComponentRepeatArgs>();
 
 
-            Dictionary<string, string> nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+            var nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>
             {
-                [TmpParam_DashboardName] = dashboardName,
-                [TmpParam_CubeViewName] = cubeViewName,
+                [Param_DashboardName] = dashboardName,
+                [Param_CubeViewName] = cubeViewName,
 
             };
             repeatArgsList.Add(new WsDynamicComponentRepeatArgs(dashboardName, nextLevelTemplateSubstVarsToAdd));

@@ -42,7 +42,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		
 		
 		                // Dynamic Content
-		                "1a_DDM_App_Content_DB" => DDM_Content.Get_DynamicContent_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+		                "1a_DDM_App_Content_DB" => DDM_Content.Get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
 		
 		                //                // Color Dynamic
 		                //                "2000_ColorDynamic_Content" => ColorDynamicDashboard.Get_2000_ColorDynamic_Content_DynamicDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
