@@ -628,10 +628,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         DataRow newRow = DDM_Config_DT.NewRow();
                         newRow["DDM_Profile_ID"] = new_Profile_Config_ID;
                         newRow["ProfileKey"] = wf_Profile_ID;
-                        // Determine DDM_Profile_Step_Type based on wfProfile_Step_Type_DT
+                        // Determine Profile_Step_Type based on wfProfile_Step_Type_DT
                         if (wfProfile_Step_Type_DT.Rows.Count > 0)
                         {
-                            newRow["DDM_Profile_Step_Type"] = wfProfile_Step_Type_DT.Rows[0]["ProfileType"];
+                            newRow["Profile_Step_Type"] = wfProfile_Step_Type_DT.Rows[0]["ProfileType"];
                         }
                         newRow["Status"] = "In Process";
                         newRow["Create_Date"] = DateTime.Now;
