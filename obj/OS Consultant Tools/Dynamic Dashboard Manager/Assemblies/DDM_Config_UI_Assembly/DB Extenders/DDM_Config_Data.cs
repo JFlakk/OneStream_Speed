@@ -362,7 +362,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             foreach (DataRow menu_Row in DDM_Config_Menu_DT.Rows)
                             {
                                 int menu_ID = (int)menu_Row["DDM_Menu_ID"];
-                                int sortOrder = (int)menu_Row["DDM_Menu_Order"];
+                                int sortOrder = (int)menu_Row["Order"];
                                 string menu_Name = (string)menu_Row["Name"];
 
                                 GBL_Menu_Order_Dict.Add(menu_ID, sortOrder);
@@ -376,7 +376,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     if (DDL_Process == "Insert")
                     {
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
-                        int sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
+                        int sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["Order"];
                         string menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
                         GBL_Menu_Order_Dict.Add(menuOptionID, sortOrder);
@@ -386,8 +386,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     else if (DDL_Process == "Update")
                     {
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
-                        int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_Order"];
-                        int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
+                        int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["Order"];
+                        int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["Order"];
                         string orig_menu_Name = (string)Config_Menu_DataRow.OriginalDataRow["Name"];
                         string new_menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
@@ -474,7 +474,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             foreach (DataRow menu_Row in DDM_Config_Menu_DT.Rows)
                             {
                                 int menu_ID = (int)menu_Row["DDM_Menu_ID"];
-                                int sortOrder = (int)menu_Row["DDM_Menu_Order"];
+                                int sortOrder = (int)menu_Row["Order"];
                                 string menu_Name = (string)menu_Row["Name"];
 
                                 GBL_Menu_Order_Dict.Add(menu_ID, sortOrder);
@@ -498,8 +498,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     else if (DDL_Process == "Update")
                     {
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
-                        int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_Order"];
-                        int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
+                        int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["Order"];
+                        int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["Order"];
                         string orig_menu_Name = (string)Config_Menu_DataRow.OriginalDataRow["Name"];
                         string new_menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
@@ -627,7 +627,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         DataRow newRow = DDM_Config_DT.NewRow();
                         newRow["DDM_Profile_ID"] = new_Profile_Config_ID;
-                        newRow["DDM_Profile_Name"] = wf_Profile_ID;
+                        newRow["ProfileKey"] = wf_Profile_ID;
                         // Determine DDM_Profile_Step_Type based on wfProfile_Step_Type_DT
                         if (wfProfile_Step_Type_DT.Rows.Count > 0)
                         {
