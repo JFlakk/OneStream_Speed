@@ -560,7 +560,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var save_Data_Task_Result = new XFSelectionChangedTaskResult();
 				
-                var wf_Profile_ID = Guid.Parse(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_trv_WF_Profile", Guid.Empty.ToString()));
+                var wf_ProfileKey = Guid.Parse(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_trv_WF_Profile", Guid.Empty.ToString()));
 
                 int new_Profile_Config_ID = 0;
                 if (new_Profile_Config_ID == 0)
@@ -579,70 +579,72 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var sql = @"
                                             SELECT Count(*) as Count
                                             FROM DDM_Config
-                                            WHERE ProfileKey = @wf_Profile_ID";
+                                            WHERE ProfileKey = @wf_ProfileKey";
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
                         {
-                        new SqlParameter("@wf_Profile_ID", SqlDbType.UniqueIdentifier) { Value = wf_Profile_ID }
+                        new SqlParameter("@wf_ProfileKey", SqlDbType.UniqueIdentifier) { Value = wf_ProfileKey }
                         };
 
                         sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, DDM_Config_Count_DT, sql, sqlparams);
 
-                        if (Convert.ToInt32(DDM_Config_Count_DT.Rows[0]["Count"]) > 0)
+                        if (Convert.ToInt32(DDM_Config_Count_DT.Rows[0]["Count"]) == 0)
+						{
 
-                        // Example: Get the max ID for the "MCM_Calc_Config" table
-                        new_Profile_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config", "DDM_Profile_ID");
-						BRApi.ErrorLog.LogMessage(si,$"Hit {new_Profile_Config_ID}");
-                        var sqa_ddm_config = new SQA_DDM_Config(si, connection);
-                        var DDM_Config_DT = new DataTable();
-
-                        // Fill the DataTable with the current data from MCM_Dest_Cell
-                        sql = @"
-									SELECT * 
-									FROM DDM_Config 
-									WHERE DDM_Profile_ID = @DDM_Profile_ID";
-
-                        // Update the value of the existing sqlparams array
-						sqlparams = new SqlParameter[]
-                        {
-                        new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { Value = new_Profile_Config_ID }
-                        };
-						
-                        sqa_ddm_config.Fill_DDM_Config_DT(si, sqa, DDM_Config_DT, sql, sqlparams);
-
-
-
-                        // Query WorkflowProfileHierarchy for the given wf_Profile_ID
-                        var wfProfile_Step_Type_DT = new DataTable();
-                        sql = @"
-                            SELECT *
-                            FROM WorkflowProfileHierarchy
-                            WHERE ProfileKey = @ProfileKey";
-                        sqlparams = new SqlParameter[]
-                        {
-                            new SqlParameter("@ProfileKey", SqlDbType.UniqueIdentifier) { Value = wf_Profile_ID }
-                        };
-                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, wfProfile_Step_Type_DT, sql, sqlparams);
-
-                        DataRow newRow = DDM_Config_DT.NewRow();
-                        newRow["DDM_Profile_ID"] = new_Profile_Config_ID;
-                        newRow["ProfileKey"] = wf_Profile_ID;
-                        // Determine Profile_Step_Type based on wfProfile_Step_Type_DT
-                        if (wfProfile_Step_Type_DT.Rows.Count > 0)
-                        {
-                            newRow["Profile_Step_Type"] = wfProfile_Step_Type_DT.Rows[0]["ProfileType"];
-                        }
-                        newRow["Status"] = "In Process";
-                        newRow["Create_Date"] = DateTime.Now;
-                        newRow["Create_User"] = si.UserName;
-                        newRow["Update_Date"] = DateTime.Now;
-                        newRow["Update_User"] = si.UserName;
-                        // Set other column values for the new row as needed
-                        DDM_Config_DT.Rows.Add(newRow);
-
-                        //Update the MCM_Dest_Cell table based on the changes made to the DataTable
-                        sqa_ddm_config.Update_DDM_Config(si, DDM_Config_DT, sqa);
+	                        // Example: Get the max ID for the "MCM_Calc_Config" table
+	                        new_Profile_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config", "DDM_Profile_ID");
+							BRApi.ErrorLog.LogMessage(si,$"Hit {new_Profile_Config_ID}");
+	                        var sqa_ddm_config = new SQA_DDM_Config(si, connection);
+	                        var DDM_Config_DT = new DataTable();
+	
+	                        // Fill the DataTable with the current data from MCM_Dest_Cell
+	                        sql = @"
+										SELECT * 
+										FROM DDM_Config 
+										WHERE DDM_Profile_ID = @DDM_Profile_ID";
+	
+	                        // Update the value of the existing sqlparams array
+							sqlparams = new SqlParameter[]
+	                        {
+	                        new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { Value = new_Profile_Config_ID }
+	                        };
+							
+	                        sqa_ddm_config.Fill_DDM_Config_DT(si, sqa, DDM_Config_DT, sql, sqlparams);
+	
+	
+	
+	                        // Query WorkflowProfileHierarchy for the given wf_ProfileKey
+	                        var wfProfile_Step_Type_DT = new DataTable();
+	                        sql = @"
+	                            SELECT *
+	                            FROM WorkflowProfileHierarchy
+	                            WHERE ProfileKey = @ProfileKey";
+	                        sqlparams = new SqlParameter[]
+	                        {
+	                            new SqlParameter("@ProfileKey", SqlDbType.UniqueIdentifier) { Value = wf_ProfileKey }
+	                        };
+	                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, wfProfile_Step_Type_DT, sql, sqlparams);
+	
+	                        DataRow newRow = DDM_Config_DT.NewRow();
+	                        newRow["DDM_Profile_ID"] = new_Profile_Config_ID;
+	                        newRow["ProfileKey"] = wf_ProfileKey;
+	                        // Determine Profile_Step_Type based on wfProfile_Step_Type_DT
+	                        if (wfProfile_Step_Type_DT.Rows.Count > 0)
+	                        {
+	                            newRow["Profile_Step_Type"] = wfProfile_Step_Type_DT.Rows[0]["ProfileType"];
+	                        }
+	                        newRow["Status"] = "In Process";
+	                        newRow["Create_Date"] = DateTime.Now;
+	                        newRow["Create_User"] = si.UserName;
+	                        newRow["Update_Date"] = DateTime.Now;
+	                        newRow["Update_User"] = si.UserName;
+	                        // Set other column values for the new row as needed
+	                        DDM_Config_DT.Rows.Add(newRow);
+	
+	                        //Update the MCM_Dest_Cell table based on the changes made to the DataTable
+	                        sqa_ddm_config.Update_DDM_Config(si, DDM_Config_DT, sqa);
+						}
                     }
                 }
 

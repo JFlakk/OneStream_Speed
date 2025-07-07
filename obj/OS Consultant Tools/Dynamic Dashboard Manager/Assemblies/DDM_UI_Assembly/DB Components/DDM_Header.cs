@@ -369,19 +369,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string BP_CompReplacement = "";
                 WsDynamicDbrdCompMember tempCompMember = new WsDynamicDbrdCompMember();
                 XElement compDefinition = null;
-				
-					
-var new_param = new WsDynamicParameter();
-var test = new WsDynamicItemNameKey();
-test = new_param.CreateDynamicItemNameKey();
-				new_param.Parameter = new DashboardParameter();
-				new_param.Parameter.Name = "ML_DDM_App_UD1_Selection";
-				new_param.Parameter.DimTypeName = "UD1";
-BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
-				
-				
 
-				
+                var new_param = new WsDynamicParameter();
+                var dyn_Param = new WsDynamicItemNameKey();
+                dyn_Param = new_param.CreateDynamicItemNameKey();
+
+
+                BRApi.ErrorLog.LogMessage(si,$"Hit {dyn_Param.ItemName.ToString()}");
+
                 //WsDynamicDbrdCompMemberEx tempCompEx = new WsDynamicDbrdCompMemberEx();
 
                 string baseSearch = "DDM_Menu_Hdr_";
@@ -420,9 +415,8 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
                                 tempComp.Component.DashboardComponentType = dashboardTypeResolver[colSuffix];
                                 tempComp.Component.Text = row[baseSearch + "_" + colSuffix + "_Lbl"].ToString();
                                 tempComp.Component.ToolTip = row[baseSearch + "_" + colSuffix + "_ToolTip"].ToString();
-                                string dimType = row[baseSearch + "_Dim_Type"].ToString();
+                                var dimType = row[baseSearch + "_Dim_Type"].ToString();
 
-                                BP_CompReplacement = new_param.Parameter.Name; //row[baseSearch + "_" + colSuffix + "_BoundParameter"].ToString();
 
                                 if (BP_CompReplacement == "")
                                 {
@@ -430,9 +424,17 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
                                     BP_CompReplacement += "DDM_App_" + dimType + "_Selection";
 
                                 }
+                                
+                                new_param.Parameter = new DashboardParameter();
+                                new_param.Parameter.DimTypeName = dimType;
+                                new_param.Parameter.Name = $"ML_DDM_App_{dimType}_Selection";
+                                new_param.Parameter.ParameterType = ParameterType.MemberList;
+                                new_param.Parameter.Cube = 
+
+                                BP_CompReplacement = new_param.Parameter.Name; //row[baseSearch + "_" + colSuffix + "_BoundParameter"].ToString();
 
                                 //tempComp.BoundParameterName = "~!" + TmpParam_BoundParameter + "!~";
-								
+
                                 //								tempComp.BoundParameterName = BP_CompReplacement;
 
                                 string defaultSelection = row[baseSearch + "_Default"].ToString();

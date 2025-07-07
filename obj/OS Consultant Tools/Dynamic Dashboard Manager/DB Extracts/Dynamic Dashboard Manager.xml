@@ -2570,7 +2570,7 @@
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames />
-                                        <WhereClause>DDM_Profile_Name = '|!IV_DDM_trv_WF_Profile!|'</WhereClause>
+                                        <WhereClause>ProfileKey = '|!IV_DDM_trv_WF_Profile!|'</WhereClause>
                                         <OrderByClause />
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>true</DefaultForColumnsAreVisible>
@@ -2681,25 +2681,25 @@
                                                 <ColumnFormat>ColumnName = DDM_Menu_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Menu_Order, Description = [Sort Order]</ColumnFormat>
+                                                <ColumnFormat>ColumnName = Order, Description = [Sort Order]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>ColumnName = Name, Description = [Option Name]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Option_Type, Description = [Option Type], IsVisible = True, ParameterName = DL_DDM_Option_Type</ColumnFormat>
+                                                <ColumnFormat>ColumnName = Option_Type, Description = [Option Type], IsVisible = True, ParameterName = DL_DDM_Option_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Custom_DB_Header, Description = [Custom Dashboard Header], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>ColumnName = Custom_DB_Header, Description = [Custom Dashboard Header], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_Custom_DB_Content, Description = [Custom Dashboard Content], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>ColumnName = Custom_DB_Content, Description = [Custom Dashboard Content], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_DB_Name, Description = [Option Dashboard Name]</ColumnFormat>
+                                                <ColumnFormat>ColumnName = DB_Name, Description = [Dashboard Name]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = DDM_CVName, Description = [Cube View Name]</ColumnFormat>
+                                                <ColumnFormat>ColumnName = CV_Name, Description = [Cube View Name]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = Status</ColumnFormat>
