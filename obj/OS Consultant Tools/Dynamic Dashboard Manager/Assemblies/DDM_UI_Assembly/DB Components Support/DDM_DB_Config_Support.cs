@@ -161,7 +161,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string selectQuery = @"
 										Select DDM_Profile_ID
 										From DDM_Config
-										Where DDM_Profile_Name = @OS_ProfileKey";
+										Where ProfileKey = @OS_ProfileKey";
 
                 var parameters = new SqlParameter[] {
                     new SqlParameter("@OS_ProfileKey", SqlDbType.UniqueIdentifier) { Value = profileKey }

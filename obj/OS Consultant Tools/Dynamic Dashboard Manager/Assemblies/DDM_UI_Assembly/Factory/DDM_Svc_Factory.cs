@@ -21,7 +21,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     WsAssemblyServiceType.DynamicDashboards => new DDM_DynDB_Svc(),
                     WsAssemblyServiceType.Dashboard => new DDM_DB_Svc(),
 
-                    _ => throw new NotImplementedException(),
+                    _ => throw new NotImplementedException()
                 };
             }
             catch (Exception ex)

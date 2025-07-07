@@ -137,7 +137,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							FROM DDM_Config Cnfg
 							JOIN DDM_Config_Menu Menu
 							ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
-							WHERE Cnfg.DDM_Profile_Name = @OS_WFProfileKey";
+							WHERE Cnfg.ProfileKey = @OS_WFProfileKey";
                 if (menu_option != String.Empty)
                 {
                     sql += @"
@@ -414,7 +414,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 //                string selectQuery = @"
 //										Select DDM_Profile_ID
 //										From DDM_Profile_Config
-//										Where DDM_Profile_Name = @OS_ProfileKey";
+//										Where ProfileKey = @OS_ProfileKey";
 
 //                var parameters = new SqlParameter[] {
 //                    new SqlParameter("@OS_ProfileKey", SqlDbType.UniqueIdentifier) { Value = profileKey }

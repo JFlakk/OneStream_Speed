@@ -172,7 +172,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     LEFT JOIN 
                         WorkflowProfileHierarchy parentProf ON rcte.ParentProfileKey = parentProf.ProfileKey
                     LEFT JOIN
-                        DDM_Config DDM ON DDM.DDM_Profile_Name = rcte.ProfileKey
+                        DDM_Config DDM ON DDM.ProfileKey = rcte.ProfileKey
                     ORDER BY 
                         rcte.HierarchyLevel DESC, 
                         rcte.HierarchyIndex";
@@ -254,7 +254,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     FROM DDM_Config Cnfg
                     JOIN DDM_Config_Menu Menu
                     ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
-                    WHERE Cnfg.DDM_Profile_Name = @ProfileKey
+                    WHERE Cnfg.ProfileKey = @ProfileKey
                     ORDER BY DDM_Menu_Order";
 
                 // Return the DataTable

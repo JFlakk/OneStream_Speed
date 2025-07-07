@@ -2407,7 +2407,7 @@
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames />
-                                        <WhereClause>DDM_Profile_Name = '|!IV_DDM_trv_WF_Profile!|'</WhereClause>
+                                        <WhereClause>ProfileKey = '|!IV_DDM_trv_WF_Profile!|'</WhereClause>
                                         <OrderByClause />
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>true</DefaultForColumnsAreVisible>

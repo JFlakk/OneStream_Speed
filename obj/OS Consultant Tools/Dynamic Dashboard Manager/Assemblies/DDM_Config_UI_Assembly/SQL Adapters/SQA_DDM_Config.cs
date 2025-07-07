@@ -51,17 +51,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert command and sqlparams
                 string insertQuery = @"
                     INSERT INTO DDM_Config (
-                         DDM_Profile_ID, DDM_Profile_Name, DDM_Profile_Step_Type, 
+                         DDM_Profile_ID, ProfileKey, Profile_Step_Type, 
                          Status, Create_Date, Create_User, Update_Date, Update_User
                     ) VALUES (
-                        @DDM_Profile_ID, @DDM_Profile_Name, @DDM_Profile_Step_Type, 
+                        @DDM_Profile_ID, @ProfileKey, @Profile_Step_Type, 
                         @Status, @Create_Date, @Create_User, @Update_Date, @Update_User
                     );";
 
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
-                sqa.InsertCommand.Parameters.Add("@DDM_Profile_Name", SqlDbType.UniqueIdentifier).SourceColumn = "DDM_Profile_Name";
-                sqa.InsertCommand.Parameters.Add("@DDM_Profile_Step_Type", SqlDbType.NVarChar, 20).SourceColumn = "DDM_Profile_Step_Type";
+                sqa.InsertCommand.Parameters.Add("@ProfileKey", SqlDbType.UniqueIdentifier).SourceColumn = "ProfileKey";
+                sqa.InsertCommand.Parameters.Add("@Profile_Step_Type", SqlDbType.NVarChar, 20).SourceColumn = "Profile_Step_Type";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -71,8 +71,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the update command and sqlparams
                 string updateQuery = @"
                     UPDATE dbo.DDM_Config SET
-                         DDM_Profile_Name = @DDM_Profile_Name, 
-                         DDM_Profile_Step_Type = @DDM_Profile_Step_Type, 
+                         ProfileKey = @ProfileKey, 
+                         Profile_Step_Type = @Profile_Step_Type, 
                          Status = @Status, 
                          Create_Date = @Create_Date, 
                          Create_User = @Create_User, 
@@ -82,8 +82,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add("@DDM_Profile_Name", SqlDbType.UniqueIdentifier).SourceColumn = "DDM_Profile_Name";
-                sqa.UpdateCommand.Parameters.Add("@DDM_Profile_Step_Type", SqlDbType.NVarChar, 20).SourceColumn = "DDM_Profile_Step_Type";
+                sqa.UpdateCommand.Parameters.Add("@ProfileKey", SqlDbType.UniqueIdentifier).SourceColumn = "ProfileKey";
+                sqa.UpdateCommand.Parameters.Add("@Profile_Step_Type", SqlDbType.NVarChar, 20).SourceColumn = "Profile_Step_Type";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.UpdateCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";

@@ -579,7 +579,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var sql = @"
                                             SELECT Count(*) as Count
                                             FROM DDM_Config
-                                            WHERE DDM_Profile_Name = @wf_Profile_ID";
+                                            WHERE ProfileKey = @wf_Profile_ID";
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
