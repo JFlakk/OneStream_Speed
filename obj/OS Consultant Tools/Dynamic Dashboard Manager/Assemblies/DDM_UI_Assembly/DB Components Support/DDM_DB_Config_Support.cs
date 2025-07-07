@@ -252,7 +252,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 										FROM DDM_Config_Menu_Hdr
 										WHERE DDM_Profile_ID = @DDM_Profile_ID
 										AND DDM_Menu_ID = @DDM_Menu_ID
-										ORDER BY DDM_Menu_Hdr_Order";
+										ORDER BY Order";
 
                 // Create an array of SqlParameter objects
                 var parameters = new SqlParameter[]

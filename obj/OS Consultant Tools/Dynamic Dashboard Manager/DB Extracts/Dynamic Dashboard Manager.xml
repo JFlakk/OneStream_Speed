@@ -78,7 +78,7 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="DL_DDM_Menu_Hdr_Fltr_Dim_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                            <parameter name="DL_Fltr_Dim_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
                                 <defaultValue></defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -98,7 +98,7 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="DL_DDM_Menu_Hdr_Option_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                            <parameter name="DL_Option_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
                                 <defaultValue>Filter</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -2571,7 +2571,7 @@
                                         <TableCreationScript />
                                         <TableColumnNames />
                                         <WhereClause>DDM_Menu_ID = |!IV_DDM_Menu_ID!|</WhereClause>
-                                        <OrderByClause>DDM_Menu_Hdr_Order</OrderByClause>
+                                        <OrderByClause>Order</OrderByClause>
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>true</DefaultForColumnsAreVisible>
                                         <DefaultForAllowColumnUpdates>true</DefaultForAllowColumnUpdates>
@@ -2611,82 +2611,82 @@
                                                 <ColumnFormat>ColumnName = DDM_Menu_Hdr_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Order, Description = [Sort Order], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Order, Description = [Sort Order], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Option_Type, Description = [Option Type], IsVisible = True, ParameterName = DL_DDM_Menu_Hdr_Option_Type</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Option_Type, Description = [Option Type], IsVisible = True, ParameterName = DL_Option_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Dim_Type, Description = [Dimension Type], IsVisible = True, ParameterName = DL_DDM_Menu_Hdr_Fltr_Dim_Type</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Dim_Type, Description = [Dimension Type], IsVisible = True, ParameterName = DL_Fltr_Dim_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Dim_Name, Description = [Dimension Name], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Dim_Name, Description = [Dimension Name], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_MFB, Description = [Mbr Filter], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_MFB, Description = [Mbr Filter], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Default, Description = [Default Mbr], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Default, Description = [Default Mbr], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Btn, Description = [Filter Btn?], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Btn, Description = [Filter Btn?], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Btn_Lbl, Description = [Filter Btn Label], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Btn_Lbl, Description = [Filter Btn Label], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Btn_ToolTip, Description = [Filter Btn Tool Tip], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Btn_ToolTip, Description = [Filter Btn Tool Tip], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Cbx, Description = [Filter Cbx?], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Cbx, Description = [Filter Cbx?], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Cbx_Lbl, Description = [Filter Cbx Label], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Cbx_Lbl, Description = [Filter Cbx Label], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Cbx_ToolTip, Description = [Filter Cbx Tool Tip], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Cbx_ToolTip, Description = [Filter Cbx Tool Tip], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Txt, Description = [Filter Txt?], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Txt, Description = [Filter Txt?], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Txt_Lbl, Description = [Filter Txt Label], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Txt_Lbl, Description = [Filter Txt Label], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Txt_ToolTip, Description = [Filter Txt Tool Tip], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Txt_ToolTip, Description = [Filter Txt Tool Tip], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_Type, Description = [Button Type], ParameterName = DL_DDM_Profile_Menu_Hdr_Button_Type</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Btn_Type, Description = [Button Type], ParameterName = DL_DDM_Profile_Menu_Hdr_Button_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_Lbl, Description = [Button Label]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Btn_Lbl, Description = [Button Label]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_ToolTip, Description = [Button Tool Tip]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Btn_ToolTip, Description = [Button Tool Tip]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_Image_URL, Description = [Button Image URL]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Btn_Image_URL, Description = [Button Image URL]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_ServerTask, Description = [Button Server Task]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Btn_ServerTask, Description = [Button Server Task]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_ServerTaskType, Description = [Button Server Task Type], ParameterName = DL_DDM_ServerTaskType_Selection</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Btn_ServerTaskType, Description = [Button Server Task Type], ParameterName = DL_DDM_ServerTaskType_Selection</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_DBOpen, Description = [Button Dialog DB to Open]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Btn_DBOpen, Description = [Button Dialog DB to Open]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Btn_DBRefresh, Description = [DB to Refresh]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Btn_DBRefresh, Description = [DB to Refresh]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Btn_BoundParameter, Description = [Btn Associated Bound Parameter]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Btn_BoundParameter, Description = [Btn Associated Bound Parameter]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Cbx_BoundParameter, Description = [Cbx Associated Bound Parameter]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Cbx_BoundParameter, Description = [Cbx Associated Bound Parameter]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = DDM_Menu_Hdr_Fltr_Txt_BoundParameter, Description = [Txt Associated Bound Parameter]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Fltr_Txt_BoundParameter, Description = [Txt Associated Bound Parameter]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = False, ColumnName = Create_Date, Description = [Create Date]</ColumnFormat>

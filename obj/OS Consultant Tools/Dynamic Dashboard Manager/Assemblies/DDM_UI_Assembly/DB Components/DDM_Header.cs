@@ -513,7 +513,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {test.ItemName.ToString()}");
                         compDefinition.SetElementValue("ImageFileSourceType", "DashboardFile");
                         compDefinition.SetElementValue("ImageUrlOrFullFileName", row[baseSearch + "_Image_URL"].ToString());
 
-                        tempComp.Component.SelectionChangedUIActionType = row["DDM_Menu_Hdr_Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
+                        tempComp.Component.SelectionChangedUIActionType = row["Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
 
                         tempComp.Component.SelectionChangedTaskType = serverTaskTypeResolver.ContainsKey(row[baseSearch + "_ServerTaskType"].ToString()) ? serverTaskTypeResolver[row[baseSearch + "_ServerTaskType"].ToString()] : XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;
                         //tempComp.SelectionChangedTaskType = XFSelectionChangedTaskType.ExecuteDashboardExtenderBRConsServer;
