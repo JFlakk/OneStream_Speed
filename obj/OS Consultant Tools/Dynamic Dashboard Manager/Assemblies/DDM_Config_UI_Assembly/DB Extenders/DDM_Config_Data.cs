@@ -363,7 +363,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 int menu_ID = (int)menu_Row["DDM_Menu_ID"];
                                 int sortOrder = (int)menu_Row["DDM_Menu_Order"];
-                                string menu_Name = (string)menu_Row["DDM_Menu_Name"];
+                                string menu_Name = (string)menu_Row["Name"];
 
                                 GBL_Menu_Order_Dict.Add(menu_ID, sortOrder);
                                 GBL_Menu_Name_Dict.Add(menu_ID, menu_Name);
@@ -377,7 +377,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
                         int sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
-                        string menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Name"];
+                        string menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
                         GBL_Menu_Order_Dict.Add(menuOptionID, sortOrder);
                         GBL_Menu_Name_Dict.Add(menuOptionID, menu_Name);
@@ -388,8 +388,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
                         int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_Order"];
                         int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
-                        string orig_menu_Name = (string)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_Name"];
-                        string new_menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Name"];
+                        string orig_menu_Name = (string)Config_Menu_DataRow.OriginalDataRow["Name"];
+                        string new_menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
                         if (orig_sortOrder != new_sortOrder)
                         {
@@ -475,7 +475,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 int menu_ID = (int)menu_Row["DDM_Menu_ID"];
                                 int sortOrder = (int)menu_Row["DDM_Menu_Order"];
-                                string menu_Name = (string)menu_Row["DDM_Menu_Name"];
+                                string menu_Name = (string)menu_Row["Name"];
 
                                 GBL_Menu_Order_Dict.Add(menu_ID, sortOrder);
                                 GBL_Menu_Name_Dict.Add(menu_ID, menu_Name);
@@ -489,7 +489,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
                         int sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
-                        string menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Name"];
+                        string menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
                         GBL_Menu_Order_Dict.Add(menuOptionID, sortOrder);
                         GBL_Menu_Name_Dict.Add(menuOptionID, menu_Name);
@@ -500,8 +500,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
                         int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_Order"];
                         int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Order"];
-                        string orig_menu_Name = (string)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_Name"];
-                        string new_menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["DDM_Menu_Name"];
+                        string orig_menu_Name = (string)Config_Menu_DataRow.OriginalDataRow["Name"];
+                        string new_menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
                         if (orig_sortOrder != new_sortOrder)
                         {

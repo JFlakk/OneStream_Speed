@@ -56,12 +56,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			           (DDM_Profile_ID
 			           ,DDM_Menu_ID
 			           ,DDM_Menu_Order
-			           ,DDM_Menu_Name
-			           ,DDM_Menu_Option_Type
-			           ,DDM_Menu_Custom_DB_Header
-			           ,DDM_Menu_Custom_DB_Content
-			           ,DDM_Menu_DB_Name
-			           ,DDM_Menu_CV_Name
+			           ,Name
+			           ,DDM_Option_Type
+			           ,DDM_Custom_DB_Header
+			           ,DDM_Custom_DB_Content
+			           ,DDM_DB_Name
+			           ,DDM_CVName
 			           ,Status
 			           ,Create_Date
 			           ,Create_User
@@ -71,12 +71,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                (@DDM_Profile_ID
 			           ,DDM_Menu_ID
 			           ,DDM_Menu_Order
-			           ,DDM_Menu_Name
-			           ,DDM_Menu_Option_Type
-			           ,DDM_Menu_Custom_DB_Header
-			           ,DDM_Menu_Custom_DB_Content
-			           ,DDM_Menu_DB_Name
-			           ,DDM_Menu_CV_Name
+			           ,Name
+			           ,DDM_Option_Type
+			           ,DDM_Custom_DB_Header
+			           ,DDM_Custom_DB_Content
+			           ,DDM_DB_Name
+			           ,DDM_CVName
 			           ,Status
 			           ,Create_Date
 			           ,Create_User
@@ -87,12 +87,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_ID";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Order", SqlDbType.Int).SourceColumn = "DDM_Menu_Order";
-                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Name";
-                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Option_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Option_Type";
-                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Header";
-                sqa.InsertCommand.Parameters.Add("@DDM_Menu_Custom_DB_Content", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Content";
-                sqa.InsertCommand.Parameters.Add("@DDM_Menu_DB_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_DB_Name";
-                sqa.InsertCommand.Parameters.Add("@DDM_Menu_CV_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_CV_Name";
+                sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar).SourceColumn = "Name";
+                sqa.InsertCommand.Parameters.Add("@DDM_Option_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Option_Type";
+                sqa.InsertCommand.Parameters.Add("@DDM_Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "DDM_Custom_DB_Header";
+                sqa.InsertCommand.Parameters.Add("@DDM_Custom_DB_Content", SqlDbType.NVarChar).SourceColumn = "DDM_Custom_DB_Content";
+                sqa.InsertCommand.Parameters.Add("@DDM_DB_Name", SqlDbType.NVarChar).SourceColumn = "DDM_DB_Name";
+                sqa.InsertCommand.Parameters.Add("@DDM_CVName", SqlDbType.NVarChar).SourceColumn = "DDM_CVName";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar).SourceColumn = "Create_User";
@@ -103,12 +103,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string updateQuery = @"
 								   UPDATE DDM_Config_Menu
 								   SET DDM_Menu_Order = @DDM_Menu_Order
-								      ,DDM_Menu_Name = @DDM_Menu_Name
-								      ,DDM_Menu_Option_Type = @DDM_Menu_Option_Type
-								      ,DDM_Menu_Custom_DB_Header = @DDM_Menu_Custom_DB_Header
-								      ,DDM_Menu_Custom_DB_Content = @DDM_Menu_Custom_DB_Content
-								      ,DDM_Menu_DB_Name = @DDM_Menu_DB_Name
-								      ,DDM_Menu_CV_Name = @DDM_Menu_CV_Name
+								      ,Name = @Name
+								      ,DDM_Option_Type = @DDM_Option_Type
+								      ,DDM_Custom_DB_Header = @DDM_Custom_DB_Header
+								      ,DDM_Custom_DB_Content = @DDM_Custom_DB_Content
+								      ,DDM_DB_Name = @DDM_DB_Name
+								      ,DDM_CVName = @DDM_CVName
 								      ,Status = @Status
 								      ,Update_Date = @Update_Date
 								      ,Update_User = @Update_User
@@ -119,12 +119,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Order", SqlDbType.Int).SourceColumn = "DDM_Menu_Order";
-                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Name";
-                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Option_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Option_Type";
-                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Header";
-                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_Custom_DB_Content", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_Custom_DB_Content";
-                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_DB_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_DB_Name";
-                sqa.UpdateCommand.Parameters.Add("@DDM_Menu_CV_Name", SqlDbType.NVarChar).SourceColumn = "DDM_Menu_CV_Name";
+                sqa.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar).SourceColumn = "Name";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Option_Type", SqlDbType.NVarChar).SourceColumn = "DDM_Option_Type";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Custom_DB_Header", SqlDbType.NVarChar).SourceColumn = "DDM_Custom_DB_Header";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Custom_DB_Content", SqlDbType.NVarChar).SourceColumn = "DDM_Custom_DB_Content";
+                sqa.UpdateCommand.Parameters.Add("@DDM_DB_Name", SqlDbType.NVarChar).SourceColumn = "DDM_DB_Name";
+                sqa.UpdateCommand.Parameters.Add("@DDM_CVName", SqlDbType.NVarChar).SourceColumn = "DDM_CVName";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
                 sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar).SourceColumn = "Update_User";

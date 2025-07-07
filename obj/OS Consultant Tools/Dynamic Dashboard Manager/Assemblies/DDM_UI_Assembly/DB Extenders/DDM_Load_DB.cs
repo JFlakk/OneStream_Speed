@@ -130,10 +130,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sqa = new SqlDataAdapter();
                 // Define the select query and parameters
                 var sql = @"
-	       					Select Menu.DDM_Profile_ID,Menu.DDM_Menu_ID,Menu.DDM_Menu_Name,
-							Menu.DDM_Menu_Option_Type, Menu.DDM_Menu_Custom_DB_Header,
-							Menu.DDM_Menu_Custom_DB_Content,
-							Menu.DDM_Menu_DB_Name,Menu.DDM_Menu_CV_Name
+	       					Select Menu.DDM_Profile_ID,Menu.DDM_Menu_ID,Menu.Name,
+							Menu.DDM_Option_Type, Menu.DDM_Custom_DB_Header,
+							Menu.DDM_Custom_DB_Content,
+							Menu.DDM_DB_Name,Menu.DDM_CVName
 							FROM DDM_Config Cnfg
 							JOIN DDM_Config_Menu Menu
 							ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
@@ -172,7 +172,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 //                SetDynamicHeaderDBParams(si, globals, api, args, XF_Load_Dashboard_Task_Result, row);
 
 
-//                var menu_Option_Type = row["DDM_Menu_Option_Type"].ToString();
+//                var menu_Option_Type = row["DDM_Option_Type"].ToString();
 //                var customDashboardHeader = row["DDM_Menu_Option_Custom_Dashboard_Header"].ToString();
 //                var customDashboardContent = row["DDM_Menu_Option_Custom_Dashboard_Content"].ToString();
 //                var dashboardName = row["DDM_Menu_Option_Dashboard_Name"].ToString();
@@ -184,21 +184,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private void SetDynamicDBParameter(XFLoadDashboardTaskResult result, DataRow row)
         {
-            if (row["DDM_Menu_Option_Type"].ToString().XFEqualsIgnoreCase("Custom Dashboard"))
+            if (row["DDM_Option_Type"].ToString().XFEqualsIgnoreCase("Custom Dashboard"))
             {
                 UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_DB", "0_DDM_App_Dyn_Custom_DB");
             }
-            else if (row["DDM_Menu_Option_Type"].ToString().XFEqualsIgnoreCase("Cube View"))
+            else if (row["DDM_Option_Type"].ToString().XFEqualsIgnoreCase("Cube View"))
             {
                 UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_DB", "0_DDM_App_Dyn_DB");
                 UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_App_Content_DB", "0b2_DDM_App_Dyn_CV_Content_Col2");
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_Cube_View", row["DDM_Menu_CV_Name"].ToString());
+                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_Cube_View", row["DDM_CVName"].ToString());
             }
-            else if (row["DDM_Menu_Option_Type"].ToString().XFEqualsIgnoreCase("Dashboard"))
+            else if (row["DDM_Option_Type"].ToString().XFEqualsIgnoreCase("Dashboard"))
             {
                 UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_DB", "0_DDM_App_Dyn_DB");
                 UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_App_Content_DB", "0b2_DDM_App_Dyn_CV_Content_Col2");
-                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_Dashboard", row["DDM_Menu_DB_Name"].ToString());
+                UpdateCustomSubstVar(result, "IV_DDM_App_Dynamic_Dashboard", row["DDM_DB_Name"].ToString());
             }
         }
 

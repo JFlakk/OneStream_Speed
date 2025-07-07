@@ -91,16 +91,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             if (configMenuOptionsDT.Rows.Count > 0)
             {
-                string optType = configMenuOptionsDT.Rows[0]["DDM_Menu_Option_Type"].ToString();
+                string optType = configMenuOptionsDT.Rows[0]["DDM_Option_Type"].ToString();
 
                 if (optType == "Dashboard")
                 {
-                    dashboardName = configMenuOptionsDT.Rows[0]["DDM_Menu_DB_Name"].ToString();
+                    dashboardName = configMenuOptionsDT.Rows[0]["DDM_DB_Name"].ToString();
                 }
                 else if (optType == "Cube View")
                 {
                     dashboardName = CV_DashboardName;
-                    cubeViewName = configMenuOptionsDT.Rows[0]["DDM_Menu_CV_Name"].ToString();
+                    cubeViewName = configMenuOptionsDT.Rows[0]["DDM_CVName"].ToString();
                 }
             }
 

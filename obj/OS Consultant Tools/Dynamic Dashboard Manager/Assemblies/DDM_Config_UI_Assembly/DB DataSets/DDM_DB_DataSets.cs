@@ -250,7 +250,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var WFProfile_Config_DT = new DataTable("WFProfile_Config");
                 // Define the SQL Statement
                 var sql = @"
-                    Select Menu.DDM_Menu_ID, Menu.DDM_Menu_Name
+                    Select Menu.DDM_Menu_ID, Menu.Name
                     FROM DDM_Config Cnfg
                     JOIN DDM_Config_Menu Menu
                     ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
