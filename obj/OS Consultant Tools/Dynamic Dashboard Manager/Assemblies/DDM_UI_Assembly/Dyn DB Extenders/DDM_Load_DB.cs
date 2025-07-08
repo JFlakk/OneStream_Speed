@@ -32,7 +32,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     case DashboardExtenderFunctionType.LoadDashboard:
                         if (args.FunctionName.XFEqualsIgnoreCase("Load_DDM_Dashboard"))
                         {
-                            BRApi.ErrorLog.LogMessage(si, "Hit > 1 Row");
+							//BRApi.ErrorLog.LogMessage(si,$"Hit ComponentSelectionChanged {args.LoadDashboardTaskInfo.Reason.ToString()} - {args.LoadDashboardTaskInfo.Action.ToString()}");
                             if (args.LoadDashboardTaskInfo.Reason == LoadDashboardReasonType.ComponentSelectionChanged && args.LoadDashboardTaskInfo.Action == LoadDashboardActionType.BeforeGetDashboardDisplayInfo)
                             {
                            }
@@ -42,8 +42,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 var load_Dashboard_Task_Result = Load_Dashboard(si, globals, api, args, "Initial");
                                 return load_Dashboard_Task_Result;
                             }
-                            else if (args.LoadDashboardTaskInfo.Reason == LoadDashboardReasonType.ComponentSelectionChanged && args.LoadDashboardTaskInfo.Action == LoadDashboardActionType.BeforeSubsequentGetParameters)
+                            else if (args.LoadDashboardTaskInfo.Reason == LoadDashboardReasonType.ComponentSelectionChanged && args.LoadDashboardTaskInfo.Action == LoadDashboardActionType.BeforeGetDashboardDisplayInfo)
                             {
+								BRApi.ErrorLog.LogMessage(si,"Hit ComponentSelectionChanged");
                                 var load_Dashboard_Task_Result = Load_Dashboard(si, globals, api, args, "Post-Initial");
                                 return load_Dashboard_Task_Result;
                             }
@@ -57,8 +58,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-
-        #region "Class Helper Functions"	
+	
         #region "Load Dashboard"
         private XFLoadDashboardTaskResult Load_Dashboard(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs db_args, string RunType)
         {
@@ -67,10 +67,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             if (RunType.XFEqualsIgnoreCase("Initial"))
             {
                 Load_Dashboard_Task_Result.ChangeCustomSubstVarsInDashboard = true;
-                //				Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_Show_Hide_Menu_Btn","Show");
-                //				Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_Display_Show_Menu_Btn","False");
-                //				Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_Display_Hide_Menu_Btn","True");
-                //				Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_Menu_Width","Auto");
+				Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_App_Show_Hide_Menu_Btn","Show");
+				Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_App_Display_Show_Menu_Btn","False");
+				Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_App_Display_Hide_Menu_Btn","True");
+				Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_App_Menu_Width","Auto");
                 Load_Dashboard_Task_Result = Get_Default_Menu_Options(si, globals, api, db_args, Load_Dashboard_Task_Result, wfUnitPk.ProfileKey, "Initial");
                 //Load_Dashboard_Task_Result = Get_Default_Menu_Option(si,globals,api,db_args,Load_Dashboard_Task_Result);
                 //Get Default Cube Settings
@@ -83,40 +83,41 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             else if (RunType.XFEqualsIgnoreCase("Post-Initial"))
             {
                 Load_Dashboard_Task_Result.ChangeCustomSubstVarsInDashboard = true;
-                //				//Checks current value of Show Menu param against prior run
-                //				var show_hide_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("IV_DDM_Show_Hide_Menu_Btn");
-                //				var new_display_show_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("IV_DDM_Show_Hide_Menu_Btn");
-                //				var prior_run_show_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("IV_DDM_Display_Show_Menu_Btn");
+				//Checks current value of Show Menu param against prior run
+				var show_hide_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("IV_DDM_App_Show_Hide_Menu_Btn");
+//				var new_display_show_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("IV_DDM_App_Show_Hide_Menu_Btn");
+//				var prior_run_show_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("IV_DDM_App_Display_Show_Menu_Btn");
 
-                //				if (!string.IsNullOrEmpty(show_hide_val))
-                //				{
-                //				    if (show_hide_val == "Hide")
-                //				    {
-                //				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_Display_Show_Menu_Btn", "True");
-                //				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_Display_Hide_Menu_Btn", "False");
-                //				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_Menu_Width", "0");
-                //				    }
-                //				    else if (show_hide_val == "Show")
-                //				    {
-                //				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_Display_Show_Menu_Btn", "False");
-                //				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_Display_Hide_Menu_Btn", "True");
-                //				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_Menu_Width", "Auto");
-                //				    }
-                //				}
+				if (!string.IsNullOrEmpty(show_hide_val))
+				{
+				    if (show_hide_val == "Hide")
+				    {
+				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_App_Display_Show_Menu_Btn", "True");
+				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_App_Display_Hide_Menu_Btn", "False");
+				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_App_Menu_Width", "0");
+				    }
+				    else if (show_hide_val == "Show")
+				    {
+				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_App_Display_Show_Menu_Btn", "False");
+				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_App_Display_Hide_Menu_Btn", "True");
+				        UpdateCustomSubstVar(Load_Dashboard_Task_Result, "IV_DDM_App_Menu_Width", "Auto");
+				    }
+				}
                 Load_Dashboard_Task_Result = Get_Default_Menu_Options(si, globals, api, db_args, Load_Dashboard_Task_Result, wfUnitPk.ProfileKey, "Post-Initial");
             }
 
             return Load_Dashboard_Task_Result;
 
         }
-
+		#endregion
+		
         #region "Setup Helpers"
         private XFLoadDashboardTaskResult Get_Default_Menu_Options(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args, XFLoadDashboardTaskResult Load_Dashboard_Task_Result, Guid ProfileKey, String RunType)
         {
             var XF_Load_Dashboard_Task_Result = new XFLoadDashboardTaskResult();
             XF_Load_Dashboard_Task_Result = Load_Dashboard_Task_Result;
 
-            var wf_Profile_Config_DT = new DataTable("wf_Profile_Config");
+            var dt = new DataTable("wf_Profile_Config");
 
             var menu_option = args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("BL_DDM_App_Menu", String.Empty);
 
@@ -128,54 +129,40 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 var sqa = new SqlDataAdapter();
                 // Define the select query and parameters
-                var sql = @"
-	       					Select Menu.DDM_Profile_ID,Menu.DDM_Menu_ID,Menu.Name,
+                var sql = @"Select Menu.DDM_Profile_ID,Menu.DDM_Menu_ID,Menu.Name,
 							Menu.Option_Type, Menu.Custom_DB_Header,
 							Menu.Custom_DB_Content,
 							Menu.DB_Name,Menu.CV_Name
 							FROM DDM_Config Cnfg
 							JOIN DDM_Config_Menu Menu
 							ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
-							WHERE Cnfg.ProfileKey = @OS_WFProfileKey";
+							WHERE Cnfg.ProfileKey = @OS_WFProfileKey ";
                 if (menu_option != String.Empty)
                 {
-                    sql += @"
-									AND Menu.DDM_Menu_ID = @DDM_Menu_ID";
+                    sql += @"AND Menu.DDM_Menu_ID = @DDM_Menu_ID ";
                 }
 
-                sql += @"
-						ORDER BY Sort_Order";
-
+                sql += @"ORDER BY Sort_Order";
                 // Initialize the list of parameters
-                var sqlparams = new List<SqlParameter>
+                var sqlparams = new SqlParameter[]
                 {
                     new SqlParameter("@OS_WFProfileKey", SqlDbType.UniqueIdentifier) { Value = ProfileKey }
                 };
 
                 // Add the second parameter conditionally
-                if (menu_option != String.Empty)
+                if (!string.IsNullOrEmpty(menu_option))
                 {
-                    sqlparams.Add(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = Convert.ToInt32(menu_option) });
+                    sqlparams = sqlparams.Append(new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = Convert.ToInt32(menu_option) }).ToArray();
                 }
 
-BRApi.ErrorLog.LogMessage(si, $"Hit {sql}");
-                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, wf_Profile_Config_DT, sql, sqlparams.ToArray());
+                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
             }
-            if (wf_Profile_Config_DT.Rows.Count > 0)
+            if (dt.Rows.Count > 0)
             {
-                DataRow row = wf_Profile_Config_DT.Rows[0];
+                DataRow row = dt.Rows[0];
 
                 UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, "BL_DDM_App_Menu", row["DDM_Menu_ID"].ToString());
 
-//                SetDynamicDBParameter(XF_Load_Dashboard_Task_Result, row);
-//                SetDynamicHeaderDBParams(si, globals, api, args, XF_Load_Dashboard_Task_Result, row);
-
-
-//                var menu_Option_Type = row["DDM_Option_Type"].ToString();
-//                var customDashboardHeader = row["DDM_Menu_Option_Custom_Dashboard_Header"].ToString();
-//                var customDashboardContent = row["DDM_Menu_Option_Custom_Dashboard_Content"].ToString();
-//                var dashboardName = row["DDM_Menu_Option_Dashboard_Name"].ToString();
-//                var cubeViewName = row["DDM_Menu_Option_CubeView_Name"].ToString();
             }
 
             return XF_Load_Dashboard_Task_Result;
@@ -194,11 +181,7 @@ BRApi.ErrorLog.LogMessage(si, $"Hit {sql}");
             }
         }
 
-
         #endregion
 
-        #endregion
-
-        #endregion
     }
 }

@@ -25,7 +25,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     {
         //Params
         public const string Param_CubeName = "IV_DDM_App_Cube_Name";
-        public const string Param_DashboardMenuOption = "BL_DDM_App_Menu";
+        public const string Param_DashboardMenu = "BL_DDM_App_Menu";
 		
 
 
@@ -41,7 +41,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        public static string getCubeName(SessionInfo si, int cubeId)
+        public static string get_CubeName(SessionInfo si, int cubeId)
         {
             var cubeName = string.Empty;
             try
@@ -79,7 +79,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        public static Dictionary<string, string> getParamsToAdd(DataTable headerItems)
+        public static Dictionary<string, string> get_ParamsToAdd(DataTable headerItems)
         {
             var paramVals = new Dictionary<string, string>();
 
@@ -99,26 +99,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         if ((bool)item[baseSearch + "_" + colSuffix] && colSuffix != "Txt")
                         {
                             string dimType = item[baseSearch + "_Dim_Type"].ToString();
-
-                            // Dimension
-                            if (paramVals.ContainsKey($"IV_DDM_App_{dimType}_Dim_Name"))
-                            {
-                                paramVals[$"IV_DDM_App_{dimType}_Dim_Name"] = item[baseSearch + "_Dim_Name"].ToString();
-                            }
-                            else
-                            {
-                                paramVals.Add($"IV_DDM_App_{dimType}_Dim_Name", item[baseSearch + "_Dim_Name"].ToString());
-                            }
-
-                            // Member filter
-                            if (paramVals.ContainsKey($"IV_DDM_App_{dimType}_MFB"))
-                            {
-                                paramVals[$"IV_DDM_App_{dimType}_MFB"] = item[baseSearch + "_MFB"].ToString();
-                            }
-                            else
-                            {
-                                paramVals.Add($"IV_DDM_App_{dimType}_MFB", item[baseSearch + "_MFB"].ToString());
-                            }
 
                             // set the ML value here directly
                             if (paramVals.ContainsKey($"ML_DDM_App_{dimType}_Selection"))
@@ -144,79 +124,75 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return paramVals;
         }
 
-        public static int getCurrentProfileID(SessionInfo si, Guid profileKey)
+        public static int get_CurrProfileID(SessionInfo si, Guid profileKey)
         {
-            var configProfileDT = new DataTable("configProfileDT");
+            var dt = new DataTable("configProfileDT");
 
-            int profileID = -1;
+            var profileID = -1;
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
                 var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
 
-                var sqlDataAdapter = new SqlDataAdapter();
+                var sqa = new SqlDataAdapter();
 
-                string selectQuery = @"
-										Select DDM_Profile_ID
-										From DDM_Config
-										Where ProfileKey = @OS_ProfileKey";
+                var sql = @"Select DDM_Profile_ID
+                            From DDM_Config
+                            Where ProfileKey = @OS_ProfileKey";
 
-                var parameters = new SqlParameter[] {
+                var sqlparams = new SqlParameter[] {
                     new SqlParameter("@OS_ProfileKey", SqlDbType.UniqueIdentifier) { Value = profileKey }
                 };
 
                 if (profileKey != null)
                 {
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, configProfileDT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
             }
 
-            if (configProfileDT.Rows.Count > 0)
+            if (dt.Rows.Count > 0)
             {
-                profileID = Convert.ToInt32(configProfileDT.Rows[0]["DDM_Profile_ID"]);
+                profileID = Convert.ToInt32(dt.Rows[0]["DDM_Profile_ID"]);
             }
 
             return profileID;
         }
 
-        public static DataTable getConfigMenu(SessionInfo si, int profileID, int SelectedMenuOption)
+        public static DataTable get_ConfigMenu(SessionInfo si, int SelectedMenu)
         {
 
-            var configMenuOptionsDT = new DataTable("configMenuOptionsDT");
-            if (profileID != -1 && SelectedMenuOption != -1)
+            var dt = new DataTable("configMenu_DT");
+            if (SelectedMenu != -1)
             {
-                var dbConnApp1 = BRApi.Database.CreateApplicationDbConnInfo(si);
-                using (var connection = new SqlConnection(dbConnApp1.ConnectionString))
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
 
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
 
-                    string selectQuery = @"
-											Select *
-											From DDM_Config_Menu
-											Where DDM_Menu_ID = @Menu_Option
-											And DDM_Profile_ID = @ProfileID";
+                    var sql = @"Select *
+                                From DDM_Config_Menu
+                                Where DDM_Menu_ID = @Menu_Option"; 
 
-                    var parameters = new SqlParameter[] {
-                        new SqlParameter("@Menu_Option", SqlDbType.Int) { Value = SelectedMenuOption },
-                        new SqlParameter("@ProfileID", SqlDbType.Int) { Value = profileID }
+                    var sqlparams = new SqlParameter[] {
+                        new SqlParameter("@Menu_Option", SqlDbType.Int) { Value = SelectedMenu }
                     };
 
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, configMenuOptionsDT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
             }
 
-            return configMenuOptionsDT;
+            return dt;
 
         }
 
-        public static int getSelectedMenuOption(SessionInfo si, Dictionary<string, string> customSubstVars)
+        public static int get_SelectedMenu(SessionInfo si, Dictionary<string, string> customSubstVars)
         {
-            int menuOption = -1;
+            var menuOption = -1;
 
-            string menuOptionStr = customSubstVars.XFGetValue(Param_DashboardMenuOption, "1");
+            var menuOptionStr = customSubstVars.XFGetValue(Param_DashboardMenu, "1");
 
 
             if (!String.IsNullOrEmpty(menuOptionStr))
@@ -227,46 +203,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return menuOption;
         }
 
-        public static DataTable getHeaderItems(SessionInfo si, Dictionary<string, string> customSubstVarsAlreadyResolved)
+        public static DataTable get_HeaderItems(SessionInfo si, Dictionary<string, string> customSubstVarsAlreadyResolved)
         {
+            var menu_option = customSubstVarsAlreadyResolved.XFGetValue(Param_DashboardMenu, "1");
 
-            var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
-            var ProfileKey = wfUnitPk.ProfileKey;
-            int configProfileID = DDM_Support.getCurrentProfileID(si, ProfileKey);
-
-            string menu_option = customSubstVarsAlreadyResolved.XFGetValue(Param_DashboardMenuOption, "1");
-
-            var Menu_Hdr_Options_DT = new DataTable("Menu_Hdr_Options");
+            var dt = new DataTable("Menu_Hdr_Options");
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
                 var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                // Create a new DataTable
 
-                var sqlDataAdapter = new SqlDataAdapter();
+                var sqa = new SqlDataAdapter();
                 // Define the select query and parameters
-                string selectQuery = @"
-							        	Select *
-										FROM DDM_Config_Menu_Hdr
-										WHERE DDM_Profile_ID = @DDM_Profile_ID
-										AND DDM_Menu_ID = @DDM_Menu_ID
-										ORDER BY Sort_Order";
+                var sql = @"Select *
+                            FROM DDM_Config_Menu_Hdr
+                            WHERE DDM_Menu_ID = @DDM_Menu_ID
+                            ORDER BY Sort_Order";
 
                 // Create an array of SqlParameter objects
-                var parameters = new SqlParameter[]
+                var sqlparams = new SqlParameter[]
                 {
-                    new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { Value = configProfileID},
                     new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = menu_option}
                 };
 
-                if (!String.IsNullOrEmpty(menu_option) && configProfileID != -1)
+                if (!String.IsNullOrEmpty(menu_option))
                 {
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqlDataAdapter, Menu_Hdr_Options_DT, selectQuery, parameters);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
             }
 
-            return Menu_Hdr_Options_DT;
+            return dt;
         }
 
     }

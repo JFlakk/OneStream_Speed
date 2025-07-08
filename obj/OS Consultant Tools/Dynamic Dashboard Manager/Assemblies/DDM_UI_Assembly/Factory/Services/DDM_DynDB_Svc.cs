@@ -30,20 +30,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
 		            return storedDashboard.Name switch
 		            {
-		                // Dynamic Navigation Menu
-		                "0a_DDM_Profile_Config_Header" => DDM_Header.Get_DynamicNavMenuLabel_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		                // General header
-		                "0_DDM_App_Header" => DDM_Header.Get_DynamicNavMenu_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		                // Label & Menu hide/show
-		                "0a_DDM_App_Header_MenuLabel" => DDM_Header.Get_DynamicNavMenuLabel_Actions(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		                // configurable header items
-		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.Get_DynamicHeader(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-		
-		
-		
+						// configurable header items
+		                //"0b_DDM_App_Header_ConfigItems" => DDM_Header.get_DynamicHdr(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),	
 		                // Dynamic Content
-		                "1a_DDM_App_Content_DB" => DDM_Content.Get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-				
+		                "1a_DDM_App_Content_DB" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+                        "1a_DDM_App_Content_CV" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+
 		                _ => api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject)
 		            };
 				}
@@ -63,25 +55,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-		            //BRApi.ErrorLog.LogMessage(si, "dashboard name: " + dynamicDashboardEx.DynamicDashboard.BasedOnName);
 		            return dynamicDashboardEx.DynamicDashboard.BasedOnName switch
 		            {
-		
-		                // Dynamic Navigation Menu
-		                "0a_DDM_Profile_Config_Header" => DDM_Header.Get_DynamicNavMenuLabel_Actions_DynamicComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		                // Label & Menu hide/show
-		                //"DDM_App_Header_MenuLabel" => DDM_Header.Get_Dynamic_Menu_Label(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		                // configurable header items
-		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.Get_Dynamic_Header_Components(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		
-		
+		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
 		                // Dynamic Content
-		                "DDM_App_Content" => DDM_Content.Get_DynamicContent_DynamicComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		
-		
-		                // Dynamic Form
-		                // "0000_GeneratedForm" => DDM_Load_Dashboard_Helper.Get_0000_GeneratedForm_DynamicComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		
+		                "1a_DDM_App_Content_DB" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+		                "1a_DDM_App_Content_CV" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+						
 		                _ => api.GetDynamicComponentsForDynamicDashboard(si, workspace, dynamicDashboardEx, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters)
 		            };
 				}

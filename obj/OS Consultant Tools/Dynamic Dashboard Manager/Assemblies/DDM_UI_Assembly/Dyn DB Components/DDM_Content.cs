@@ -1,10 +1,11 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using Microsoft.CSharp;
 using OneStream.Finance.Database;
 using OneStream.Finance.Engine;
@@ -52,16 +53,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
             var ProfileKey = wfUnitPk.ProfileKey;
-            int configProfileID = DDM_Support.getCurrentProfileID(si, ProfileKey);
+            int configProfileID = DDM_Support.get_CurrProfileID(si, ProfileKey);
 
-            int menuOptionID = DDM_Support.getSelectedMenuOption(si, args.SelectionChangedTaskInfo.CustomSubstVars);
+            int menuOptionID = DDM_Support.get_SelectedMenu(si, args.SelectionChangedTaskInfo.CustomSubstVars);
 
 
-            Dictionary<string, string> ParamsToAdd = DDM_Support.getParamsToAdd(DDM_Support.getHeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
+            Dictionary<string, string> ParamsToAdd = DDM_Support.get_ParamsToAdd(DDM_Support.get_HeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
 
             // get cube name based on SI.
             int cubeID = si.PovDataCellPk.CubeId;
-            var cubeName = DDM_Support.getCubeName(si, cubeID);
+            var cubeName = DDM_Support.get_CubeName(si, cubeID);
 
             // add cubename IV
             taskResult.ModifiedCustomSubstVars.Add(DDM_Support.Param_CubeName, cubeName);
@@ -74,17 +75,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return taskResult;
         }
 
-        internal static WsDynamicDashboardEx Get_DynamicContent(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
-            WsDynamicComponentEx parentDynamicComponentEx, Dashboard storedDashboard, Dictionary<string, string> customSubstVarsAlreadyResolved)
-        {
-
+        internal static WsDynamicComponentCollection get_DynamicComponentContent(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace,
+            DashboardMaintUnit maintUnit, WsDynamicDashboardEx dynamicDashboardEx, Dictionary<string, string> customSubstVarsAlreadyResolved)
+		{
             var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
             var ProfileKey = wfUnitPk.ProfileKey;
-            int curr_Profile_ID = DDM_Support.getCurrentProfileID(si, ProfileKey);
+            int curr_Profile_ID = DDM_Support.get_CurrProfileID(si, ProfileKey);
+			
 
-            int menuOptionID = DDM_Support.getSelectedMenuOption(si, customSubstVarsAlreadyResolved);
+            int menuOptionID = DDM_Support.get_SelectedMenu(si, customSubstVarsAlreadyResolved);
 
-            var config_Menu_DT = DDM_Support.getConfigMenu(si, curr_Profile_ID, menuOptionID);
+            var config_Menu_DT = DDM_Support.get_ConfigMenu(si, menuOptionID);
             var dashboardName = "Default";
             var cubeViewName = "Default";
 
@@ -102,17 +103,40 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     cubeViewName = config_Menu_DT.Rows[0]["CV_Name"].ToString();
                 }
             }
+			
+			var dynComponents = new WsDynamicComponentCollection();
+			dynComponents = api.GetDynamicComponentsForDynamicDashboard(si, workspace, dynamicDashboardEx, string.Empty, null, TriStateBool.Unknown, WsDynamicItemStateType.Unknown);
+			var dynDBComponent = new WsDynamicDbrdCompMemberEx();
+			if (dynamicDashboardEx.DynamicDashboard.Name == "1a_DDM_App_Content_DB")
+			{
+				dynDBComponent = dynComponents.GetComponentUsingBasedOnName("emb_Dynamic_1a_DDM_App_Content_DB");
+				dynDBComponent.DynamicComponentEx.DynamicComponent.Component.EmbeddedDashboardName = dashboardName;
+			}
+			else
+			{
+				dynDBComponent = dynComponents.GetComponentUsingBasedOnName("cv_DDM_Dynamic");
+				var CV_XmlData = new XElement("cv_DDM_Dynamic");
+				CV_XmlData = XElement.Parse(dynDBComponent.DynamicComponentEx.DynamicComponent.Component.XmlData);
+				CV_XmlData.SetElementValue("CubeViewName",cubeViewName);
+				dynDBComponent.DynamicComponentEx.DynamicComponent.Component.XmlData = CV_XmlData.ToString();
+			}	
+			//dynDBComponent.DynamicComponentEx.TemplateSubstVars.Add(Param_CubeViewName,cubeViewName);
+//            repeatArgsList.Add(new WsDynamicComponentRepeatArgs(dashboardName, nextLevelTemplateSubstVarsToAdd));
 
+//            var dynamicDashboardEx = api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
+
+//            dynamicDashboardEx.DynamicDashboard.Tag = repeatArgsList;
+
+//            api.SaveDynamicDashboardState(si, parentDynamicComponentEx.DynamicComponent, dynamicDashboardEx, WsDynamicItemStateType.EntireObject);
+
+              return dynComponents;
+        }
+		
+        // menu label
+        internal static WsDynamicDashboardEx get_DynamicContent(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
+            WsDynamicComponentEx parentDynamicComponentEx, Dashboard storedDashboard, Dictionary<string, string> customSubstVarsAlreadyResolved)
+        {
             var repeatArgsList = new List<WsDynamicComponentRepeatArgs>();
-
-
-            var nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>
-            {
-                [Param_DashboardName] = dashboardName,
-                [Param_CubeViewName] = cubeViewName
-
-            };
-            repeatArgsList.Add(new WsDynamicComponentRepeatArgs(dashboardName, nextLevelTemplateSubstVarsToAdd));
 
             var dynamicDashboardEx = api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
 
@@ -121,15 +145,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             api.SaveDynamicDashboardState(si, parentDynamicComponentEx.DynamicComponent, dynamicDashboardEx, WsDynamicItemStateType.MinimalWithTemplateParameters);
 
             return dynamicDashboardEx;
-        }
-		
-        internal static WsDynamicComponentCollection Get_DynamicContent_DynamicComponents(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace,
-            DashboardMaintUnit maintUnit, WsDynamicDashboardEx dynamicDashboardEx, Dictionary<string, string> customSubstVarsAlreadyResolved)
-        {
-            var repeatArgsList = dynamicDashboardEx.DynamicDashboard.Tag as List<WsDynamicComponentRepeatArgs>;
-            var componentCollection = api.GetDynamicComponentsRepeatedForDynamicDashboard(si, workspace, dynamicDashboardEx, repeatArgsList, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
-
-            return componentCollection;
         }
 
     }
