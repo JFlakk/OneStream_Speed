@@ -203,7 +203,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return menuOption;
         }
 
-        public static DataTable get_HeaderItems(SessionInfo si, Dictionary<string, string> customSubstVarsAlreadyResolved)
+        public static DataTable get_HeaderItems(SessionInfo si, Dictionary<string, string> customSubstVarsAlreadyResolved, string option_Type)
         {
             var menu_option = customSubstVarsAlreadyResolved.XFGetValue(Param_DashboardMenu, "1");
 
@@ -219,12 +219,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var sql = @"Select *
                             FROM DDM_Config_Menu_Hdr
                             WHERE DDM_Menu_ID = @DDM_Menu_ID
+							AND Option_Type = @Option_Type
                             ORDER BY Sort_Order";
 
                 // Create an array of SqlParameter objects
                 var sqlparams = new SqlParameter[]
                 {
-                    new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = menu_option}
+					new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = menu_option},
+					new SqlParameter("@Option_Type", SqlDbType.Char) { Value = option_Type}
                 };
 
                 if (!String.IsNullOrEmpty(menu_option))

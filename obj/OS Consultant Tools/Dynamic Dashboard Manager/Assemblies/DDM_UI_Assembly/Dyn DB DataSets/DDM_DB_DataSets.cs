@@ -101,7 +101,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
                     sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
-				BRApi.ErrorLog.LogMessage(si,$"Hit {sql} - {wfUserPk.ProfileKey.ToString()} - {dt.Rows.Count.ToString()}");
                 return dt;
             }
             catch (Exception ex)

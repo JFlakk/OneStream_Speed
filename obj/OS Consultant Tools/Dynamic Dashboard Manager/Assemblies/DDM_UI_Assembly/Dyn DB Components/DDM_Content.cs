@@ -46,34 +46,34 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
 
-        internal static XFSelectionChangedTaskResult OnMenuSelectionChanged(SessionInfo si, DashboardExtenderArgs args)
-        {
+//        internal static XFSelectionChangedTaskResult OnMenuSelectionChanged(SessionInfo si, DashboardExtenderArgs args)
+//        {
 
-            var taskResult = new XFSelectionChangedTaskResult() { ChangeCustomSubstVarsInDashboard = true };
+//            var taskResult = new XFSelectionChangedTaskResult() { ChangeCustomSubstVarsInDashboard = true };
 
-            var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
-            var ProfileKey = wfUnitPk.ProfileKey;
-            int configProfileID = DDM_Support.get_CurrProfileID(si, ProfileKey);
+//            var wfUnitPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
+//            var ProfileKey = wfUnitPk.ProfileKey;
+//            int configProfileID = DDM_Support.get_CurrProfileID(si, ProfileKey);
 
-            int menuOptionID = DDM_Support.get_SelectedMenu(si, args.SelectionChangedTaskInfo.CustomSubstVars);
-
-
-            Dictionary<string, string> ParamsToAdd = DDM_Support.get_ParamsToAdd(DDM_Support.get_HeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
-
-            // get cube name based on SI.
-            int cubeID = si.PovDataCellPk.CubeId;
-            var cubeName = DDM_Support.get_CubeName(si, cubeID);
-
-            // add cubename IV
-            taskResult.ModifiedCustomSubstVars.Add(DDM_Support.Param_CubeName, cubeName);
+//            int menuOptionID = DDM_Support.get_SelectedMenu(si, args.SelectionChangedTaskInfo.CustomSubstVars);
 
 
-            foreach (string param in ParamsToAdd.Keys)
-            {
-                taskResult.ModifiedCustomSubstVars.Add(param, ParamsToAdd[param]);
-            }
-            return taskResult;
-        }
+//            Dictionary<string, string> ParamsToAdd = DDM_Support.get_ParamsToAdd(DDM_Support.get_HeaderItems(si, args.SelectionChangedTaskInfo.CustomSubstVars));
+
+//            // get cube name based on SI.
+//            int cubeID = si.PovDataCellPk.CubeId;
+//            var cubeName = DDM_Support.get_CubeName(si, cubeID);
+
+//            // add cubename IV
+//            taskResult.ModifiedCustomSubstVars.Add(DDM_Support.Param_CubeName, cubeName);
+
+
+//            foreach (string param in ParamsToAdd.Keys)
+//            {
+//                taskResult.ModifiedCustomSubstVars.Add(param, ParamsToAdd[param]);
+//            }
+//            return taskResult;
+//        }
 
         internal static WsDynamicComponentCollection get_DynamicComponentContent(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace,
             DashboardMaintUnit maintUnit, WsDynamicDashboardEx dynamicDashboardEx, Dictionary<string, string> customSubstVarsAlreadyResolved)
