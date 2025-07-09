@@ -20,16 +20,16 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class SQA_FMM_Cell
+    public class SQA_FMM_Dest_Cell
     {
         private readonly SqlConnection _connection;
 
-        public SQA_FMM_Cell(SessionInfo si, SqlConnection connection)
+        public SQA_FMM_Dest_Cell(SessionInfo si, SqlConnection connection)
         {
             _connection = connection;
         }
 
-        public void Fill_FMM_Cell_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
+        public void Fill_FMM_Dest_Cell_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
         {
             using (SqlCommand command = new SqlCommand(sql, _connection))
             {
@@ -46,13 +46,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        public void Update_FMM_Cell(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
+        public void Update_FMM_Dest_Cell(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
                 string insertQuery = @"
-		            INSERT INTO FMM_Cell (
+		            INSERT INTO FMM_Dest_Cell (
 		                Cube_ID, Act_ID, Model_ID, Calc_ID, OS_Cell_ID, 
 		                Location, Calc_Plan_Units, Acct, View, 
 		                Origin, IC, Flow, UD1, 
@@ -113,7 +113,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Define the update query and parameters
                 string updateQuery = @"
-		            UPDATE FMM_Cell SET
+		            UPDATE FMM_Dest_Cell SET
 		                Cube_ID = @Cube_ID, Act_ID = @Act_ID, Model_ID = @Model_ID,
 		                Calc_ID = @Calc_ID, Location = @Location, 
 		                Calc_Plan_Units = @Calc_Plan_Units, Acct = @Acct, 
@@ -171,7 +171,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Define the delete query and parameters
                 string deleteQuery = @"
-		            DELETE FROM FMM_Cell 
+		            DELETE FROM FMM_Dest_Cell 
 		            WHERE OS_Cell_ID = @OS_Cell_ID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@OS_Cell_ID", SqlDbType.Int) { SourceColumn = "OS_Cell_ID", SourceVersion = DataRowVersion.Original });

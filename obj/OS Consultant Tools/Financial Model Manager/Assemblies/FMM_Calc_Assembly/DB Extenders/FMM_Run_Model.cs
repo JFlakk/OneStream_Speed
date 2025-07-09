@@ -71,7 +71,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     JOIN FMM_Src_Cell Src
                     ON calc.Calc_ID = Src.Calc_ID
 					AND calc.Model_ID = Src.Model_ID
-					JOIN FMM_Cell Dest
+					JOIN FMM_Dest_Cell Dest
                     ON calc.Calc_ID = Dest.Calc_ID
 					AND calc.Model_ID = Dest.Model_ID
                     WHERE Model_ID = @Model_ID

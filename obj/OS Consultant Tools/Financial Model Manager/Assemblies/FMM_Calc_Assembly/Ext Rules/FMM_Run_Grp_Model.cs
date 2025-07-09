@@ -50,7 +50,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 		            JOIN FMM_Calc_Unit_Assign_Model_Group Calc_Unit_Mod_Grp
 		            ON Mod_Grp_Seqs.Model_Grp_Seq_ID = Calc_Unit_Mod_Grp.Model_Grp_Seq_ID
 		            AND Mod_Grp_Seqs.Cube_ID = Calc_Unit_Mod_Grp.Cube_ID
-		            JOIN FMM_Model_Grps Mod_Grps
+		            JOIN FMM_Model_Groups Mod_Grps
 		            ON Calc_Unit_Mod_Grp.Cube_ID = Mod_Grps.Cube_ID
 		            AND Calc_Unit_Mod_Grp.Model_Grp_ID = Mod_Grps.Model_Grp_ID
 		            JOIN FMM_Calc_Unit_Config WF_DU
