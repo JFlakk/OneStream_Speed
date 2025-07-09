@@ -308,7 +308,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{Get_FMM_Scen_Types}{Cube = |!BL_FMM_All_Cubes!|}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Scen_Types}{Cube = |!BL_FMM_All_Cubes!|}</methodQuery>
                                 <resultsTableName>Scen_Types</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Name</valueMember>
@@ -3019,15 +3019,15 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <displayFormat>|!LV_Std_cbx_Format!|</displayFormat>
                                 <adapterMembers />
                             </component>
-                            <component name="cbx_FMM_Cube_Config_Scen_Types" description="" xfText="Scenario Type:" toolTip="Select Scenario Type:" componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Scen_Types" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
-                                <displayFormat>|!LV_Std_cbx_Format!|</displayFormat>
-                                <adapterMembers />
-                            </component>
                             <component name="cbx_FMM_Cube_Config_Status" description="" xfText="Status:" toolTip="Select Status:" componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_FMM_Status" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_cbx_Format!|</displayFormat>
                                 <adapterMembers />
                             </component>
                             <component name="cbx_FMM_Register_Profiles" description="" xfText="Register Profiles" toolTip="" componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Register_Profiles" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_cbx_Format!|</displayFormat>
+                                <adapterMembers />
+                            </component>
+                            <component name="cbx_FMM_Scen_Types" description="" xfText="Scenario Type:" toolTip="Select Scenario Type:" componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Scen_Types" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_cbx_Format!|</displayFormat>
                                 <adapterMembers />
                             </component>
@@ -3095,7 +3095,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0a_FMM_Register_Col_Config_Header" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0a_FMM_Register_Col_Config_Header" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0a_FMM_Register_Col_Config" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0a_FMM_Register_Col_Config" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -3199,10 +3199,6 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <adapterMembers />
                             </component>
                             <component name="Embedded 0b_FMM_Unit_and_Acct_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b_FMM_Unit_and_Acct_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
-                                <componentDefinition />
-                                <adapterMembers />
-                            </component>
-                            <component name="Embedded 0b1_FMM_App_Admin_Dynamic_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="~!DL_FMM_Setup_Options!~" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -3510,7 +3506,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 1_FMM_App_Admin_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1_FMM_App_Admin_Content" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 1_FMM_App_Admin_Content" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="|!DL_FMM_Setup_Options!|" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -3586,7 +3582,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 1b_FMM_Cube_Config_Dialog_Add_Row2" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1b_FMM_Cube_Config_Dialog_Add_Row2" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 1b_FMM_Cube_Config_Dialog_Add" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1b_FMM_Cube_Config_Dialog_Add" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -3594,7 +3590,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 1c_FMM_Cube_Config_Dialog_Add_Row3" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1c_FMM_Cube_Config_Dialog_Add_Row3" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 1c_FMM_Cube_Config_Dialog_Add" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="1c_FMM_Cube_Config_Dialog_Add" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -5990,7 +5986,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             <componentMember name="Img_FMM_Logo" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="1_FMM_App_Admin_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1_FMM_App_Admin_Content" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -6011,27 +6007,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Setup_Options" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 0b1_FMM_App_Admin_Dynamic_Content" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
-                                    </dashboard>
-                                    <dashboard name="1a_FMM_App_Admin_Dyn_Content" description="" pageCaption="" dashboardType="EmbeddedDynamic" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
-                                        <DashboardDefinition>
-                                            <ShowTitle>true</ShowTitle>
-                                            <Notes />
-                                            <DynamicDashboardDefinition>
-                                                <ComponentTemplateRepeatItems />
-                                            </DynamicDashboardDefinition>
-                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
-                                            <GridLayoutDefinition>
-                                                <ColumnDefinitions>
-                                                    <ColumnDefinition ColumnType="Component" Width="*" />
-                                                </ColumnDefinitions>
-                                                <RowDefinitions>
-                                                    <RowDefinition RowType="Component" Height="*" />
-                                                </RowDefinitions>
-                                            </GridLayoutDefinition>
-                                        </DashboardDefinition>
-                                        <componentMembers />
                                     </dashboard>
                                 </dashboards>
                             </dashboardGroup>
@@ -9144,8 +9120,8 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="Embedded 1a_FMM_Cube_Config_Dialog_Add" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 1b_FMM_Cube_Config_Dialog_Add_Row2" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="Embedded 1c_FMM_Cube_Config_Dialog_Add_Row3" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 1b_FMM_Cube_Config_Dialog_Add" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 1c_FMM_Cube_Config_Dialog_Add" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_FMM_Cube_Config_Save_New" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
@@ -9164,10 +9140,10 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="cbx_FMM_All_Cubes" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="cbx_FMM_Cube_Config_Scen_Types" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="cbx_FMM_Scen_Types" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="1b_FMM_Cube_Config_Dialog_Add_Row2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1b_FMM_Cube_Config_Dialog_Add" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -9190,7 +9166,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             <componentMember name="lbl_FMM_Cube_Config_Entity_MFB" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="1c_FMM_Cube_Config_Dialog_Add_Row3" description="" pageCaption="" dashboardType="Unknown" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="1c_FMM_Cube_Config_Dialog_Add" description="" pageCaption="" dashboardType="Unknown" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -9371,11 +9347,11 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="Embedded 0a_FMM_Register_Col_Config_Header" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0a_FMM_Register_Col_Config" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="Embedded 0b_FMM_Register_Col_Config_Content" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="0a_FMM_Register_Col_Config_Header" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0a_FMM_Register_Col_Config" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <displayFormat>|!LV_Std_Header_Format!|</displayFormat>
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
@@ -14901,10 +14877,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return Get_FMM_Cubes();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Scen_Type_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Scen_Type"))
                         {
-                            var cube = args.NameValuePairs.XFGetValue("Cube");
-                            return Get_FMM_Scen_Type_List(cube);
+                            return get_FMM_Scen_Type();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Setup_Cube_Config_List"))
                         {
@@ -15148,11 +15123,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Scenario Type Data Sets
 
-        private DataTable Get_FMM_Scen_Type_List(string Cube)
+        private DataTable get_FMM_Scen_Type()
         {
             try
             {
-                var scen_Types_DT = new DataTable("Scen_Types");
+				var Cube = args.NameValuePairs.XFGetValue("Cube");
+                var dt = new DataTable("Scen_Types");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -15215,7 +15191,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 										WHERE NOT EXISTS (
 										    SELECT 1
 										    FROM FMM_Cube_Config Cube
-										    WHERE Cube.Scen_Type = Scen.ScenType -- use alias 'Scen' instead of 'ScenType_List'
+										    WHERE Cube.Scen_Type = Scen.ScenType
 										    AND Cube.Cube = @Cube
 										)";
                     // Create an array of SqlParameter objects
@@ -15223,11 +15199,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube", SqlDbType.VarChar) { Value = Cube}
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, scen_Types_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return scen_Types_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -27508,6 +27484,47 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #endregion
     }
 }]]></sourceCode>
+                                        </file>
+                                    </folder>
+                                    <folder name="Dyn DB Components">
+                                        <file name="FMM_Content.cs" fileType="CSharp" businessRuleType="Unknown" compilerActionType="Unknown" isEncrypted="false">
+                                            <sourceCode><![CDATA[using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using Microsoft.CSharp;
+using OneStream.Finance.Database;
+using OneStream.Finance.Engine;
+using OneStream.Shared.Common;
+using OneStream.Shared.Database;
+using OneStream.Shared.Engine;
+using OneStream.Shared.Wcf;
+using OneStream.Stage.Database;
+using OneStream.Stage.Engine;
+using OneStreamWorkspacesApi;
+using OneStreamWorkspacesApi.V800;
+
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
+{
+	public class FMM_Content
+	{
+        public object Test(SessionInfo si)
+        {
+            try
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new XFException(si, ex);
+            }
+        }
+	}
+}
+]]></sourceCode>
                                         </file>
                                     </folder>
                                     <folder name="Factory">
