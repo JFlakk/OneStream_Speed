@@ -36,10 +36,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         public int GBL_Table_SrcCell { get; set; }
         public int GBL_Src_Cell_Cnt { get; set; }
         public string GBL_Model_Type { get; set; } = "Cube";
-        public Dictionary<int, string> GBL_SrcCellDict { get; set; } = new Dictionary<int, string>();
-        public Dictionary<int, string> GBL_UnbalCalcDict { get; set; } = new Dictionary<int, string>();
-        public Dictionary<int, string> GBL_SrcCellDrillDownDict { get; set; } = new Dictionary<int, string>();
-        public Dictionary<string, string> GBL_Activity_List_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<int, string> GBL_SrcCell_Dict { get; set; } = new Dictionary<int, string>();
+        public Dictionary<int, string> GBL_UnbalCalc_Dict { get; set; } = new Dictionary<int, string>();
+        public Dictionary<int, string> GBL_SrcCellDrillDown_Dict { get; set; } = new Dictionary<int, string>();
+        public Dictionary<string, string> GBL_Act_Config_Dict { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> GBL_Calc_Unit_Config_Dict { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> GBL_Unit_Config_Dict { get; set; } = new Dictionary<string, string>();
         public Dictionary<string, string> GBL_Acct_Config_Dict { get; set; } = new Dictionary<string, string>();
@@ -118,168 +118,168 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 switch (args.FunctionType)
                 {
                     case DashboardExtenderFunctionType.SqlTableEditorSaveData:
-                        var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                        var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                         if (args.FunctionName.XFEqualsIgnoreCase("Save_Calc_Config_Rows"))
                         {
                             GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
-                            save_Task_Result = Save_Calc_Config_Rows();
+                            save_Result = Save_Calc_Config_Rows();
                             if (GBL_Model_Type == "Cube")
                             {
                                 Evaluate_Calc_Config_Setup(GBL_Calc_ID);
                             }
 
-                            return save_Task_Result;
+                            return save_Result;
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Cell_Rows"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("save_Dest_Cell_Rows"))
                         {
                             GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
-                            save_Task_Result = Save_Cell_Rows();
+                            save_Result = save_Dest_Cell_Rows();
                             if (GBL_Model_Type == "Cube")
                             {
                                 Evaluate_Calc_Config_Setup(GBL_Calc_ID);
                             }
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_Src_Cell_Rows"))
                         {
                             GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
-                            save_Task_Result = Save_Src_Cell_Rows();
+                            save_Result = Save_Src_Cell_Rows();
                             if (GBL_Model_Type == "Cube")
                             {
                                 Evaluate_Calc_Config_Setup(GBL_Calc_ID);
                             }
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Activity_List"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Act_Config"))
                         {
-                            save_Task_Result = Save_Activity_List();
+                            save_Result = Save_Act_Config();
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Calc_Unit_List"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Calc_Unit_Config"))
                         {
-                            save_Task_Result = Save_Calc_Unit_List();
+                            save_Result = Save_Calc_Unit_Config();
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Unit_List"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Unit_Config"))
                         {
-                            save_Task_Result = Save_Unit_List();
+                            save_Result = Save_Unit_Config();
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Acct_List"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Acct_Config"))
                         {
-                            save_Task_Result = Save_Acct_List();
+                            save_Result = Save_Acct_Config();
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Appr_List"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Appr_Config"))
                         {
-                            save_Task_Result = Save_Appr_List();
+                            save_Result = Save_Appr_Config();
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Appr_Steps"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Appr_Step_Config"))
                         {
-                            save_Task_Result = Save_Appr_Steps();
+                            save_Result = Save_Appr_Step_Config();
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_RegConfig_List"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Reg_Config"))
                         {
-                            save_Task_Result = Save_RegConfig_List();
+                            save_Result = Save_Reg_Config();
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Col_Config_List"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Col_Config"))
                         {
-                            save_Task_Result = Save_Col_Config_List();
+                            save_Result = Save_Col_Config();
 
-                            return save_Task_Result;
+                            return save_Result;
 
                         }
                         break;
 					                    
 					case DashboardExtenderFunctionType.ComponentSelectionChanged:
-                        var changed_Task_Result = new XFSelectionChangedTaskResult();
+                        var changed_Result = new XFSelectionChangedTaskResult();
                         if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Cube_Config"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Cube_Config("New");
-                            return changed_Task_Result;
+                            changed_Result = Save_Cube_Config("New");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_Updated_Cube_Config"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Cube_Config("Update");
-                            return changed_Task_Result;
+                            changed_Result = Save_Cube_Config("Update");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Model"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Model("New");
-                            return changed_Task_Result;
+                            changed_Result = Save_Model("New");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_Model_Updates"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Model("Update");
-                            return changed_Task_Result;
+                            changed_Result = Save_Model("Update");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Model_Group"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Model_Grp("New");
-                            return changed_Task_Result;
+                            changed_Result = Save_Model_Grp("New");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_Updated_Model_Group"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Model_Grp("Update");
-                            return changed_Task_Result;
+                            changed_Result = Save_Model_Grp("Update");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Model_Grp_Seq"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Model_Grp_Seq("New");
-                            return changed_Task_Result;
+                            changed_Result = Save_Model_Grp_Seq("New");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_Updated_Model_Grp_Seq"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Model_Grp_Seq("Update");
-                            return changed_Task_Result;
+                            changed_Result = Save_Model_Grp_Seq("Update");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Model_Grp_Model_Assignments"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Model_Grp_Assign("New");
-                            return changed_Task_Result;
+                            changed_Result = Save_Model_Grp_Assign("New");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Calc_Unit_Assign"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Calc_Unit_Assign("New");
-                            return changed_Task_Result;
+                            changed_Result = Save_Calc_Unit_Assign("New");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Appr_Step"))
                         {
                             BRApi.ErrorLog.LogMessage(si, "Hit Sve Approval step: ");
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Save_Appr_Step("New");
-                            return changed_Task_Result;
+                            changed_Result = Save_Appr_Step("New");
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Act_Appr_Step_Config"))
                         {
@@ -291,53 +291,53 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             BRApi.ErrorLog.LogMessage(si, "Hit Sve Approval step activity: " + runType);
 
-                            changed_Task_Result = Save_Act_Appr_Step_Config(runType);
-                            return changed_Task_Result;
+                            changed_Result = Save_Act_Appr_Step_Config(runType);
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Process_Bulk_Calc_Unit"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Process_Bulk_Calc_Unit();
-                            return changed_Task_Result;
+                            changed_Result = Process_Bulk_Calc_Unit();
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Process_Copy_Cube_Config"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            Process_Copy_Cube_Config(ref changed_Task_Result);
-                            return changed_Task_Result;
+                            Process_Copy_Cube_Config(ref changed_Result);
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Copy_Reg_Config"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Process_Bulk_Calc_Unit();
-                            return changed_Task_Result;
+                            changed_Result = Process_Bulk_Calc_Unit();
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Process_Copy_Act_Config"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
-                            Process_Copy_Act_Config(ref changed_Task_Result);
-                            return changed_Task_Result;
+                            Process_Copy_Act_Config(ref changed_Result);
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Process_Model_Copy"))
                         {
                             BRApi.ErrorLog.LogMessage(si, "Hit: " + args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Appr_ID", "0"));
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Process_Bulk_Calc_Unit();
-                            return changed_Task_Result;
+                            changed_Result = Process_Bulk_Calc_Unit();
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Process_Calc_Copy"))
                         {
                             BRApi.ErrorLog.LogMessage(si, "Hit: " + args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Appr_ID", "0"));
                             // Implement Dashboard Component Selection Changed logic here.
-                            Process_Calc_Copy(ref changed_Task_Result);
-                            return changed_Task_Result;
+                            Process_Calc_Copy(ref changed_Result);
+                            return changed_Result;
                         }
                         else if (args.FunctionName.XFEqualsIgnoreCase("Copy_Model_Grp_Config"))
                         {
                             BRApi.ErrorLog.LogMessage(si, "Hit: " + args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Appr_ID", "0"));
                             // Implement Dashboard Component Selection Changed logic here.
-                            changed_Task_Result = Process_Bulk_Calc_Unit();
-                            return changed_Task_Result;
+                            changed_Result = Process_Bulk_Calc_Unit();
+                            return changed_Result;
                         }
                         break;
                 }
@@ -359,7 +359,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
 
                 // Save the Calc Config data rows
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
@@ -384,13 +384,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqa_FMM_Dest_Cell = new SQA_FMM_Dest_Cell(si, connection);
                     var FMM_Dest_Cell_DT = new DataTable();
                     var sqa_Cell = new SqlDataAdapter();
-                    Duplicate_Calc_Config(Cube_ID, Act_ID, Model_ID, "Initiate", ref save_Task_Result);
+                    Duplicate_Calc_Config(Cube_ID, Act_ID, Model_ID, "Initiate", ref save_Result);
 
                     // Fill the DataTable with the existing FMM_Calc_Config data
-                    string sql = @"
-		                SELECT * 
-		                FROM FMM_Calc_Config 
-		                WHERE Cube_ID = @Cube_ID AND Act_ID = @Act_ID AND Model_ID = @Model_ID";
+                    string sql = @"SELECT * 
+					                FROM FMM_Calc_Config 
+					                WHERE Cube_ID = @Cube_ID AND Act_ID = @Act_ID AND Model_ID = @Model_ID";
 
                     var sqlparams = new SqlParameter[]
                     {
@@ -447,18 +446,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
 
                             FMM_Calc_Config_DT.Rows.Add(new_config_Row);
-                            Duplicate_Calc_Config(Cube_ID, Act_ID, Model_ID, "Update Row", ref save_Task_Result, "Insert", xfRow);
+                            Duplicate_Calc_Config(Cube_ID, Act_ID, Model_ID, "Update Row", ref save_Result, "Insert", xfRow);
 
 
                             //begin FMM_Dest_Cell updates logic
                             OS_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "OS_Cell_ID");
 
                             // Fill the DataTable with the current data from FMM_Dest_Cell
-                            var sql_Cell = @"
-												SELECT * 
-												FROM FMM_Dest_Cell 
-												WHERE Calc_ID = @Calc_ID 
-												AND OS_Cell_ID = @OS_Cell_ID";
+                            var sql_Cell = @"SELECT * 
+											FROM FMM_Dest_Cell 
+											WHERE Calc_ID = @Calc_ID 
+											AND OS_Cell_ID = @OS_Cell_ID";
                             // Create an array of SqlParameter objects
                             var sqlparams_Cell = new SqlParameter[]
                             {
@@ -531,7 +529,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                         }
                                     }
                                 }
-                                Duplicate_Calc_Config(Cube_ID, Act_ID, Model_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Calc_Config(Cube_ID, Act_ID, Model_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
@@ -544,7 +542,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 BRApi.ErrorLog.LogMessage(si, "Hit Delete SRC: ");
                                 // Delete the row if found
                                 Deleted_Row.Delete();
-                                Duplicate_Calc_Config(Cube_ID, Act_ID, Model_ID, "Update Row", ref save_Task_Result, "Delete", xfRow);
+                                Duplicate_Calc_Config(Cube_ID, Act_ID, Model_ID, "Update Row", ref save_Result, "Delete", xfRow);
                             }
                         }
                     }
@@ -559,14 +557,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Calc_Config)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate Unit Config entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate Unit Config entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         // Update the database with the changes made to the FMM_Calc_Config DataTable
                         sqa_fmm_calc_config.Update_FMM_Calc_Config(si, FMM_Calc_Config_DT, sqa);
 
@@ -579,9 +577,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
 
                 // Set return value
-                save_Task_Result.CancelDefaultSave = true;
+                save_Result.CancelDefaultSave = true;
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -589,11 +587,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Cell_Rows()
+        private XFSqlTableEditorSaveDataTaskResult save_Dest_Cell_Rows()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
 
                 // Save the Calc Config data rows
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
@@ -647,13 +645,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
 
                 // Set return value
-                save_Task_Result.IsOK = true;
-                save_Task_Result.ShowMessageBox = false;
-                save_Task_Result.Message = String.Empty;
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                save_Result.IsOK = true;
+                save_Result.ShowMessageBox = false;
+                save_Result.Message = String.Empty;
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -668,7 +666,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var Calc_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Calc_ID");
                 GBL_Calc_ID = Convert.ToInt32(Calc_ID);
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -836,12 +834,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     // The full conversion continues in the same fashion as the snippet above.
 
                     // Set return value
-                    save_Task_Result.IsOK = true;
-                    save_Task_Result.ShowMessageBox = false;
-                    save_Task_Result.Message = String.Empty;
-                    save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                    save_Result.IsOK = true;
+                    save_Result.ShowMessageBox = false;
+                    save_Result.Message = String.Empty;
+                    save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                    return save_Task_Result;
+                    return save_Result;
                 }
             }
             catch (Exception ex)
@@ -854,11 +852,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         #region "Cube Config TED Inputs"
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Activity_List()
+        private XFSqlTableEditorSaveDataTaskResult Save_Act_Config()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
                 int Act_ID = 0;
 
@@ -870,7 +868,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var FMM_Act_Config_DT = new DataTable();
                     var sqa = new SqlDataAdapter();
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
-                    Duplicate_Activity_List(Cube_ID, "Initiate", ref save_Task_Result);
+                    Duplicate_Act_Config(Cube_ID, "Initiate", ref save_Result);
 
                     // Fill the DataTable with the current data from FMM_Act_Config
                     string sql = @"
@@ -904,7 +902,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 newRow["Update_Date"] = DateTime.Now;
                                 newRow["Update_User"] = si.UserName;
                                 FMM_Act_Config_DT.Rows.Add(newRow);
-                                Duplicate_Activity_List(Cube_ID, "Update Row", ref save_Task_Result, "Insert", xfRow);
+                                Duplicate_Act_Config(Cube_ID, "Update Row", ref save_Result, "Insert", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
@@ -918,7 +916,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Activity_List(Cube_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Act_Config(Cube_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
@@ -929,14 +927,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 foreach (var row in rowsToDelete)
                                 {
                                     row.Delete();
-                                    Duplicate_Activity_List(Cube_ID, "Update Row", ref save_Task_Result, "Delete", xfRow);
+                                    Duplicate_Act_Config(Cube_ID, "Update Row", ref save_Result, "Delete", xfRow);
                                 }
                             }
                         }
                     }
 
                     // Check for duplicates in the dictionary
-                    var dup_Activity_Config = GBL_Activity_List_Dict
+                    var dup_Activity_Config = GBL_Act_Config_Dict
                                              .GroupBy(x => x.Value)
                                              .Where(g => g.Count() > 1)
                                              .Select(g => g.Key)
@@ -946,23 +944,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Activity)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate Activity Config entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate Activity Config entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
                         sqa_fmm_act_config.Update_FMM_Act_Config(si, FMM_Act_Config_DT, sqa);
                     }
                 }
 
                 // Set return value
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -970,11 +968,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Calc_Unit_List()
+        private XFSqlTableEditorSaveDataTaskResult Save_Calc_Unit_Config()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
                 int Calc_Unit_ID = 0;
 
@@ -986,7 +984,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var FMM_Calc_Unit_Config_DT = new DataTable();
                     var sqa = new SqlDataAdapter();
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
-                    Duplicate_Calc_Unit_Config(Cube_ID, "Initiate", ref save_Task_Result);
+                    Duplicate_Calc_Unit_Config(Cube_ID, "Initiate", ref save_Result);
 
                     // Fill the DataTable with the current data from FMM_Act_Config
                     string sql = @"
@@ -1020,7 +1018,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Update_Date"] = DateTime.Now;
                             newRow["Update_User"] = si.UserName;
                             FMM_Calc_Unit_Config_DT.Rows.Add(newRow);
-                            Duplicate_Calc_Unit_Config(Cube_ID, "Update Row", ref save_Task_Result, "Insert", xfRow);
+                            Duplicate_Calc_Unit_Config(Cube_ID, "Update Row", ref save_Result, "Insert", xfRow);
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
                         {
@@ -1032,7 +1030,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["WFChannel"] = (string)xfRow.ModifiedDataRow.Items["WFChannel"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Calc_Unit_Config(Cube_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Calc_Unit_Config(Cube_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
@@ -1043,7 +1041,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 foreach (var row in rowsToDelete)
                                 {
                                     row.Delete();
-                                    Duplicate_Calc_Unit_Config(Cube_ID, "Update Row", ref save_Task_Result, "Delete", xfRow);
+                                    Duplicate_Calc_Unit_Config(Cube_ID, "Update Row", ref save_Result, "Delete", xfRow);
                                 }
                             }
                         }
@@ -1059,26 +1057,26 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Calc_Unit_Config)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate WF DU Config entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate WF DU Config entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
                         sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, FMM_Calc_Unit_Config_DT, sqa);
                     }
                 }
 
                 // Set return value
-                //                save_Task_Result.IsOK = true;
-                //                save_Task_Result.ShowMessageBox = false;
-                //                save_Task_Result.Message = String.Empty;
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                //                save_Result.IsOK = true;
+                //                save_Result.ShowMessageBox = false;
+                //                save_Result.Message = String.Empty;
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -1090,11 +1088,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         #region "Unit & Acct TED Inputs"
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Unit_List()
+        private XFSqlTableEditorSaveDataTaskResult Save_Unit_Config()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
                 int Unit_ID = 0;
 
@@ -1104,10 +1102,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     connection.Open();
                     var SQA_FMM_Unit_Config = new SQA_FMM_Unit_Config(si, connection);
                     var FMM_Unit_Config_DT = new DataTable();
-                    var sqlDataAdapter = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var Act_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
-                    Duplicate_Unit_Config(Cube_ID, Act_ID, "Initiate", ref save_Task_Result);
+                    Duplicate_Unit_Config(Cube_ID, Act_ID, "Initiate", ref save_Result);
                     BRApi.ErrorLog.LogMessage(si, "Hit: " + Cube_ID + " | " + Act_ID);
 
                     // Fill the DataTable with the current data from FMM_Act_Config
@@ -1122,7 +1120,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID }
                     };
-                    SQA_FMM_Unit_Config.Fill_FMM_Unit_Config_DT(si, sqlDataAdapter, FMM_Unit_Config_DT, selectQuery, parameters);
+                    SQA_FMM_Unit_Config.Fill_FMM_Unit_Config_DT(si, sqa, FMM_Unit_Config_DT, selectQuery, parameters);
 
                     BRApi.ErrorLog.LogMessage(si, "Hit: " + Cube_ID + " | " + Act_ID);
                     // Loops through each row in the table editor that was added or updated prior to hitting save
@@ -1145,7 +1143,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Update_Date"] = DateTime.Now;
                             newRow["Update_User"] = si.UserName;
                             FMM_Unit_Config_DT.Rows.Add(newRow);
-                            Duplicate_Unit_Config(Cube_ID, Act_ID, "Update Row", ref save_Task_Result, "Insert", xfRow);
+                            Duplicate_Unit_Config(Cube_ID, Act_ID, "Update Row", ref save_Result, "Insert", xfRow);
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
                         {
@@ -1157,7 +1155,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Unit_Config(Cube_ID, Act_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Unit_Config(Cube_ID, Act_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
@@ -1168,7 +1166,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 foreach (var row in rowsToDelete)
                                 {
                                     row.Delete();
-                                    Duplicate_Unit_Config(Cube_ID, Act_ID, "Update Row", ref save_Task_Result, "Delete", xfRow);
+                                    Duplicate_Unit_Config(Cube_ID, Act_ID, "Update Row", ref save_Result, "Delete", xfRow);
                                 }
                             }
                         }
@@ -1184,23 +1182,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Unit_Config)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate Unit Config entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate Unit Config entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
-                        SQA_FMM_Unit_Config.Update_FMM_Unit_Config(si, FMM_Unit_Config_DT, sqlDataAdapter);
+                        SQA_FMM_Unit_Config.Update_FMM_Unit_Config(si, FMM_Unit_Config_DT, sqa);
                     }
                 }
 
                 // Set return value
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -1208,11 +1206,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Acct_List()
+        private XFSqlTableEditorSaveDataTaskResult Save_Acct_Config()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
 
                 // Save the Calc Config data rows
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
@@ -1229,7 +1227,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var Act_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
                     var Unit_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Unit_ID", "0").XFConvertToInt();
-                    Duplicate_Acct_Config(Cube_ID, Act_ID, Unit_ID, "Initiate", ref save_Task_Result);
+                    Duplicate_Acct_Config(Cube_ID, Act_ID, Unit_ID, "Initiate", ref save_Result);
                     // Fill the DataTable with the current data from FMM_Dest_Cell
                     string selectQuery = @"
 										SELECT * 
@@ -1274,7 +1272,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Update_User"] = si.UserName;
                             // Set other column values for the new row as needed
                             FMM_Acct_Config_DT.Rows.Add(newRow);
-                            Duplicate_Acct_Config(Cube_ID, Act_ID, Unit_ID, "Update Row", ref save_Task_Result, "Insert", xfRow);
+                            Duplicate_Acct_Config(Cube_ID, Act_ID, Unit_ID, "Update Row", ref save_Result, "Insert", xfRow);
 
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
@@ -1293,7 +1291,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Acct_Config(Cube_ID, Act_ID, Unit_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Acct_Config(Cube_ID, Act_ID, Unit_ID, "Update Row", ref save_Result, "Update", xfRow);
 
                             }
                         }
@@ -1305,7 +1303,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 foreach (var row in rowsToDelete)
                                 {
                                     row.Delete();
-                                    Duplicate_Acct_Config(Cube_ID, Act_ID, Unit_ID, "Update Row", ref save_Task_Result, "Delete", xfRow);
+                                    Duplicate_Acct_Config(Cube_ID, Act_ID, Unit_ID, "Update Row", ref save_Result, "Delete", xfRow);
                                 }
                             }
 
@@ -1323,22 +1321,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Acct_Config)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate Acct Config entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate Acct Config entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         SQA_FMM_Acct_Config.Update_FMM_Acct_Config(si, FMM_Acct_Config_DT, sqlDataAdapter);
                     }
                 }
 
                 // Set return value
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -1350,11 +1348,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         #region "Register Config TED Inputs"
 
-        private XFSqlTableEditorSaveDataTaskResult Save_RegConfig_List()
+        private XFSqlTableEditorSaveDataTaskResult Save_Reg_Config()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
                 var New_Reg_List = new List<int>();
                 int OS_Reg_Config_ID = 0;
@@ -1368,7 +1366,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqlDataAdapter = new SqlDataAdapter();
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var Act_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
-                    Duplicate_Reg_Config(Cube_ID, Act_ID, "Initiate", ref save_Task_Result);
+                    Duplicate_Reg_Config(Cube_ID, Act_ID, "Initiate", ref save_Result);
 
                     // Fill the DataTable with the current data from FMM_Act_Config
                     string selectQuery = @"
@@ -1409,7 +1407,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Update_Date"] = DateTime.Now;
                             newRow["Update_User"] = si.UserName;
                             FMM_Reg_Config_DT.Rows.Add(newRow);
-                            Duplicate_Reg_Config(Cube_ID, Act_ID, "Update Row", ref save_Task_Result, "Insert", xfRow);
+                            Duplicate_Reg_Config(Cube_ID, Act_ID, "Update Row", ref save_Result, "Insert", xfRow);
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
                         {
@@ -1425,7 +1423,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Reg_Config(Cube_ID, Act_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Reg_Config(Cube_ID, Act_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
@@ -1436,7 +1434,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 foreach (var row in rowsToDelete)
                                 {
                                     row.Delete();
-                                    Duplicate_Reg_Config(Cube_ID, Act_ID, "Update Row", ref save_Task_Result, "Delete", xfRow);
+                                    Duplicate_Reg_Config(Cube_ID, Act_ID, "Update Row", ref save_Result, "Delete", xfRow);
                                 }
                             }
                         }
@@ -1453,14 +1451,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Reg_Config)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate Register Config entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate Register Config entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
                         SQA_FMM_Reg_Config.Update_FMM_Reg_Config(si, FMM_Reg_Config_DT, sqlDataAdapter);
                     }
@@ -1472,9 +1470,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
 
                 // Set return value
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -1482,11 +1480,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Col_Config_List()
+        private XFSqlTableEditorSaveDataTaskResult Save_Col_Config()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -1499,7 +1497,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var Act_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
                     var Register_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Reg_Config_ID", "0").XFConvertToInt();
-                    Duplicate_Col_Config(Cube_ID, Act_ID, Register_ID, "Initiate", ref save_Task_Result);
+                    Duplicate_Col_Config(Cube_ID, Act_ID, Register_ID, "Initiate", ref save_Result);
 
                     // Fill the DataTable with the current data from FMM_Act_Config
                     string selectQuery = @"
@@ -1548,7 +1546,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Filter_Param"] = (string)xfRow.ModifiedDataRow["Filter_Param"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Col_Config(Cube_ID, Act_ID, Register_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Col_Config(Cube_ID, Act_ID, Register_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                     }
@@ -1564,23 +1562,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Col_Config)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate Col Config entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate Col Config entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
                         SQA_FMM_Col_Config.Update_FMM_Col_Config(si, FMM_Col_Config_DT, sqlDataAdapter);
                     }
                 }
 
                 // Set return value
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -1590,11 +1588,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #endregion
 
         #region "Activity Approval Inputs"
-        private XFSqlTableEditorSaveDataTaskResult Save_Appr_List()
+        private XFSqlTableEditorSaveDataTaskResult Save_Appr_Config()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
                 int OS_Appr_ID = 0;
 
@@ -1607,7 +1605,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqa = new SqlDataAdapter();
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     BRApi.ErrorLog.LogMessage(si, "Hit" + Cube_ID);
-                    Duplicate_Appr_Config(Cube_ID, "Initiate", ref save_Task_Result);
+                    Duplicate_Appr_Config(Cube_ID, "Initiate", ref save_Result);
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
                     string sql = @"
@@ -1641,7 +1639,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Update_Date"] = DateTime.Now;
                             newRow["Update_User"] = si.UserName;
                             FMM_Appr_Config_DT.Rows.Add(newRow);
-                            Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Task_Result, "Insert", xfRow);
+                            Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Result, "Insert", xfRow);
 
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
@@ -1654,7 +1652,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
@@ -1665,7 +1663,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 foreach (var row in rowsToDelete)
                                 {
                                     row.Delete();
-                                    Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Task_Result, "Delete", xfRow);
+                                    Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Result, "Delete", xfRow);
                                 }
                             }
                         }
@@ -1681,22 +1679,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Approval)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate Activity Approval entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate Activity Approval entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         sqa_fmm_appr_config.Update_FMM_Appr_Config(si, FMM_Appr_Config_DT, sqa);
                     }
                 }
 
                 // Set return value
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -1705,11 +1703,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         }
 
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Appr_Steps()
+        private XFSqlTableEditorSaveDataTaskResult Save_Appr_Step_Config()
         {
             try
             {
-                var save_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
                 int OS_Appr_Step_ID = 0;
 
@@ -1722,7 +1720,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqa = new SqlDataAdapter();
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var Appr_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Appr_ID", "0").XFConvertToInt();
-                    Duplicate_Appr_Step_Config(Cube_ID, Appr_ID, "Update Row", ref save_Task_Result);
+                    Duplicate_Appr_Step_Config(Cube_ID, Appr_ID, "Update Row", ref save_Result);
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
                     string sql = @"
@@ -1769,7 +1767,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             FMM_Appr_Step_Config_DT.Rows.Add(newRow);
 
                             // Check for duplicates before saving
-                            Duplicate_Appr_Step_Config(Cube_ID, Appr_ID, "Insert Row", ref save_Task_Result, "Insert", xfRow);
+                            Duplicate_Appr_Step_Config(Cube_ID, Appr_ID, "Insert Row", ref save_Result, "Insert", xfRow);
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
                         {
@@ -1789,7 +1787,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Appr_Step_Config(Cube_ID, Appr_ID, "Update Row", ref save_Task_Result, "Update", xfRow);
+                                Duplicate_Appr_Step_Config(Cube_ID, Appr_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
@@ -1800,7 +1798,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 foreach (var row in rowsToDelete)
                                 {
                                     row.Delete();
-                                    Duplicate_Appr_Step_Config(Cube_ID, Appr_ID, "Update Row", ref save_Task_Result, "Delete", xfRow);
+                                    Duplicate_Appr_Step_Config(Cube_ID, Appr_ID, "Update Row", ref save_Result, "Delete", xfRow);
                                 }
                             }
                         }
@@ -1816,23 +1814,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if (GBL_Duplicate_Appr_Step)
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.ShowMessageBox = true;
-                        save_Task_Result.Message += "Duplicate Activity Approval entries found during the operation.";
+                        save_Result.IsOK = false;
+                        save_Result.ShowMessageBox = true;
+                        save_Result.Message += "Duplicate Activity Approval entries found during the operation.";
                     }
                     else
                     {
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.ShowMessageBox = false;
+                        save_Result.IsOK = true;
+                        save_Result.ShowMessageBox = false;
                         // Update the FMM_Dest_Cell table based on the changes made to the DataTable
                         sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, FMM_Appr_Step_Config_DT, sqa);
                     }
                 }
 
                 // Set return value
-                save_Task_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
+                save_Result.CancelDefaultSave = true; // Note: Use True if we already saved the data rows in this Business Rule.
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -2057,9 +2055,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         BRApi.ErrorLog.LogMessage(si, "Hit Dynamic");
                         GBL_BalCalc = "UnbalAlloc";
                     }
-                    GBL_SrcCellDict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Calc_Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Close_Parens"].ToString().Trim());
-                    GBL_SrcCellDrillDownDict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], src_Cell_Drill_Down);
-                    GBL_UnbalCalcDict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Calc_Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Close_Parens"].ToString().Trim());
+                    GBL_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Calc_Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Close_Parens"].ToString().Trim());
+                    GBL_SrcCellDrillDown_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], src_Cell_Drill_Down);
+                    GBL_UnbalCalc_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Calc_Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Close_Parens"].ToString().Trim());
                     FMM_Src_Cell_DT_Row["Calc_Src_ID_Order"] = src_Cell_Count;
                     FMM_Src_Cell_DT_Row["OS_Dynamic_Calc_Script"] = src_Cell_Drill_Down;
                     FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer"] = src_Cell_Drill_Down;
@@ -2072,15 +2070,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 //							GBL_BalancedCalc = "DB Model""												
                 //						End If"												
 
-                //						GBL_SrcCellDict.Add(SrcDtRow.Item("OSCalcSrcCellID")"	SrcDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SrcDtRow.Item("OSCalcMathOperator").ToString.Trim() & " " & SrcCellDrillDown & "|" & SrcDtRow.Item("OSCalcCloseParens").ToString.Trim())											
+                //						GBL_SrcCell_Dict.Add(SrcDtRow.Item("OSCalcSrcCellID")"	SrcDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SrcDtRow.Item("OSCalcMathOperator").ToString.Trim() & " " & SrcCellDrillDown & "|" & SrcDtRow.Item("OSCalcCloseParens").ToString.Trim())											
                 //						If Cubedt.Rows.Item(0).Item("ModelType").ToString.XFEqualsIgnoreCase("Table")"												
                 //							If SRCDtRow.Item("OSCalcSrcLocation").ToString.Trim().XFEqualsIgnoreCase("Cube")"												
-                //								GBL_UnbalCalcDict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & SRCDtRow.Item("OSCalcSrcLocation").ToString.Trim() &  "-Calculation-|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
+                //								GBL_UnbalCalc_Dict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & SRCDtRow.Item("OSCalcSrcLocation").ToString.Trim() &  "-Calculation-|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
                 //							Else"												
-                //								GBL_UnbalCalcDict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & SRCDtRow.Item("OSCalcSrcLocation").ToString.Trim() &  "|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
+                //								GBL_UnbalCalc_Dict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & SRCDtRow.Item("OSCalcSrcLocation").ToString.Trim() &  "|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
                 //							End If"												
                 //						Else"												
-                //							GBL_UnbalCalcDict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & " -Calculation- " &  "|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
+                //							GBL_UnbalCalc_Dict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & " -Calculation- " &  "|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
                 //						End If"																							
 
                 //						'--------------------------------------------------------------------------------	"																							
@@ -2396,7 +2394,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
 
                 Update_Calc_Config_Columns();
-                GBL_SrcCellDict.Clear();
+                GBL_SrcCell_Dict.Clear();
 
             }
             catch (Exception ex)
@@ -2519,8 +2517,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                // Assuming GBL_SrcCellDict is a Dictionary<int	 string>											
-                var sortedDict = GBL_SrcCellDict.OrderBy(entry => entry.Key);
+                // Assuming GBL_SrcCell_Dict is a Dictionary<int	 string>											
+                var sortedDict = GBL_SrcCell_Dict.OrderBy(entry => entry.Key);
 
                 BRApi.ErrorLog.LogMessage(si, "Hit Globals 1" + GBL_BalCalc);
 
@@ -2532,25 +2530,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         GBL_BalBufferCalc += StringHelper.ReplaceString(calcSegment.Value, "|", String.Empty, true);
                         if (calcIterations == 1 && (GBL_BalCalc == "Unbalanced" || GBL_BalCalc == "UnbalAlloc"))
                         {
-                            GBL_UnbalBufferCalc = GBL_SrcCellDrillDownDict[calcSegment.Key];
-                            GBL_UnbalCalc += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalcDict[calcSegment.Key], "-Calculation-", "BalancedBuffer", true), "|", "", true);
+                            GBL_UnbalBufferCalc = GBL_SrcCellDrillDown_Dict[calcSegment.Key];
+                            GBL_UnbalCalc += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalc_Dict[calcSegment.Key], "-Calculation-", "BalancedBuffer", true), "|", "", true);
                         }
                         else if (GBL_BalCalc == "Unbalanced" || GBL_BalCalc == "UnbalAlloc")
                         {
                             BRApi.ErrorLog.LogMessage(si, "Hit Globals Unbal");
-                            GBL_UnbalCalc += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalcDict[calcSegment.Key], "-Calculation-", "SrcBufferValue" + calcIterations.ToString(), true), "|", "", true);
+                            GBL_UnbalCalc += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalc_Dict[calcSegment.Key], "-Calculation-", "SrcBufferValue" + calcIterations.ToString(), true), "|", "", true);
                         }
                     }
                     else
                     {
-                        GBL_UnbalBufferCalc = GBL_SrcCellDrillDownDict[calcSegment.Key];
+                        GBL_UnbalBufferCalc = GBL_SrcCellDrillDown_Dict[calcSegment.Key];
                         if (GBL_UnbalBufferCalc.Contains("T#|DBModelYear|", StringComparison.OrdinalIgnoreCase))
                         {
-                            GBL_Table_CalcLogic += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalcDict[calcSegment.Key], "Cube-Calculation-", "Annual_Cube", true), "|", "", true);
+                            GBL_Table_CalcLogic += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalc_Dict[calcSegment.Key], "Cube-Calculation-", "Annual_Cube", true), "|", "", true);
                         }
                         else
                         {
-                            GBL_Table_CalcLogic += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalcDict[calcSegment.Key], "Cube-Calculation-", "Monthly_Cube", true), "|", "", true);
+                            GBL_Table_CalcLogic += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalc_Dict[calcSegment.Key], "Cube-Calculation-", "Monthly_Cube", true), "|", "", true);
                         }
                     }
                     calcIterations++;
@@ -2735,7 +2733,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #region "Check Duplicates"
 
         #region "Duplicate Cube Config"
-        private void Duplicate_Activity_List(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Act_Config_DataRow)
+        private void Duplicate_Act_Config(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Act_Config_DataRow)
         {
             try
             {
@@ -2770,17 +2768,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}";
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Activity_List_Dict and handle errors
+                            // Populate GBL_Act_Config_Dict and handle errors
                             foreach (DataRow cube_Activity_Row in FMM_Act_Config_DT.Rows)
                             {
                                 string activityKey = Cube_ID + "|" + (int)cube_Activity_Row["Act_ID"];
-                                GBL_Activity_List_Dict.Add(activityKey, (string)cube_Activity_Row["Name"] + "|" + (string)cube_Activity_Row["Calc_Type"]);
+                                GBL_Act_Config_Dict.Add(activityKey, (string)cube_Activity_Row["Name"] + "|" + (string)cube_Activity_Row["Calc_Type"]);
                             }
                         }
                         break;
@@ -2792,7 +2790,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (DDL_Process == "Insert")
                         {
-                            GBL_Activity_List_Dict.Add(ActivityKey, newActivityName);
+                            GBL_Act_Config_Dict.Add(ActivityKey, newActivityName);
                         }
                         else if (DDL_Process == "Update")
                         {
@@ -2800,20 +2798,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (origActivityName != newActivityName)
                             {
-                                GBL_Activity_List_Dict.XFSetValue(ActivityKey, newActivityName);
+                                GBL_Act_Config_Dict.XFSetValue(ActivityKey, newActivityName);
                             }
                         }
                         else if (DDL_Process == "Delete")
                         {
-                            if (GBL_Activity_List_Dict.ContainsKey(ActivityKey))
+                            if (GBL_Act_Config_Dict.ContainsKey(ActivityKey))
                             {
-                                GBL_Activity_List_Dict.Remove(ActivityKey);
+                                GBL_Act_Config_Dict.Remove(ActivityKey);
                             }
                             else
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message += $"Delete operation failed: entry {ActivityKey} not found.";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message += $"Delete operation failed: entry {ActivityKey} not found.";
                             }
                         }
                         break;
@@ -2821,14 +2819,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred.";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred.";
             }
         }
 
-        private void Duplicate_Calc_Unit_Config(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Calc_Unit_Config_DataRow)
+        private void Duplicate_Calc_Unit_Config(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Calc_Unit_Config_DataRow)
         {
             try
             {
@@ -2863,9 +2861,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}: {ex.Message}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}: {ex.Message}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -2906,9 +2904,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             else
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message += $"Delete operation failed: entry {ConfigKey} not found.";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message += $"Delete operation failed: entry {ConfigKey} not found.";
                             }
                         }
                         break;
@@ -2917,17 +2915,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = "An unexpected error occurred.";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = "An unexpected error occurred.";
             }
         }
 
         #endregion
 
         #region "Duplicate Unit/Acct"
-        private void Duplicate_Unit_Config(int Cube_ID, int Act_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Unit_Config_DataRow)
+        private void Duplicate_Unit_Config(int Cube_ID, int Act_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Unit_Config_DataRow)
         {
             try
             {
@@ -2964,9 +2962,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID} and Act_ID {Act_ID}: {ex.Message}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID} and Act_ID {Act_ID}: {ex.Message}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -3007,9 +3005,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             else
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message += $"Delete operation failed: entry {UnitKey} not found.";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message += $"Delete operation failed: entry {UnitKey} not found.";
                             }
                         }
                         break;
@@ -3018,14 +3016,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = "An unexpected error occurred.";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = "An unexpected error occurred.";
             }
         }
 
-        private void Duplicate_Acct_Config(int Cube_ID, int Act_ID, int Unit_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Acct_Config_DataRow)
+        private void Duplicate_Acct_Config(int Cube_ID, int Act_ID, int Unit_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Acct_Config_DataRow)
         {
             try
             {
@@ -3064,9 +3062,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}, Act_ID {Act_ID}, Unit_ID {Unit_ID}: {ex.Message}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}, Act_ID {Act_ID}, Unit_ID {Unit_ID}: {ex.Message}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -3107,9 +3105,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             else
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message += $"Delete operation failed: entry {AcctKey} not found.";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message += $"Delete operation failed: entry {AcctKey} not found.";
                             }
                         }
                         break;
@@ -3118,17 +3116,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred: {ex.Message}";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred: {ex.Message}";
             }
         }
 
         #endregion
 
         #region "Duplicate Approvals"
-        private void Duplicate_Appr_Config(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Appr_Config_DataRow)
+        private void Duplicate_Appr_Config(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Appr_Config_DataRow)
         {
             try
             {
@@ -3163,9 +3161,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}: {ex.Message}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}: {ex.Message}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -3181,9 +3179,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 }
                                 else
                                 {
-                                    save_Task_Result.IsOK = false;
-                                    save_Task_Result.ShowMessageBox = true;
-                                    save_Task_Result.Message += $"Duplicate found in initial fetch: {approvalKey}";
+                                    save_Result.IsOK = false;
+                                    save_Result.ShowMessageBox = true;
+                                    save_Result.Message += $"Duplicate found in initial fetch: {approvalKey}";
                                 }
                             }
                         }
@@ -3215,9 +3213,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             else
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message += $"Delete operation failed: entry {ApprovalKey} not found.";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message += $"Delete operation failed: entry {ApprovalKey} not found.";
                             }
                         }
                         break;
@@ -3226,14 +3224,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred: {ex.Message}";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred: {ex.Message}";
             }
         }
 
-        private void Duplicate_Appr_Step_Config(int Cube_ID, int Appr_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Appr_Step_Config_DataRow)
+        private void Duplicate_Appr_Step_Config(int Cube_ID, int Appr_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Appr_Step_Config_DataRow)
         {
             try
             {
@@ -3270,9 +3268,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}: {ex.Message}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}: {ex.Message}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -3288,9 +3286,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 }
                                 else
                                 {
-                                    save_Task_Result.IsOK = false;
-                                    save_Task_Result.ShowMessageBox = true;
-                                    save_Task_Result.Message += $"Duplicate found in initial fetch: {approvalStepKey}";
+                                    save_Result.IsOK = false;
+                                    save_Result.ShowMessageBox = true;
+                                    save_Result.Message += $"Duplicate found in initial fetch: {approvalStepKey}";
                                 }
                             }
                         }
@@ -3322,9 +3320,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             else
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message += $"Delete operation failed: entry {ApprovalStepKey} not found.";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message += $"Delete operation failed: entry {ApprovalStepKey} not found.";
                             }
                         }
                         break;
@@ -3332,10 +3330,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred: {ex.Message}";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred: {ex.Message}";
             }
         }
 
@@ -3343,7 +3341,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #endregion
 
         #region "Duplicate Register Config"
-        private void Duplicate_Reg_Config(int Cube_ID, int Act_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Reg_Config_DataRow)
+        private void Duplicate_Reg_Config(int Cube_ID, int Act_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Reg_Config_DataRow)
         {
             try
             {
@@ -3380,9 +3378,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID} and Act_ID {Act_ID}: {ex.Message}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID} and Act_ID {Act_ID}: {ex.Message}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -3424,9 +3422,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             else
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message += $"Delete operation failed: entry {RegisterKey} not found.";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message += $"Delete operation failed: entry {RegisterKey} not found.";
                             }
                         }
                         break;
@@ -3434,14 +3432,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred: {ex.Message}";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred: {ex.Message}";
             }
         }
 
-        private void Duplicate_Col_Config(int Cube_ID, int Act_ID, int Register_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Col_Config_DataRow)
+        private void Duplicate_Col_Config(int Cube_ID, int Act_ID, int Register_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Col_Config_DataRow)
         {
             try
             {
@@ -3480,9 +3478,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID} and Act_ID {Act_ID}: {ex.Message}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID} and Act_ID {Act_ID}: {ex.Message}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -3519,17 +3517,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred: {ex.Message}";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred: {ex.Message}";
             }
         }
 
         #endregion
 
         #region "Duplicate Calcs"
-        private void Duplicate_Calc_Config(int Cube_ID, int Act_ID, int Model_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Calc_Config_DataRow)
+        private void Duplicate_Calc_Config(int Cube_ID, int Act_ID, int Model_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Calc_Config_DataRow)
         {
             try
             {
@@ -3568,9 +3566,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID} and Act_ID {Act_ID}: {ex.Message}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID} and Act_ID {Act_ID}: {ex.Message}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -3612,9 +3610,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             else
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message += $"Delete operation failed: entry {CalcKey} not found.";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message += $"Delete operation failed: entry {CalcKey} not found.";
                             }
                         }
                         break;
@@ -3622,10 +3620,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred: {ex.Message}";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred: {ex.Message}";
             }
         }
 
@@ -3808,7 +3806,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                var save_Task_Result = new XFSelectionChangedTaskResult();
+                var save_Result = new XFSelectionChangedTaskResult();
                 var Cube = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_All_Cubes", args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_Config_Cube", String.Empty));
                 var Scen_Type = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_Cube_Config_Scen_Types", args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_Config_Scen_Type", String.Empty));
                 var agg_Consol = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Cube_Config_Agg_Consol", String.Empty);
@@ -3887,9 +3885,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Save the changes to the database
                         sqa_fmm_cube_config.Update_FMM_Cube_Config(si, FMM_Cube_Config_DT, sqa);
 
-                        save_Task_Result.IsOK = true;
-                        save_Task_Result.Message = "New Cube Config Saved.";
-                        save_Task_Result.ShowMessageBox = true;
+                        save_Result.IsOK = true;
+                        save_Result.Message = "New Cube Config Saved.";
+                        save_Result.ShowMessageBox = true;
                     }
                     // If record exists and RunType is "Update", update the record
                     else if (Convert.ToInt32(FMM_Cube_Config_Count_DT.Rows[0]["Count"]) > 0 && RunType == "Update")
@@ -3917,21 +3915,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Update the database with the changes
                             sqa_fmm_cube_config.Update_FMM_Cube_Config(si, FMM_Cube_Config_DT, sqa);
 
-                            save_Task_Result.IsOK = true;
-                            save_Task_Result.Message = "Cube Config Updates Saved.";
-                            save_Task_Result.ShowMessageBox = true;
+                            save_Result.IsOK = true;
+                            save_Result.Message = "Cube Config Updates Saved.";
+                            save_Result.ShowMessageBox = true;
                         }
                     }
                     // If a duplicate exists and RunType is "New", show an error
                     else if (Convert.ToInt32(FMM_Cube_Config_Count_DT.Rows[0]["Count"]) > 0 && RunType == "New")
                     {
-                        save_Task_Result.IsOK = false;
-                        save_Task_Result.Message = "Duplicated Cube and Scenario Type, Cube Config not saved.";
-                        save_Task_Result.ShowMessageBox = true;
+                        save_Result.IsOK = false;
+                        save_Result.Message = "Duplicated Cube and Scenario Type, Cube Config not saved.";
+                        save_Result.ShowMessageBox = true;
                     }
                 }
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -3961,7 +3959,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                var save_Task_Result = new XFSelectionChangedTaskResult();
+                var save_Result = new XFSelectionChangedTaskResult();
                 var Act_List_ID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0"));
                 var Cube_ID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
                 var new_OS_Model_Name = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Model_Name", String.Empty);
@@ -4040,7 +4038,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                 }
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -4052,7 +4050,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                var save_Task_Result = new XFSelectionChangedTaskResult();
+                var save_Result = new XFSelectionChangedTaskResult();
                 var new_OS_Model_Grp_Cube_ID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
                 var new_Name = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Model_Grp_Name", "0");
                 int new_Model_Grp_ID = 0;
@@ -4107,7 +4105,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                 }
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -4119,7 +4117,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                var save_Task_Result = new XFSelectionChangedTaskResult();
+                var save_Result = new XFSelectionChangedTaskResult();
                 var new_Cube_ID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
                 var new_Name = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Model_Grp_Seq_Name", "0");
                 int new_Model_Grp_Seq_ID = 0;
@@ -4174,7 +4172,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                 }
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -4187,14 +4185,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             try
             {
                 BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: ");
-                var save_Task_Result = new XFSelectionChangedTaskResult();
-                var custom_Subst_Vars = args.SelectionChangedTaskInfo.CustomSubstVars;
-                var Cube_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Cube_ID", "0"));
+                var save_Result = new XFSelectionChangedTaskResult();
+                var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVars;
+                var Cube_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
                 BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: ");
-                var Model_Grp_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Model_Grp_ID", "0"));
+                var Model_Grp_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_ID", "0"));
                 BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: ");
-                var Model_ID_List = custom_Subst_Vars.XFGetValue("IV_FMM_Model_ID_Selection", "0");
-                BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: " + custom_Subst_Vars.XFGetValue("IV_FMM_Model_ID_Selection", "0") + " - " + Cube_ID);
+                var Model_ID_List = custom_SubstVars.XFGetValue("IV_FMM_Model_ID_Selection", "0");
+                BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: " + custom_SubstVars.XFGetValue("IV_FMM_Model_ID_Selection", "0") + " - " + Cube_ID);
                 int new_OS_Model_Grp_Assign_ID = 0;
                 if (Model_ID_List.Length > 0 && new_OS_Model_Grp_Assign_ID == 0)
                 {
@@ -4259,7 +4257,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                 }
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -4271,13 +4269,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                var save_Task_Result = new XFSelectionChangedTaskResult();
-                var custom_Subst_Vars = args.SelectionChangedTaskInfo.CustomSubstVars;
-                var Cube_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Cube_ID", "0"));
-                var Calc_Unit_ID_List = custom_Subst_Vars.XFGetValue("IV_FMM_Calc_Unit_Selection", "0");
-                var Model_Grp_ID_List = custom_Subst_Vars.XFGetValue("IV_FMM_Model_Grp_ID_Selection");
-                var Model_Grp_Seq_ID = custom_Subst_Vars.XFGetValue("IV_FMM_Model_Grp_Seq_ID");
-                BRApi.ErrorLog.LogMessage(si, "Hit Grup Model Assignment: " + custom_Subst_Vars.XFGetValue("IV_FMM_Model_Grp_ID_Selection") + " - " + Cube_ID);
+                var save_Result = new XFSelectionChangedTaskResult();
+                var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVars;
+                var Cube_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
+                var Calc_Unit_ID_List = custom_SubstVars.XFGetValue("IV_FMM_Calc_Unit_Selection", "0");
+                var Model_Grp_ID_List = custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_ID_Selection");
+                var Model_Grp_Seq_ID = custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_Seq_ID");
+                BRApi.ErrorLog.LogMessage(si, "Hit Grup Model Assignment: " + custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_ID_Selection") + " - " + Cube_ID);
                 int new_Calc_Unit_Assign_ID = 0;
                 if (Model_Grp_ID_List.Length > 0 && new_Calc_Unit_Assign_ID == 0)
                 {
@@ -4347,7 +4345,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                 }
 
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -4359,13 +4357,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                var save_Task_Result = new XFSelectionChangedTaskResult();
-                var custom_Subst_Vars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
-                var Cube_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Cube_ID", "0"));
-                var Act_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Act_ID", "0"));
-                var Appr_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Appr_ID", "0"));
-                var WFProfile_Step = custom_Subst_Vars.XFGetValue("IV_FMM_trv_Appr_Step_WFProfile", string.Empty);
-                var Reg_Config_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("BL_FMM_Register_Profiles", "0"));
+                var save_Result = new XFSelectionChangedTaskResult();
+                var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
+                var Cube_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
+                var Act_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Act_ID", "0"));
+                var Appr_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Appr_ID", "0"));
+                var WFProfile_Step = custom_SubstVars.XFGetValue("IV_FMM_trv_Appr_Step_WFProfile", string.Empty);
+                var Reg_Config_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_Register_Profiles", "0"));
 
                 BRApi.ErrorLog.LogMessage(si, "Hit Approval Step: " + Cube_ID + "|" + Act_ID + "|" + Appr_ID + "|" + WFProfile_Step);
                 int new_Appr_Step_ID = 0;
@@ -4558,7 +4556,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         BRApi.ErrorLog.LogMessage(si, "Approval Step Assignments and Cube Map saved.");
                     }
                 }
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -4572,12 +4570,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
 
                 BRApi.ErrorLog.LogMessage(si, "Save approval step activity runtype: " + RunType);
-                var save_Task_Result = new XFSelectionChangedTaskResult();
-                var custom_Subst_Vars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
-                var Act_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("BL_FMM_Appr_Act_ID", "0"));
-                var Appr_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Appr_ID", "0"));
-                var Appr_Step_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Appr_Step_ID", "-1")); // this can actually be 0
-                var Reg_Config_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("BL_FMM_Register_Profiles", "0"));
+                var save_Result = new XFSelectionChangedTaskResult();
+                var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
+                var Act_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_Appr_Act_ID", "0"));
+                var Appr_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Appr_ID", "0"));
+                var Appr_Step_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Appr_Step_ID", "-1")); // this can actually be 0
+                var Reg_Config_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_Register_Profiles", "0"));
 				
 				var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -4587,12 +4585,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	                var sqa = new SqlDataAdapter();
 	
 	                // Fill DataTable for Appr_Step_Activity_Config
-	                string sql = @"
-	                    SELECT * 
-	                    FROM FMM_Act_Appr_Step_Config
-	                    WHERE Act_ID = @Act_ID
-	                    AND Appr_ID = @Appr_ID
-						AND Appr_Step_ID = @Appr_Step_ID";
+	                string sql = @"SELECT * 
+                                    FROM FMM_Act_Appr_Step_Config
+                                    WHERE Act_ID = @Act_ID
+                                    AND Appr_ID = @Appr_ID
+                                    AND Appr_Step_ID = @Appr_Step_ID";
 					
 					var sqlparams = new SqlParameter[]{};
 
@@ -4685,7 +4682,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     sqa_fmm_act_appr_step_config.Update_FMM_Act_Appr_Step_Config(si, FMM_Act_Appr_Step_Config_DT, sqa);
                 }
 				}
-                return save_Task_Result;
+                return save_Result;
             }
             catch (Exception ex)
             {
@@ -4698,11 +4695,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                var save_Task_Result = new XFSelectionChangedTaskResult();
-                var custom_Subst_Vars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
-                var Cube_ID = Convert.ToInt32(custom_Subst_Vars.XFGetValue("IV_FMM_Cube_ID", "0"));
-                var Calc_Unit_Entity_MFB = custom_Subst_Vars.XFGetValue("IV_FMM_Calc_Unit_Entity_MFB", "0");
-                var WF_Channels = custom_Subst_Vars.XFGetValue("BL_FMM_WFChannels", "0");
+                var save_Result = new XFSelectionChangedTaskResult();
+                var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
+                var Cube_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
+                var Calc_Unit_Entity_MFB = custom_SubstVars.XFGetValue("IV_FMM_Calc_Unit_Entity_MFB", "0");
+                var WF_Channels = custom_SubstVars.XFGetValue("BL_FMM_WFChannels", "0");
                 var new_Calc_Unit_ID = 0;
                 var loop_times = 0;
 
@@ -4720,10 +4717,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqa = new SqlDataAdapter();
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
-                    string sql = @"
-									SELECT * 
-									FROM FMM_Calc_Unit_Config
-									WHERE Cube_ID = @Cube_ID";
+                    string sql = @"SELECT * 
+								   FROM FMM_Calc_Unit_Config
+								   WHERE Cube_ID = @Cube_ID";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
@@ -4762,7 +4758,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, FMM_Calc_Unit_Config_DT, sqa);
 
-                    return save_Task_Result;
+                    return save_Result;
                 }
             }
             catch (Exception ex)
@@ -6725,7 +6721,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #region "Check Duplicates"
 
         #region "Duplicate Models"
-        private void Duplicate_Model_List(int Cube_ID, int Act_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result)
+        private void Duplicate_Model_List(int Cube_ID, int Act_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result)
         {
             try
             {
@@ -6762,9 +6758,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -6780,14 +6776,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred.";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred.";
             }
         }
 
-        private void Duplicate_Model_Grp_List(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Task_Result)
+        private void Duplicate_Model_Grp_List(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result)
         {
             try
             {
@@ -6822,9 +6818,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                             catch (Exception ex)
                             {
-                                save_Task_Result.IsOK = false;
-                                save_Task_Result.ShowMessageBox = true;
-                                save_Task_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}";
+                                save_Result.IsOK = false;
+                                save_Result.ShowMessageBox = true;
+                                save_Result.Message = $"Error fetching data for Cube_ID {Cube_ID}";
                                 return; // Exit the process if data retrieval fails
                             }
 
@@ -6840,10 +6836,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch (Exception ex)
             {
-                // Catch any unhandled exceptions and log to the save_Task_Result
-                save_Task_Result.IsOK = false;
-                save_Task_Result.ShowMessageBox = true;
-                save_Task_Result.Message = $"An unexpected error occurred.";
+                // Catch any unhandled exceptions and log to the save_Result
+                save_Result.IsOK = false;
+                save_Result.ShowMessageBox = true;
+                save_Result.Message = $"An unexpected error occurred.";
             }
         }
 

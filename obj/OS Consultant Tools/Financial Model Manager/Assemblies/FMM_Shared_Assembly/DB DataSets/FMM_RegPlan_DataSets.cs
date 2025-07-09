@@ -44,9 +44,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // return names;
                         break;
                     case DashboardDataSetFunctionType.GetDataSet:
-                        if (args.DataSetName.XFEqualsIgnoreCase("Get_Gov_PlanCycle_Activity_List"))
+                        if (args.DataSetName.XFEqualsIgnoreCase("Get_Gov_PlanCycle_Act_Config"))
                         {
-                            return Get_Register_Plan_Activity_List();
+                            return Get_Register_Plan_Act_Config();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Approval_Register_Options"))
                         {
@@ -106,11 +106,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Helper Queries"
         #region "Register Plan Activity List Data Sets"
-        private DataTable Get_Register_Plan_Activity_List()
+        private DataTable Get_Register_Plan_Act_Config()
         {
             try
             {
-                var FMM_Register_Plan_Activity_List_DT = new DataTable("FMM_Register_Plan_Activity_List_DT");
+                var FMM_Register_Plan_Act_Config_DT = new DataTable("FMM_Register_Plan_Act_Config_DT");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -126,11 +126,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     //	                    var parameters = new SqlParameter[]
                     //	                    {
                     //	                    };
-                    //	                    sql_FMM_Get_DataSets.Fill_get_FMM_DataTable(si, sqlDataAdapter,FMM_Register_Plan_Activity_List_DT, selectQuery, parameters);
+                    //	                    sql_FMM_Get_DataSets.Fill_get_FMM_DataTable(si, sqlDataAdapter,FMM_Register_Plan_Act_Config_DT, selectQuery, parameters);
 
                 }
 
-                return FMM_Register_Plan_Activity_List_DT;
+                return FMM_Register_Plan_Act_Config_DT;
             }
             catch (Exception ex)
             {
