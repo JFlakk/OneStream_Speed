@@ -19,7 +19,7 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-	public class FMM_RegPlan_Helper
+	public class FMM_Content
 	{
         public object Test(SessionInfo si)
         {

@@ -170,11 +170,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             //								var load_Dashboard_Task_Result = Load_Dashboard("", ref args);
                             //							}
+							BRApi.ErrorLog.LogMessage(si, "Hit: " + args.LoadDashboardTaskInfo.Reason + "-" + args.LoadDashboardTaskInfo.Action);
+
                             var load_Dashboard_Task_Result = Load_Dashboard("", ref args);
 
-                            BRApi.ErrorLog.LogMessage(si, "Hit: " + args.LoadDashboardTaskInfo.Reason + "-" + args.LoadDashboardTaskInfo.Action + "-" + load_Dashboard_Task_Result.ModifiedCustomSubstVars.Count);
+                           // BRApi.ErrorLog.LogMessage(si, "Hit: " + args.LoadDashboardTaskInfo.Reason + "-" + args.LoadDashboardTaskInfo.Action + "-" + load_Dashboard_Task_Result.ModifiedCustomSubstVars.Count);
 
-                            //BRApi.ErrorLog.LogMessage(si, "Finished load, returning: " + globals.GetStringValue("IV_FMM_Cube_ID","0"));
+                           // BRApi.ErrorLog.LogMessage(si, "Finished load, returning: " + globals.GetStringValue("IV_FMM_Cube_ID","0"));
                             return load_Dashboard_Task_Result;
                         }
                         break;
@@ -483,9 +485,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var PRCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun;
 
             //			BRApi.ErrorLog.LogMessage(si, "Key count: " + taskResult.ModifiedCustomSubstVars.Keys.Count);
-            //			foreach(string param in taskResult.ModifiedCustomSubstVars.Keys) {
-            //				BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
-            //			}
+            			foreach(string param in taskResult.ModifiedCustomSubstVars.Keys) {
+            				BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
+            			}
 
 
             if (HierarchyDict.ContainsKey(selectedDashboard))

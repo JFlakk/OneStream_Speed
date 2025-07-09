@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
@@ -19,7 +19,7 @@ using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadsheet.FMM_Reg_Plan_XFTV
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadsheet.FMM_RegPlan_XFTV
 {
     public class MainClass
     {

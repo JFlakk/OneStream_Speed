@@ -3872,7 +3872,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         newRow["Cube_ID"] = new_Cube_ID;
                         newRow["Cube"] = Cube;
                         newRow["Scen_Type"] = Scen_Type;
-                        newRow["Cube_Description"] = cube_Description;
+                        newRow["Desc"] = cube_Description;
                         newRow["Agg_Consol"] = agg_Consol;
                         newRow["Entity_Dim"] = entity_Dim;
                         newRow["entity_MFB"] = entity_MFB;
@@ -3907,7 +3907,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         if (FMM_Cube_Config_DT.Rows.Count > 0)
                         {
                             var rowToUpdate = FMM_Cube_Config_DT.Rows[0];
-                            rowToUpdate["Cube_Description"] = cube_Description;
+                            rowToUpdate["Desc"] = cube_Description;
                             rowToUpdate["Entity_MFB"] = entity_MFB;
                             rowToUpdate["Agg_Consol"] = agg_Consol;
                             rowToUpdate["Status"] = cubeStatus;

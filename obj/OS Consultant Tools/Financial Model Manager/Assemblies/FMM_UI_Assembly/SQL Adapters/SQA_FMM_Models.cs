@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -41,6 +41,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
+				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
@@ -51,15 +53,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and parameters
                 string insertQuery = @"
                     INSERT INTO FMM_Models (
-                        Cube_ID, Activity_ID, Model_ID, Name, Status, 
+                        Cube_ID, Act_ID, Model_ID, Name, Status, 
                         Create_Date, Create_User, Update_Date, Update_User
                     ) VALUES (
-                        @Cube_ID, @Activity_ID, @Model_ID, @Name, @Status, 
+                        @Cube_ID, @Act_ID, @Model_ID, @Name, @Status, 
                         @Create_Date, @Create_User, @Update_Date, @Update_User
                     )";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 50).SourceColumn = "Name";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
@@ -94,6 +96,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

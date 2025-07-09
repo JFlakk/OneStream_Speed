@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -41,6 +41,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
+				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
@@ -51,7 +53,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and parameters
                 string insertQuery = @"
 		            INSERT INTO FMM_Dest_Cell (
-		                Cube_ID, Activity_ID, Model_ID, OS_Calc_ID, OS_Dest_Cell_ID, 
+		                Cube_ID, Act_ID, Model_ID, OS_Calc_ID, OS_Dest_Cell_ID, 
 		                OS_Target_Location, Calc_Plan_Units, OS_Target_Acct, OS_Target_View, 
 		                OS_Target_Origin, OS_Target_IC, OS_Target_Flow, OS_Target_UD1, 
 		                OS_Target_UD2, OS_Target_UD3, OS_Target_UD4, OS_Target_UD5, 
@@ -62,7 +64,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                OS_Conditional_Filter, OS_Curr_Cube_Buffer_Filter, OS_Src_Buffer_Filter, 
 		                OS_Dest_Cell_Logic, OS_Dest_SQL_Logic, Create_Date, Create_User, Update_Date, Update_User
 		            ) VALUES (
-		                @Cube_ID, @Activity_ID, @Model_ID, @OS_Calc_ID, @OS_Dest_Cell_ID, 
+		                @Cube_ID, @Act_ID, @Model_ID, @OS_Calc_ID, @OS_Dest_Cell_ID, 
 		                @OS_Target_Location, @Calc_Plan_Units, @OS_Target_Acct, @OS_Target_View, 
 		                @OS_Target_Origin, @OS_Target_IC, @OS_Target_Flow, @OS_Target_UD1, 
 		                @OS_Target_UD2, @OS_Target_UD3, @OS_Target_UD4, @OS_Target_UD5, 
@@ -77,7 +79,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Add parameters to the command
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@OS_Calc_ID", SqlDbType.Int).SourceColumn = "OS_Calc_ID";
                 sqa.InsertCommand.Parameters.Add("@OS_Dest_Cell_ID", SqlDbType.Int).SourceColumn = "OS_Dest_Cell_ID";
@@ -112,7 +114,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the update query and parameters
                 string updateQuery = @"
 		            UPDATE FMM_Dest_Cell SET
-		                Cube_ID = @Cube_ID, Activity_ID = @Activity_ID, Model_ID = @Model_ID,
+		                Cube_ID = @Cube_ID, Act_ID = @Act_ID, Model_ID = @Model_ID,
 		                OS_Calc_ID = @OS_Calc_ID, OS_Target_Location = @OS_Target_Location, 
 		                Calc_Plan_Units = @Calc_Plan_Units, OS_Target_Acct = @OS_Target_Acct, 
 		                OS_Target_View = @OS_Target_View, OS_Target_Origin = @OS_Target_Origin, 
@@ -137,7 +139,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Add parameters for the update command
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@OS_Dest_Cell_ID", SqlDbType.Int) { SourceColumn = "OS_Dest_Cell_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.UpdateCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.UpdateCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.UpdateCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.UpdateCommand.Parameters.Add("@OS_Calc_ID", SqlDbType.Int).SourceColumn = "OS_Calc_ID";
                 sqa.UpdateCommand.Parameters.Add("@OS_Target_Location", SqlDbType.NVarChar, 50).SourceColumn = "OS_Target_Location";
@@ -178,6 +180,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

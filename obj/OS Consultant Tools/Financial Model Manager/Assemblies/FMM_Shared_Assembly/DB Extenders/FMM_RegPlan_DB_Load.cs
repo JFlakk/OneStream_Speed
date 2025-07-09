@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -14,9 +14,9 @@ using OneStream.Shared.Engine;
 using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
-using static Workspace.OSBuildToolkit.FMM_Shared_Assembly.FMM_Register_Plan_Helpers;
+using static Workspace.OSBuildToolkit.FMM_Shared_Assembly.FMM_RegPlan_Helpers;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_Reg_Plan_DBExt
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_RegPlan_DBExt
 {
     public class MainClass
     {

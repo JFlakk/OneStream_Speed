@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -41,6 +41,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
+				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
@@ -51,10 +53,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and parameters
                 string insertQuery = @"
                     INSERT INTO FMM_Act_Appr_Step_Config (
-                        Appr_ID, Appr_Step_ID, Act_ID, Appr_Step_Act_ID, Reg_Config_ID, Desc, Acct, Flow, UD1, UD2, UD3, 
+                        Appr_ID, Appr_Step_ID, Act_ID, Appr_Step_Act_ID, Reg_Config_ID, Descr, Acct, Flow, UD1, UD2, UD3, 
                         UD4, UD5, UD6, UD7, UD8, Create_Date, Create_User, Update_Date, Update_User
                     ) VALUES (
-                        @Appr_ID, @Appr_Step_ID, @Act_ID, @Appr_Step_Act_ID, @Reg_Config_ID, @Desc, @Acct, @Flow, @UD1, @UD2, @UD3, 
+                        @Appr_ID, @Appr_Step_ID, @Act_ID, @Appr_Step_Act_ID, @Reg_Config_ID, @Descr, @Acct, @Flow, @UD1, @UD2, @UD3, 
                         @UD4, @UD5, @UD6, @UD7, @UD8, @Create_Date, @Create_User, @Update_Date, @Update_User
                     )";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
@@ -63,7 +65,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Appr_Step_Act_ID", SqlDbType.Int).SourceColumn = "Appr_Step_Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Reg_Config_ID", SqlDbType.Int).SourceColumn = "Reg_Config_ID";
-                sqa.InsertCommand.Parameters.Add("@Desc", SqlDbType.NVarChar, 100).SourceColumn = "Desc";
+                sqa.InsertCommand.Parameters.Add("@Descr", SqlDbType.NVarChar, 100).SourceColumn = "Descr";
                 sqa.InsertCommand.Parameters.Add("@Acct", SqlDbType.NVarChar, 100).SourceColumn = "Acct";
                 sqa.InsertCommand.Parameters.Add("@Flow", SqlDbType.NVarChar, 100).SourceColumn = "Flow";
                 sqa.InsertCommand.Parameters.Add("@UD1", SqlDbType.NVarChar, 100).SourceColumn = "UD1";
@@ -84,7 +86,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     UPDATE FMM_Act_Appr_Step_Config SET
 						Act_ID = @Act_ID,
 						Reg_Config_ID = @Reg_Config_ID,
-						Desc = @Desc,
+						Descr = @Descr,
                         Acct = @Acct,
                         Flow = @Flow,
                         UD1 = @UD1,
@@ -102,7 +104,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Appr_Step_Act_ID", SqlDbType.Int) { SourceColumn = "Appr_Step_Act_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Act_ID", SqlDbType.NVarChar, 100).SourceColumn = "Act_ID";
                 sqa.UpdateCommand.Parameters.Add("@Reg_Config_ID", SqlDbType.Int).SourceColumn = "Reg_Config_ID";
-                sqa.UpdateCommand.Parameters.Add("@Desc", SqlDbType.NVarChar, 100).SourceColumn = "Desc";
+                sqa.UpdateCommand.Parameters.Add("@Descr", SqlDbType.NVarChar, 100).SourceColumn = "Descr";
                 sqa.UpdateCommand.Parameters.Add("@Acct", SqlDbType.NVarChar, 100).SourceColumn = "Acct";
                 sqa.UpdateCommand.Parameters.Add("@Flow", SqlDbType.NVarChar, 100).SourceColumn = "Flow";
                 sqa.UpdateCommand.Parameters.Add("@UD1", SqlDbType.NVarChar, 100).SourceColumn = "UD1";
@@ -127,6 +129,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -41,6 +41,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
+				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
@@ -52,17 +54,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and parameters
                 string insertQuery = @"
 		            INSERT INTO FMM_Cube_Config (
-		                Cube_ID, Cube, Scen_Type, Cube_Description, Entity_Dim, Entity_MFB, Agg_Consol,  
+		                Cube_ID, Cube, Scen_Type, Descr, Entity_Dim, Entity_MFB, Agg_Consol,  
 						Status,Create_Date,Create_User,Update_Date,Update_User
 		            ) VALUES (
-		                @Cube_ID, @Cube, @Scen_Type, @Cube_Description,@Entity_Dim, @Entity_MFB,@Agg_Consol,
+		                @Cube_ID, @Cube, @Scen_Type, @Descr,@Entity_Dim, @Entity_MFB,@Agg_Consol,
 						@Status,@Create_Date,@Create_User,@Update_Date,@Update_User
 		            )";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
                 sqa.InsertCommand.Parameters.Add("@Cube", SqlDbType.NVarChar, 50).SourceColumn = "Cube";
                 sqa.InsertCommand.Parameters.Add("@Scen_Type", SqlDbType.NVarChar, 20).SourceColumn = "Scen_Type";
-                sqa.InsertCommand.Parameters.Add("@Cube_Description", SqlDbType.NVarChar, 100).SourceColumn = "Cube_Description";
+                sqa.InsertCommand.Parameters.Add("@Descr", SqlDbType.NVarChar, 100).SourceColumn = "Descr";
                 sqa.InsertCommand.Parameters.Add("@Entity_Dim", SqlDbType.NVarChar, 50).SourceColumn = "Entity_Dim";
                 sqa.InsertCommand.Parameters.Add("@Entity_MFB", SqlDbType.NVarChar, 100).SourceColumn = "Entity_MFB";
                 sqa.InsertCommand.Parameters.Add("@Agg_Consol", SqlDbType.NVarChar, 15).SourceColumn = "Agg_Consol";
@@ -77,7 +79,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		            UPDATE FMM_Cube_Config SET
 		                Cube = @Cube,
 		                Scen_Type = @Scen_Type,
-						Cube_Description = @Cube_Description,
+						Descr = @Descr,
 		                Entity_Dim = @Entity_Dim,
 						Entity_MFB = @Entity_MFB,
 		                Agg_Consol = @Agg_Consol,
@@ -89,7 +91,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Cube_ID", SqlDbType.Int) { SourceColumn = "Cube_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Cube", SqlDbType.NVarChar, 50).SourceColumn = "Cube";
                 sqa.UpdateCommand.Parameters.Add("@Scen_Type", SqlDbType.NVarChar, 20).SourceColumn = "Scen_Type";
-                sqa.UpdateCommand.Parameters.Add("@Cube_Description", SqlDbType.NVarChar, 100).SourceColumn = "Cube_Description";
+                sqa.UpdateCommand.Parameters.Add("@Descr", SqlDbType.NVarChar, 100).SourceColumn = "Descr";
                 sqa.UpdateCommand.Parameters.Add("@Entity_Dim", SqlDbType.NVarChar, 50).SourceColumn = "Entity_Dim";
                 sqa.UpdateCommand.Parameters.Add("@Entity_MFB", SqlDbType.NVarChar, 100).SourceColumn = "Entity_MFB";
                 sqa.UpdateCommand.Parameters.Add("@Agg_Consol", SqlDbType.NVarChar, 15).SourceColumn = "Agg_Consol";
@@ -108,6 +110,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

@@ -49,9 +49,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return Get_FMM_Cubes();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Scen_Types"))
-                        {                           
-                            return Get_FMM_Scen_Types();
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Scen_Type"))
+                        {
+                            return get_FMM_Scen_Type();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Setup_Cube_Config_List"))
                         {
@@ -295,11 +295,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Scenario Type Data Sets
 
-        private DataTable Get_FMM_Scen_Types()
+        private DataTable get_FMM_Scen_Type()
         {
             try
             {
-                var cube = args.NameValuePairs.XFGetValue("Cube");
+				var Cube = args.NameValuePairs.XFGetValue("Cube");
                 var dt = new DataTable("Scen_Types");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -310,60 +310,60 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Define the select query and sqlparams
                     var sql = @"
 										WITH ScenType_List AS (
-										    SELECT 'Actual' As Name
+										    SELECT 'Actual' AS ScenType
 										    UNION ALL
-										    SELECT 'Administration' As Name
+										    SELECT 'Administration' AS ScenType
 										    UNION ALL
-										    SELECT 'Budget' As Name
+										    SELECT 'Budget' AS ScenType
 										    UNION ALL
-										    SELECT 'Control' As Name
+										    SELECT 'Control' AS ScenType
 										    UNION ALL
-										    SELECT 'Flash' As Name
+										    SELECT 'Flash' AS ScenType
 										    UNION ALL
-										    SELECT 'Forecast' As Name
+										    SELECT 'Forecast' AS ScenType
 										    UNION ALL
-										    SELECT 'FXModel' As Name
+										    SELECT 'FXModel' AS ScenType
 										    UNION ALL
-										    SELECT 'History' As Name
+										    SELECT 'History' AS ScenType
 										    UNION ALL
-										    SELECT 'LongTerm' As Name
+										    SELECT 'LongTerm' AS ScenType
 										    UNION ALL
-										    SELECT 'Model' As Name
+										    SELECT 'Model' AS ScenType
 										    UNION ALL
-										    SELECT 'Operational' As Name
+										    SELECT 'Operational' AS ScenType
 										    UNION ALL
-										    SELECT 'Plan' As Name
+										    SELECT 'Plan' AS ScenType
 										    UNION ALL
-										    SELECT 'Sustainability' As Name
+										    SELECT 'Sustainability' AS ScenType
 										    UNION ALL
-										    SELECT 'Target' As Name -- fixed typo from 'Taget' to 'Target'
+										    SELECT 'Target' AS ScenType -- fixed typo from 'Taget' to 'Target'
 										    UNION ALL
-										    SELECT 'Tax' As Name
+										    SELECT 'Tax' AS ScenType
 										    UNION ALL
-										    SELECT 'Variance' As Name
+										    SELECT 'Variance' AS ScenType
 										    UNION ALL
-										    SELECT 'ScenarioType1' As Name
+										    SELECT 'ScenarioType1' AS ScenType
 										    UNION ALL
-										    SELECT 'ScenarioType2' As Name
+										    SELECT 'ScenarioType2' AS ScenType
 										    UNION ALL
-										    SELECT 'ScenarioType3' As Name
+										    SELECT 'ScenarioType3' AS ScenType
 										    UNION ALL
-										    SELECT 'ScenarioType4' As Name
+										    SELECT 'ScenarioType4' AS ScenType
 										    UNION ALL
-										    SELECT 'ScenarioType5' As Name
+										    SELECT 'ScenarioType5' AS ScenType
 										    UNION ALL
-										    SELECT 'ScenarioType6' As Name
+										    SELECT 'ScenarioType6' AS ScenType
 										    UNION ALL
-										    SELECT 'ScenarioType7' As Name
+										    SELECT 'ScenarioType7' AS ScenType
 										    UNION ALL
-										    SELECT 'ScenarioType8' As Name
+										    SELECT 'ScenarioType8' AS ScenType
 										)
 										SELECT ScenType
 										FROM ScenType_List Scen
 										WHERE NOT EXISTS (
 										    SELECT 1
 										    FROM FMM_Cube_Config Cube
-										    WHERE Cube.Scen_Type = Scen.ScenType -- use alias 'Scen' instead of 'ScenType_List'
+										    WHERE Cube.Scen_Type = Scen.ScenType
 										    AND Cube.Cube = @Cube
 										)";
                     // Create an array of SqlParameter objects
@@ -397,9 +397,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Create a new DataTable
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
-                    var sql = @"
-			        	SELECT DISTINCT CONCAT(Cube,' - ',Cube_Description) AS OS_Cube,Cube.Cube_ID
-						FROM FMM_Cube_Config Cube";
+                    var sql = @"SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS OS_Cube,Cube.Cube_ID
+								FROM FMM_Cube_Config Cube";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
@@ -429,7 +428,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT DISTINCT CONCAT(Cube,' - ',Cube_Description) AS OS_Cube,Cube.Cube_ID
+			        	SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS OS_Cube,Cube.Cube_ID
 						FROM FMM_Cube_Config Cube
 						JOIN FMM_Act_Config Act
 						ON Cube.Cube_ID = Act.Cube_ID";
@@ -462,7 +461,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT DISTINCT CONCAT(Cube,' - ',Cube_Description) AS OS_Cube,Cube.Cube_ID
+			        	SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS OS_Cube,Cube.Cube_ID
 						FROM FMM_Cube_Config Cube
 						JOIN FMM_Act_Config Act
 						ON Cube.Cube_ID = Act.Cube_ID";
@@ -495,7 +494,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT DISTINCT CONCAT(Cube,' - ',Cube_Description) AS OS_Cube,Cube.Cube_ID
+			        	SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS OS_Cube,Cube.Cube_ID
 						FROM FMM_Cube_Config Cube";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
@@ -526,7 +525,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-										SELECT DISTINCT CONCAT(Cube, ' - ', Cube_Description) AS OS_Cube, Cube.Cube_ID
+										SELECT DISTINCT CONCAT(Cube, ' - ', Descr) AS OS_Cube, Cube.Cube_ID
 										FROM FMM_Cube_Config Cube
 										JOIN FMM_Act_Config Act 
 										ON Cube.Cube_ID = Act.Cube_ID 
@@ -632,7 +631,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         {
             try
             {
-                var cube_Model_Activities_DT = new DataTable("Src_Activity_List");
+                var dt = new DataTable("Src_Activity_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -640,19 +639,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Create a new DataTable
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
-                    var sql = @"
-			        	SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
-			       		FROM FMM_Cube_Config Con
-						JOIN FMM_Act_Config Act
-						ON Con.Cube_ID = Act.Cube_ID
-						WHERE Con.Cube_ID = @Cube_ID
-						ORDER BY Act_ID,Calc_Type,Name";
+                    var sql = @"SELECT CONCAT(Name, ' - ',Calc_Type) AS Activity,Act_ID
+					       		FROM FMM_Cube_Config Con
+								JOIN FMM_Act_Config Act
+								ON Con.Cube_ID = Act.Cube_ID
+								WHERE Con.Cube_ID = @Cube_ID
+								ORDER BY Act_ID,Calc_Type,Name";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Model_Activities_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
 
                 // set default selection for returned activity list to top of the list
@@ -660,7 +658,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
                 //BRApi.ErrorLog.LogMessage(si, "Hit Get Datea: " + Cube_ID);
 
-                return cube_Model_Activities_DT;
+                return dt;
             }
             catch (Exception ex)
             {

@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -15,10 +15,9 @@ using OneStream.Shared.Engine;
 using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
-//using Workspace.OSBuildToolkit.FMM_UI_Assembly.BusinessRule.DashboardDataSet;
-using Workspace.OSBuildToolkit.FMM_UI_Assembly;
+using Workspace.OSConsultantTools.FMM_UI_Assembly;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.FMM_Reg_Plan_DB_DataSets
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.FMM_RegPlan_DB_DataSets
 {
     public class MainClass
     {

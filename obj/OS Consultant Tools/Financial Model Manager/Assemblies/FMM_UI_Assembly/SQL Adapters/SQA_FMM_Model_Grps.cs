@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -41,10 +41,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
+				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
-        public void Update_FMM_Model_Grps(SessionInfo si, DataTable dataTable, SqlDataAdapter sqa)
+        public void Update_FMM_Model_Grps(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
@@ -94,6 +96,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

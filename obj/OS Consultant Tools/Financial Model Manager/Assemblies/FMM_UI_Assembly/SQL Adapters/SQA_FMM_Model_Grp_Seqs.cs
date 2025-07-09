@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -41,6 +41,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
+				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
@@ -84,16 +86,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the delete query and parameters
                 string deleteQuery = @"
                     DELETE FROM FMM_Model_Grp_Seqs 
-                    WHERE Cube_ID = @Cube_ID
-                    AND Model_Grp_Seq_ID = @Model_Grp_Seq_ID";
+                    WHERE Model_Grp_Seq_ID = @Model_Grp_Seq_ID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Cube_ID", SqlDbType.Int) { SourceColumn = "Cube_ID", SourceVersion = DataRowVersion.Original });
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Model_Grp_Seq_ID", SqlDbType.Int) { SourceColumn = "Model_Grp_Seq_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {
                     sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {
