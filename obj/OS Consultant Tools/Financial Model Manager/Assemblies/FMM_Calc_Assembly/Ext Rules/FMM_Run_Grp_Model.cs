@@ -33,32 +33,32 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
         {
             try
             {
-                // Retrieve the name/value pairs for Entity, Scenario, and Model_Group_Seq
-                var modelGroupSeqValue = args.NameValuePairs.XFGetValue("Model_Group_Seq");
+                // Retrieve the name/value pairs for Entity, Scenario, and Model_Grp_Seq
+                var modelGroupSeqValue = args.NameValuePairs.XFGetValue("Model_Grp_Seq");
                 var entityValue = args.NameValuePairs.XFGetValue("Entity", "NA");
                 var scenarioValue = args.NameValuePairs.XFGetValue("Scenario", "NA");
                 var accountValue = args.NameValuePairs.XFGetValue("Account", "NA");
                 var flowValue = args.NameValuePairs.XFGetValue("Flow", "NA");
 
-                BRApi.ErrorLog.LogMessage(si, "Hit: Entity: " + entityValue + " Scenario: " + scenarioValue + " Model_Group_Seq: " + modelGroupSeqValue);
+                BRApi.ErrorLog.LogMessage(si, "Hit: Entity: " + entityValue + " Scenario: " + scenarioValue + " Model_Grp_Seq: " + modelGroupSeqValue);
 
                 // SQL query to fetch the required data based on the parameters passed
                 var calc_Model_SQL = @"
-		            SELECT WF_DU_Mod_Grp.Sequence Mod_Grp_Seq, Mod_Grps.Name Mod_Grp_Name, WF_DU.Entity_MFB Entity,
-		                   WF_DU.WFChannel, Mod_Grp_Assgn.Sequence Mod_Seq, Modl.Name, Act.Calc_Type, WF_DU_Mod_Grp.Cube_ID, Modl.Model_ID, CubeCon.Cube CubeName
-		            FROM FMM_Model_Group_Seqs Mod_Grp_Seqs
-		            JOIN FMM_WF_DU_Assign_Model_Group WF_DU_Mod_Grp
-		            ON Mod_Grp_Seqs.Model_Group_Seq_ID = WF_DU_Mod_Grp.Model_Group_Seq_ID
-		            AND Mod_Grp_Seqs.Cube_ID = WF_DU_Mod_Grp.Cube_ID
-		            JOIN FMM_Model_Groups Mod_Grps
-		            ON WF_DU_Mod_Grp.Cube_ID = Mod_Grps.Cube_ID
-		            AND WF_DU_Mod_Grp.Model_Group_ID = Mod_Grps.Model_Group_ID
-		            JOIN FMM_WF_DU_Config WF_DU
-		            ON WF_DU_Mod_Grp.Cube_ID = WF_DU.Cube_ID
-		            AND WF_DU_Mod_Grp.WF_DU_ID = WF_DU.WF_DU_ID
-		            JOIN FMM_Model_Group_Assign_Model Mod_Grp_Assgn
+		            SELECT Calc_Unit_Mod_Grp.Sequence Mod_Grp_Seq, Mod_Grps.Name Mod_Grp_Name, WF_DU.Entity_MFB Entity,
+		                   WF_DU.WFChannel, Mod_Grp_Assgn.Sequence Mod_Seq, Modl.Name, Act.Calc_Type, Calc_Unit_Mod_Grp.Cube_ID, Modl.Model_ID, CubeCon.Cube CubeName
+		            FROM FMM_Model_Grp_Seqs Mod_Grp_Seqs
+		            JOIN FMM_Calc_Unit_Assign_Model_Group Calc_Unit_Mod_Grp
+		            ON Mod_Grp_Seqs.Model_Grp_Seq_ID = Calc_Unit_Mod_Grp.Model_Grp_Seq_ID
+		            AND Mod_Grp_Seqs.Cube_ID = Calc_Unit_Mod_Grp.Cube_ID
+		            JOIN FMM_Model_Grps Mod_Grps
+		            ON Calc_Unit_Mod_Grp.Cube_ID = Mod_Grps.Cube_ID
+		            AND Calc_Unit_Mod_Grp.Model_Grp_ID = Mod_Grps.Model_Grp_ID
+		            JOIN FMM_Calc_Unit_Config WF_DU
+		            ON Calc_Unit_Mod_Grp.Cube_ID = WF_DU.Cube_ID
+		            AND Calc_Unit_Mod_Grp.Calc_Unit_ID = WF_DU.Calc_Unit_ID
+		            JOIN FMM_Model_Grp_Assign_Model Mod_Grp_Assgn
 		            ON Mod_Grps.Cube_ID = Mod_Grp_Assgn.Cube_ID
-		            AND Mod_Grps.Model_Group_ID = Mod_Grp_Assgn.Model_Group_ID
+		            AND Mod_Grps.Model_Grp_ID = Mod_Grp_Assgn.Model_Grp_ID
 		            JOIN FMM_Models Modl
 		            ON Modl.Cube_ID = Mod_Grp_Assgn.Cube_ID
 		            AND Modl.Model_ID = Mod_Grp_Assgn.Model_ID
@@ -69,7 +69,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 					ON Modl.Cube_ID = CubeCon.Cube_ID
 		            WHERE Mod_Grp_Seqs.Name = @Mod_Grp_Seqs
 		            AND Mod_Grp_Seqs.Status <> 'Archived'
-		            AND WF_DU_Mod_Grp.Status <> 'Archived'
+		            AND Calc_Unit_Mod_Grp.Status <> 'Archived'
 		            AND WF_DU.Status <> 'Archived'
 					AND Mod_Grps.Status <> 'Archived'
 				    AND Modl.Status <> 'Archived'
@@ -80,7 +80,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                     calc_Model_SQL += @" AND WF_DU.Entity_MFB = @entityValue
 											 OR Act.Calc_Type = 'Consolidate'";
                 }
-                calc_Model_SQL += " ORDER BY WF_DU_Mod_Grp.Sequence, Mod_Grp_Assgn.Sequence";
+                calc_Model_SQL += " ORDER BY Calc_Unit_Mod_Grp.Sequence, Mod_Grp_Assgn.Sequence";
 
                 // Helper class
                 var calcHelper = new DashboardExtender.FMM_Solution_Calc_Helper.MainClass();

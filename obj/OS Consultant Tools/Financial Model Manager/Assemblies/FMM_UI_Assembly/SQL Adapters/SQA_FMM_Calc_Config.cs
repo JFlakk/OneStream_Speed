@@ -53,28 +53,28 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and parameters
                 string insertQuery = @"
                     INSERT INTO FMM_Calc_Config (
-                        Cube_ID, Activity_ID, Model_ID, OS_Calc_ID, Name, Sequence, 
+                        Cube_ID, Activity_ID, Model_ID, Calc_ID, Name, Sequence, 
                         Calc_Condition, Calc_Explanation, Time_Phasing, Input_Frequency, 
                         MultiDim_Alloc, MemberList_Calc, MemberList_1_Dim, MemberList_1_Filter, 
-                        MemberList_1_DimType, MemberList_1_Dest_Filter, MemberList_2_Dim, 
-                        MemberList_2_Filter, MemberList_2_DimType, MemberList_2_Dest_Filter, 
+                        MemberList_1_DimType, MemberList_1_Filter, MemberList_2_Dim, 
+                        MemberList_2_Filter, MemberList_2_DimType, MemberList_2_Filter, 
                         MemberList_3_Dim, MemberList_3_Filter, MemberList_3_DimType, 
-                        MemberList_3_Dest_Filter, MemberList_4_Dim, MemberList_4_Filter, 
-                        MemberList_4_DimType, MemberList_4_Dest_Filter, Business_Rule_Calc, 
-                        Business_Rule_Calc_Name, Balanced_Buffer, Balanced_Buffer_Calc, 
-                        Unbalanced_Calc, Table_Calc_SQL_Logic, Status, Create_Date, Create_User, 
+                        MemberList_3_Filter, MemberList_4_Dim, MemberList_4_Filter, 
+                        MemberList_4_DimType, MemberList_4_Filter, Business_Rule_Calc, 
+                        Business_Rule_Calc_Name, Balanced_Buffer, bal_buffer_calc, 
+                        Unbal_Calc, Table_Calc_SQL_Logic, Status, Create_Date, Create_User, 
                         Update_Date, Update_User
                     ) VALUES (
-                        @Cube_ID, @Activity_ID, @Model_ID, @OS_Calc_ID, @Name, @Sequence, 
+                        @Cube_ID, @Activity_ID, @Model_ID, @Calc_ID, @Name, @Sequence, 
                         @Calc_Condition, @Calc_Explanation, @Time_Phasing, @Input_Frequency, 
                         @MultiDim_Alloc, @MemberList_Calc, @MemberList_1_Dim, @MemberList_1_Filter, 
-                        @MemberList_1_DimType, @MemberList_1_Dest_Filter, @MemberList_2_Dim, 
-                        @MemberList_2_Filter, @MemberList_2_DimType, @MemberList_2_Dest_Filter, 
+                        @MemberList_1_DimType, @MemberList_1_Filter, @MemberList_2_Dim, 
+                        @MemberList_2_Filter, @MemberList_2_DimType, @MemberList_2_Filter, 
                         @MemberList_3_Dim, @MemberList_3_Filter, @MemberList_3_DimType, 
-                        @MemberList_3_Dest_Filter, @MemberList_4_Dim, @MemberList_4_Filter, 
-                        @MemberList_4_DimType, @MemberList_4_Dest_Filter, @Business_Rule_Calc, 
-                        @Business_Rule_Calc_Name, @Balanced_Buffer, @Balanced_Buffer_Calc, 
-                        @Unbalanced_Calc, @Table_Calc_SQL_Logic, @Status, @Create_Date, 
+                        @MemberList_3_Filter, @MemberList_4_Dim, @MemberList_4_Filter, 
+                        @MemberList_4_DimType, @MemberList_4_Filter, @Business_Rule_Calc, 
+                        @Business_Rule_Calc_Name, @Balanced_Buffer, @bal_buffer_calc, 
+                        @Unbal_Calc, @Table_Calc_SQL_Logic, @Status, @Create_Date, 
                         @Create_User, @Update_Date, @Update_User
                     )";
 
@@ -84,7 +84,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
                 sqa.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
-                sqa.InsertCommand.Parameters.Add("@OS_Calc_ID", SqlDbType.Int).SourceColumn = "OS_Calc_ID";
+                sqa.InsertCommand.Parameters.Add("@Calc_ID", SqlDbType.Int).SourceColumn = "Calc_ID";
                 sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
                 sqa.InsertCommand.Parameters.Add("@Sequence", SqlDbType.Int).SourceColumn = "Sequence";
                 sqa.InsertCommand.Parameters.Add("@Calc_Condition", SqlDbType.NVarChar, 100).SourceColumn = "Calc_Condition";
@@ -96,24 +96,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@MemberList_1_Dim", SqlDbType.NVarChar, 100).SourceColumn = "MemberList_1_Dim";
                 sqa.InsertCommand.Parameters.Add("@MemberList_1_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_1_Filter";
                 sqa.InsertCommand.Parameters.Add("@MemberList_1_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MemberList_1_DimType";
-                sqa.InsertCommand.Parameters.Add("@MemberList_1_Dest_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_1_Dest_Filter";
+                sqa.InsertCommand.Parameters.Add("@MemberList_1_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_1_Filter";
                 sqa.InsertCommand.Parameters.Add("@MemberList_2_Dim", SqlDbType.NVarChar, 100).SourceColumn = "MemberList_2_Dim";
                 sqa.InsertCommand.Parameters.Add("@MemberList_2_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_2_Filter";
                 sqa.InsertCommand.Parameters.Add("@MemberList_2_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MemberList_2_DimType";
-                sqa.InsertCommand.Parameters.Add("@MemberList_2_Dest_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_2_Dest_Filter";
+                sqa.InsertCommand.Parameters.Add("@MemberList_2_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_2_Filter";
                 sqa.InsertCommand.Parameters.Add("@MemberList_3_Dim", SqlDbType.NVarChar, 100).SourceColumn = "MemberList_3_Dim";
                 sqa.InsertCommand.Parameters.Add("@MemberList_3_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_3_Filter";
                 sqa.InsertCommand.Parameters.Add("@MemberList_3_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MemberList_3_DimType";
-                sqa.InsertCommand.Parameters.Add("@MemberList_3_Dest_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_3_Dest_Filter";
+                sqa.InsertCommand.Parameters.Add("@MemberList_3_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_3_Filter";
                 sqa.InsertCommand.Parameters.Add("@MemberList_4_Dim", SqlDbType.NVarChar, 100).SourceColumn = "MemberList_4_Dim";
                 sqa.InsertCommand.Parameters.Add("@MemberList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_4_Filter";
                 sqa.InsertCommand.Parameters.Add("@MemberList_4_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MemberList_4_DimType";
-                sqa.InsertCommand.Parameters.Add("@MemberList_4_Dest_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_4_Dest_Filter";
+                sqa.InsertCommand.Parameters.Add("@MemberList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_4_Filter";
                 sqa.InsertCommand.Parameters.Add("@Business_Rule_Calc", SqlDbType.Bit).SourceColumn = "Business_Rule_Calc";
                 sqa.InsertCommand.Parameters.Add("@Business_Rule_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "Business_Rule_Calc_Name";
                 sqa.InsertCommand.Parameters.Add("@Balanced_Buffer", SqlDbType.NVarChar, 20).SourceColumn = "Balanced_Buffer";
-                sqa.InsertCommand.Parameters.Add("@Balanced_Buffer_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Balanced_Buffer_Calc";
-                sqa.InsertCommand.Parameters.Add("@Unbalanced_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Unbalanced_Calc";
+                sqa.InsertCommand.Parameters.Add("@bal_buffer_calc", SqlDbType.NVarChar, 2000).SourceColumn = "bal_buffer_calc";
+                sqa.InsertCommand.Parameters.Add("@Unbal_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Unbal_Calc";
                 sqa.InsertCommand.Parameters.Add("@Table_Calc_SQL_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "Table_Calc_SQL_Logic";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
@@ -129,23 +129,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Time_Phasing = @Time_Phasing, Input_Frequency = @Input_Frequency, 
                         MultiDim_Alloc = @MultiDim_Alloc, MemberList_Calc = @MemberList_Calc, 
                         MemberList_1_Dim = @MemberList_1_Dim, MemberList_1_Filter = @MemberList_1_Filter, 
-                        MemberList_1_DimType = @MemberList_1_DimType, MemberList_1_Dest_Filter = @MemberList_1_Dest_Filter,
+                        MemberList_1_DimType = @MemberList_1_DimType, MemberList_1_Filter = @MemberList_1_Filter,
                         MemberList_2_Dim = @MemberList_2_Dim, MemberList_2_Filter = @MemberList_2_Filter, 
-                        MemberList_2_DimType = @MemberList_2_DimType, MemberList_2_Dest_Filter = @MemberList_2_Dest_Filter,
+                        MemberList_2_DimType = @MemberList_2_DimType, MemberList_2_Filter = @MemberList_2_Filter,
                         MemberList_3_Dim = @MemberList_3_Dim, MemberList_3_Filter = @MemberList_3_Filter, 
-                        MemberList_3_DimType = @MemberList_3_DimType, MemberList_3_Dest_Filter = @MemberList_3_Dest_Filter,
+                        MemberList_3_DimType = @MemberList_3_DimType, MemberList_3_Filter = @MemberList_3_Filter,
                         MemberList_4_Dim = @MemberList_4_Dim, MemberList_4_Filter = @MemberList_4_Filter, 
-                        MemberList_4_DimType = @MemberList_4_DimType, MemberList_4_Dest_Filter = @MemberList_4_Dest_Filter,
+                        MemberList_4_DimType = @MemberList_4_DimType, MemberList_4_Filter = @MemberList_4_Filter,
                         Business_Rule_Calc = @Business_Rule_Calc, Business_Rule_Calc_Name = @Business_Rule_Calc_Name, 
-                        Balanced_Buffer = @Balanced_Buffer, Balanced_Buffer_Calc = @Balanced_Buffer_Calc, 
-                        Unbalanced_Calc = @Unbalanced_Calc, Table_Calc_SQL_Logic = @Table_Calc_SQL_Logic, 
+                        Balanced_Buffer = @Balanced_Buffer, bal_buffer_calc = @bal_buffer_calc, 
+                        Unbal_Calc = @Unbal_Calc, Table_Calc_SQL_Logic = @Table_Calc_SQL_Logic, 
                         Status = @Status, Update_Date = @Update_Date, Update_User = @Update_User
-                    WHERE OS_Calc_ID = @OS_Calc_ID";
+                    WHERE Calc_ID = @Calc_ID";
 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
 
                 // Add parameters for the update command
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@OS_Calc_ID", SqlDbType.Int) { SourceColumn = "OS_Calc_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Calc_ID", SqlDbType.Int) { SourceColumn = "Calc_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
                 sqa.UpdateCommand.Parameters.Add("@Sequence", SqlDbType.Int).SourceColumn = "Sequence";
                 sqa.UpdateCommand.Parameters.Add("@Calc_Condition", SqlDbType.NVarChar, 100).SourceColumn = "Calc_Condition";
@@ -157,24 +157,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@MemberList_1_Dim", SqlDbType.NVarChar, 100).SourceColumn = "MemberList_1_Dim";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_1_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_1_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_1_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MemberList_1_DimType";
-                sqa.UpdateCommand.Parameters.Add("@MemberList_1_Dest_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_1_Dest_Filter";
+                sqa.UpdateCommand.Parameters.Add("@MemberList_1_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_1_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_2_Dim", SqlDbType.NVarChar, 100).SourceColumn = "MemberList_2_Dim";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_2_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_2_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_2_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MemberList_2_DimType";
-                sqa.UpdateCommand.Parameters.Add("@MemberList_2_Dest_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_2_Dest_Filter";
+                sqa.UpdateCommand.Parameters.Add("@MemberList_2_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_2_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_3_Dim", SqlDbType.NVarChar, 100).SourceColumn = "MemberList_3_Dim";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_3_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_3_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_3_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MemberList_3_DimType";
-                sqa.UpdateCommand.Parameters.Add("@MemberList_3_Dest_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_3_Dest_Filter";
+                sqa.UpdateCommand.Parameters.Add("@MemberList_3_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_3_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_4_Dim", SqlDbType.NVarChar, 100).SourceColumn = "MemberList_4_Dim";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_4_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MemberList_4_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MemberList_4_DimType";
-                sqa.UpdateCommand.Parameters.Add("@MemberList_4_Dest_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_4_Dest_Filter";
+                sqa.UpdateCommand.Parameters.Add("@MemberList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MemberList_4_Filter";
                 sqa.UpdateCommand.Parameters.Add("@Business_Rule_Calc", SqlDbType.Bit).SourceColumn = "Business_Rule_Calc";
                 sqa.UpdateCommand.Parameters.Add("@Business_Rule_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "Business_Rule_Calc_Name";
                 sqa.UpdateCommand.Parameters.Add("@Balanced_Buffer", SqlDbType.NVarChar, 20).SourceColumn = "Balanced_Buffer";
-                sqa.UpdateCommand.Parameters.Add("@Balanced_Buffer_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Balanced_Buffer_Calc";
-                sqa.UpdateCommand.Parameters.Add("@Unbalanced_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Unbalanced_Calc";
+                sqa.UpdateCommand.Parameters.Add("@bal_buffer_calc", SqlDbType.NVarChar, 2000).SourceColumn = "bal_buffer_calc";
+                sqa.UpdateCommand.Parameters.Add("@Unbal_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Unbal_Calc";
                 sqa.UpdateCommand.Parameters.Add("@Table_Calc_SQL_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "Table_Calc_SQL_Logic";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
@@ -183,10 +183,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the delete query and parameters
                 string deleteQuery = @"
                     DELETE FROM FMM_Calc_Config 
-                    WHERE OS_Calc_ID = @OS_Calc_ID";
+                    WHERE Calc_ID = @Calc_ID";
 
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@OS_Calc_ID", SqlDbType.Int) { SourceColumn = "OS_Calc_ID", SourceVersion = DataRowVersion.Original });
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Calc_ID", SqlDbType.Int) { SourceColumn = "Calc_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {

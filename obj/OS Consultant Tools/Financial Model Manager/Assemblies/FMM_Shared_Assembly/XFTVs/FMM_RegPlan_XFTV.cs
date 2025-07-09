@@ -834,11 +834,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             sqlcolumns = @"
 							SELECT [Order],Name,Alias,[Default],Param,Required,Filter_Param
 							  FROM FMM_Col_Config
-							  WHERE Register_Config_ID = @Register_Config_ID
+							  WHERE Reg_Config_ID = @Reg_Config_ID
 							  AND InUse = 1
 							  ORDER BY [Order]";
 
-            sqlcolumns = sqlcolumns.Replace("@Register_Config_ID", registerConfigID);
+            sqlcolumns = sqlcolumns.Replace("@Reg_Config_ID", registerConfigID);
 
             using (var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
             {
@@ -881,10 +881,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             sqlcolumns = @"
 							SELECT Name, Time_Phasing, Time_Phasing_Driver, Manual_Input_Plan_Units, Start_End_Dt_Src_Obj,Approval_Config,
 							Start_Dt_Src, End_Dt_Src, Activity_ID
-							  FROM FMM_Register_Config
-							  WHERE Register_Config_ID = @Register_Config_ID";
+							  FROM FMM_Reg_Config
+							  WHERE Reg_Config_ID = @Reg_Config_ID";
 
-            sqlcolumns = sqlcolumns.Replace("@Register_Config_ID", registerConfigID);
+            sqlcolumns = sqlcolumns.Replace("@Reg_Config_ID", registerConfigID);
 
             using (var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
             {

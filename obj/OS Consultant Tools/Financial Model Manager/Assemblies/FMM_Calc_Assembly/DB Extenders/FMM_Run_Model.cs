@@ -63,20 +63,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Seed_Temp_Tables_for_Calcs();
 
                 var Proc_FinModel_Sql = @"
-                    Select Sequence,OS_Calc_Src_Type,OS_Calc_Src_Item,Table_Calc_Expression,
-					Table_Join_Expression,Table_Filter_Expression,Calc_Plan_Units,OS_Target_Acct,OS_Target_View,OS_Target_IC,
-					OS_Target_Flow,OS_Target_UD1,OS_Target_UD2,OS_Target_UD3,OS_Target_UD4,OS_Target_UD5,OS_Target_UD6,OS_Target_UD7,
-					OS_Target_UD8,OS_Time_Filter,OS_Conditional_Filter
+                    Select Sequence,Calc_Src_Type,Calc_Src_Item,Table_Calc_Expression,
+					Table_Join_Expression,Table_Filter_Expression,Calc_Plan_Units,Acct,View,IC,
+					Flow,UD1,UD2,UD3,UD4,UD5,UD6,UD7,
+					UD8,OS_Time_Filter,OS_Conditional_Filter
                     FROM FMM_Calc_Config calc
                     JOIN FMM_Src_Cell Src
-                    ON calc.OS_Calc_ID = Src.OS_Calc_ID
+                    ON calc.Calc_ID = Src.Calc_ID
 					AND calc.Model_ID = Src.Model_ID
-					JOIN FMM_Dest_Cell Dest
-                    ON calc.OS_Calc_ID = Dest.OS_Calc_ID
+					JOIN FMM_Cell Dest
+                    ON calc.Calc_ID = Dest.Calc_ID
 					AND calc.Model_ID = Dest.Model_ID
                     WHERE Model_ID = @Model_ID
-					AND Src.OS_Calc_Src_ID_Order = 0
-					AND Src.OS_Calc_Src_Type IN ('Proportional Time','Allocation')
+					AND Src.Calc_Src_ID_Order = 0
+					AND Src.Calc_Src_Type IN ('Proportional Time','Allocation')
 					ORDER By Sequence";
 
                 var parameters = new SqlParameter[]
@@ -85,9 +85,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 };
 
                 // Fetch rows into a DataTable
-                sql_FMM_Get_DataSets.Fill_Get_FMM_DataTable(si, sql_DataSet_DataAdapter, FMM_calc_Config_DT, Proc_FinModel_Sql, parameters);
+                sql_FMM_Get_DataSets.Fill_get_FMM_DataTable(si, sql_DataSet_DataAdapter, FMM_calc_Config_DT, Proc_FinModel_Sql, parameters);
 
-                // Process rows dynamically based on OS_Calc_Src_Type
+                // Process rows dynamically based on Calc_Src_Type
                 foreach (DataRow row in FMM_calc_Config_DT.Rows)
                 {
                     string calcSrcType = row["Calc_Src_Type"].ToString();
@@ -102,10 +102,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             var new_OS_Model_ID = 0;
             var Seed_Temp_Table_Sql = @"
-                Select OS_Calc_Src_Type Calc_Src_Type, OS_Calc_Src_Item Calc_Src_Item, Temp_Table_Name 
+                Select Calc_Src_Type Calc_Src_Type, Calc_Src_Item Calc_Src_Item, Temp_Table_Name 
                 FROM FMM_Calc_Config calc
                 JOIN FMM_Src_Cell Src
-                ON calc.OS_Calc_ID = Src.OS_Calc_ID
+                ON calc.Calc_ID = Src.Calc_ID
                 WHERE OS_Model_ID = @OS_Model_ID
                 AND Use_Temp_Table = 1";
 

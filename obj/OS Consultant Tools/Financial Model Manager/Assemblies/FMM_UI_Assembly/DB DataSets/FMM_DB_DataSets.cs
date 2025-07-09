@@ -45,78 +45,78 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // return names;
                         break;
                     case DashboardDataSetFunctionType.GetDataSet:
-                        if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Cubes"))
+                        if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cubes"))
                         {
-                            return Get_FMM_Cubes();
+                            return get_FMM_Cubes();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Scen_Type"))
                         {
                             return get_FMM_Scen_Type();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Setup_Cube_Config_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Config"))
                         {
-                            return Get_FMM_Setup_Cube_Config_List();
+                            return get_FMM_Cube_Config();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Cube_Config_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Config_List"))
                         {
-                            return Get_FMM_Cube_Config_List();
+                            return get_FMM_Cube_Config_List();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Src_Cube_Config_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Cube_Config_List"))
                         {
-                            return Get_FMM_Src_Cube_Config_List();
+                            return get_FMM_Src_Cube_Config_List();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Tgt_Cube_Config_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Cube_Config_List"))
                         {
-                            return Get_FMM_Tgt_Cube_Config_List();
+                            return get_FMM_Tgt_Cube_Config_List();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Table_Cube_Config_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Table_Cube_Config_List"))
                         {
-                            return Get_FMM_Table_Cube_Config_List();
+                            return get_FMM_Table_Cube_Config_List();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Src_Activity_List"))
-                        {
-                            var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            return Get_FMM_Src_Activity_List(cubeID);
-                        }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Tgt_Activity_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Activity_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            return Get_FMM_Tgt_Activity_List(cubeID);
+                            return get_FMM_Src_Activity_List(cubeID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Act_Configs"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Activity_List"))
+                        {
+                            var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
+                            return get_FMM_Tgt_Activity_List(cubeID);
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Act_Config"))
                         {
                          
                             //							var cubeID = args.CustomSubstVars.XFGetValue(IV_Cube_Name);
-                            return Get_FMM_Act_Configs();
+                            return get_FMM_Act_Config();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Table_Activity_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Table_Activity_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            return Get_FMM_Table_Activity_List(cubeID);
+                            return get_FMM_Table_Activity_List(cubeID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Approval_Activity_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Approval_Activity_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            var approvID = args.NameValuePairs.XFGetValue("Approval_ID");
-                            var approvStepID = args.NameValuePairs.XFGetValue("Approval_Step_ID");
+                            var approvID = args.NameValuePairs.XFGetValue("Appr_ID");
+                            var approvStepID = args.NameValuePairs.XFGetValue("Appr_Step_ID");
                             var AddUpdateDBName = args.NameValuePairs.XFGetValue("AddUpdateDBName");
 
                             var runType = AddUpdateDBName == "0b3b2a2_FMM_Approval_Steps_Activities_Row2b_Header" ? "update" : "add";
 
-                            return Get_FMM_Approval_Activity_List(cubeID, approvID, approvStepID, runType);
+                            return get_FMM_Approval_Activity_List(cubeID, approvID, approvStepID, runType);
 
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_All_Approval_Activity_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Approval_Activity_List"))
                         {
 
-                            return Get_FMM_All_Approval_Activity_List();
+                            return get_FMM_All_Approval_Activity_List();
 
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_All_Model_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Model_List"))
                         {
-                            return Get_FMM_All_Model_List();
+                            return get_FMM_All_Model_List();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Model_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Model_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("cubeID");
                             var ActID = args.NameValuePairs.XFGetValue("ActID");
@@ -133,9 +133,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 return new DataTable();
                             }
 
-                            return Get_FMM_Model_List(cubeID, ActID);
+                            return get_FMM_Model_List(cubeID, ActID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Src_Model_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Model_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
                             var ActID = args.NameValuePairs.XFGetValue("Act_ID");
@@ -150,9 +150,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
                                 return new DataTable();
                             }
-                            return Get_FMM_Src_Model_List(cubeID, ActID);
+                            return get_FMM_Src_Model_List(cubeID, ActID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Tgt_Model_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Model_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
                             var ActID = args.NameValuePairs.XFGetValue("Act_ID");
@@ -169,78 +169,78 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 return new DataTable();
                             }
 
-                            return Get_FMM_Tgt_Model_List(cubeID, ActID);
+                            return get_FMM_Tgt_Model_List(cubeID, ActID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Calc_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Calc_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
                             var ActID = args.NameValuePairs.XFGetValue("Act_ID");
                             var modelID = args.NameValuePairs.XFGetValue("Model_ID");
-                            return Get_FMM_Calc_List(cubeID, ActID, modelID);
+                            return get_FMM_Calc_List(cubeID, ActID, modelID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_All_Model_Group_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Model_Grp_List"))
                         {
-                            return Get_FMM_All_Model_Group_List();
+                            return get_FMM_All_Model_Grp_List();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Model_Group_List"))
-                        {
-                            var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            return Get_FMM_Model_Group_List(cubeID);
-                        }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Model_Group_Seq_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Model_Grp_List"))
                         {
                             var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
-                            return Get_FMM_Model_Group_Seq_List(cubeID);
+                            return get_FMM_Model_Grp_List(cubeID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_WFChannels"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Model_Grp_Seq_List"))
                         {
-                            return Get_FMM_WFChannels();
+                            var cubeID = args.NameValuePairs.XFGetValue("Cube_ID");
+                            return get_FMM_Model_Grp_Seq_List(cubeID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_WF_DU"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_WFChannels"))
                         {
-                            return Get_FMM_WF_DU();
+                            return get_FMM_WFChannels();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_All_WF_DUs"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_WF_DU"))
                         {
-                            return Get_FMM_All_WF_DUs();
+                            return get_FMM_WF_DU();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Src_Register_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Calc_Units"))
                         {
-                            return Get_FMM_Src_Register_List();
+                            return get_FMM_All_Calc_Units();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Tgt_Register_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Register_List"))
                         {
-                            return Get_FMM_Tgt_Register_List();
+                            return get_FMM_Src_Register_List();
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Register_List"))
+                        {
+                            return get_FMM_Tgt_Register_List();
                         }
                         //Return WF Profile Hierarchy for WF Root Profile selected
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_WFProfile_TreeView"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_WFProfile_TreeView"))
                         {
-                            return Get_FMM_WFProfile_Hierarchy();
+                            return get_FMM_WFProfile_Hierarchy();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Approval_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Appr_Config"))
                         {
 
                             string cubeID = args.NameValuePairs.XFGetValue("cubeID");
                             //string ActID = args.NameValuePairs.XFGetValue("ActID");
-                            return Get_FMM_Approval_Config(cubeID);
+                            return get_FMM_Appr_Config(cubeID);
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Register_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Reg_Config"))
                         {
                             //BRApi.ErrorLog.LogMessage(si,"Hit " + globals.GetStringValue("IV_FMM_Cube_ID"));
-                            return Get_FMM_Register_Config();
+                            return get_FMM_Reg_Config();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Register_Profiles_by_Activity"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Register_Profiles_by_Activity"))
                         {
                             //BRApi.ErrorLog.LogMessage(si,"Hit " + globals.GetStringValue("IV_FMM_Cube_ID"));
-                            return Get_FMM_Register_Profiles_by_Activity();
+                            return get_FMM_Register_Profiles_by_Activity();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_Security_Group_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Security_Group_List"))
                         {
-                            return Get_FMM_Security_Group_List();
+                            return get_FMM_Security_Group_List();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_FMM_All_WFProfiles"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_WFProfiles"))
                         {
-                            return Get_FMM_All_WFProfiles();
+                            return get_FMM_All_WFProfiles();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_Fdx_Cube_View"))
                         {
@@ -259,7 +259,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Helper Queries"
         #region "Cube List Data Sets"
-        private DataTable Get_FMM_Cubes()
+        private DataTable get_FMM_Cubes()
         {
             try
             {
@@ -385,11 +385,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         #endregion
 
         #region "Cube Config Data Sets"
-        private DataTable Get_FMM_Setup_Cube_Config_List()
+        private DataTable get_FMM_Cube_Config()
         {
             try
             {
-                var cube_Config_DT = new DataTable("Cube_Config");
+                var dt = new DataTable("Cube_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -397,17 +397,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Create a new DataTable
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
-                    var sql = @"SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS OS_Cube,Cube.Cube_ID
+                    var sql = @"SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS Cube,Cube.Cube_ID
 								FROM FMM_Cube_Config Cube";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Config_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return cube_Config_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -415,7 +415,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Cube_Config_List()
+        private DataTable get_FMM_Cube_Config_List()
         {
             try
             {
@@ -448,7 +448,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Src_Cube_Config_List()
+        private DataTable get_FMM_Src_Cube_Config_List()
         {
             try
             {
@@ -481,7 +481,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Tgt_Cube_Config_List()
+        private DataTable get_FMM_Tgt_Cube_Config_List()
         {
             try
             {
@@ -512,11 +512,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Table_Cube_Config_List()
+        private DataTable get_FMM_Table_Cube_Config_List()
         {
             try
             {
-                var cube_Config_DT = new DataTable("Cube_Config");
+                var dt = new DataTable("Cube_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -535,11 +535,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Config_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return cube_Config_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -552,7 +552,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Activity List"
 
-        private DataTable Get_FMM_Act_Configs()
+        private DataTable get_FMM_Act_Config()
         {
             try
             {
@@ -589,7 +589,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
 
-        private DataTable Get_FMM_Table_Activity_List(string Cube_ID)
+        private DataTable get_FMM_Table_Activity_List(string Cube_ID)
         {
             try
             {
@@ -627,7 +627,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Src_Activity_List(string Cube_ID)
+        private DataTable get_FMM_Src_Activity_List(string Cube_ID)
         {
             try
             {
@@ -666,11 +666,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Tgt_Activity_List(string Cube_ID)
+        private DataTable get_FMM_Tgt_Activity_List(string Cube_ID)
         {
             try
             {
-                var cube_Model_Activities_DT = new DataTable("Tgt_Activity_List");
+                var dt = new DataTable("Tgt_Activity_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -690,15 +690,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID.XFConvertToInt()}
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Model_Activities_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
 
-                // set default selection for returned activity list to top of the list
-                //setLBDefaultSelection("BL_FMM_Cube_Model_Activity_List", ref cube_Model_Activities_DT);
-
-                //BRApi.ErrorLog.LogMessage(si, "Hit Get Datea: " + Cube_ID);
-
-                return cube_Model_Activities_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -706,12 +701,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Approval_Activity_List(string Cube_ID, string Approval_ID, string Approval_Step_ID, string runType)
+        private DataTable get_FMM_Approval_Activity_List(string Cube_ID, string Appr_ID, string Appr_Step_ID, string runType)
         {
             try
             {
 
-                var cube_Model_Activities_DT = new DataTable("Approval_Activity_List");
+                var dt = new DataTable("Approval_Activity_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 if (runType == "add")
                 { // add
@@ -758,21 +753,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 				       		FROM FMM_Approval_Step_Activity_Config ASAC
 							FULL JOIN FMM_Act_Config Con
 							ON Con.Act_ID = ASAC.Act_ID
-							WHERE ASAC.Approval_ID = @Approval_ID
-							AND ASAC.Approval_Step_ID = @Approval_Step_ID
+							WHERE ASAC.Appr_ID = @Appr_ID
+							AND ASAC.Appr_Step_ID = @Appr_Step_ID
 							ORDER BY Approval_Step_Act_ID";
 
                         //						Description,Approval_Step_Act_ID
                         //				       		FROM FMM_Approval_Step_Activity_Config
-                        //							WHERE Approval_ID = @Approval_ID
-                        //							AND Approval_Step_ID = @Approval_Step_ID
+                        //							WHERE Appr_ID = @Appr_ID
+                        //							AND Appr_Step_ID = @Appr_Step_ID
                         //							ORDER BY Approval_Step_Act_ID
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
                         {
-                            new SqlParameter("@Approval_ID", SqlDbType.Int) { Value = Approval_ID.XFConvertToInt()},
-                            new SqlParameter("@Approval_Step_ID", SqlDbType.Int) { Value = Approval_Step_ID.XFConvertToInt()}
+                            new SqlParameter("@Appr_ID", SqlDbType.Int) { Value = Appr_ID.XFConvertToInt()},
+                            new SqlParameter("@Appr_Step_ID", SqlDbType.Int) { Value = Appr_Step_ID.XFConvertToInt()}
 
                         };
                         sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Model_Activities_DT, sql, sqlparams);
@@ -788,7 +783,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_All_Approval_Activity_List()
+        private DataTable get_FMM_All_Approval_Activity_List()
         {
             try
             {
@@ -830,12 +825,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Model Lists"
 
-        private DataTable Get_FMM_All_Model_List()
+        private DataTable get_FMM_All_Models()
         {
             try
             {
 
-                var Model_List_By_Activity_DT = new DataTable("Model_List");
+                var dt = new DataTable("Model_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -852,11 +847,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_List_By_Activity_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return Model_List_By_Activity_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -865,12 +860,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
 
-        private DataTable Get_FMM_Model_List(string Cube_ID, string Act_ID)
+        private DataTable get_FMM_Model_List(string Cube_ID, string Act_ID)
         {
             try
             {
                 //BRApi.ErrorLog.LogMessage(si,"Hit: " + Cube_ID + "-" + Act_ID);
-                var Model_List_By_Activity_DT = new DataTable("Model_List");
+                var dt = new DataTable("Model_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -891,11 +886,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Convert.ToInt16(Act_ID) }
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_List_By_Activity_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return Model_List_By_Activity_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -903,7 +898,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Src_Model_List(string Cube_ID, string Act_ID)
+        private DataTable get_FMM_Src_Model_List(string Cube_ID, string Act_ID)
         {
             try
             {
@@ -941,7 +936,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Tgt_Model_List(string Cube_ID, string Act_ID)
+        private DataTable get_FMM_Tgt_Model_List(string Cube_ID, string Act_ID)
         {
             try
             {
@@ -983,7 +978,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Calc_List(string Cube_ID, string Act_ID, string Model_ID)
+        private DataTable get_FMM_Calc_List(string Cube_ID, string Act_ID, string Model_ID)
         {
             try
             {
@@ -996,13 +991,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Create a new DataTable
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
-                    var sql = @"
-			        	SELECT Name,OS_Calc_ID
-			       		FROM FMM_Calc_Config
-						WHERE Cube_ID = @Cube_ID
-						AND Act_ID = @Act_ID
-						AND Model_ID = @Model_ID
-						ORDER BY Name";
+                    var sql = @"SELECT Name,Calc_ID
+                                FROM FMM_Calc_Config
+                                WHERE Cube_ID = @Cube_ID
+                                AND Act_ID = @Act_ID
+                                AND Model_ID = @Model_ID
+                                ORDER BY Name";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
@@ -1023,7 +1017,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Model_List_By_Cube()
+        private DataTable get_FMM_Model_List_By_Cube()
         {
             try
             {
@@ -1064,11 +1058,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Model Group Lists"
 
-        private DataTable Get_FMM_All_Model_Group_List()
+        private DataTable get_FMM_All_Model_Grp_List()
         {
             try
             {
-                var Model_Group_List_By_Cube_DT = new DataTable("Model_Group_List");
+                var Model_Grp_List_By_Cube_DT = new DataTable("Model_Grp_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1077,19 +1071,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT Name, Model_Group_ID
-			       		FROM FMM_Model_Groups
+			        	SELECT Name, Model_Grp_ID
+			       		FROM FMM_Model_Grps
 						ORDER BY Name";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_Group_List_By_Cube_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_Grp_List_By_Cube_DT, sql, sqlparams);
 
                 }
 
-                return Model_Group_List_By_Cube_DT;
+                return Model_Grp_List_By_Cube_DT;
             }
             catch (Exception ex)
             {
@@ -1098,13 +1092,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
 
-        private DataTable Get_FMM_Model_Group_List(string cubeID)
+        private DataTable get_FMM_Model_Grp_List(string cubeID)
         {
             try
             {
                 var Cube_ID = globals.GetStringValue("IV_FMM_Cube_ID", "0");
                 //BRApi.ErrorLog.LogMessage(si,"Hit Cube ID: " + cubeID);
-                var Model_Group_List_By_Cube_DT = new DataTable("Model_Group_List");
+                var Model_Grp_List_By_Cube_DT = new DataTable("Model_Grp_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1113,8 +1107,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT Name, Model_Group_ID
-			       		FROM FMM_Model_Groups
+			        	SELECT Name, Model_Grp_ID
+			       		FROM FMM_Model_Grps
 						WHERE Cube_ID = @Cube_ID
 						ORDER BY Name";
 
@@ -1123,11 +1117,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(cubeID) }
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_Group_List_By_Cube_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_Grp_List_By_Cube_DT, sql, sqlparams);
 
                 }
 
-                return Model_Group_List_By_Cube_DT;
+                return Model_Grp_List_By_Cube_DT;
             }
             catch (Exception ex)
             {
@@ -1138,12 +1132,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         #endregion
 
         #region "Model Group Sequences"
-        private DataTable Get_FMM_Model_Group_Seq_List(string cubeID)
+        private DataTable get_FMM_Model_Grp_Seq(string cubeID)
         {
             try
             {
                 //BRApi.ErrorLog.LogMessage(si,"hit Model Group Seq: " + cubeID);
-                var Model_Group_Seq_List_By_Cube_DT = new DataTable("Model_Group_Seq_List");
+                var dt = new DataTable("Model_Grp_Seq_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1152,8 +1146,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT Name, Model_Group_Seq_ID
-			       		FROM FMM_Model_Group_Seqs
+			        	SELECT Name, Model_Grp_Seq_ID
+			       		FROM FMM_Model_Grp_Seqs
 						WHERE Cube_ID = @Cube_ID
 						ORDER BY Name";
 
@@ -1162,11 +1156,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(cubeID) }
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_Group_Seq_List_By_Cube_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return Model_Group_Seq_List_By_Cube_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -1177,14 +1171,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Register List"
 
-        private DataTable Get_FMM_Src_Register_List()
+        private DataTable get_FMM_Src_Register_List()
         {
             try
             {
                 var Cube_ID = globals.GetStringValue("IV_FMM_Cube_ID", "0");
                 var Act_ID = globals.GetStringValue("IV_FMM_Act_ID", "0");
                 //BRApi.ErrorLog.LogMessage(si,"Hit Cube ID: " + Cube_ID);
-                var Model_Group_List_By_Cube_DT = new DataTable("Register_List");
+                var Model_Grp_List_By_Cube_DT = new DataTable("Register_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1193,8 +1187,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT Name as Name,Register_Config_ID as Reg_Config_ID
-			       		FROM FMM_Register_Config
+			        	SELECT Name as Name,Reg_Config_ID as Reg_Config_ID
+			       		FROM FMM_Reg_Config
 						WHERE Cube_ID = @Cube_ID
 						AND Act_ID = @Act_ID
 						ORDER BY Name";
@@ -1205,11 +1199,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID}
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_Group_List_By_Cube_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_Grp_List_By_Cube_DT, sql, sqlparams);
 
                 }
 
-                return Model_Group_List_By_Cube_DT;
+                return Model_Grp_List_By_Cube_DT;
             }
             catch (Exception ex)
             {
@@ -1217,14 +1211,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Tgt_Register_List()
+        private DataTable get_FMM_Tgt_Register_List()
         {
             try
             {
                 var Cube_ID = globals.GetStringValue("IV_FMM_Cube_ID", "0");
                 var Act_ID = globals.GetStringValue("IV_FMM_Act_ID", "0");
                 //BRApi.ErrorLog.LogMessage(si,"Hit Cube ID: " + Cube_ID);
-                var Model_Group_List_By_Cube_DT = new DataTable("Register_List");
+                var dt = new DataTable("Register_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1233,8 +1227,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT Name as Name,Register_Config_ID as Reg_Config_ID
-			       		FROM FMM_Register_Config
+			        	SELECT Name as Name,Reg_Config_ID as Reg_Config_ID
+			       		FROM FMM_Reg_Config
 						WHERE Cube_ID = @Cube_ID
 						AND Act_ID = @Act_ID
 						ORDER BY Name";
@@ -1245,11 +1239,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(Cube_ID) },
                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID}
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Model_Group_List_By_Cube_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return Model_Group_List_By_Cube_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -1262,11 +1256,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "WF Channels"
 
-        private DataTable Get_FMM_WFChannels()
+        private DataTable get_FMM_WFChannels()
         {
             try
             {
-                var FMM_WF_Channels_DT = new DataTable("FMM_WF_Channels");
+                var dt = new DataTable("FMM_WF_Channels");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1288,11 +1282,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_WF_Channels_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return FMM_WF_Channels_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -1304,11 +1298,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "WF Data Units"
 
-        private DataTable Get_FMM_WF_DU()
+        private DataTable get_FMM_Calc_Unit()
         {
             try
             {
-                var FMM_WF_DU_DT = new DataTable("FMM_WF_DU_Config");
+                var dt = new DataTable("FMM_Calc_Unit_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1317,18 +1311,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT CONCAT(Entity_MFB, ' - ',WFChannel) as DisplayValue,WF_DU_ID as StoredValue
-			       		FROM FMM_WF_DU_Config";
+			        	SELECT CONCAT(Entity_MFB, ' - ',WFChannel) as DisplayValue,Calc_Unit_ID as StoredValue
+			       		FROM FMM_Calc_Unit_Config";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_WF_DU_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return FMM_WF_DU_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -1338,11 +1332,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #endregion
 
-        private DataTable Get_FMM_All_WF_DUs()
+        private DataTable get_FMM_All_Calc_Units()
         {
             try
             {
-                var FMM_WF_DU_DT = new DataTable("FMM_All_WF_DUs");
+                var dt = new DataTable("FMM_All_WF_DUs");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1351,18 +1345,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT CONCAT(Entity_MFB, ' - ',WFChannel) as WF_DU_Desc,WF_DU_ID
-			       		FROM FMM_WF_DU_Config";
+			        	SELECT CONCAT(Entity_MFB, ' - ',WFChannel) as Descr,Calc_Unit_ID
+			       		FROM FMM_Calc_Unit_Config";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_WF_DU_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return FMM_WF_DU_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -1388,7 +1382,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataSet Get_FMM_WFProfile_Hierarchy()
+        private DataSet get_FMM_WFProfile_Hierarchy()
         {
             try
             {
@@ -1498,14 +1492,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Approval_Config(string cubeID)
+        private DataTable get_FMM_Appr_Config(string cubeID)
         {
 
             //			BRApi.ErrorLog.LogMessage(si, "cube: " + cubeID + " activity: " + ActID);
 
             try
             {
-                var approval_config_DT = new DataTable("Approval_Config");
+                var dt = new DataTable("Approval_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1514,7 +1508,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT * FROM FMM_Approval_Config
+			        	SELECT * FROM FMM_Appr_Config
 						WHERE Cube_ID = @Cube_ID";
                     //AND Act_ID = @Act_ID";
                     // Create an array of SqlParameter objects
@@ -1523,11 +1517,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cubeID.XFConvertToInt() }
 						//new SqlParameter("@Act_ID", SqlDbType.Int) { Value = ActID.XFConvertToInt() }
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, approval_config_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return approval_config_DT;
+                return dt;
             }
             catch (Exception ex)
             {
@@ -1535,12 +1529,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Register_Config()
+        private DataTable get_FMM_Reg_Config()
         {
 
             try
             {
-                var register_config_DT = new DataTable("Register_Profiles");
+                var Reg_Config_DT = new DataTable("Register_Profiles");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1550,16 +1544,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Define the select query and sqlparams
                     // get all the register configs that don't already have an entry for this activity
                     var sql = @"
-			        	SELECT Name,RegCon.Register_Config_ID FROM FMM_Register_Config RegCon";
+			        	SELECT Name,RegCon.Reg_Config_ID FROM FMM_Reg_Config RegCon";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, register_config_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Reg_Config_DT, sql, sqlparams);
 
                 }
 
-                return register_config_DT;
+                return Reg_Config_DT;
             }
             catch (Exception ex)
             {
@@ -1567,7 +1561,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Register_Profiles_by_Activity()
+        private DataTable get_FMM_Register_Profiles_by_Activity()
         {
 
             try
@@ -1577,7 +1571,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var AddUpdateDBName = args.NameValuePairs.XFGetValue("AddUpdateDBName");
                 var runType = AddUpdateDBName == "0b3b2a2_FMM_Approval_Steps_Activities_Row2b_Header" ? "Update" : "Add";
                 BRApi.ErrorLog.LogMessage(si, "get reg config actID: " + ActID + " runType: " + runType);
-                var register_config_DT = new DataTable("Register_Profiles");
+                var Reg_Config_DT = new DataTable("Register_Profiles");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 if (ActID != "0" && runType == "Add")
                 {
@@ -1589,16 +1583,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // Define the select query and sqlparams
                         // get all the register configs that don't already have an entry for this activity
                         var sql = @"
-				        	SELECT Name,RegCon.Register_Config_ID FROM FMM_Register_Config RegCon
+				        	SELECT Name,RegCon.Reg_Config_ID FROM FMM_Reg_Config RegCon
 							FULL JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
-							WHERE RegCon.Act_ID = @Act_ID AND ASAC.Register_Config_ID is NULL";
+							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Reg_Config_ID = ASAC.Reg_Config_ID
+							WHERE RegCon.Act_ID = @Act_ID AND ASAC.Reg_Config_ID is NULL";
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
                         {
                             new SqlParameter("@Act_ID", SqlDbType.Int) { Value = ActID.XFConvertToInt() },
                         };
-                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, register_config_DT, sql, sqlparams);
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Reg_Config_DT, sql, sqlparams);
 
                     }
                 }
@@ -1612,35 +1606,35 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // Define the select query and sqlparams
                         // get the current register config, and all of those that don't have associated entries (update)
                         var sql = @"
-				        	Declare @initialResults Table (Name nvarchar(100), Register_Config_ID int, Act_ID int)
+				        	Declare @initialResults Table (Name nvarchar(100), Reg_Config_ID int, Act_ID int)
 							Declare @trueActID int;
 							
 							Insert into @initialResults 
-							Select Name,RegCon.Register_Config_ID,RegCon.Act_ID FROM FMM_Register_Config RegCon
+							Select Name,RegCon.Reg_Config_ID,RegCon.Act_ID FROM FMM_Reg_Config RegCon
 							Full JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
+							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Reg_Config_ID = ASAC.Reg_Config_ID
 							WHERE ASAC.Approval_Step_Act_ID = @Act_ID
 
 							SELECT @trueActID = Act_ID from @initialResults;
 							
-							Select CONCAT('*',Name) As Name, Register_Config_ID from @initialResults
+							Select CONCAT('*',Name) As Name, Reg_Config_ID from @initialResults
 							Union
-							SELECT Name,RegCon.Register_Config_ID FROM FMM_Register_Config RegCon
+							SELECT Name,RegCon.Reg_Config_ID FROM FMM_Reg_Config RegCon
 							FULL JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Register_Config_ID = ASAC.Register_Config_ID
-							WHERE RegCon.Act_ID = @trueActID AND ASAC.Register_Config_ID is NULL";
+							ON RegCon.Act_ID = ASAC.Act_ID AND RegCon.Reg_Config_ID = ASAC.Reg_Config_ID
+							WHERE RegCon.Act_ID = @trueActID AND ASAC.Reg_Config_ID is NULL";
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
                         {
                             new SqlParameter("@Act_ID", SqlDbType.Int) { Value = ActID.XFConvertToInt() }, // in the update case, ActID is actually the approval_step_Act_ID. It's weird
 	                    };
-                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, register_config_DT, sql, sqlparams);
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, Reg_Config_DT, sql, sqlparams);
 
                     }
                 }
 
 
-                return register_config_DT;
+                return Reg_Config_DT;
             }
             catch (Exception ex)
             {
@@ -1648,7 +1642,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_Security_Group_List()
+        private DataTable get_FMM_Security_Group_List()
         {
 
             try
@@ -1683,7 +1677,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_FMM_All_WFProfiles()
+        private DataTable get_FMM_All_WFProfiles()
         {
 
             try
