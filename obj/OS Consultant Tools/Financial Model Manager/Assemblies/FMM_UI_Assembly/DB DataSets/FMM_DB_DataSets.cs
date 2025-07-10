@@ -57,9 +57,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_Cube_Config();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Config_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Act_Config"))
                         {
-                            return get_FMM_Cube_Config_List();
+                            return get_FMM_Cube_Act_Config();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Cube_Config_List"))
                         {
@@ -112,9 +112,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             return get_FMM_All_Approval_Act_Config();
 
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Model_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Models"))
                         {
-                            return get_FMM_All_Model_List();
+                            return get_FMM_All_Models();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Model_List"))
                         {
@@ -415,11 +415,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable get_FMM_Cube_Config_List()
+        private DataTable get_FMM_Cube_Act_Config()
         {
             try
             {
-                var cube_Config_DT = new DataTable("Cube_Config");
+                var dt = new DataTable("Cube_Act_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -436,11 +436,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlparams = new SqlParameter[]
                     {
                     };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Config_DT, sql, sqlparams);
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
 
-                return cube_Config_DT;
+                return dt;
             }
             catch (Exception ex)
             {

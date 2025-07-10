@@ -248,7 +248,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_All_Model_List}{}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_All_Models}{}</methodQuery>
                                 <resultsTableName>Model_List</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Model_ID</valueMember>
@@ -1268,7 +1268,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Cube_Config_List}{}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Cube_Act_Config}{}</methodQuery>
                                 <resultsTableName>Cube_Config</resultsTableName>
                                 <displayMember>OS_Cube</displayMember>
                                 <valueMember>Cube_ID</valueMember>
@@ -14885,9 +14885,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_Cube_Config();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Config_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Act_Config"))
                         {
-                            return get_FMM_Cube_Config_List();
+                            return get_FMM_Cube_Act_Config();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Cube_Config_List"))
                         {
@@ -14940,9 +14940,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             return get_FMM_All_Approval_Act_Config();
 
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Model_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Models"))
                         {
-                            return get_FMM_All_Model_List();
+                            return get_FMM_All_Models();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Model_List"))
                         {
@@ -15243,7 +15243,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable get_FMM_Cube_Config_List()
+        private DataTable get_FMM_Cube_Act_Config()
         {
             try
             {
@@ -15658,7 +15658,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #region "Model Lists"
 
-        private DataTable get_FMM_All_Model_List()
+        private DataTable get_FMM_All_Models()
         {
             try
             {
