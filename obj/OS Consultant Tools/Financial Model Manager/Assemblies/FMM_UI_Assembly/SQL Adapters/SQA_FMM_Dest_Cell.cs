@@ -53,27 +53,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and parameters
                 string insertQuery = @"
 		            INSERT INTO FMM_Dest_Cell (
-		                Cube_ID, Act_ID, Model_ID, Calc_ID, OS_Cell_ID, 
+		                Cube_ID, Act_ID, Model_ID, Calc_ID, Dest_Cell_ID, 
 		                Location, Calc_Plan_Units, Acct, View, 
 		                Origin, IC, Flow, UD1, 
 		                UD2, UD3, UD4, UD5, 
-		                UD6, UD7, UD8, OS_Time_Filter, 
-		                OS_Acct_Filter, OS_Origin_Filter, OS_IC_Filter, OS_Flow_Filter, 
-		                OS_UD1_Filter, OS_UD2_Filter, OS_UD3_Filter, OS_UD4_Filter, 
+		                UD6, UD7, UD8, Time_Filter, 
+		                Acct_Filter, Origin_Filter, OS_IC_Filter, OS_Flow_Filter, 
+		                OS_UD1_Filter, OS_UD2_Filter, OS_UD3_Filter, UD4_Filter, 
 		                OS_UD5_Filter, OS_UD6_Filter, OS_UD7_Filter, OS_UD8_Filter, 
 		                OS_Conditional_Filter, OS_Curr_Cube_Buffer_Filter, Buffer_Filter, 
-		                OS_Cell_Logic, OS_SQL_Logic, Create_Date, Create_User, Update_Date, Update_User
+		                Dest_Cell_Logic, SQL_Logic, Create_Date, Create_User, Update_Date, Update_User
 		            ) VALUES (
-		                @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @OS_Cell_ID, 
+		                @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Dest_Cell_ID, 
 		                @Location, @Calc_Plan_Units, @Acct, @View, 
 		                @Origin, @IC, @Flow, @UD1, 
 		                @UD2, @UD3, @UD4, @UD5, 
-		                @UD6, @UD7, @UD8, @OS_Time_Filter, 
-		                @OS_Acct_Filter, @OS_Origin_Filter, @OS_IC_Filter, @OS_Flow_Filter, 
-		                @OS_UD1_Filter, @OS_UD2_Filter, @OS_UD3_Filter, @OS_UD4_Filter, 
+		                @UD6, @UD7, @UD8, @Time_Filter, 
+		                @Acct_Filter, @Origin_Filter, @OS_IC_Filter, @OS_Flow_Filter, 
+		                @OS_UD1_Filter, @OS_UD2_Filter, @OS_UD3_Filter, @UD4_Filter, 
 		                @OS_UD5_Filter, @OS_UD6_Filter, @OS_UD7_Filter, @OS_UD8_Filter, 
 		                @OS_Conditional_Filter, @OS_Curr_Cube_Buffer_Filter, @Buffer_Filter, 
-		                @OS_Cell_Logic, @OS_SQL_Logic, GETDATE(), @Create_User, GETDATE(), @Update_User
+		                @Dest_Cell_Logic, @SQL_Logic, GETDATE(), @Create_User, GETDATE(), @Update_User
 		            )";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
 
@@ -82,7 +82,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_ID", SqlDbType.Int).SourceColumn = "Calc_ID";
-                sqa.InsertCommand.Parameters.Add("@OS_Cell_ID", SqlDbType.Int).SourceColumn = "OS_Cell_ID";
+                sqa.InsertCommand.Parameters.Add("@Dest_Cell_ID", SqlDbType.Int).SourceColumn = "Dest_Cell_ID";
                 sqa.InsertCommand.Parameters.Add("@Location", SqlDbType.NVarChar, 50).SourceColumn = "Location";
                 sqa.InsertCommand.Parameters.Add("@Calc_Plan_Units", SqlDbType.NVarChar, 250).SourceColumn = "Calc_Plan_Units";
                 sqa.InsertCommand.Parameters.Add("@Acct", SqlDbType.NVarChar, 100).SourceColumn = "Acct";
@@ -94,20 +94,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.InsertCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
                 }
-                sqa.InsertCommand.Parameters.Add("@OS_Time_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Time_Filter";
-                sqa.InsertCommand.Parameters.Add("@OS_Acct_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Acct_Filter";
-                sqa.InsertCommand.Parameters.Add("@OS_Origin_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Origin_Filter";
+                sqa.InsertCommand.Parameters.Add("@Time_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Time_Filter";
+                sqa.InsertCommand.Parameters.Add("@Acct_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Acct_Filter";
+                sqa.InsertCommand.Parameters.Add("@Origin_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Origin_Filter";
                 sqa.InsertCommand.Parameters.Add("@OS_IC_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_IC_Filter";
                 sqa.InsertCommand.Parameters.Add("@OS_Flow_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Flow_Filter";
                 for (int i = 1; i <= 8; i++)
                 {
-                    sqa.InsertCommand.Parameters.Add($"@OS_UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"OS_UD{i}_Filter";
+                    sqa.InsertCommand.Parameters.Add($"@UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"UD{i}_Filter";
                 }
                 sqa.InsertCommand.Parameters.Add("@OS_Conditional_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "OS_Conditional_Filter";
                 sqa.InsertCommand.Parameters.Add("@OS_Curr_Cube_Buffer_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "OS_Curr_Cube_Buffer_Filter";
                 sqa.InsertCommand.Parameters.Add("@Buffer_Filter", SqlDbType.NVarChar, 2000).SourceColumn = "Buffer_Filter";
-                sqa.InsertCommand.Parameters.Add("@OS_Cell_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "OS_Cell_Logic";
-                sqa.InsertCommand.Parameters.Add("@OS_SQL_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "OS_SQL_Logic";
+                sqa.InsertCommand.Parameters.Add("@Dest_Cell_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "Dest_Cell_Logic";
+                sqa.InsertCommand.Parameters.Add("@SQL_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "SQL_Logic";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).Value = si.UserName;
                 sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).Value = si.UserName;
 
@@ -123,21 +123,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                UD3 = @UD3, UD4 = @UD4, 
 		                UD5 = @UD5, UD6 = @UD6, 
 		                UD7 = @UD7, UD8 = @UD8, 
-		                OS_Time_Filter = @OS_Time_Filter, OS_Acct_Filter = @OS_Acct_Filter, 
-		                OS_Origin_Filter = @OS_Origin_Filter, OS_IC_Filter = @OS_IC_Filter, 
+		                Time_Filter = @Time_Filter, Acct_Filter = @Acct_Filter, 
+		                Origin_Filter = @Origin_Filter, OS_IC_Filter = @OS_IC_Filter, 
 		                OS_Flow_Filter = @OS_Flow_Filter, OS_UD1_Filter = @OS_UD1_Filter, 
 		                OS_UD2_Filter = @OS_UD2_Filter, OS_UD3_Filter = @OS_UD3_Filter, 
-		                OS_UD4_Filter = @OS_UD4_Filter, OS_UD5_Filter = @OS_UD5_Filter, 
+		                UD4_Filter = @UD4_Filter, OS_UD5_Filter = @OS_UD5_Filter, 
 		                OS_UD6_Filter = @OS_UD6_Filter, OS_UD7_Filter = @OS_UD7_Filter, 
 		                OS_UD8_Filter = @OS_UD8_Filter, OS_Conditional_Filter = @OS_Conditional_Filter, 
 		                OS_Curr_Cube_Buffer_Filter = @OS_Curr_Cube_Buffer_Filter, 
-		                Buffer_Filter = @Buffer_Filter, OS_Cell_Logic = @OS_Cell_Logic, 
-		                OS_SQL_Logic = @OS_SQL_Logic, Update_Date = GETDATE(), Update_User = @Update_User
-		            WHERE OS_Cell_ID = @OS_Cell_ID";
+		                Buffer_Filter = @Buffer_Filter, Dest_Cell_Logic = @Dest_Cell_Logic, 
+		                SQL_Logic = @SQL_Logic, Update_Date = GETDATE(), Update_User = @Update_User
+		            WHERE Dest_Cell_ID = @Dest_Cell_ID";
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
 
                 // Add parameters for the update command
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@OS_Cell_ID", SqlDbType.Int) { SourceColumn = "OS_Cell_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Dest_Cell_ID", SqlDbType.Int) { SourceColumn = "Dest_Cell_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
                 sqa.UpdateCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.UpdateCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
@@ -153,28 +153,28 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.UpdateCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
                 }
-                sqa.UpdateCommand.Parameters.Add("@OS_Time_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Time_Filter";
-                sqa.UpdateCommand.Parameters.Add("@OS_Acct_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Acct_Filter";
-                sqa.UpdateCommand.Parameters.Add("@OS_Origin_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Origin_Filter";
+                sqa.UpdateCommand.Parameters.Add("@Time_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Time_Filter";
+                sqa.UpdateCommand.Parameters.Add("@Acct_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Acct_Filter";
+                sqa.UpdateCommand.Parameters.Add("@Origin_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Origin_Filter";
                 sqa.UpdateCommand.Parameters.Add("@OS_IC_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_IC_Filter";
                 sqa.UpdateCommand.Parameters.Add("@OS_Flow_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Flow_Filter";
                 for (int i = 1; i <= 8; i++)
                 {
-                    sqa.UpdateCommand.Parameters.Add($"@OS_UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"OS_UD{i}_Filter";
+                    sqa.UpdateCommand.Parameters.Add($"@UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"UD{i}_Filter";
                 }
                 sqa.UpdateCommand.Parameters.Add("@OS_Conditional_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "OS_Conditional_Filter";
                 sqa.UpdateCommand.Parameters.Add("@OS_Curr_Cube_Buffer_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "OS_Curr_Cube_Buffer_Filter";
                 sqa.UpdateCommand.Parameters.Add("@Buffer_Filter", SqlDbType.NVarChar, 2000).SourceColumn = "Buffer_Filter";
-                sqa.UpdateCommand.Parameters.Add("@OS_Cell_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "OS_Cell_Logic";
-                sqa.UpdateCommand.Parameters.Add("@OS_SQL_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "OS_SQL_Logic";
+                sqa.UpdateCommand.Parameters.Add("@Dest_Cell_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "Dest_Cell_Logic";
+                sqa.UpdateCommand.Parameters.Add("@SQL_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "SQL_Logic";
                 sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).Value = si.UserName;
 
                 // Define the delete query and parameters
                 string deleteQuery = @"
 		            DELETE FROM FMM_Dest_Cell 
-		            WHERE OS_Cell_ID = @OS_Cell_ID";
+		            WHERE Dest_Cell_ID = @Dest_Cell_ID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@OS_Cell_ID", SqlDbType.Int) { SourceColumn = "OS_Cell_ID", SourceVersion = DataRowVersion.Original });
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Dest_Cell_ID", SqlDbType.Int) { SourceColumn = "Dest_Cell_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {

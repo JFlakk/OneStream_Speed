@@ -189,7 +189,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 { "Table", new ColumnConfig[]
                     {
                         new ColumnConfig { ColumnName = "Calc_ID", IsVisible = false },
-                        new ColumnConfig { ColumnName = "OS_Cell_ID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "Dest_Cell_ID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Location", Description = "Target Location", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Calc_Plan_Units", Description = "[Plan Units]", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Acct", Description = "Account", Width = "Auto", IsVisible = true },
@@ -204,7 +204,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "OS_Time_Filter", Description = "Time Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Time_Filter", Description = "Time Filter", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "OS_Conditional_Filter", Description = "Conditional Filter", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }

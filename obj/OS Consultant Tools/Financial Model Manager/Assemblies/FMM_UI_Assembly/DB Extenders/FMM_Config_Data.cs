@@ -370,7 +370,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var Act_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
                 var Model_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Model_ID", "0").XFConvertToInt();
                 var Calc_ID = 0;
-                var OS_Cell_ID = 0;
+                var Dest_Cell_ID = 0;
 
                 // Create SQL connection and adapters
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -450,27 +450,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 
                             //begin FMM_Dest_Cell updates logic
-                            OS_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "OS_Cell_ID");
+                            Dest_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "Dest_Cell_ID");
 
                             // Fill the DataTable with the current data from FMM_Dest_Cell
                             var sql_Cell = @"SELECT * 
 											FROM FMM_Dest_Cell 
 											WHERE Calc_ID = @Calc_ID 
-											AND OS_Cell_ID = @OS_Cell_ID";
+											AND Dest_Cell_ID = @Dest_Cell_ID";
                             // Create an array of SqlParameter objects
                             var sqlparams_Cell = new SqlParameter[]
                             {
                             new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = Calc_ID },
-                            new SqlParameter("@OS_Cell_ID", SqlDbType.Int) { Value = OS_Cell_ID }
+                            new SqlParameter("@Dest_Cell_ID", SqlDbType.Int) { Value = Dest_Cell_ID }
                             };
 
                             sqa_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, sqa_Cell, FMM_Dest_Cell_DT, sql_Cell, sqlparams_Cell);
 
-                            BRApi.ErrorLog.LogMessage(si, "New row kickoff for OSCalc: " + Calc_ID + " OSCalcDestCellID: " + OS_Cell_ID);
+                            BRApi.ErrorLog.LogMessage(si, "New row kickoff for OSCalc: " + Calc_ID + " OSCalcDestCellID: " + Dest_Cell_ID);
                             var new_Row = FMM_Dest_Cell_DT.NewRow();
                             foreach (DataColumn column in FMM_Dest_Cell_DT.Columns)
                             {
-                                BRApi.ErrorLog.LogMessage(si, "Hit " + column.ColumnName + "|" + Cube_ID + "|" + Calc_ID + "|" + OS_Cell_ID);
+                                BRApi.ErrorLog.LogMessage(si, "Hit " + column.ColumnName + "|" + Cube_ID + "|" + Calc_ID + "|" + Dest_Cell_ID);
                                 if (column.ColumnName == "Cube_ID")
                                 {
                                     new_Row["Cube_ID"] = Cube_ID;
@@ -487,9 +487,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 {
                                     new_Row["Calc_ID"] = Calc_ID;
                                 }
-                                else if (column.ColumnName == "OS_Cell_ID")
+                                else if (column.ColumnName == "Dest_Cell_ID")
                                 {
-                                    new_Row["OS_Cell_ID"] = OS_Cell_ID;
+                                    new_Row["Dest_Cell_ID"] = Dest_Cell_ID;
                                 }
                                 else
                                 {
@@ -2156,14 +2156,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Filter columns come from FMM_Dest_Cell (first arg)
 
 
-                        EvaluateDimension("OS_Acct_Filter", "Acct", "A#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("OS_Origin_Filter", "Origin", "O#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
+                        EvaluateDimension("Acct_Filter", "Acct", "A#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
+                        EvaluateDimension("Origin_Filter", "Origin", "O#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
                         EvaluateDimension("OS_Flow_Filter", "Flow", "F#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
                         EvaluateDimension("OS_IC_Filter", "IC", "I#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
                         EvaluateDimension("OS_UD1_Filter", "UD1", "U1#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
                         EvaluateDimension("OS_UD2_Filter", "UD2", "U2#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
                         EvaluateDimension("OS_UD3_Filter", "UD3", "U3#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("OS_UD4_Filter", "UD4", "U4#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
+                        EvaluateDimension("UD4_Filter", "UD4", "U4#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
                         EvaluateDimension("OS_UD5_Filter", "UD5", "U5#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
                         EvaluateDimension("OS_UD6_Filter", "UD6", "U6#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
                         EvaluateDimension("OS_UD7_Filter", "UD7", "U7#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
@@ -5659,7 +5659,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		        {Where_Clause}";
             SQA_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, sqa, tgt_FMM_Dest_Cell_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Dest_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "OS_Cell_ID");
+            GBL_FMM_Dest_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "Dest_Cell_ID");
         }
         private void get_FMM_Src_Cell_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Src_Cell SQA_FMM_Src_Cell, ref DataTable src_FMM_Src_Cell_DT, ref DataTable tgt_FMM_Src_Cell_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -6260,7 +6260,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID; // Correct Act_ID assignment
                 newTargetRow["Model_ID"] = GBL_Curr_FMM_Models_ID;
                 newTargetRow["Calc_ID"] = GBL_Curr_FMM_Calc_ID;
-                newTargetRow["OS_Cell_ID"] = GBL_FMM_Dest_Cell_ID;
+                newTargetRow["Dest_Cell_ID"] = GBL_FMM_Dest_Cell_ID;
 
                 // Handle nullable fields
                 newTargetRow["Location"] = src_Cell_Config_Row.Field<string>("Location") ?? string.Empty;
@@ -6278,15 +6278,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["UD6"] = src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
                 newTargetRow["UD7"] = src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
                 newTargetRow["UD8"] = src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                newTargetRow["OS_Time_Filter"] = src_Cell_Config_Row.Field<string>("OS_Time_Filter") ?? string.Empty;
-                newTargetRow["OS_Acct_Filter"] = src_Cell_Config_Row.Field<string>("OS_Acct_Filter") ?? string.Empty;
-                newTargetRow["OS_Origin_Filter"] = src_Cell_Config_Row.Field<string>("OS_Origin_Filter") ?? string.Empty;
+                newTargetRow["Time_Filter"] = src_Cell_Config_Row.Field<string>("Time_Filter") ?? string.Empty;
+                newTargetRow["Acct_Filter"] = src_Cell_Config_Row.Field<string>("Acct_Filter") ?? string.Empty;
+                newTargetRow["Origin_Filter"] = src_Cell_Config_Row.Field<string>("Origin_Filter") ?? string.Empty;
                 newTargetRow["OS_IC_Filter"] = src_Cell_Config_Row.Field<string>("OS_IC_Filter") ?? string.Empty;
                 newTargetRow["OS_Flow_Filter"] = src_Cell_Config_Row.Field<string>("OS_Flow_Filter") ?? string.Empty;
                 newTargetRow["OS_UD1_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD1_Filter") ?? string.Empty;
                 newTargetRow["OS_UD2_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD2_Filter") ?? string.Empty;
                 newTargetRow["OS_UD3_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD3_Filter") ?? string.Empty;
-                newTargetRow["OS_UD4_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD4_Filter") ?? string.Empty;
+                newTargetRow["UD4_Filter"] = src_Cell_Config_Row.Field<string>("UD4_Filter") ?? string.Empty;
                 newTargetRow["OS_UD5_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD5_Filter") ?? string.Empty;
                 newTargetRow["OS_UD6_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD6_Filter") ?? string.Empty;
                 newTargetRow["OS_UD7_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD7_Filter") ?? string.Empty;
@@ -6294,8 +6294,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["OS_Conditional_Filter"] = src_Cell_Config_Row.Field<string>("OS_Conditional_Filter") ?? string.Empty;
                 newTargetRow["OS_Curr_Cube_Buffer_Filter"] = src_Cell_Config_Row.Field<string>("OS_Curr_Cube_Buffer_Filter") ?? string.Empty;
                 newTargetRow["Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Buffer_Filter") ?? string.Empty;
-                newTargetRow["OS_Cell_Logic"] = src_Cell_Config_Row.Field<string>("OS_Cell_Logic") ?? string.Empty;
-                newTargetRow["OS_SQL_Logic"] = src_Cell_Config_Row.Field<string>("OS_SQL_Logic") ?? string.Empty;
+                newTargetRow["Dest_Cell_Logic"] = src_Cell_Config_Row.Field<string>("Dest_Cell_Logic") ?? string.Empty;
+                newTargetRow["SQL_Logic"] = src_Cell_Config_Row.Field<string>("SQL_Logic") ?? string.Empty;
 
                 tgt_Cell_Config_DT.Rows.Add(newTargetRow);
             }
@@ -6309,7 +6309,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 if (existingRow != null)
                 {
-                    GBL_Curr_FMM_Dest_Cell_ID = existingRow.Field<int>("OS_Cell_ID");
+                    GBL_Curr_FMM_Dest_Cell_ID = existingRow.Field<int>("Dest_Cell_ID");
                     existingRow["Location"] = src_Cell_Config_Row.Field<string>("Location") ?? string.Empty;
                     existingRow["Calc_Plan_Units"] = src_Cell_Config_Row.Field<string>("Calc_Plan_Units") ?? string.Empty;
                     existingRow["Acct"] = src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
@@ -6325,15 +6325,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["UD6"] = src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
                     existingRow["UD7"] = src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
                     existingRow["UD8"] = src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                    existingRow["OS_Time_Filter"] = src_Cell_Config_Row.Field<string>("OS_Time_Filter") ?? string.Empty;
-                    existingRow["OS_Acct_Filter"] = src_Cell_Config_Row.Field<string>("OS_Acct_Filter") ?? string.Empty;
-                    existingRow["OS_Origin_Filter"] = src_Cell_Config_Row.Field<string>("OS_Origin_Filter") ?? string.Empty;
+                    existingRow["Time_Filter"] = src_Cell_Config_Row.Field<string>("Time_Filter") ?? string.Empty;
+                    existingRow["Acct_Filter"] = src_Cell_Config_Row.Field<string>("Acct_Filter") ?? string.Empty;
+                    existingRow["Origin_Filter"] = src_Cell_Config_Row.Field<string>("Origin_Filter") ?? string.Empty;
                     existingRow["OS_IC_Filter"] = src_Cell_Config_Row.Field<string>("OS_IC_Filter") ?? string.Empty;
                     existingRow["OS_Flow_Filter"] = src_Cell_Config_Row.Field<string>("OS_Flow_Filter") ?? string.Empty;
                     existingRow["OS_UD1_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD1_Filter") ?? string.Empty;
                     existingRow["OS_UD2_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD2_Filter") ?? string.Empty;
                     existingRow["OS_UD3_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD3_Filter") ?? string.Empty;
-                    existingRow["OS_UD4_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD4_Filter") ?? string.Empty;
+                    existingRow["UD4_Filter"] = src_Cell_Config_Row.Field<string>("UD4_Filter") ?? string.Empty;
                     existingRow["OS_UD5_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD5_Filter") ?? string.Empty;
                     existingRow["OS_UD6_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD6_Filter") ?? string.Empty;
                     existingRow["OS_UD7_Filter"] = src_Cell_Config_Row.Field<string>("OS_UD7_Filter") ?? string.Empty;
@@ -6341,8 +6341,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["OS_Conditional_Filter"] = src_Cell_Config_Row.Field<string>("OS_Conditional_Filter") ?? string.Empty;
                     existingRow["OS_Curr_Cube_Buffer_Filter"] = src_Cell_Config_Row.Field<string>("OS_Curr_Cube_Buffer_Filter") ?? string.Empty;
                     existingRow["Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Buffer_Filter") ?? string.Empty;
-                    existingRow["OS_Cell_Logic"] = src_Cell_Config_Row.Field<string>("OS_Cell_Logic") ?? string.Empty;
-                    existingRow["OS_SQL_Logic"] = src_Cell_Config_Row.Field<string>("OS_SQL_Logic") ?? string.Empty;
+                    existingRow["Dest_Cell_Logic"] = src_Cell_Config_Row.Field<string>("Dest_Cell_Logic") ?? string.Empty;
+                    existingRow["SQL_Logic"] = src_Cell_Config_Row.Field<string>("SQL_Logic") ?? string.Empty;
                 }
             }
         }
