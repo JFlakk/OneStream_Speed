@@ -55,7 +55,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 INSERT INTO [dbo].[FMM_Src_Cell]
                 (
                     [Cube_ID], [Act_ID], [Model_ID], [Calc_ID], [Cell_ID],
-                    [Calc_Src_ID_Order], [Src_Type], [Src_Item], 
+                    [Src_Order], [Src_Type], [Src_Item], 
                     [Open_Parens], [Calc_Math_Operator], [Entity], 
                     [Cons], [Scenario], [Time], [Origin], 
                     [IC], [View], [Src_Plan_Units], [Acct], 
@@ -77,7 +77,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 VALUES
                 (
                     @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Cell_ID,
-                    @Calc_Src_ID_Order, @Src_Type, @Src_Item, 
+                    @Src_Order, @Src_Type, @Src_Item, 
                     @Open_Parens, @Math_Operator, @Entity, 
                     @Cons, @Scenario, @Time, @Origin, 
                     @IC, @View, @Src_Plan_Units, @Acct, 
@@ -105,7 +105,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_ID", SqlDbType.Int).SourceColumn = "Calc_ID";
                 sqa.InsertCommand.Parameters.Add("@Cell_ID", SqlDbType.Int).SourceColumn = "Cell_ID";
-                sqa.InsertCommand.Parameters.Add("@Calc_Src_ID_Order", SqlDbType.Int).SourceColumn = "Calc_Src_ID_Order";
+                sqa.InsertCommand.Parameters.Add("@Src_Order", SqlDbType.Int).SourceColumn = "Src_Order";
                 sqa.InsertCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
                 sqa.InsertCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
                 sqa.InsertCommand.Parameters.Add("@Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Open_Parens";
@@ -155,7 +155,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string updateQuery = @"
                 UPDATE [dbo].[FMM_Src_Cell]
                 SET [Cube_ID] = @Cube_ID, [Act_ID] = @Act_ID, [Model_ID] = @Model_ID, 
-                    [Calc_Src_ID_Order] = @Calc_Src_ID_Order, [Src_Type] = @Src_Type,
+                    [Src_Order] = @Src_Order, [Src_Type] = @Src_Type,
                     [Src_Item] = @Src_Item, [Open_Parens] = @Open_Parens, 
                     [Calc_Math_Operator] = @Math_Operator, [Entity] = @Entity, 
                     [Cons] = @Cons, [Scenario] = @Scenario, 
@@ -199,7 +199,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
                 sqa.UpdateCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.UpdateCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Src_ID_Order", SqlDbType.Int).SourceColumn = "Calc_Src_ID_Order";
+                sqa.UpdateCommand.Parameters.Add("@Src_Order", SqlDbType.Int).SourceColumn = "Src_Order";
                 sqa.UpdateCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
                 sqa.UpdateCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
                 sqa.UpdateCommand.Parameters.Add("@Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Open_Parens";

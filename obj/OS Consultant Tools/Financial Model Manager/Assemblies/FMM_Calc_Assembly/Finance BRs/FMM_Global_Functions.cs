@@ -430,7 +430,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 													FROM MCM_Cell
 													WHERE Calc_ID = @Calc_ID";
             string src_cell_SQL = @"
-						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
+						        SELECT Src_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
 						            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
@@ -439,8 +439,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 									Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE Calc_ID = @Calc_ID
-								AND Calc_Src_ID_Order > 1
-						        ORDER BY Calc_Src_ID_Order";
+								AND Src_Order > 1
+						        ORDER BY Src_Order";
 
             var srcCellTable = new DataTable();
 
@@ -458,7 +458,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     {
                         string calc_srcType = unbal_srcreader["Src_Type"].ToString();
                         var row = srcCellTable.NewRow();
-                        row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
+                        row["Src_Order"] = unbal_srcreader["Src_Order"];
                         row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                         row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                         row["Entity"] = unbal_srcreader["Entity"];
@@ -498,7 +498,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Src_Type"] = unbal_srcreader["Src_Type"];
                         srcCellTable.Rows.Add(row);
 
-                        int index = (int)unbal_srcreader["Calc_Src_ID_Order"];
+                        int index = (int)unbal_srcreader["Src_Order"];
                         src_buffers = index;
 
                         if (calc_srcType != "Dynamic Calc")
@@ -558,7 +558,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                             //If this is Dynamic Calc, then call Dyn Calc 
                             for (int i = 2; i <= src_buffers; i++)
                             {
-                                var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Calc_Src_ID_Order"]) == i);
+                                var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Src_Order"]) == i);
                                 if (srcRow != null)
                                 {
                                     if (srcRow["Src_Type"].ToString() == "Dynamic Calc")
@@ -627,7 +627,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 													FROM MCM_Cell
 													WHERE Calc_ID = @Calc_ID";
             string src_cell_SQL = @"
-						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
+						        SELECT Src_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
 						            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
@@ -636,8 +636,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 									Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE Calc_ID = @Calc_ID
-								AND Calc_Src_ID_Order > 1
-						        ORDER BY Calc_Src_ID_Order";
+								AND Src_Order > 1
+						        ORDER BY Src_Order";
 
             var srcCellTable = new DataTable();
 
@@ -654,7 +654,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     {
                         string calc_srcType = unbal_srcreader["Src_Type"].ToString();
                         var row = srcCellTable.NewRow();
-                        row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
+                        row["Src_Order"] = unbal_srcreader["Src_Order"];
                         row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                         row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                         row["Entity"] = unbal_srcreader["Entity"];
@@ -694,7 +694,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Src_Type"] = unbal_srcreader["Src_Type"];
                         srcCellTable.Rows.Add(row);
 
-                        int index = (int)unbal_srcreader["Calc_Src_ID_Order"];
+                        int index = (int)unbal_srcreader["Src_Order"];
                         src_buffers = index;
 
                         if (calc_srcType != "Dynamic Calc")
@@ -755,7 +755,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                             // First Loop: Handle Dynamic Calcs and Stored Cells
                             for (int i = 2; i <= src_buffers; i++)
                             {
-                                var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Calc_Src_ID_Order"]) == i);
+                                var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Src_Order"]) == i);
                                 if (srcRow != null)
                                 {
                                     UpdateExpressionForRow(balBuffer_Cell, srcRow, unbal_srcdataBuffers, ref cell_Expressions, destCell, i);
@@ -1025,7 +1025,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string memFilterStringSuffix = "_Filter.Name!|";
 
             string src_cell_SQL = @"
-							        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
+							        SELECT Src_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 							            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
 							            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 							            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
@@ -1034,8 +1034,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 										Src_Type
 							        FROM MCM_Src_Cell
 							        WHERE Calc_ID = @Calc_ID
-									AND Calc_Src_ID_Order > 1
-							        ORDER BY Calc_Src_ID_Order";
+									AND Src_Order > 1
+							        ORDER BY Src_Order";
             // Prepare and execute the source data query
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -1093,7 +1093,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     srcCellTable.Rows.Add(row);
 
-                    int index = Convert.ToInt32(row["Calc_Src_ID_Order"]);
+                    int index = Convert.ToInt32(row["Src_Order"]);
                     src_buffers = index;
 
                     if (calc_srcType != "Dynamic Calc")
@@ -1115,7 +1115,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //		            {
 
 
-                    //	                    row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
+                    //	                    row["Src_Order"] = unbal_srcreader["Src_Order"];
                     //	                    row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                     //	                    row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                     //	                    row["Entity"] = unbal_srcreader["Entity"];
@@ -1156,7 +1156,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     //						srcCellTable.Rows.Add(row);
 
-                    //						int index = (int)unbal_srcreader["Calc_Src_ID_Order"];
+                    //						int index = (int)unbal_srcreader["Src_Order"];
                     //						src_buffers = index;
 
                     //						if (calc_srcType != "Dynamic Calc")
@@ -1274,7 +1274,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //If this is Dynamic Calc, then call Dyn Calc
                     for (int i = 2; i <= src_buffers; i++)
                     {
-                        var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Calc_Src_ID_Order"]) == i);
+                        var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Src_Order"]) == i);
                         if (srcRow != null)
                         {
                             if (srcRow["Src_Type"].ToString() == "Dynamic Calc")

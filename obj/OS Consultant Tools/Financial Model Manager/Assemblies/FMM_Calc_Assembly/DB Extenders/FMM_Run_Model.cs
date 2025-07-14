@@ -75,7 +75,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ON calc.Calc_ID = Dest.Calc_ID
 					AND calc.Model_ID = Dest.Model_ID
                     WHERE Model_ID = @Model_ID
-					AND Src.Calc_Src_ID_Order = 0
+					AND Src.Src_Order = 0
 					AND Src.Src_Type IN ('Proportional Time','Allocation')
 					ORDER By Sequence";
 

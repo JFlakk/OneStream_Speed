@@ -2058,7 +2058,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     GBL_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
                     GBL_SrcCellDrillDown_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], src_Cell_Drill_Down);
                     GBL_UnbalCalc_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
-                    FMM_Src_Cell_DT_Row["Calc_Src_ID_Order"] = src_Cell_Count;
+                    FMM_Src_Cell_DT_Row["Src_Order"] = src_Cell_Count;
                     FMM_Src_Cell_DT_Row["OS_Dynamic_Calc_Script"] = src_Cell_Drill_Down;
                     FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer"] = src_Cell_Drill_Down;
                     FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer_Filter"] = UnbalancedSrcCellBufferFilter;
@@ -2135,7 +2135,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 									SELECT * 
 									FROM FMM_Src_Cell 
 									WHERE Calc_ID = @Calc_ID
-									ORDER BY Calc_Src_ID_Order";
+									ORDER BY Src_Order";
                     // Create an array of SqlParameter objects
                     var src_parameters = new SqlParameter[]
                     {
@@ -2562,7 +2562,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private void EvaluateDimension(string destFilterColumn, string srcColumn, string filterPrefix, DataTable srcDt, DataRow srcDtRow, ref string bufferFilter, ref int bufferFilterCnt, DataRow destDataRow, ref string overrideDestValue, ref int override_Cnt)
         {
-            if (GBL_BalCalc == "Unbalanced" || (GBL_BalCalc == "UnbalAlloc" && Convert.ToInt32(srcDtRow["Calc_Src_ID_Order"]) == 1))
+            if (GBL_BalCalc == "Unbalanced" || (GBL_BalCalc == "UnbalAlloc" && Convert.ToInt32(srcDtRow["Src_Order"]) == 1))
             {
                 if (destDataRow[destFilterColumn] != DBNull.Value && XFContainsIgnoreCase(destDataRow[destFilterColumn].ToString(), filterPrefix))
                 {
@@ -2579,7 +2579,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     // is this supposed to be checking 2 rows before? No Austin
                     // Check the FIlters in teh Dest Cell table and compare check the current cell for each of those dimensions.  If the dimension has explicit member defined for it, drop the Dest Cell Filter for that cell, otherwise keep it.
-                    if (srcDt.Rows[Convert.ToInt32(srcDtRow["Calc_Src_ID_Order"]) - 2]["" + srcColumn] == DBNull.Value || !XFContainsIgnoreCase(srcDt.Rows[Convert.ToInt32(srcDtRow["Calc_Src_ID_Order"]) - 2]["" + srcColumn].ToString(), filterPrefix))
+                    if (srcDt.Rows[Convert.ToInt32(srcDtRow["Src_Order"]) - 2]["" + srcColumn] == DBNull.Value || !XFContainsIgnoreCase(srcDt.Rows[Convert.ToInt32(srcDtRow["Src_Order"]) - 2]["" + srcColumn].ToString(), filterPrefix))
                     {
                         //AddToBufferFilter($"{filterPrefix}Replace", ref bufferFilter, ref bufferFilterCnt);
                     }
@@ -2589,11 +2589,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                 }
             }
-            if (Convert.ToInt32(srcDtRow["Calc_Src_ID_Order"]) != 1)
+            if (Convert.ToInt32(srcDtRow["Src_Order"]) != 1)
             {
                 if (((!destDataRow["" + srcColumn].ToString().XFContainsIgnoreCase(filterPrefix) && !destDataRow["OS_" + srcColumn + "_Filter"].ToString().XFContainsIgnoreCase(filterPrefix)) &&
                      srcDtRow["OS_Dynamic_Calc_Script"].ToString().XFContainsIgnoreCase(filterPrefix)) ||
-                    (srcDt.Rows[Convert.ToInt32(srcDtRow["Calc_Src_ID_Order"]) - 2]["" + srcColumn].ToString().XFContainsIgnoreCase(filterPrefix) &&
+                    (srcDt.Rows[Convert.ToInt32(srcDtRow["Src_Order"]) - 2]["" + srcColumn].ToString().XFContainsIgnoreCase(filterPrefix) &&
                      srcDtRow["" + srcColumn] == DBNull.Value) &&
                     !srcDtRow["Unbal_" + srcColumn + "_Override"].ToString().XFContainsIgnoreCase(filterPrefix))
                 {
@@ -6367,7 +6367,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Model_ID"] = GBL_Curr_FMM_Models_ID;
                 newTargetRow["Calc_ID"] = GBL_Curr_FMM_Calc_ID;
                 newTargetRow["Cell_ID"] = GBL_FMM_Src_Cell_ID;
-                newTargetRow["Calc_Src_ID_Order"] = src_Src_Cell_Config_Row.Field<int?>("Calc_Src_ID_Order") ?? 0;
+                newTargetRow["Src_Order"] = src_Src_Cell_Config_Row.Field<int?>("Src_Order") ?? 0;
                 newTargetRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
                 newTargetRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
                 newTargetRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
@@ -6436,7 +6436,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     GBL_Curr_FMM_Src_Cell_ID = Convert.ToInt32(existingRow["Cell_ID"].ToString());
                     // Update fields as necessary
-                    existingRow["Calc_Src_ID_Order"] = src_Src_Cell_Config_Row.Field<int?>("Calc_Src_ID_Order") ?? 0;
+                    existingRow["Src_Order"] = src_Src_Cell_Config_Row.Field<int?>("Src_Order") ?? 0;
                     existingRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
                     existingRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
                     existingRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
