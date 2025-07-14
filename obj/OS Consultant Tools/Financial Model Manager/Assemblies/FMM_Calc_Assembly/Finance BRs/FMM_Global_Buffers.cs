@@ -39,9 +39,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     }
 
                     globals.SetObject("Results", dynResults);
-                    //dynDataBuffer.LogDataBuffer(api, " - Buffer", 200);
                 }
-                // else if block commented out in the original code
                 return null;
             }
             catch (Exception ex)

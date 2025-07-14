@@ -2305,8 +2305,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                         filterValue.IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
                                     {
 
-                                        // Check if the filterValue contains the pattern |!MemberList_1_Filter.Name!|
-                                        string patternStart = "|!MemberList_";
+                                        // Check if the filterValue contains the pattern |!MbrList_1_Filter.Name!|
+                                        string patternStart = "|!MbrList_";
                                         string patternEnd = "_Filter.Name!|";
 
                                         if (filterValue.Contains(patternStart) && filterValue.Contains(patternEnd))
@@ -2317,7 +2317,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                                             // Extract the number (substring between the pattern start and end)
                                             string number = filterValue.Substring(startIndex, endIndex - startIndex);
-                                            // Call the function that selects from FMM_Calc_Config table and returns MemberList_x_Filter
+                                            // Call the function that selects from FMM_Calc_Config table and returns MbrList_x_Filter
                                             string memberListFilter = GetMemberListFromCalcConfig(number); // Assuming this is your function
                                             CurrCubeBufferFilter += (CurrCubeBufferFilterCnt == 0 ? "[" : ",[") + memberListFilter + "]";
                                             SrcBufferFilter += (SrcBufferFilterCnt == 0 ? "[" : ",[") + filterValue + "]";
@@ -2444,7 +2444,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 row["Update_Date"] = DateTime.Now;
                                 row["Update_User"] = si.UserName;
                             }
-                            else if (row["MemberList_Calc"] != DBNull.Value && Convert.ToBoolean(row["MemberList_Calc"]))
+                            else if (row["MbrList_Calc"] != DBNull.Value && Convert.ToBoolean(row["MbrList_Calc"]))
                             {
                                 if (GBL_BalCalc == "Unbalanced")
                                 {
@@ -2704,7 +2704,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var FMM_Calc_Config_DT = new DataTable();
                 // Define the select query and parameters
                 string sql = @$"
-                    SELECT MemberList_{number}_Filter
+                    SELECT MbrList_{number}_Filter
                     FROM FMM_Calc_Config
                     WHERE Calc_ID = @Calc_ID";
                 // Create an array of SqlParameter objects
@@ -2718,7 +2718,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 foreach (DataRow Calc_Config_Row in FMM_Calc_Config_DT.Rows)
                 {
-                    return (string)Calc_Config_Row[$"MemberList_{number}_Filter"];
+                    return (string)Calc_Config_Row[$"MbrList_{number}_Filter"];
                 }
             }
 

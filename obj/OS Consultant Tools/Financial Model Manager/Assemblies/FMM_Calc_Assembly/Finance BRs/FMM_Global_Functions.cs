@@ -1021,7 +1021,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             SqlDataReader reader, string bal_buffer_calc, string Unbal_Calc)
         {
             unbal_srcdataBuffers.Clear();
-            string memFilterStringPrefix = "|!MemberList_";
+            string memFilterStringPrefix = "|!MbrList_";
             string memFilterStringSuffix = "_Filter.Name!|";
 
             string src_cell_SQL = @"
