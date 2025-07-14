@@ -435,7 +435,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 						            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 									Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
-									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
+									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,Dyn_Calc_Script,Override_Value,
 									Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE Calc_ID = @Calc_ID
@@ -460,7 +460,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var row = srcCellTable.NewRow();
                         row["Src_Order"] = unbal_srcreader["Src_Order"];
                         row["Open_Parens"] = unbal_srcreader["Open_Parens"];
-                        row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
+                        row["Math_Operator"] = unbal_srcreader["Math_Operator"];
                         row["Entity"] = unbal_srcreader["Entity"];
                         row["Cons"] = unbal_srcreader["Cons"];
                         row["Scenario"] = unbal_srcreader["Scenario"];
@@ -493,7 +493,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Unbal_UD7_Override"] = unbal_srcreader["Unbal_UD7_Override"];
                         row["Unbal_UD8_Override"] = unbal_srcreader["Unbal_UD8_Override"];
                         row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
-                        row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
+                        row["Dyn_Calc_Script"] = unbal_srcreader["Dyn_Calc_Script"];
                         row["Override_Value"] = unbal_srcreader["Override_Value"];
                         row["Src_Type"] = unbal_srcreader["Src_Type"];
                         srcCellTable.Rows.Add(row);
@@ -632,7 +632,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 						            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 									Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
-									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
+									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,Dyn_Calc_Script,Override_Value,
 									Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE Calc_ID = @Calc_ID
@@ -656,7 +656,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var row = srcCellTable.NewRow();
                         row["Src_Order"] = unbal_srcreader["Src_Order"];
                         row["Open_Parens"] = unbal_srcreader["Open_Parens"];
-                        row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
+                        row["Math_Operator"] = unbal_srcreader["Math_Operator"];
                         row["Entity"] = unbal_srcreader["Entity"];
                         row["Cons"] = unbal_srcreader["Cons"];
                         row["Scenario"] = unbal_srcreader["Scenario"];
@@ -689,7 +689,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Unbal_UD7_Override"] = unbal_srcreader["Unbal_UD7_Override"];
                         row["Unbal_UD8_Override"] = unbal_srcreader["Unbal_UD8_Override"];
                         row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
-                        row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
+                        row["Dyn_Calc_Script"] = unbal_srcreader["Dyn_Calc_Script"];
                         row["Override_Value"] = unbal_srcreader["Override_Value"];
                         row["Src_Type"] = unbal_srcreader["Src_Type"];
                         srcCellTable.Rows.Add(row);
@@ -1030,7 +1030,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 							            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 							            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 										Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
-										Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
+										Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,Dyn_Calc_Script,Override_Value,
 										Src_Type
 							        FROM MCM_Src_Cell
 							        WHERE Calc_ID = @Calc_ID
@@ -1117,7 +1117,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     //	                    row["Src_Order"] = unbal_srcreader["Src_Order"];
                     //	                    row["Open_Parens"] = unbal_srcreader["Open_Parens"];
-                    //	                    row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
+                    //	                    row["Math_Operator"] = unbal_srcreader["Math_Operator"];
                     //	                    row["Entity"] = unbal_srcreader["Entity"];
                     //	                    row["Cons"] = unbal_srcreader["Cons"];
                     //	                    row["Scenario"] = unbal_srcreader["Scenario"];
@@ -1150,7 +1150,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //	                    row["Unbal_UD7_Override"] = unbal_srcreader["Unbal_UD7_Override"];
                     //	                    row["Unbal_UD8_Override"] = unbal_srcreader["Unbal_UD8_Override"];
                     //	                    row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
-                    //	                    row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
+                    //	                    row["Dyn_Calc_Script"] = unbal_srcreader["Dyn_Calc_Script"];
                     //	                    row["Override_Value"] = unbal_srcreader["Override_Value"];
                     //	                    row["Src_Type"] = unbal_srcreader["Src_Type"];
 
@@ -1321,7 +1321,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         private decimal getdynamic_calc_value(DataBufferCell balanced_Src_Cell, DataRow srcRow)
         {
-            var dyncalc_mbrScriptBuilder = api.Data.CreateMemberScriptBuilder(srcRow["OS_Dynamic_Calc_Script"].ToString());
+            var dyncalc_mbrScriptBuilder = api.Data.CreateMemberScriptBuilder(srcRow["Dyn_Calc_Script"].ToString());
             api.Data.ApplyDataBufferCellPkToMemberScriptBuilder(dyncalc_mbrScriptBuilder, balanced_Src_Cell.DataBufferCellPk);
             // Apply overrides if they are set
             if (srcRow["Unbal_Origin_Override"] != DBNull.Value && !string.IsNullOrEmpty(srcRow["Unbal_Origin_Override"].ToString()))

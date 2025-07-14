@@ -56,7 +56,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 (
                     [Cube_ID], [Act_ID], [Model_ID], [Calc_ID], [Cell_ID],
                     [Src_Order], [Src_Type], [Src_Item], 
-                    [Open_Parens], [Calc_Math_Operator], [Entity], 
+                    [Open_Parens], [Math_Operator], [Entity], 
                     [Cons], [Scenario], [Time], [Origin], 
                     [IC], [View], [Src_Plan_Units], [Acct], 
                     [Flow], [UD1], [UD2], [UD3], 
@@ -68,7 +68,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     [Unbal_UD3_Override], [Unbal_UD4_Override], 
                     [Unbal_UD5_Override], [Unbal_UD6_Override], 
                     [Unbal_UD7_Override], [Unbal_UD8_Override], 
-                    [Unbal_Src_Cell_Buffer_Filter], [OS_Dynamic_Calc_Script], 
+                    [Unbal_Src_Cell_Buffer_Filter], [Dyn_Calc_Script], 
                     [Override_Value], [Table_Calc_Expression], [Table_Join_Expression], 
                     [Table_Filter_Expression], [Map_Type], [Map_Source], 
                     [Map_Logic], [Src_SQL_Stmt], [Use_Temp_Table], [Temp_Table_Name], 
@@ -90,7 +90,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     @Unbal_UD3_Override, @Unbal_UD4_Override, 
                     @Unbal_UD5_Override, @Unbal_UD6_Override, 
                     @Unbal_UD7_Override, @Unbal_UD8_Override, 
-                    @Unbal_Src_Cell_Buffer_Filter, @OS_Dynamic_Calc_Script, 
+                    @Unbal_Src_Cell_Buffer_Filter, @Dyn_Calc_Script, 
                     @Override_Value, @Table_Calc_Expression, @Table_Join_Expression, 
                     @Table_Filter_Expression, @Map_Type, @Map_Source, 
                     @Map_Logic, @Src_SQL_Stmt, @Use_Temp_Table, @Temp_Table_Name, 
@@ -109,7 +109,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
                 sqa.InsertCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
                 sqa.InsertCommand.Parameters.Add("@Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Open_Parens";
-                sqa.InsertCommand.Parameters.Add("@Calc_Math_Operator", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Math_Operator";
+                sqa.InsertCommand.Parameters.Add("@Math_Operator", SqlDbType.NVarChar, 10).SourceColumn = "Math_Operator";
                 sqa.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 sqa.InsertCommand.Parameters.Add("@Cons", SqlDbType.NVarChar, 100).SourceColumn = "Cons";
                 sqa.InsertCommand.Parameters.Add("@Scenario", SqlDbType.NVarChar, 100).SourceColumn = "Scenario";
@@ -135,7 +135,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     sqa.InsertCommand.Parameters.Add($"@Unbal_UD{i}_Override", SqlDbType.NVarChar, 200).SourceColumn = $"Unbal_UD{i}_Override";
                 }
                 sqa.InsertCommand.Parameters.Add("@Unbal_Src_Cell_Buffer_Filter", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer_Filter";
-                sqa.InsertCommand.Parameters.Add("@OS_Dynamic_Calc_Script", SqlDbType.NVarChar, 500).SourceColumn = "OS_Dynamic_Calc_Script";
+                sqa.InsertCommand.Parameters.Add("@Dyn_Calc_Script", SqlDbType.NVarChar, 500).SourceColumn = "Dyn_Calc_Script";
                 sqa.InsertCommand.Parameters.Add("@Override_Value", SqlDbType.NVarChar, 200).SourceColumn = "Override_Value";
                 sqa.InsertCommand.Parameters.Add("@Table_Calc_Expression", SqlDbType.NVarChar, 1000).SourceColumn = "Table_Calc_Expression";
                 sqa.InsertCommand.Parameters.Add("@Table_Join_Expression", SqlDbType.NVarChar, 1000).SourceColumn = "Table_Join_Expression";
@@ -157,7 +157,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 SET [Cube_ID] = @Cube_ID, [Act_ID] = @Act_ID, [Model_ID] = @Model_ID, 
                     [Src_Order] = @Src_Order, [Src_Type] = @Src_Type,
                     [Src_Item] = @Src_Item, [Open_Parens] = @Open_Parens, 
-                    [Calc_Math_Operator] = @Math_Operator, [Entity] = @Entity, 
+                    [Math_Operator] = @Math_Operator, [Entity] = @Entity, 
                     [Cons] = @Cons, [Scenario] = @Scenario, 
                     [Time] = @Time, [Origin] = @Origin, 
                     [IC] = @IC, [View] = @View, 
@@ -181,7 +181,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     [Unbal_UD7_Override] = @Unbal_UD7_Override,
                     [Unbal_UD8_Override] = @Unbal_UD8_Override, 
                     [Unbal_Src_Cell_Buffer_Filter] = @Unbal_Src_Cell_Buffer_Filter,
-                    [OS_Dynamic_Calc_Script] = @OS_Dynamic_Calc_Script, 
+                    [Dyn_Calc_Script] = @Dyn_Calc_Script, 
                     [Override_Value] = @Override_Value, 
                     [Table_Calc_Expression] = @Table_Calc_Expression, 
                     [Table_Join_Expression] = @Table_Join_Expression, 
@@ -203,7 +203,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
                 sqa.UpdateCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
                 sqa.UpdateCommand.Parameters.Add("@Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Open_Parens";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Math_Operator", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Math_Operator";
+                sqa.UpdateCommand.Parameters.Add("@Math_Operator", SqlDbType.NVarChar, 10).SourceColumn = "Math_Operator";
                 sqa.UpdateCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 sqa.UpdateCommand.Parameters.Add("@Cons", SqlDbType.NVarChar, 100).SourceColumn = "Cons";
                 sqa.UpdateCommand.Parameters.Add("@Scenario", SqlDbType.NVarChar, 100).SourceColumn = "Scenario";
@@ -229,7 +229,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     sqa.UpdateCommand.Parameters.Add($"@Unbal_UD{i}_Override", SqlDbType.NVarChar, 200).SourceColumn = $"Unbal_UD{i}_Override";
                 }
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Src_Cell_Buffer_Filter", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer_Filter";
-                sqa.UpdateCommand.Parameters.Add("@OS_Dynamic_Calc_Script", SqlDbType.NVarChar, 500).SourceColumn = "OS_Dynamic_Calc_Script";
+                sqa.UpdateCommand.Parameters.Add("@Dyn_Calc_Script", SqlDbType.NVarChar, 500).SourceColumn = "Dyn_Calc_Script";
                 sqa.UpdateCommand.Parameters.Add("@Override_Value", SqlDbType.NVarChar, 200).SourceColumn = "Override_Value";
                 sqa.UpdateCommand.Parameters.Add("@Table_Calc_Expression", SqlDbType.NVarChar, 1000).SourceColumn = "Table_Calc_Expression";
                 sqa.UpdateCommand.Parameters.Add("@Table_Join_Expression", SqlDbType.NVarChar, 1000).SourceColumn = "Table_Join_Expression";
