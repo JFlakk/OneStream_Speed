@@ -55,13 +55,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string insertQuery = @"
                     INSERT INTO FMM_Acct_Config (
                         Cube_ID, Act_ID, Unit_ID, Acct_ID, 
-                        Name, Acct_Map_Req, Acct_Map_Type, Acct_Map_Loc, 
-                        Acct_Map_Logic, Status, 
+                        Name, Map_Req, Map_Type, Map_Loc, 
+                        Map_Logic, Status, 
                         Create_Date, Create_User, Update_Date, Update_User)
                     VALUES
                         (@Cube_ID, @Act_ID, @Unit_ID, @Acct_ID, 
-                        @Name, @Acct_Map_Req, @Acct_Map_Type, @Acct_Map_Loc, 
-                        @Acct_Map_Logic, @Status, 
+                        @Name, @Map_Req, @Map_Type, @Map_Loc, 
+                        @Map_Logic, @Status, 
                         @Create_Date, @Create_User, @Update_Date, @Update_User)";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
@@ -69,10 +69,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Unit_ID", SqlDbType.Int).SourceColumn = "Unit_ID";
                 sqa.InsertCommand.Parameters.Add("@Acct_ID", SqlDbType.Int).SourceColumn = "Acct_ID";
                 sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
-                sqa.InsertCommand.Parameters.Add("@Acct_Map_Req", SqlDbType.Bit).SourceColumn = "Acct_Map_Req";
-                sqa.InsertCommand.Parameters.Add("@Acct_Map_Type", SqlDbType.NVarChar, 20).SourceColumn = "Acct_Map_Type";
-                sqa.InsertCommand.Parameters.Add("@Acct_Map_Loc", SqlDbType.NVarChar, 100).SourceColumn = "Acct_Map_Loc";
-                sqa.InsertCommand.Parameters.Add("@Acct_Map_Logic", SqlDbType.NVarChar, 200).SourceColumn = "Acct_Map_Logic";
+                sqa.InsertCommand.Parameters.Add("@Map_Req", SqlDbType.Bit).SourceColumn = "Map_Req";
+                sqa.InsertCommand.Parameters.Add("@Map_Type", SqlDbType.NVarChar, 20).SourceColumn = "Map_Type";
+                sqa.InsertCommand.Parameters.Add("@Map_Loc", SqlDbType.NVarChar, 100).SourceColumn = "Map_Loc";
+                sqa.InsertCommand.Parameters.Add("@Map_Logic", SqlDbType.NVarChar, 200).SourceColumn = "Map_Logic";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -83,10 +83,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string updateQuery = @"
                     UPDATE FMM_Acct_Config SET
                         Name = @Name,
-                        Acct_Map_Req = @Acct_Map_Req,
-                        Acct_Map_Type = @Acct_Map_Type,
-                        Acct_Map_Loc = @Acct_Map_Loc,
-                        Acct_Map_Logic = @Acct_Map_Logic,
+                        Map_Req = @Map_Req,
+                        Map_Type = @Map_Type,
+                        Map_Loc = @Map_Loc,
+                        Map_Logic = @Map_Logic,
                         Status = @Status,
                         Update_Date = @Update_Date,
                         Update_User = @Update_User
@@ -94,10 +94,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Acct_ID", SqlDbType.Int) { SourceColumn = "Acct_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
-                sqa.UpdateCommand.Parameters.Add("@Acct_Map_Req", SqlDbType.Bit).SourceColumn = "Acct_Map_Req";
-                sqa.UpdateCommand.Parameters.Add("@Acct_Map_Type", SqlDbType.NVarChar, 20).SourceColumn = "Acct_Map_Type";
-                sqa.UpdateCommand.Parameters.Add("@Acct_Map_Loc", SqlDbType.NVarChar, 100).SourceColumn = "Acct_Map_Loc";
-                sqa.UpdateCommand.Parameters.Add("@Acct_Map_Logic", SqlDbType.NVarChar, 200).SourceColumn = "Acct_Map_Logic";
+                sqa.UpdateCommand.Parameters.Add("@Map_Req", SqlDbType.Bit).SourceColumn = "Map_Req";
+                sqa.UpdateCommand.Parameters.Add("@Map_Type", SqlDbType.NVarChar, 20).SourceColumn = "Map_Type";
+                sqa.UpdateCommand.Parameters.Add("@Map_Loc", SqlDbType.NVarChar, 100).SourceColumn = "Map_Loc";
+                sqa.UpdateCommand.Parameters.Add("@Map_Logic", SqlDbType.NVarChar, 200).SourceColumn = "Map_Logic";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
                 sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";

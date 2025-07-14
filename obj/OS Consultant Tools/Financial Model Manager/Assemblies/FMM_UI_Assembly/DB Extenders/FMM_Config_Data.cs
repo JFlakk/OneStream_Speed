@@ -1261,10 +1261,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Unit_ID"] = (int)xfRow.ModifiedDataRow["Unit_ID"];
                             newRow["Acct_ID"] = OS_Activity_Unit_Acct_ID;
                             newRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                            newRow["Acct_Map_Req"] = (bool)xfRow.ModifiedDataRow.Items["Acct_Map_Req"];
-                            newRow["Acct_Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Type"];
-                            newRow["Acct_Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Loc"];
-                            newRow["Acct_Map_Logic"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Logic"];
+                            newRow["Map_Req"] = (bool)xfRow.ModifiedDataRow.Items["Map_Req"];
+                            newRow["Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Map_Type"];
+                            newRow["Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Map_Loc"];
+                            newRow["Map_Logic"] = (string)xfRow.ModifiedDataRow.Items["Map_Logic"];
                             newRow["Status"] = "Build";
                             newRow["Create_Date"] = DateTime.Now;
                             newRow["Create_User"] = si.UserName;
@@ -1284,10 +1284,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 var rowToUpdate = rowsToUpdate[0];
                                 rowToUpdate["Name"] = (string)xfRow.ModifiedDataRow["Name"];
-                                rowToUpdate["Acct_Map_Req"] = (bool)xfRow.ModifiedDataRow["Acct_Map_Req"];
-                                rowToUpdate["Acct_Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Type"];
-                                rowToUpdate["Acct_Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Loc"];
-                                rowToUpdate["Acct_Map_Logic"] = (string)xfRow.ModifiedDataRow["Acct_Map_Logic"];
+                                rowToUpdate["Map_Req"] = (bool)xfRow.ModifiedDataRow["Map_Req"];
+                                rowToUpdate["Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Map_Type"];
+                                rowToUpdate["Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Map_Loc"];
+                                rowToUpdate["Map_Logic"] = (string)xfRow.ModifiedDataRow["Map_Logic"];
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
@@ -5868,7 +5868,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Unit_ID"] = GBL_Curr_FMM_Unit_ID;
                 newTargetRow["Acct_ID"] = GBL_FMM_Acct_ID;
                 newTargetRow["Name"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Name") ?? string.Empty; // Handle nulls
-                newTargetRow["Acct_Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Map_Logic") ?? string.Empty; // Handle nulls
+                newTargetRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? string.Empty; // Handle nulls
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // or appropriate user context
                 newTargetRow["Update_Date"] = DateTime.Now;
@@ -5889,7 +5889,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     GBL_Curr_FMM_Acct_ID = existingRow.Field<int>("Acct_ID");
 
                     // Update fields, handle nulls using Field<T>
-                    existingRow["Acct_Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Map_Logic") ?? existingRow.Field<string>("Acct_Map_Logic");
+                    existingRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? existingRow.Field<string>("Map_Logic");
                     existingRow["Update_Date"] = DateTime.Now;
                     existingRow["Update_User"] = si.UserName; // or appropriate user context
                 }

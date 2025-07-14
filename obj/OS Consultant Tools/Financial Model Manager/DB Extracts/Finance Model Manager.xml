@@ -539,7 +539,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="DL_FMM_Acct_Map_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                            <parameter name="DL_FMM_Map_Type" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
                                 <defaultValue>Transform Lookup</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -4333,16 +4333,16 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = Name, Description = [Account Name]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Acct_Map_Req, Description = [Account Map Required?]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Map_Req, Description = [Account Map Required?]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Acct_Map_Type, Description = [Account Map Type], ParameterName = DL_FMM_Acct_Map_Type</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Map_Type, Description = [Account Map Type], ParameterName = DL_FMM_Map_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Acct_Map_Location, Description = [Account Map Location]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Map_Location, Description = [Account Map Location]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Acct_Map_Logic, Description = [Account Map Logic]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Map_Logic, Description = [Account Map Logic]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = Status, Description = [Status]</ColumnFormat>
@@ -17832,10 +17832,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Unit_ID"] = (int)xfRow.ModifiedDataRow["Unit_ID"];
                             newRow["Acct_ID"] = OS_Activity_Unit_Acct_ID;
                             newRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                            newRow["Acct_Map_Req"] = (bool)xfRow.ModifiedDataRow.Items["Acct_Map_Req"];
-                            newRow["Acct_Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Type"];
-                            newRow["Acct_Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Loc"];
-                            newRow["Acct_Map_Logic"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Logic"];
+                            newRow["Map_Req"] = (bool)xfRow.ModifiedDataRow.Items["Map_Req"];
+                            newRow["Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Map_Type"];
+                            newRow["Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Map_Loc"];
+                            newRow["Map_Logic"] = (string)xfRow.ModifiedDataRow.Items["Map_Logic"];
                             newRow["Status"] = "Build";
                             newRow["Create_Date"] = DateTime.Now;
                             newRow["Create_User"] = si.UserName;
@@ -17855,10 +17855,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 var rowToUpdate = rowsToUpdate[0];
                                 rowToUpdate["Name"] = (string)xfRow.ModifiedDataRow["Name"];
-                                rowToUpdate["Acct_Map_Req"] = (bool)xfRow.ModifiedDataRow["Acct_Map_Req"];
-                                rowToUpdate["Acct_Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Type"];
-                                rowToUpdate["Acct_Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Acct_Map_Loc"];
-                                rowToUpdate["Acct_Map_Logic"] = (string)xfRow.ModifiedDataRow["Acct_Map_Logic"];
+                                rowToUpdate["Map_Req"] = (bool)xfRow.ModifiedDataRow["Map_Req"];
+                                rowToUpdate["Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Map_Type"];
+                                rowToUpdate["Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Map_Loc"];
+                                rowToUpdate["Map_Logic"] = (string)xfRow.ModifiedDataRow["Map_Logic"];
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
@@ -22441,7 +22441,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Unit_ID"] = GBL_Curr_FMM_Unit_ID;
                 newTargetRow["Acct_ID"] = GBL_FMM_Acct_ID;
                 newTargetRow["Name"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Name") ?? string.Empty; // Handle nulls
-                newTargetRow["Acct_Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Map_Logic") ?? string.Empty; // Handle nulls
+                newTargetRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? string.Empty; // Handle nulls
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // or appropriate user context
                 newTargetRow["Update_Date"] = DateTime.Now;
@@ -22462,7 +22462,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     GBL_Curr_FMM_Acct_ID = existingRow.Field<int>("Acct_ID");
 
                     // Update fields, handle nulls using Field<T>
-                    existingRow["Acct_Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Map_Logic") ?? existingRow.Field<string>("Acct_Map_Logic");
+                    existingRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? existingRow.Field<string>("Map_Logic");
                     existingRow["Update_Date"] = DateTime.Now;
                     existingRow["Update_User"] = si.UserName; // or appropriate user context
                 }
@@ -26499,7 +26499,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Unit_ID"] = Global_Curr_FMM_Unit_ID;
                 newTargetRow["Acct_ID"] = Global_FMM_Acct_ID;
                 newTargetRow["Name"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Name") ?? string.Empty; // Handle nulls
-                newTargetRow["Acct_Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Map_Logic") ?? string.Empty; // Handle nulls
+                newTargetRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? string.Empty; // Handle nulls
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // or appropriate user context
                 newTargetRow["Update_Date"] = DateTime.Now;
@@ -26520,7 +26520,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     Global_Curr_FMM_Acct_ID = existingRow.Field<int>("Acct_ID");
 
                     // Update fields, handle nulls using Field<T>
-                    existingRow["Acct_Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Map_Logic") ?? existingRow.Field<string>("Acct_Map_Logic");
+                    existingRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? existingRow.Field<string>("Map_Logic");
                     existingRow["Update_Date"] = DateTime.Now;
                     existingRow["Update_User"] = si.UserName; // or appropriate user context
                 }
@@ -27807,13 +27807,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string insertQuery = @"
                     INSERT INTO FMM_Acct_Config (
                         Cube_ID, Act_ID, Unit_ID, Acct_ID, 
-                        Name, Acct_Map_Req, Acct_Map_Type, Acct_Map_Loc, 
-                        Acct_Map_Logic, Status, 
+                        Name, Map_Req, Map_Type, Map_Loc, 
+                        Map_Logic, Status, 
                         Create_Date, Create_User, Update_Date, Update_User)
                     VALUES
                         (@Cube_ID, @Act_ID, @Unit_ID, @Acct_ID, 
-                        @Name, @Acct_Map_Req, @Acct_Map_Type, @Acct_Map_Loc, 
-                        @Acct_Map_Logic, @Status, 
+                        @Name, @Map_Req, @Map_Type, @Map_Loc, 
+                        @Map_Logic, @Status, 
                         @Create_Date, @Create_User, @Update_Date, @Update_User)";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
@@ -27821,10 +27821,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Unit_ID", SqlDbType.Int).SourceColumn = "Unit_ID";
                 sqa.InsertCommand.Parameters.Add("@Acct_ID", SqlDbType.Int).SourceColumn = "Acct_ID";
                 sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
-                sqa.InsertCommand.Parameters.Add("@Acct_Map_Req", SqlDbType.Bit).SourceColumn = "Acct_Map_Req";
-                sqa.InsertCommand.Parameters.Add("@Acct_Map_Type", SqlDbType.NVarChar, 20).SourceColumn = "Acct_Map_Type";
-                sqa.InsertCommand.Parameters.Add("@Acct_Map_Loc", SqlDbType.NVarChar, 100).SourceColumn = "Acct_Map_Loc";
-                sqa.InsertCommand.Parameters.Add("@Acct_Map_Logic", SqlDbType.NVarChar, 200).SourceColumn = "Acct_Map_Logic";
+                sqa.InsertCommand.Parameters.Add("@Map_Req", SqlDbType.Bit).SourceColumn = "Map_Req";
+                sqa.InsertCommand.Parameters.Add("@Map_Type", SqlDbType.NVarChar, 20).SourceColumn = "Map_Type";
+                sqa.InsertCommand.Parameters.Add("@Map_Loc", SqlDbType.NVarChar, 100).SourceColumn = "Map_Loc";
+                sqa.InsertCommand.Parameters.Add("@Map_Logic", SqlDbType.NVarChar, 200).SourceColumn = "Map_Logic";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -27835,10 +27835,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string updateQuery = @"
                     UPDATE FMM_Acct_Config SET
                         Name = @Name,
-                        Acct_Map_Req = @Acct_Map_Req,
-                        Acct_Map_Type = @Acct_Map_Type,
-                        Acct_Map_Loc = @Acct_Map_Loc,
-                        Acct_Map_Logic = @Acct_Map_Logic,
+                        Map_Req = @Map_Req,
+                        Map_Type = @Map_Type,
+                        Map_Loc = @Map_Loc,
+                        Map_Logic = @Map_Logic,
                         Status = @Status,
                         Update_Date = @Update_Date,
                         Update_User = @Update_User
@@ -27846,10 +27846,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Acct_ID", SqlDbType.Int) { SourceColumn = "Acct_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
-                sqa.UpdateCommand.Parameters.Add("@Acct_Map_Req", SqlDbType.Bit).SourceColumn = "Acct_Map_Req";
-                sqa.UpdateCommand.Parameters.Add("@Acct_Map_Type", SqlDbType.NVarChar, 20).SourceColumn = "Acct_Map_Type";
-                sqa.UpdateCommand.Parameters.Add("@Acct_Map_Loc", SqlDbType.NVarChar, 100).SourceColumn = "Acct_Map_Loc";
-                sqa.UpdateCommand.Parameters.Add("@Acct_Map_Logic", SqlDbType.NVarChar, 200).SourceColumn = "Acct_Map_Logic";
+                sqa.UpdateCommand.Parameters.Add("@Map_Req", SqlDbType.Bit).SourceColumn = "Map_Req";
+                sqa.UpdateCommand.Parameters.Add("@Map_Type", SqlDbType.NVarChar, 20).SourceColumn = "Map_Type";
+                sqa.UpdateCommand.Parameters.Add("@Map_Loc", SqlDbType.NVarChar, 100).SourceColumn = "Map_Loc";
+                sqa.UpdateCommand.Parameters.Add("@Map_Logic", SqlDbType.NVarChar, 200).SourceColumn = "Map_Logic";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
                 sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
