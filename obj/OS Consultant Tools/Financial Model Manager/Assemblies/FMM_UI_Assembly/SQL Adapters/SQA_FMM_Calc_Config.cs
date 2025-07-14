@@ -60,8 +60,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         MbrList_2_Filter, MbrList_2_DimType, MbrList_2_Filter, 
                         MbrList_3_Dim, MbrList_3_Filter, MbrList_3_DimType, 
                         MbrList_3_Filter, MbrList_4_Dim, MbrList_4_Filter, 
-                        MbrList_4_DimType, MbrList_4_Filter, Business_Rule_Calc, 
-                        Business_Rule_Calc_Name, Balanced_Buffer, bal_buffer_calc, 
+                        MbrList_4_DimType, MbrList_4_Filter, BR_Calc, 
+                        BR_Calc_Name, Balanced_Buffer, bal_buffer_calc, 
                         Unbal_Calc, Table_Calc_SQL_Logic, Status, Create_Date, Create_User, 
                         Update_Date, Update_User
                     ) VALUES (
@@ -72,8 +72,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         @MbrList_2_Filter, @MbrList_2_DimType, @MbrList_2_Filter, 
                         @MbrList_3_Dim, @MbrList_3_Filter, @MbrList_3_DimType, 
                         @MbrList_3_Filter, @MbrList_4_Dim, @MbrList_4_Filter, 
-                        @MbrList_4_DimType, @MbrList_4_Filter, @Business_Rule_Calc, 
-                        @Business_Rule_Calc_Name, @Balanced_Buffer, @bal_buffer_calc, 
+                        @MbrList_4_DimType, @MbrList_4_Filter, @BR_Calc, 
+                        @BR_Calc_Name, @Balanced_Buffer, @bal_buffer_calc, 
                         @Unbal_Calc, @Table_Calc_SQL_Logic, @Status, @Create_Date, 
                         @Create_User, @Update_Date, @Update_User
                     )";
@@ -109,8 +109,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@MbrList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MbrList_4_Filter";
                 sqa.InsertCommand.Parameters.Add("@MbrList_4_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MbrList_4_DimType";
                 sqa.InsertCommand.Parameters.Add("@MbrList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MbrList_4_Filter";
-                sqa.InsertCommand.Parameters.Add("@Business_Rule_Calc", SqlDbType.Bit).SourceColumn = "Business_Rule_Calc";
-                sqa.InsertCommand.Parameters.Add("@Business_Rule_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "Business_Rule_Calc_Name";
+                sqa.InsertCommand.Parameters.Add("@BR_Calc", SqlDbType.Bit).SourceColumn = "BR_Calc";
+                sqa.InsertCommand.Parameters.Add("@BR_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "BR_Calc_Name";
                 sqa.InsertCommand.Parameters.Add("@Balanced_Buffer", SqlDbType.NVarChar, 20).SourceColumn = "Balanced_Buffer";
                 sqa.InsertCommand.Parameters.Add("@bal_buffer_calc", SqlDbType.NVarChar, 2000).SourceColumn = "bal_buffer_calc";
                 sqa.InsertCommand.Parameters.Add("@Unbal_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Unbal_Calc";
@@ -136,7 +136,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         MbrList_3_DimType = @MbrList_3_DimType, MbrList_3_Filter = @MbrList_3_Filter,
                         MbrList_4_Dim = @MbrList_4_Dim, MbrList_4_Filter = @MbrList_4_Filter, 
                         MbrList_4_DimType = @MbrList_4_DimType, MbrList_4_Filter = @MbrList_4_Filter,
-                        Business_Rule_Calc = @Business_Rule_Calc, Business_Rule_Calc_Name = @Business_Rule_Calc_Name, 
+                        BR_Calc = @BR_Calc, BR_Calc_Name = @BR_Calc_Name, 
                         Balanced_Buffer = @Balanced_Buffer, bal_buffer_calc = @bal_buffer_calc, 
                         Unbal_Calc = @Unbal_Calc, Table_Calc_SQL_Logic = @Table_Calc_SQL_Logic, 
                         Status = @Status, Update_Date = @Update_Date, Update_User = @Update_User
@@ -170,8 +170,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@MbrList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MbrList_4_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MbrList_4_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MbrList_4_DimType";
                 sqa.UpdateCommand.Parameters.Add("@MbrList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MbrList_4_Filter";
-                sqa.UpdateCommand.Parameters.Add("@Business_Rule_Calc", SqlDbType.Bit).SourceColumn = "Business_Rule_Calc";
-                sqa.UpdateCommand.Parameters.Add("@Business_Rule_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "Business_Rule_Calc_Name";
+                sqa.UpdateCommand.Parameters.Add("@BR_Calc", SqlDbType.Bit).SourceColumn = "BR_Calc";
+                sqa.UpdateCommand.Parameters.Add("@BR_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "BR_Calc_Name";
                 sqa.UpdateCommand.Parameters.Add("@Balanced_Buffer", SqlDbType.NVarChar, 20).SourceColumn = "Balanced_Buffer";
                 sqa.UpdateCommand.Parameters.Add("@bal_buffer_calc", SqlDbType.NVarChar, 2000).SourceColumn = "bal_buffer_calc";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Unbal_Calc";

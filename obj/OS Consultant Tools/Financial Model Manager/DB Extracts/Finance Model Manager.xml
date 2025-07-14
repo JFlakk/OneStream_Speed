@@ -19036,9 +19036,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     row["Update_User"] = si.UserName;
                                 }
                             }
-                            else if (row["Business_Rule_Calc"] != DBNull.Value && Convert.ToBoolean(row["Business_Rule_Calc"]))
+                            else if (row["BR_Calc"] != DBNull.Value && Convert.ToBoolean(row["BR_Calc"]))
                             {
-                                GBL_BalCalc = "Business_Rule_Calc";
+                                GBL_BalCalc = "BR_Calc";
                             }
                             else if (GBL_BalCalc == "Balanced")
                             {
@@ -22775,8 +22775,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
                 newTargetRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
                 newTargetRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
-                newTargetRow["Business_Rule_Calc"] = src_Calc_Config_Row.Field<bool?>("Business_Rule_Calc") ?? false;
-                newTargetRow["Business_Rule_Calc_Name"] = src_Calc_Config_Row.Field<string>("Business_Rule_Calc_Name") ?? string.Empty;
+                newTargetRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
+                newTargetRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
                 newTargetRow["Status"] = row_Status;
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // or appropriate user context
@@ -22807,8 +22807,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
                     existingRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
                     existingRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
-                    existingRow["Business_Rule_Calc"] = src_Calc_Config_Row.Field<bool?>("Business_Rule_Calc") ?? false;
-                    existingRow["Business_Rule_Calc_Name"] = src_Calc_Config_Row.Field<string>("Business_Rule_Calc_Name") ?? string.Empty;
+                    existingRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
+                    existingRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
                     existingRow["Update_Date"] = DateTime.Now;
                     existingRow["Update_User"] = si.UserName; // or appropriate user context
                 }
@@ -26833,8 +26833,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
                 newTargetRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
                 newTargetRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
-                newTargetRow["Business_Rule_Calc"] = src_Calc_Config_Row.Field<bool?>("Business_Rule_Calc") ?? false;
-                newTargetRow["Business_Rule_Calc_Name"] = src_Calc_Config_Row.Field<string>("Business_Rule_Calc_Name") ?? string.Empty;
+                newTargetRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
+                newTargetRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
                 newTargetRow["Status"] = row_Status;
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // or appropriate user context
@@ -26865,8 +26865,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
                     existingRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
                     existingRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
-                    existingRow["Business_Rule_Calc"] = src_Calc_Config_Row.Field<bool?>("Business_Rule_Calc") ?? false;
-                    existingRow["Business_Rule_Calc_Name"] = src_Calc_Config_Row.Field<string>("Business_Rule_Calc_Name") ?? string.Empty;
+                    existingRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
+                    existingRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
                     existingRow["Update_Date"] = DateTime.Now;
                     existingRow["Update_User"] = si.UserName; // or appropriate user context
                 }
@@ -28462,8 +28462,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         MbrList_2_Filter, MbrList_2_DimType, MbrList_2_Filter, 
                         MbrList_3_Dim, MbrList_3_Filter, MbrList_3_DimType, 
                         MbrList_3_Filter, MbrList_4_Dim, MbrList_4_Filter, 
-                        MbrList_4_DimType, MbrList_4_Filter, Business_Rule_Calc, 
-                        Business_Rule_Calc_Name, Balanced_Buffer, bal_buffer_calc, 
+                        MbrList_4_DimType, MbrList_4_Filter, BR_Calc, 
+                        BR_Calc_Name, Balanced_Buffer, bal_buffer_calc, 
                         Unbal_Calc, Table_Calc_SQL_Logic, Status, Create_Date, Create_User, 
                         Update_Date, Update_User
                     ) VALUES (
@@ -28474,8 +28474,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         @MbrList_2_Filter, @MbrList_2_DimType, @MbrList_2_Filter, 
                         @MbrList_3_Dim, @MbrList_3_Filter, @MbrList_3_DimType, 
                         @MbrList_3_Filter, @MbrList_4_Dim, @MbrList_4_Filter, 
-                        @MbrList_4_DimType, @MbrList_4_Filter, @Business_Rule_Calc, 
-                        @Business_Rule_Calc_Name, @Balanced_Buffer, @bal_buffer_calc, 
+                        @MbrList_4_DimType, @MbrList_4_Filter, @BR_Calc, 
+                        @BR_Calc_Name, @Balanced_Buffer, @bal_buffer_calc, 
                         @Unbal_Calc, @Table_Calc_SQL_Logic, @Status, @Create_Date, 
                         @Create_User, @Update_Date, @Update_User
                     )";
@@ -28511,8 +28511,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@MbrList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MbrList_4_Filter";
                 sqa.InsertCommand.Parameters.Add("@MbrList_4_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MbrList_4_DimType";
                 sqa.InsertCommand.Parameters.Add("@MbrList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MbrList_4_Filter";
-                sqa.InsertCommand.Parameters.Add("@Business_Rule_Calc", SqlDbType.Bit).SourceColumn = "Business_Rule_Calc";
-                sqa.InsertCommand.Parameters.Add("@Business_Rule_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "Business_Rule_Calc_Name";
+                sqa.InsertCommand.Parameters.Add("@BR_Calc", SqlDbType.Bit).SourceColumn = "BR_Calc";
+                sqa.InsertCommand.Parameters.Add("@BR_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "BR_Calc_Name";
                 sqa.InsertCommand.Parameters.Add("@Balanced_Buffer", SqlDbType.NVarChar, 20).SourceColumn = "Balanced_Buffer";
                 sqa.InsertCommand.Parameters.Add("@bal_buffer_calc", SqlDbType.NVarChar, 2000).SourceColumn = "bal_buffer_calc";
                 sqa.InsertCommand.Parameters.Add("@Unbal_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Unbal_Calc";
@@ -28538,7 +28538,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         MbrList_3_DimType = @MbrList_3_DimType, MbrList_3_Filter = @MbrList_3_Filter,
                         MbrList_4_Dim = @MbrList_4_Dim, MbrList_4_Filter = @MbrList_4_Filter, 
                         MbrList_4_DimType = @MbrList_4_DimType, MbrList_4_Filter = @MbrList_4_Filter,
-                        Business_Rule_Calc = @Business_Rule_Calc, Business_Rule_Calc_Name = @Business_Rule_Calc_Name, 
+                        BR_Calc = @BR_Calc, BR_Calc_Name = @BR_Calc_Name, 
                         Balanced_Buffer = @Balanced_Buffer, bal_buffer_calc = @bal_buffer_calc, 
                         Unbal_Calc = @Unbal_Calc, Table_Calc_SQL_Logic = @Table_Calc_SQL_Logic, 
                         Status = @Status, Update_Date = @Update_Date, Update_User = @Update_User
@@ -28572,8 +28572,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@MbrList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MbrList_4_Filter";
                 sqa.UpdateCommand.Parameters.Add("@MbrList_4_DimType", SqlDbType.NVarChar, 20).SourceColumn = "MbrList_4_DimType";
                 sqa.UpdateCommand.Parameters.Add("@MbrList_4_Filter", SqlDbType.NVarChar, 200).SourceColumn = "MbrList_4_Filter";
-                sqa.UpdateCommand.Parameters.Add("@Business_Rule_Calc", SqlDbType.Bit).SourceColumn = "Business_Rule_Calc";
-                sqa.UpdateCommand.Parameters.Add("@Business_Rule_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "Business_Rule_Calc_Name";
+                sqa.UpdateCommand.Parameters.Add("@BR_Calc", SqlDbType.Bit).SourceColumn = "BR_Calc";
+                sqa.UpdateCommand.Parameters.Add("@BR_Calc_Name", SqlDbType.NVarChar, 100).SourceColumn = "BR_Calc_Name";
                 sqa.UpdateCommand.Parameters.Add("@Balanced_Buffer", SqlDbType.NVarChar, 20).SourceColumn = "Balanced_Buffer";
                 sqa.UpdateCommand.Parameters.Add("@bal_buffer_calc", SqlDbType.NVarChar, 2000).SourceColumn = "bal_buffer_calc";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Calc", SqlDbType.NVarChar, 2000).SourceColumn = "Unbal_Calc";
@@ -30428,8 +30428,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "Calc_Condition", Description = "[Conditional Logic]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Calc_Explanation", Description = "[Calc Explanation]", IsVisible = true },
                         new ColumnConfig { ColumnName = "MultiDim_Alloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Business_Rule_Calc", Description = "[BR Calc]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Business_Rule_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "BR_Calc", Description = "[BR Calc]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "BR_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Time_Phasing", Description = "[Time Phasing]", IsVisible = true, ParameterName = "DL_FMM_Calc_Time_Phasing" },
                         new ColumnConfig { ColumnName = "Input_Frequency", Description = "[Input Freq]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
@@ -30466,8 +30466,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "MbrList_4_Filter", Description = "[Mbr List 4 Filter]", IsVisible = true },
                         new ColumnConfig { ColumnName = "MbrList_4_DimType", IsVisible = false },
                         new ColumnConfig { ColumnName = "MbrList_4_Filter", IsVisible = false },
-                        new ColumnConfig { ColumnName = "Business_Rule_Calc", Description = "[BR Calc?]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Business_Rule_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "BR_Calc", Description = "[BR Calc?]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "BR_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Create_Date", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
                         new ColumnConfig { ColumnName = "Create_User", Description = "[Create User]", IsVisible = true, AllowUpdates = false },

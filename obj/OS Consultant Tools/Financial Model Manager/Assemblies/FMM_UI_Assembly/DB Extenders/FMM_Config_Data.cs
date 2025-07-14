@@ -2465,9 +2465,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     row["Update_User"] = si.UserName;
                                 }
                             }
-                            else if (row["Business_Rule_Calc"] != DBNull.Value && Convert.ToBoolean(row["Business_Rule_Calc"]))
+                            else if (row["BR_Calc"] != DBNull.Value && Convert.ToBoolean(row["BR_Calc"]))
                             {
-                                GBL_BalCalc = "Business_Rule_Calc";
+                                GBL_BalCalc = "BR_Calc";
                             }
                             else if (GBL_BalCalc == "Balanced")
                             {
@@ -6202,8 +6202,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
                 newTargetRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
                 newTargetRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
-                newTargetRow["Business_Rule_Calc"] = src_Calc_Config_Row.Field<bool?>("Business_Rule_Calc") ?? false;
-                newTargetRow["Business_Rule_Calc_Name"] = src_Calc_Config_Row.Field<string>("Business_Rule_Calc_Name") ?? string.Empty;
+                newTargetRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
+                newTargetRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
                 newTargetRow["Status"] = row_Status;
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // or appropriate user context
@@ -6234,8 +6234,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
                     existingRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
                     existingRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
-                    existingRow["Business_Rule_Calc"] = src_Calc_Config_Row.Field<bool?>("Business_Rule_Calc") ?? false;
-                    existingRow["Business_Rule_Calc_Name"] = src_Calc_Config_Row.Field<string>("Business_Rule_Calc_Name") ?? string.Empty;
+                    existingRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
+                    existingRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
                     existingRow["Update_Date"] = DateTime.Now;
                     existingRow["Update_User"] = si.UserName; // or appropriate user context
                 }
