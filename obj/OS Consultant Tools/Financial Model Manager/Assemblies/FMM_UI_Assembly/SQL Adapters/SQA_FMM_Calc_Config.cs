@@ -53,7 +53,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and parameters
                 string insertQuery = @"
                     INSERT INTO FMM_Calc_Config (
-                        Cube_ID, Activity_ID, Model_ID, Calc_ID, Name, Sequence, 
+                        Cube_ID, Act_ID, Model_ID, Calc_ID, Name, Sequence, 
                         Calc_Condition, Calc_Explanation, Time_Phasing, Input_Frequency, 
                         MultiDim_Alloc, MbrList_Calc, MbrList_1_Dim, MbrList_1_Filter, 
                         MbrList_1_DimType, MbrList_1_Filter, MbrList_2_Dim, 
@@ -65,7 +65,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Unbal_Calc, Table_Calc_SQL_Logic, Status, Create_Date, Create_User, 
                         Update_Date, Update_User
                     ) VALUES (
-                        @Cube_ID, @Activity_ID, @Model_ID, @Calc_ID, @Name, @Sequence, 
+                        @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Name, @Sequence, 
                         @Calc_Condition, @Calc_Explanation, @Time_Phasing, @Input_Frequency, 
                         @MultiDim_Alloc, @MbrList_Calc, @MbrList_1_Dim, @MbrList_1_Filter, 
                         @MbrList_1_DimType, @MbrList_1_Filter, @MbrList_2_Dim, 
@@ -82,7 +82,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Add parameters for the insert command
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_ID", SqlDbType.Int).SourceColumn = "Calc_ID";
                 sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";

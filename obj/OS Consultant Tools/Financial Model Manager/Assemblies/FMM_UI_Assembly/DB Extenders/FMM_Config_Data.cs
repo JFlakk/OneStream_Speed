@@ -2050,14 +2050,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                     }
 
-                    if ((string)FMM_Src_Cell_DT_Row["Calc_Src_Type"] == "Dynamic Calc")
+                    if ((string)FMM_Src_Cell_DT_Row["Src_Type"] == "Dynamic Calc")
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit Dynamic");
                         GBL_BalCalc = "UnbalAlloc";
                     }
-                    GBL_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Calc_Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Close_Parens"].ToString().Trim());
+                    GBL_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
                     GBL_SrcCellDrillDown_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], src_Cell_Drill_Down);
-                    GBL_UnbalCalc_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Calc_Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Close_Parens"].ToString().Trim());
+                    GBL_UnbalCalc_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
                     FMM_Src_Cell_DT_Row["Calc_Src_ID_Order"] = src_Cell_Count;
                     FMM_Src_Cell_DT_Row["OS_Dynamic_Calc_Script"] = src_Cell_Drill_Down;
                     FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer"] = src_Cell_Drill_Down;
@@ -6350,7 +6350,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             GBL_FMM_Src_Cell_ID += 1;
             GBL_Curr_FMM_Src_Cell_ID = GBL_FMM_Src_Cell_ID;
-            // Check the target Cube_ID source cell config for duplicate Calc_Src_Item and Calc_Src_Type
+            // Check the target Cube_ID source cell config for duplicate Src_Item and Src_Type
             bool isDuplicate = tgt_Src_Cell_Config_DT.AsEnumerable()
                 .Any(row => row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
                             row["Model_ID"].ToString() == GBL_Curr_FMM_Models_ID.ToString() &&
@@ -6368,9 +6368,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Calc_ID"] = GBL_Curr_FMM_Calc_ID;
                 newTargetRow["Cell_ID"] = GBL_FMM_Src_Cell_ID;
                 newTargetRow["Calc_Src_ID_Order"] = src_Src_Cell_Config_Row.Field<int?>("Calc_Src_ID_Order") ?? 0;
-                newTargetRow["Calc_Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Type") ?? string.Empty;
-                newTargetRow["Calc_Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Item") ?? string.Empty;
-                newTargetRow["Calc_Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Open_Parens") ?? string.Empty;
+                newTargetRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
+                newTargetRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
+                newTargetRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
                 newTargetRow["Calc_Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Calc_Math_Operator") ?? string.Empty;
                 newTargetRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
                 newTargetRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
@@ -6390,7 +6390,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
                 newTargetRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
                 newTargetRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                newTargetRow["Calc_Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Close_Parens") ?? string.Empty;
+                newTargetRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
                 newTargetRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
                 newTargetRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
                 newTargetRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
@@ -6437,9 +6437,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     GBL_Curr_FMM_Src_Cell_ID = Convert.ToInt32(existingRow["Cell_ID"].ToString());
                     // Update fields as necessary
                     existingRow["Calc_Src_ID_Order"] = src_Src_Cell_Config_Row.Field<int?>("Calc_Src_ID_Order") ?? 0;
-                    existingRow["Calc_Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Type") ?? string.Empty;
-                    existingRow["Calc_Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Item") ?? string.Empty;
-                    existingRow["Calc_Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Open_Parens") ?? string.Empty;
+                    existingRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
+                    existingRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
+                    existingRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
                     existingRow["Calc_Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Calc_Math_Operator") ?? string.Empty;
                     existingRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
                     existingRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
@@ -6459,7 +6459,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
                     existingRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
                     existingRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                    existingRow["Calc_Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Close_Parens") ?? string.Empty;
+                    existingRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
                     existingRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
                     existingRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
                     existingRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;

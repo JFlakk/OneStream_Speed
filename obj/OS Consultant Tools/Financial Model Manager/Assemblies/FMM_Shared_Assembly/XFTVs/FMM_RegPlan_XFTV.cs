@@ -207,7 +207,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             {
                 startTime = registerConfig_dt.Rows[0]["Start_Dt_Src"].ToString();
                 endTime = registerConfig_dt.Rows[0]["End_Dt_Src"].ToString();
-                g_activityID = Convert.ToInt32(registerConfig_dt.Rows[0]["Activity_ID"]);
+                g_activityID = Convert.ToInt32(registerConfig_dt.Rows[0]["Act_ID"]);
                 reg_TimePhasing = registerConfig_dt.Rows[0]["Time_Phasing"].ToString();
             }
 
@@ -215,7 +215,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             var scenarioName = wfUnitInfo.ScenarioName;
             var timeName = wfUnitInfo.TimeName;
             var modelID = g_modelID != -1 ? g_modelID : Convert.ToInt32(substVars.XFGetValue("Model_ID", "-1"));
-            var activityID = g_activityID != -1 ? g_activityID : Convert.ToInt32(substVars.XFGetValue("Activity_ID", "-1"));
+            var activityID = g_activityID != -1 ? g_activityID : Convert.ToInt32(substVars.XFGetValue("Act_ID", "-1"));
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             var connection = new SqlConnection(dbConnApp.ConnectionString);
@@ -237,14 +237,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 				    WHERE WF_Scenario_Name = @WFScenarioName
 				    AND WF_Profile_Name = @WFProfileName
 				    AND WF_Time_Name = @WFTimeName
-				    AND Activity_ID = @ActivityID"; // Added condition for Activity_ID
+				    AND Act_ID = @ActivityID"; // Added condition for Act_ID
 
                 var regPlan_parameters = new SqlParameter[]
                 {
                     new SqlParameter("@WFScenarioName", SqlDbType.VarChar) { Value = scenarioName },
                     new SqlParameter("@WFProfileName", SqlDbType.VarChar) { Value = profileName },
                     new SqlParameter("@WFTimeName", SqlDbType.VarChar) { Value = timeName },
-                    new SqlParameter("@ActivityID", SqlDbType.Int) { Value = activityID } // Added parameter for Activity_ID
+                    new SqlParameter("@ActivityID", SqlDbType.Int) { Value = activityID } // Added parameter for Act_ID
 				};
 
                 var sqlParam_Index = 4;
@@ -332,7 +332,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                         new_Register_Plan_Row["WF_Scenario_Name"] = scenarioName;
                         new_Register_Plan_Row["WF_Profile_Name"] = profileName;
                         new_Register_Plan_Row["WF_Time_Name"] = timeName;
-                        new_Register_Plan_Row["Activity_ID"] = activityID;
+                        new_Register_Plan_Row["Act_ID"] = activityID;
 
                         bool invalid = isRowInvalid(requiredColumns.ToArray(), tvr);
                         new_Register_Plan_Row["Invalid"] = invalid;
@@ -525,7 +525,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                                 new_Register_Plan_Details_Row["WF_Scenario_Name"] = scenarioName;
                                 new_Register_Plan_Details_Row["WF_Profile_Name"] = profileName;
                                 new_Register_Plan_Details_Row["WF_Time_Name"] = timeName;
-                                new_Register_Plan_Details_Row["Activity_ID"] = activityID;
+                                new_Register_Plan_Details_Row["Act_ID"] = activityID;
                                 new_Register_Plan_Details_Row["Model_ID"] = modelID;
                                 new_Register_Plan_Details_Row["Entity"] = tvr.Items["Entity"]?.Value.ToString() ?? string.Empty;
                                 //new_Register_Plan_Details_Row["Approval_Level_ID"] = tvr.Items["Approval_Level_ID"].Value.ToString() != string.Empty ? tvr.Items["Approval_Level_ID"].Value.ToString() : approvLevelID; // might need to do Guid.Parse()
@@ -641,7 +641,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             string timePhasing = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["Time_Phasing"]?.ToString() : string.Empty;
             string startTime = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["Start_Dt_Src"]?.ToString() : string.Empty;
             string endTime = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["End_Dt_Src"]?.ToString() : string.Empty;
-            g_activityID = Convert.ToInt32(registerConfig.Rows[0]["Activity_ID"]);
+            g_activityID = Convert.ToInt32(registerConfig.Rows[0]["Act_ID"]);
 
             // Fetch Workflow Information
             var wfInfoDetails = getWFInfoDetails();
@@ -694,7 +694,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 selectedColumns += ", " + string.Join(", ", timePhasingColumns);
             }
             string baseSelect = $"SELECT rp.Register_Plan_ID, rp.WF_Scenario_Name, rp.WF_Profile_Name, rp.WF_Time_Name, " +
-                                $"rp.Activity_ID, {selectedColumns}";
+                                $"rp.Act_ID, {selectedColumns}";
 
             var Plan_Units = string.Empty;
             Plan_Units = "'Test'";
@@ -708,7 +708,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                     string alias = $"rpd_{config.Year}";
                     joinClauses.Add($"LEFT JOIN Register_Plan_Details {alias} " +
                                     $"ON rp.Register_Plan_ID = {alias}.Register_Plan_ID " +
-                                    $"AND rp.Activity_ID = {alias}.Activity_ID " +
+                                    $"AND rp.Act_ID = {alias}.Act_ID " +
                                     $"AND rp.WF_Scenario_Name = {alias}.WF_Scenario_Name " +
                                     $"AND rp.Entity = {alias}.Entity " +
                                     $"AND rp.Approval_Level_ID = {alias}.Approval_Level_ID " +
@@ -723,7 +723,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             string whereClause = $"WHERE rp.WF_Scenario_Name = '{wfInfoDetails[scenarioDictKey]}' " +
                                  $"AND rp.WF_Profile_Name = '{wfInfoDetails[profileDictKey]}' " +
                                  $"AND rp.WF_Time_Name = {wfInfoDetails[timeDictKey]} " +
-                                 $"AND rp.Activity_ID = {g_activityID} ";
+                                 $"AND rp.Act_ID = {g_activityID} ";
 
             var whereConditions = new List<string>();
             // Append filter parameter conditions dynamically
@@ -880,7 +880,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             var sqlcolumns = string.Empty;
             sqlcolumns = @"
 							SELECT Name, Time_Phasing, Time_Phasing_Driver, Manual_Input_Plan_Units, Start_End_Dt_Src_Obj,Approval_Config,
-							Start_Dt_Src, End_Dt_Src, Activity_ID
+							Start_Dt_Src, End_Dt_Src, Act_ID
 							  FROM FMM_Reg_Config
 							  WHERE Reg_Config_ID = @Reg_Config_ID";
 

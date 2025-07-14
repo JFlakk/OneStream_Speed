@@ -63,7 +63,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Seed_Temp_Tables_for_Calcs();
 
                 var Proc_FinModel_Sql = @"
-                    Select Sequence,Calc_Src_Type,Calc_Src_Item,Table_Calc_Expression,
+                    Select Sequence,Src_Type,Src_Item,Table_Calc_Expression,
 					Table_Join_Expression,Table_Filter_Expression,Calc_Plan_Units,Acct,View,IC,
 					Flow,UD1,UD2,UD3,UD4,UD5,UD6,UD7,
 					UD8,OS_Time_Filter,OS_Conditional_Filter
@@ -76,7 +76,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					AND calc.Model_ID = Dest.Model_ID
                     WHERE Model_ID = @Model_ID
 					AND Src.Calc_Src_ID_Order = 0
-					AND Src.Calc_Src_Type IN ('Proportional Time','Allocation')
+					AND Src.Src_Type IN ('Proportional Time','Allocation')
 					ORDER By Sequence";
 
                 var parameters = new SqlParameter[]
@@ -87,10 +87,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Fetch rows into a DataTable
                 sql_FMM_Get_DataSets.Fill_get_FMM_DataTable(si, sql_DataSet_DataAdapter, FMM_calc_Config_DT, Proc_FinModel_Sql, parameters);
 
-                // Process rows dynamically based on Calc_Src_Type
+                // Process rows dynamically based on Src_Type
                 foreach (DataRow row in FMM_calc_Config_DT.Rows)
                 {
-                    string calcSrcType = row["Calc_Src_Type"].ToString();
+                    string calcSrcType = row["Src_Type"].ToString();
                     ProcessCalculationType(calcSrcType, row);
                 }
                 // Loop through results
@@ -102,7 +102,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             var new_OS_Model_ID = 0;
             var Seed_Temp_Table_Sql = @"
-                Select Calc_Src_Type Calc_Src_Type, Calc_Src_Item Calc_Src_Item, Temp_Table_Name 
+                Select Src_Type Src_Type, Src_Item Src_Item, Temp_Table_Name 
                 FROM FMM_Calc_Config calc
                 JOIN FMM_Src_Cell Src
                 ON calc.Calc_ID = Src.Calc_ID
@@ -149,7 +149,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 // Step 1: Extract configuration fields from the DataRow
                 string sequence = row["Sequence"].ToString();
-                string calcSrcType = row["Calc_Src_Type"].ToString();
+                string calcSrcType = row["Src_Type"].ToString();
                 string tableCalcExpression = row["Table_Calc_Expression"].ToString();
                 string tableJoinExpression = row["Table_Join_Expression"].ToString();
                 string tableFilterExpression = row["Table_Filter_Expression"].ToString();

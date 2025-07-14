@@ -432,11 +432,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string src_cell_SQL = @"
 						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
-						            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
+						            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 									Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
 									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
-									Calc_Src_Type
+									Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE Calc_ID = @Calc_ID
 								AND Calc_Src_ID_Order > 1
@@ -456,10 +456,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     while (unbal_srcreader.Read())
                     {
-                        string calc_srcType = unbal_srcreader["Calc_Src_Type"].ToString();
+                        string calc_srcType = unbal_srcreader["Src_Type"].ToString();
                         var row = srcCellTable.NewRow();
                         row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
-                        row["Calc_Open_Parens"] = unbal_srcreader["Calc_Open_Parens"];
+                        row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                         row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                         row["Entity"] = unbal_srcreader["Entity"];
                         row["Cons"] = unbal_srcreader["Cons"];
@@ -478,7 +478,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["UD6"] = unbal_srcreader["UD6"];
                         row["UD7"] = unbal_srcreader["UD7"];
                         row["UD8"] = unbal_srcreader["UD8"];
-                        row["Calc_Close_Parens"] = unbal_srcreader["Calc_Close_Parens"];
+                        row["Close_Parens"] = unbal_srcreader["Close_Parens"];
                         row["Unbal_Src_Cell_Buffer"] = unbal_srcreader["Unbal_Src_Cell_Buffer"];
                         row["Unbal_Origin_Override"] = unbal_srcreader["Unbal_Origin_Override"];
                         row["Unbal_IC_Override"] = unbal_srcreader["Unbal_IC_Override"];
@@ -495,7 +495,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                         row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
                         row["Override_Value"] = unbal_srcreader["Override_Value"];
-                        row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
+                        row["Src_Type"] = unbal_srcreader["Src_Type"];
                         srcCellTable.Rows.Add(row);
 
                         int index = (int)unbal_srcreader["Calc_Src_ID_Order"];
@@ -561,13 +561,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                 var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Calc_Src_ID_Order"]) == i);
                                 if (srcRow != null)
                                 {
-                                    if (srcRow["Calc_Src_Type"].ToString() == "Dynamic Calc")
+                                    if (srcRow["Src_Type"].ToString() == "Dynamic Calc")
                                     {
                                         var dyn_Calc = getdynamic_calc_value(balBuffer_Cell, srcRow);
                                         expression = Unbal_Calc.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
 
                                     }
-                                    else if (srcRow["Calc_Src_Type"].ToString() == "Stored Cell")
+                                    else if (srcRow["Src_Type"].ToString() == "Stored Cell")
                                     {
                                         string searchName = $"SrcBuffer{i}";
                                         var resultBuffer = new DataBuffer();
@@ -629,11 +629,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string src_cell_SQL = @"
 						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
-						            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
+						            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 									Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
 									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
-									Calc_Src_Type
+									Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE Calc_ID = @Calc_ID
 								AND Calc_Src_ID_Order > 1
@@ -652,10 +652,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     while (unbal_srcreader.Read())
                     {
-                        string calc_srcType = unbal_srcreader["Calc_Src_Type"].ToString();
+                        string calc_srcType = unbal_srcreader["Src_Type"].ToString();
                         var row = srcCellTable.NewRow();
                         row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
-                        row["Calc_Open_Parens"] = unbal_srcreader["Calc_Open_Parens"];
+                        row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                         row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                         row["Entity"] = unbal_srcreader["Entity"];
                         row["Cons"] = unbal_srcreader["Cons"];
@@ -674,7 +674,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["UD6"] = unbal_srcreader["UD6"];
                         row["UD7"] = unbal_srcreader["UD7"];
                         row["UD8"] = unbal_srcreader["UD8"];
-                        row["Calc_Close_Parens"] = unbal_srcreader["Calc_Close_Parens"];
+                        row["Close_Parens"] = unbal_srcreader["Close_Parens"];
                         row["Unbal_Src_Cell_Buffer"] = unbal_srcreader["Unbal_Src_Cell_Buffer"];
                         row["Unbal_Origin_Override"] = unbal_srcreader["Unbal_Origin_Override"];
                         row["Unbal_IC_Override"] = unbal_srcreader["Unbal_IC_Override"];
@@ -691,7 +691,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                         row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
                         row["Override_Value"] = unbal_srcreader["Override_Value"];
-                        row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
+                        row["Src_Type"] = unbal_srcreader["Src_Type"];
                         srcCellTable.Rows.Add(row);
 
                         int index = (int)unbal_srcreader["Calc_Src_ID_Order"];
@@ -1027,11 +1027,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string src_cell_SQL = @"
 							        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 							            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
-							            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
+							            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 							            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 										Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
 										Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
-										Calc_Src_Type
+										Src_Type
 							        FROM MCM_Src_Cell
 							        WHERE Calc_ID = @Calc_ID
 									AND Calc_Src_ID_Order > 1
@@ -1060,7 +1060,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     }
 
                     var member = string.Empty;
-                    var calc_srcType = unbal_srcreader["Calc_Src_Type"].ToString();
+                    var calc_srcType = unbal_srcreader["Src_Type"].ToString();
                     var row = srcCellTable.NewRow();
                     for (int i = 0; i < unbal_srcreader.FieldCount; i++)
                     {
@@ -1116,7 +1116,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 
                     //	                    row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
-                    //	                    row["Calc_Open_Parens"] = unbal_srcreader["Calc_Open_Parens"];
+                    //	                    row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                     //	                    row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                     //	                    row["Entity"] = unbal_srcreader["Entity"];
                     //	                    row["Cons"] = unbal_srcreader["Cons"];
@@ -1135,7 +1135,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //	                    row["UD6"] = unbal_srcreader["UD6"];
                     //	                    row["UD7"] = unbal_srcreader["UD7"];
                     //	                    row["UD8"] = unbal_srcreader["UD8"];
-                    //	                    row["Calc_Close_Parens"] = unbal_srcreader["Calc_Close_Parens"];
+                    //	                    row["Close_Parens"] = unbal_srcreader["Close_Parens"];
                     //	                    row["Unbal_Src_Cell_Buffer"] = unbal_srcreader["Unbal_Src_Cell_Buffer"];
                     //	                    row["Unbal_Origin_Override"] = unbal_srcreader["Unbal_Origin_Override"];
                     //	                    row["Unbal_IC_Override"] = unbal_srcreader["Unbal_IC_Override"];
@@ -1152,7 +1152,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //	                    row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                     //	                    row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
                     //	                    row["Override_Value"] = unbal_srcreader["Override_Value"];
-                    //	                    row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
+                    //	                    row["Src_Type"] = unbal_srcreader["Src_Type"];
 
                     //						srcCellTable.Rows.Add(row);
 
@@ -1277,13 +1277,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Calc_Src_ID_Order"]) == i);
                         if (srcRow != null)
                         {
-                            if (srcRow["Calc_Src_Type"].ToString() == "Dynamic Calc")
+                            if (srcRow["Src_Type"].ToString() == "Dynamic Calc")
                             {
                                 var dyn_Calc = getdynamic_calc_value(balBuffer_Cell, srcRow);
                                 expression = Unbal_Calc.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
 
                             }
-                            else if (srcRow["Calc_Src_Type"].ToString() == "Stored Cell")
+                            else if (srcRow["Src_Type"].ToString() == "Stored Cell")
                             {
                                 string searchName = $"SrcBuffer{i}";
                                 var resultBuffer = new DataBuffer();
@@ -1581,12 +1581,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string curr_expression = cell_Expressions[Cell];
 
 
-            if (srcRow["Calc_Src_Type"].ToString() == "Dynamic Calc")
+            if (srcRow["Src_Type"].ToString() == "Dynamic Calc")
             {
                 var dyn_Calc = getdynamic_calc_value(balBuffer_Cell, srcRow);
                 curr_expression = curr_expression.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
             }
-            else if (srcRow["Calc_Src_Type"].ToString() == "Stored Cell")
+            else if (srcRow["Src_Type"].ToString() == "Stored Cell")
             {
                 string searchName = $"SrcBuffer{i}";
                 var resultBuffer = new DataBuffer();

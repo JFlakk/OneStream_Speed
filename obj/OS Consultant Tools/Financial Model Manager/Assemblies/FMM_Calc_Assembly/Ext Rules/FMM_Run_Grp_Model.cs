@@ -64,7 +64,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 		            AND Modl.Model_ID = Mod_Grp_Assgn.Model_ID
 		            JOIN FMM_Activity_Config Act
 		            ON Modl.Cube_ID = Act.Cube_ID
-		            AND Modl.Activity_ID = Act.Activity_ID
+		            AND Modl.Act_ID = Act.Act_ID
 					JOIN FMM_Cube_Config CubeCon
 					ON Modl.Cube_ID = CubeCon.Cube_ID
 		            WHERE Mod_Grp_Seqs.Name = @Mod_Grp_Seqs

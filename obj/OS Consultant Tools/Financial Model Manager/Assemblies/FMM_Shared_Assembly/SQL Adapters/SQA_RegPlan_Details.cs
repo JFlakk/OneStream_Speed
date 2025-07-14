@@ -50,12 +50,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 string insertQuery = @"
                     INSERT INTO RegPlan_Details (
-                        RegPlan_ID, WFScenario_Name, WF_Profile_Name, Activity_ID, Model_ID, Entity, Approval_Level_ID, 
+                        RegPlan_ID, WFScenario_Name, WF_Profile_Name, Act_ID, Model_ID, Entity, Approval_Level_ID, 
                         Plan_Units, Account, Flow, UD1, UD2, UD3, UD4, UD5, UD6, UD7, UD8, Year, 
                         Month1, Month2, Month3, Month4, Month5, Month6, Month7, Month8, Month9, Month10, 
                         Month11, Month12, Quarter1, Quarter2, Quarter3, Quarter4, Yearly, AllowUpdate, Create_Date, Create_User, Update_Date, Update_User
                     ) VALUES (
-                        @RegPlan_ID, @WFScenario_Name, @WF_Profile_Name, @Activity_ID, @Model_ID, @Entity, @Approval_Level_ID, 
+                        @RegPlan_ID, @WFScenario_Name, @WF_Profile_Name, @Act_ID, @Model_ID, @Entity, @Approval_Level_ID, 
                         @Plan_Units, @Account, @Flow, @UD1, @UD2, @UD3, @UD4, @UD5, @UD6, @UD7, @UD8, @Year, 
                         @Month1, @Month2, @Month3, @Month4, @Month5, @Month6, @Month7, @Month8, @Month9, @Month10, 
                         @Month11, @Month12, @Quarter1, @Quarter2, @Quarter3, @Quarter4, @Yearly, @AllowUpdate, @Create_Date, @Create_User, @Update_Date, @Update_User
@@ -66,7 +66,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 adapter.InsertCommand.Parameters.Add("@WFScenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFScenario_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Profile_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Profile_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Time_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Time_Name";
-                adapter.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                adapter.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 adapter.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 adapter.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 adapter.InsertCommand.Parameters.Add("@Approval_Level_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Approval_Level_ID";
@@ -93,7 +93,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 string updateQuery = @"
                     UPDATE RegPlan_Details SET
-                        WFScenario_Name = @WFScenario_Name, WF_Profile_Name = @WF_Profile_Name, Activity_ID = @Activity_ID, 
+                        WFScenario_Name = @WFScenario_Name, WF_Profile_Name = @WF_Profile_Name, Act_ID = @Act_ID, 
                         Model_ID = @Model_ID, Entity = @Entity, Approval_Level_ID = @Approval_Level_ID, Plan_Units = @Plan_Units, 
                         Account = @Account, Flow = @Flow, UD1 = @UD1, UD2 = @UD2, UD3 = @UD3, UD4 = @UD4, UD5 = @UD5, 
                         UD6 = @UD6, UD7 = @UD7, UD8 = @UD8, Year = @Year, Month1 = @Month1, Month2 = @Month2, 

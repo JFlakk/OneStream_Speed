@@ -30,7 +30,7 @@
                                 <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_All_Approval_Act_Config}{}</methodQuery>
                                 <resultsTableName>Approval_Act_Config</resultsTableName>
                                 <displayMember>Activity</displayMember>
-                                <valueMember>Activity_ID</valueMember>
+                                <valueMember>Act_ID</valueMember>
                                 <displayItems></displayItems>
                                 <valueItems></valueItems>
                                 <cubeName></cubeName>
@@ -118,7 +118,7 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="BL_FMM_Approval_Activity_ID" description="" userPrompt="" parameterType="BoundList" sortOrder="0">
+                            <parameter name="BL_FMM_Approval_Act_ID" description="" userPrompt="" parameterType="BoundList" sortOrder="0">
                                 <defaultValue>0</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -130,7 +130,7 @@
                                 <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Approval_Act_Config}{Cube_ID = |!IV_FMM_Cube_ID!|, Appr_ID = |!IV_FMM_Appr_ID!|, Appr_Step_ID = |!IV_FMM_Appr_Step_ID!|, AddUpdateDBName = |!IV_FMM_Display_Add_Update_Approval_Step_Activity!|}</methodQuery>
                                 <resultsTableName>Approval_Act_Config</resultsTableName>
                                 <displayMember>Activity</displayMember>
-                                <valueMember>Activity_ID</valueMember>
+                                <valueMember>Act_ID</valueMember>
                                 <displayItems></displayItems>
                                 <valueItems></valueItems>
                                 <cubeName></cubeName>
@@ -144,11 +144,11 @@
                                 <resultCustomFormatString></resultCustomFormatString>
                                 <parameterCommandType>Method</parameterCommandType>
                                 <sqlQuery>SELECT * FROM FMM_Appr_Config
-WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sqlQuery>
+WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Appr_Config}{cubeID = |!IV_FMM_Cube_ID!|, activityID = |!IV_FMM_Activity_ID!|}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Appr_Config}{cubeID = |!IV_FMM_Cube_ID!|, activityID = |!IV_FMM_Act_ID!|}</methodQuery>
                                 <resultsTableName>Approval_Config</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Appr_ID</valueMember>
@@ -268,7 +268,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Calc_List}{Cube_ID = |!IV_FMM_Cube_ID!|, Activity_ID = |!IV_FMM_Activity_ID!|, Model_ID = |!IV_FMM_Model_ID!|}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Calc_List}{Cube_ID = |!IV_FMM_Cube_ID!|, Act_ID = |!IV_FMM_Act_ID!|, Model_ID = |!IV_FMM_Model_ID!|}</methodQuery>
                                 <resultsTableName>Calc_List</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Calc_ID</valueMember>
@@ -288,7 +288,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Register_Profiles_by_Activity}{Activity_ID = |!BL_FMM_Approval_Activity_ID!|, AddUpdateDBName = |!IV_FMM_Display_Add_Update_Approval_Step_Activity!|}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Register_Profiles_by_Activity}{Act_ID = |!BL_FMM_Approval_Act_ID!|, AddUpdateDBName = |!IV_FMM_Display_Add_Update_Approval_Step_Activity!|}</methodQuery>
                                 <resultsTableName>Register_Profiles</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Reg_Config_ID</valueMember>
@@ -351,7 +351,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Src_Act_Config}{Cube_ID = |!BL_FMM_Src_Cube_ID!|}</methodQuery>
                                 <resultsTableName>Src_Act_Config</resultsTableName>
                                 <displayMember>Activity</displayMember>
-                                <valueMember>Activity_ID</valueMember>
+                                <valueMember>Act_ID</valueMember>
                                 <displayItems></displayItems>
                                 <valueItems></valueItems>
                                 <cubeName></cubeName>
@@ -408,7 +408,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Src_Model_List}{Cube_ID = |!BL_FMM_Src_Cube_ID!|, Activity_ID = |!BL_FMM_Src_Activity_ID!|}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Src_Model_List}{Cube_ID = |!BL_FMM_Src_Cube_ID!|, Act_ID = |!BL_FMM_Src_Act_ID!|}</methodQuery>
                                 <resultsTableName>Src_Model_List</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Model_ID</valueMember>
@@ -439,7 +439,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="BL_FMM_Tgt_Activity_ID" description="" userPrompt="" parameterType="BoundList" sortOrder="0">
+                            <parameter name="BL_FMM_Tgt_Act_ID" description="" userPrompt="" parameterType="BoundList" sortOrder="0">
                                 <defaultValue></defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -451,7 +451,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Tgt_Act_Config}{Cube_ID = |!BL_FMM_Tgt_Cube_ID!|}</methodQuery>
                                 <resultsTableName>Tgt_Act_Config</resultsTableName>
                                 <displayMember>Activity</displayMember>
-                                <valueMember>Activity_ID</valueMember>
+                                <valueMember>Act_ID</valueMember>
                                 <displayItems></displayItems>
                                 <valueItems></valueItems>
                                 <cubeName></cubeName>
@@ -508,7 +508,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Tgt_Model_List}{Cube_ID = |!BL_FMM_Tgt_Cube_ID!|, Activity_ID = |!BL_FMM_Tgt_Activity_ID!|}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Tgt_Model_List}{Cube_ID = |!BL_FMM_Tgt_Cube_ID!|, Act_ID = |!BL_FMM_Tgt_Act_ID!|}</methodQuery>
                                 <resultsTableName>Tgt_Model_List</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Model_ID</valueMember>
@@ -1251,7 +1251,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Act_Config}{Cube_ID = |!IV_FMM_Cube_ID!|}</methodQuery>
                                 <resultsTableName>Act_Config</resultsTableName>
                                 <displayMember>Activity</displayMember>
-                                <valueMember>Activity_ID</valueMember>
+                                <valueMember>Act_ID</valueMember>
                                 <displayItems></displayItems>
                                 <valueItems></valueItems>
                                 <cubeName></cubeName>
@@ -1628,7 +1628,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Model_List}{cubeID = |!IV_FMM_Cube_ID!|, activityID = |!IV_FMM_Activity_ID!|}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Model_List}{cubeID = |!IV_FMM_Cube_ID!|, activityID = |!IV_FMM_Act_ID!|}</methodQuery>
                                 <resultsTableName>Model_List</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Model_ID</valueMember>
@@ -1980,7 +1980,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <sqlQuery>SELECT Calc_ID,Name
   FROM FMM_Calc_Config
   WHERE Cube_ID = |!BL_FMM_Src_Cube_ID!|
-  AND Activity_ID = |!BL_FMM_Src_Activity_ID!|
+  AND Act_ID = |!BL_FMM_Src_Act_ID!|
   AND Model_ID = |!BL_FMM_Src_Model_ID!|
   AND Status &lt;&gt; 'Archived'</sqlQuery>
                                 <dbLocation>Application</dbLocation>
@@ -2367,7 +2367,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                             </component>
                             <component name="btn_FMM_Calc_Process_Copy" description="" xfText="Copy" toolTip="Process Calc Copy " componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBRStageServer" selectionChangedUIActionType="CloseDialog" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_btn_Format!|</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.FMM_UI_Assembly.FMM_Config_Data}{Process_Calc_Copy}{src_Cube_ID=|!BL_FMM_Src_Cube_ID!|,tgt_Cube_ID=|!BL_FMM_tgt_Cube_ID!|,src_Activity_ID=|!BL_FMM_Src_Activity_ID!|,tgt_Activity_ID=|!BL_FMM_tgt_Activity_ID!|,src_Model_ID=|!BL_FMM_Src_Model_ID!|,tgt_Model_ID=|!BL_FMM_tgt_Model_ID!|,src_Calc_IDs=|!IV_FMM_Src_Calc_ID_Selection!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.Current.FMM_UI_Assembly.FMM_Config_Data}{Process_Calc_Copy}{src_Cube_ID=|!BL_FMM_Src_Cube_ID!|,tgt_Cube_ID=|!BL_FMM_tgt_Cube_ID!|,src_Act_ID=|!BL_FMM_Src_Act_ID!|,tgt_Act_ID=|!BL_FMM_tgt_Act_ID!|,src_Model_ID=|!BL_FMM_Src_Model_ID!|,tgt_Model_ID=|!BL_FMM_tgt_Model_ID!|,src_Calc_IDs=|!IV_FMM_Src_Calc_ID_Selection!|}</selectionChangedTaskArgs>
                                 <dashboardsToHide>2_FMM_Model_Dialog_Copy</dashboardsToHide>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -4052,12 +4052,12 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="lbx_FMM_Activity_ID" description="" xfText="Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                            <component name="lbx_FMM_Act_ID" description="" xfText="Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_lbx_Format!|</displayFormat>
                                 <dashboardsToRedraw>FMM_App_Admin (OnePlace), 3_FMM_Model_Dialog_Update</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
-                            <component name="lbx_FMM_Approval_Activity_ID" description="" xfText="Approval Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Approval_Activity_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                            <component name="lbx_FMM_Approval_Act_ID" description="" xfText="Approval Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Approval_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_lbx_Format!|, Height = 125, Width = Auto</displayFormat>
                                 <dashboardsToRedraw>0b3b2_FMM_Approval_Steps_Activities_Row2b_Header</dashboardsToRedraw>
                                 <adapterMembers />
@@ -4111,7 +4111,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
-                            <component name="lbx_FMM_Src_Activity_ID" description="" xfText="Source Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Src_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                            <component name="lbx_FMM_Src_Act_ID" description="" xfText="Source Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Src_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_lbx_Format!|, HorizontalAlignment = Left, MarginRight = 150, Width = Auto</displayFormat>
                                 <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
                                 <adapterMembers />
@@ -4131,7 +4131,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
-                            <component name="lbx_FMM_Table_Activity_ID" description="" xfText="Table Calc Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Table_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                            <component name="lbx_FMM_Table_Act_ID" description="" xfText="Table Calc Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Table_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_lbx_Format!|, Width = Auto</displayFormat>
                                 <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
                                 <adapterMembers />
@@ -4141,7 +4141,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                 <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
-                            <component name="lbx_FMM_Tgt_Activity_ID" description="" xfText="Target Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Tgt_Activity_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                            <component name="lbx_FMM_Tgt_Act_ID" description="" xfText="Target Activity List" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_Tgt_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_Std_lbx_Format!|, HorizontalAlignment = Left, MarginLeft = 150, Width = Auto</displayFormat>
                                 <dashboardsToRedraw>2b_FMM_Model_Dialog_Copy,2c_FMM_Model_Dialog_Copy</dashboardsToRedraw>
                                 <adapterMembers />
@@ -4188,7 +4188,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                             <component name="sp_DL_FMM_Setup_Options" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_FMM_Setup_Options" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
-                            <component name="sp_IV_FMM_Activity_ID" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                            <component name="sp_IV_FMM_Act_ID" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_Act_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
                             <component name="sp_IV_FMM_Appr_ID" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_Appr_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
@@ -4286,7 +4286,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames />
-                                        <WhereClause>Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!| and Unit_ID = |!IV_FMM_Unit_ID!|</WhereClause>
+                                        <WhereClause>Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!| and Unit_ID = |!IV_FMM_Unit_ID!|</WhereClause>
                                         <OrderByClause />
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>true</DefaultForColumnsAreVisible>
@@ -4321,7 +4321,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                                 <ColumnFormat>ColumnName = Cube_ID, IsVisible = False, DefaultValue = |!IV_FMM_Cube_ID!|</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = Activity_ID, DefaultValue = |!IV_FMM_Activity_ID!|, IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = Act_ID, DefaultValue = |!IV_FMM_Act_ID!|, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>ColumnName = Unit_ID, DefaultValue =  |!IV_FMM_Unit_ID!|,IsVisible = False</ColumnFormat>
@@ -4402,10 +4402,10 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                                 <ColumnFormat>ColumnName = Appr_Step_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = False, ColumnName = Activity_ID, Description = Activity, IsVisible = True, ParameterName = BL_FMM_All_Approval_Activity_IDs</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = False, ColumnName = Act_ID, Description = Activity, IsVisible = True, ParameterName = BL_FMM_All_Approval_Act_IDs</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = Approval_Step_Activity_ID, IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = Approval_Step_Act_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = False, ColumnName = Reg_Config_ID, Description = [Register Profile], ParameterName = BL_FMM_All_Register_Profiles</ColumnFormat>
@@ -4721,7 +4721,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames />
-                                        <WhereClause>Cube_ID = |!IV_FMM_Cube_ID!| AND Activity_ID = |!IV_FMM_Activity_ID!| AND Model_ID = |!IV_FMM_Model_ID!|</WhereClause>
+                                        <WhereClause>Cube_ID = |!IV_FMM_Cube_ID!| AND Act_ID = |!IV_FMM_Act_ID!| AND Model_ID = |!IV_FMM_Model_ID!|</WhereClause>
                                         <OrderByClause>Sequence</OrderByClause>
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>false</DefaultForColumnsAreVisible>
@@ -4994,7 +4994,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames />
-                                        <WhereClause>Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!| and Reg_Config_ID = |!IV_FMM_Reg_Config_ID!|</WhereClause>
+                                        <WhereClause>Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!| and Reg_Config_ID = |!IV_FMM_Reg_Config_ID!|</WhereClause>
                                         <OrderByClause>Order</OrderByClause>
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>true</DefaultForColumnsAreVisible>
@@ -5029,7 +5029,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                                 <ColumnFormat>ColumnName = Cube_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = Activity_ID, IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = Act_ID, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>ColumnName = Col_ID, IsVisible = False</ColumnFormat>
@@ -5644,7 +5644,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames />
-                                        <WhereClause>Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</WhereClause>
+                                        <WhereClause>Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</WhereClause>
                                         <OrderByClause />
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>true</DefaultForColumnsAreVisible>
@@ -5679,7 +5679,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                                 <ColumnFormat>ColumnName = Cube_ID, DefaultValue = |!IV_FMM_Cube_ID!|, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = Activity_ID, DefaultValue = |!IV_FMM_Activity_ID!|, IsVisible = False</ColumnFormat>
+                                                <ColumnFormat>ColumnName = Act_ID, DefaultValue = |!IV_FMM_Act_ID!|, IsVisible = False</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>ColumnName = Unit_ID, IsVisible = False</ColumnFormat>
@@ -5901,7 +5901,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             <componentMember name="sp_IV_FMM_Cube_Config_Scen_Type" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_FMM_Cube_Settings" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_FMM_Menu_Width" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_IV_FMM_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_FMM_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_FMM_Cube_Model_Act_Config" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_FMM_Model_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_IV_FMM_Model_Grp_ID" left="" top="" width="" height="" dockPosition="Left" />
@@ -6421,7 +6421,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="lbx_FMM_Approval_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Approval_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="cbx_FMM_Register_Profiles" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_FMM_Add_Approval_Step_Activity_Save" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_FMM_Add_Approval_Step_Activity_Cancel" left="" top="" width="" height="" dockPosition="Left" />
@@ -6474,7 +6474,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="lbx_FMM_Approval_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Approval_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="cbx_FMM_Register_Profiles" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_FMM_Update_Approval_Step_Activity_Save" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_FMM_Update_Approval_Step_Activity_Cancel" left="" top="" width="" height="" dockPosition="Left" />
@@ -6686,7 +6686,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Cube_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="lbx_FMM_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="0b2b2_FMM_Model_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -6943,7 +6943,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Cube_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="lbx_FMM_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="1a2_FMM_Model_Dialog_Add" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -7055,7 +7055,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Src_Cube_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="lbx_FMM_Src_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Src_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="2a1b_FMM_Model_Dialog_Copy_Col2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -7149,7 +7149,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Src_Cube_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="lbx_FMM_Src_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Src_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="lbx_FMM_Src_Model_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
@@ -7174,7 +7174,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Tgt_Cube_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="lbx_FMM_Tgt_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Tgt_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="2c_FMM_Model_Dialog_Copy" description="Copy Model" pageCaption="Copy Model" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBRAllActions">
@@ -7247,7 +7247,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Src_Cube_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="lbx_FMM_Src_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Src_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="lbx_FMM_Src_Model_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="gv_FMM_Src_Calc_List" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
@@ -7274,7 +7274,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Tgt_Cube_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="lbx_FMM_Tgt_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Tgt_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="lbx_FMM_Tgt_Model_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
@@ -7352,7 +7352,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_FMM_Cube_ID" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="lbx_FMM_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="lbx_FMM_Model_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
@@ -9513,7 +9513,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="lbx_FMM_Table_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Table_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="0b2b_FMM_Register_Col_Config_Content_Row3" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -9716,7 +9716,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="lbx_FMM_Table_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Table_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="1b_FMM_Register_Col_Config_Add_Col2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -9932,7 +9932,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Activity_ID = |!IV_FMM_Activity_ID!|</sql
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="lbx_FMM_Table_Activity_ID" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_Table_Act_ID" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="0b3_FMM_Unit_and_Acct_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -10066,7 +10066,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Seed_Temp_Tables_for_Calcs();
 
                 var Proc_FinModel_Sql = @"
-                    Select Sequence,Calc_Src_Type,Calc_Src_Item,Table_Calc_Expression,
+                    Select Sequence,Src_Type,Src_Item,Table_Calc_Expression,
 					Table_Join_Expression,Table_Filter_Expression,Calc_Plan_Units,Acct,View,IC,
 					Flow,UD1,UD2,UD3,UD4,UD5,UD6,UD7,
 					UD8,OS_Time_Filter,OS_Conditional_Filter
@@ -10079,7 +10079,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					AND calc.Model_ID = Dest.Model_ID
                     WHERE Model_ID = @Model_ID
 					AND Src.Calc_Src_ID_Order = 0
-					AND Src.Calc_Src_Type IN ('Proportional Time','Allocation')
+					AND Src.Src_Type IN ('Proportional Time','Allocation')
 					ORDER By Sequence";
 
                 var parameters = new SqlParameter[]
@@ -10090,10 +10090,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Fetch rows into a DataTable
                 sql_FMM_Get_DataSets.Fill_get_FMM_DataTable(si, sql_DataSet_DataAdapter, FMM_calc_Config_DT, Proc_FinModel_Sql, parameters);
 
-                // Process rows dynamically based on Calc_Src_Type
+                // Process rows dynamically based on Src_Type
                 foreach (DataRow row in FMM_calc_Config_DT.Rows)
                 {
-                    string calcSrcType = row["Calc_Src_Type"].ToString();
+                    string calcSrcType = row["Src_Type"].ToString();
                     ProcessCalculationType(calcSrcType, row);
                 }
                 // Loop through results
@@ -10105,7 +10105,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             var new_OS_Model_ID = 0;
             var Seed_Temp_Table_Sql = @"
-                Select Calc_Src_Type Calc_Src_Type, Calc_Src_Item Calc_Src_Item, Temp_Table_Name 
+                Select Src_Type Src_Type, Src_Item Src_Item, Temp_Table_Name 
                 FROM FMM_Calc_Config calc
                 JOIN FMM_Src_Cell Src
                 ON calc.Calc_ID = Src.Calc_ID
@@ -10152,7 +10152,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 // Step 1: Extract configuration fields from the DataRow
                 string sequence = row["Sequence"].ToString();
-                string calcSrcType = row["Calc_Src_Type"].ToString();
+                string calcSrcType = row["Src_Type"].ToString();
                 string tableCalcExpression = row["Table_Calc_Expression"].ToString();
                 string tableJoinExpression = row["Table_Join_Expression"].ToString();
                 string tableFilterExpression = row["Table_Filter_Expression"].ToString();
@@ -10420,7 +10420,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 		            AND Modl.Model_ID = Mod_Grp_Assgn.Model_ID
 		            JOIN FMM_Activity_Config Act
 		            ON Modl.Cube_ID = Act.Cube_ID
-		            AND Modl.Activity_ID = Act.Activity_ID
+		            AND Modl.Act_ID = Act.Act_ID
 					JOIN FMM_Cube_Config CubeCon
 					ON Modl.Cube_ID = CubeCon.Cube_ID
 		            WHERE Mod_Grp_Seqs.Name = @Mod_Grp_Seqs
@@ -11208,11 +11208,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string src_cell_SQL = @"
 						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
-						            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
+						            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 									Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
 									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
-									Calc_Src_Type
+									Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE Calc_ID = @Calc_ID
 								AND Calc_Src_ID_Order > 1
@@ -11232,10 +11232,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     while (unbal_srcreader.Read())
                     {
-                        string calc_srcType = unbal_srcreader["Calc_Src_Type"].ToString();
+                        string calc_srcType = unbal_srcreader["Src_Type"].ToString();
                         var row = srcCellTable.NewRow();
                         row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
-                        row["Calc_Open_Parens"] = unbal_srcreader["Calc_Open_Parens"];
+                        row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                         row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                         row["Entity"] = unbal_srcreader["Entity"];
                         row["Cons"] = unbal_srcreader["Cons"];
@@ -11254,7 +11254,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["UD6"] = unbal_srcreader["UD6"];
                         row["UD7"] = unbal_srcreader["UD7"];
                         row["UD8"] = unbal_srcreader["UD8"];
-                        row["Calc_Close_Parens"] = unbal_srcreader["Calc_Close_Parens"];
+                        row["Close_Parens"] = unbal_srcreader["Close_Parens"];
                         row["Unbal_Src_Cell_Buffer"] = unbal_srcreader["Unbal_Src_Cell_Buffer"];
                         row["Unbal_Origin_Override"] = unbal_srcreader["Unbal_Origin_Override"];
                         row["Unbal_IC_Override"] = unbal_srcreader["Unbal_IC_Override"];
@@ -11271,7 +11271,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                         row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
                         row["Override_Value"] = unbal_srcreader["Override_Value"];
-                        row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
+                        row["Src_Type"] = unbal_srcreader["Src_Type"];
                         srcCellTable.Rows.Add(row);
 
                         int index = (int)unbal_srcreader["Calc_Src_ID_Order"];
@@ -11337,13 +11337,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                 var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Calc_Src_ID_Order"]) == i);
                                 if (srcRow != null)
                                 {
-                                    if (srcRow["Calc_Src_Type"].ToString() == "Dynamic Calc")
+                                    if (srcRow["Src_Type"].ToString() == "Dynamic Calc")
                                     {
                                         var dyn_Calc = getdynamic_calc_value(balBuffer_Cell, srcRow);
                                         expression = Unbal_Calc.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
 
                                     }
-                                    else if (srcRow["Calc_Src_Type"].ToString() == "Stored Cell")
+                                    else if (srcRow["Src_Type"].ToString() == "Stored Cell")
                                     {
                                         string searchName = $"SrcBuffer{i}";
                                         var resultBuffer = new DataBuffer();
@@ -11405,11 +11405,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string src_cell_SQL = @"
 						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
-						            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
+						            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 									Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
 									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
-									Calc_Src_Type
+									Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE Calc_ID = @Calc_ID
 								AND Calc_Src_ID_Order > 1
@@ -11428,10 +11428,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     while (unbal_srcreader.Read())
                     {
-                        string calc_srcType = unbal_srcreader["Calc_Src_Type"].ToString();
+                        string calc_srcType = unbal_srcreader["Src_Type"].ToString();
                         var row = srcCellTable.NewRow();
                         row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
-                        row["Calc_Open_Parens"] = unbal_srcreader["Calc_Open_Parens"];
+                        row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                         row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                         row["Entity"] = unbal_srcreader["Entity"];
                         row["Cons"] = unbal_srcreader["Cons"];
@@ -11450,7 +11450,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["UD6"] = unbal_srcreader["UD6"];
                         row["UD7"] = unbal_srcreader["UD7"];
                         row["UD8"] = unbal_srcreader["UD8"];
-                        row["Calc_Close_Parens"] = unbal_srcreader["Calc_Close_Parens"];
+                        row["Close_Parens"] = unbal_srcreader["Close_Parens"];
                         row["Unbal_Src_Cell_Buffer"] = unbal_srcreader["Unbal_Src_Cell_Buffer"];
                         row["Unbal_Origin_Override"] = unbal_srcreader["Unbal_Origin_Override"];
                         row["Unbal_IC_Override"] = unbal_srcreader["Unbal_IC_Override"];
@@ -11467,7 +11467,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                         row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
                         row["Override_Value"] = unbal_srcreader["Override_Value"];
-                        row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
+                        row["Src_Type"] = unbal_srcreader["Src_Type"];
                         srcCellTable.Rows.Add(row);
 
                         int index = (int)unbal_srcreader["Calc_Src_ID_Order"];
@@ -11803,11 +11803,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string src_cell_SQL = @"
 							        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 							            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
-							            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
+							            UD3, UD4, UD5, UD6, UD7, UD8, Close_Parens,Unbal_Src_Cell_Buffer,
 							            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 										Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
 										Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
-										Calc_Src_Type
+										Src_Type
 							        FROM MCM_Src_Cell
 							        WHERE Calc_ID = @Calc_ID
 									AND Calc_Src_ID_Order > 1
@@ -11836,7 +11836,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     }
 
                     string member = "";
-                    string calc_srcType = unbal_srcreader["Calc_Src_Type"].ToString();
+                    string calc_srcType = unbal_srcreader["Src_Type"].ToString();
                     var row = srcCellTable.NewRow();
                     for (int i = 0; i < unbal_srcreader.FieldCount; i++)
                     {
@@ -11892,7 +11892,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 
                     //	                    row["Calc_Src_ID_Order"] = unbal_srcreader["Calc_Src_ID_Order"];
-                    //	                    row["Calc_Open_Parens"] = unbal_srcreader["Calc_Open_Parens"];
+                    //	                    row["Open_Parens"] = unbal_srcreader["Open_Parens"];
                     //	                    row["Calc_Math_Operator"] = unbal_srcreader["Calc_Math_Operator"];
                     //	                    row["Entity"] = unbal_srcreader["Entity"];
                     //	                    row["Cons"] = unbal_srcreader["Cons"];
@@ -11911,7 +11911,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //	                    row["UD6"] = unbal_srcreader["UD6"];
                     //	                    row["UD7"] = unbal_srcreader["UD7"];
                     //	                    row["UD8"] = unbal_srcreader["UD8"];
-                    //	                    row["Calc_Close_Parens"] = unbal_srcreader["Calc_Close_Parens"];
+                    //	                    row["Close_Parens"] = unbal_srcreader["Close_Parens"];
                     //	                    row["Unbal_Src_Cell_Buffer"] = unbal_srcreader["Unbal_Src_Cell_Buffer"];
                     //	                    row["Unbal_Origin_Override"] = unbal_srcreader["Unbal_Origin_Override"];
                     //	                    row["Unbal_IC_Override"] = unbal_srcreader["Unbal_IC_Override"];
@@ -11928,7 +11928,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //	                    row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                     //	                    row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
                     //	                    row["Override_Value"] = unbal_srcreader["Override_Value"];
-                    //	                    row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
+                    //	                    row["Src_Type"] = unbal_srcreader["Src_Type"];
 
                     //						srcCellTable.Rows.Add(row);
 
@@ -12053,13 +12053,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var srcRow = srcCellTable.AsEnumerable().FirstOrDefault(r => Convert.ToInt32(r["Calc_Src_ID_Order"]) == i);
                         if (srcRow != null)
                         {
-                            if (srcRow["Calc_Src_Type"].ToString() == "Dynamic Calc")
+                            if (srcRow["Src_Type"].ToString() == "Dynamic Calc")
                             {
                                 var dyn_Calc = getdynamic_calc_value(balBuffer_Cell, srcRow);
                                 expression = Unbal_Calc.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
 
                             }
-                            else if (srcRow["Calc_Src_Type"].ToString() == "Stored Cell")
+                            else if (srcRow["Src_Type"].ToString() == "Stored Cell")
                             {
                                 string searchName = $"SrcBuffer{i}";
                                 var resultBuffer = new DataBuffer();
@@ -12357,12 +12357,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string curr_expression = cell_Expressions[Cell];
 
 
-            if (srcRow["Calc_Src_Type"].ToString() == "Dynamic Calc")
+            if (srcRow["Src_Type"].ToString() == "Dynamic Calc")
             {
                 var dyn_Calc = getdynamic_calc_value(balBuffer_Cell, srcRow);
                 curr_expression = curr_expression.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
             }
-            else if (srcRow["Calc_Src_Type"].ToString() == "Stored Cell")
+            else if (srcRow["Src_Type"].ToString() == "Stored Cell")
             {
                 string searchName = $"SrcBuffer{i}";
                 var resultBuffer = new DataBuffer();
@@ -13130,12 +13130,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 string insertQuery = @"
                     INSERT INTO RegPlan_Details (
-                        RegPlan_ID, WFScenario_Name, WF_Profile_Name, Activity_ID, Model_ID, Entity, Approval_Level_ID, 
+                        RegPlan_ID, WFScenario_Name, WF_Profile_Name, Act_ID, Model_ID, Entity, Approval_Level_ID, 
                         Plan_Units, Account, Flow, UD1, UD2, UD3, UD4, UD5, UD6, UD7, UD8, Year, 
                         Month1, Month2, Month3, Month4, Month5, Month6, Month7, Month8, Month9, Month10, 
                         Month11, Month12, Quarter1, Quarter2, Quarter3, Quarter4, Yearly, AllowUpdate, Create_Date, Create_User, Update_Date, Update_User
                     ) VALUES (
-                        @RegPlan_ID, @WFScenario_Name, @WF_Profile_Name, @Activity_ID, @Model_ID, @Entity, @Approval_Level_ID, 
+                        @RegPlan_ID, @WFScenario_Name, @WF_Profile_Name, @Act_ID, @Model_ID, @Entity, @Approval_Level_ID, 
                         @Plan_Units, @Account, @Flow, @UD1, @UD2, @UD3, @UD4, @UD5, @UD6, @UD7, @UD8, @Year, 
                         @Month1, @Month2, @Month3, @Month4, @Month5, @Month6, @Month7, @Month8, @Month9, @Month10, 
                         @Month11, @Month12, @Quarter1, @Quarter2, @Quarter3, @Quarter4, @Yearly, @AllowUpdate, @Create_Date, @Create_User, @Update_Date, @Update_User
@@ -13146,7 +13146,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 adapter.InsertCommand.Parameters.Add("@WFScenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFScenario_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Profile_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Profile_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Time_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Time_Name";
-                adapter.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                adapter.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 adapter.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 adapter.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 adapter.InsertCommand.Parameters.Add("@Approval_Level_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Approval_Level_ID";
@@ -13173,7 +13173,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 string updateQuery = @"
                     UPDATE RegPlan_Details SET
-                        WFScenario_Name = @WFScenario_Name, WF_Profile_Name = @WF_Profile_Name, Activity_ID = @Activity_ID, 
+                        WFScenario_Name = @WFScenario_Name, WF_Profile_Name = @WF_Profile_Name, Act_ID = @Act_ID, 
                         Model_ID = @Model_ID, Entity = @Entity, Approval_Level_ID = @Approval_Level_ID, Plan_Units = @Plan_Units, 
                         Account = @Account, Flow = @Flow, UD1 = @UD1, UD2 = @UD2, UD3 = @UD3, UD4 = @UD4, UD5 = @UD5, 
                         UD6 = @UD6, UD7 = @UD7, UD8 = @UD8, Year = @Year, Month1 = @Month1, Month2 = @Month2, 
@@ -13260,7 +13260,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 string insertQuery = @"
                     INSERT INTO RegPlan (
-                        RegPlan_ID, WF_Scenario_Name, WF_Profile_Name, WF_Time_Name, Activity_ID, Entity, Approval_Level_ID, 
+                        RegPlan_ID, WF_Scenario_Name, WF_Profile_Name, WF_Time_Name, Act_ID, Entity, Approval_Level_ID, 
                         Register_ID_1, Register_ID_2, Register_ID, Attribute_1, Attribute_2, Attribute_3, Attribute_4, Attribute_5, 
                         Attribute_6, Attribute_7, Attribute_8, Attribute_9, Attribute_10, Attribute_11, Attribute_12, Attribute_13, Attribute_14, 
                         Attribute_15, Attribute_16, Attribute_17, Attribute_18, Attribute_19, Attribute_20, Attribute_Value_1, Attribute_Value_2, 
@@ -13268,7 +13268,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Attribute_Value_10, Attribute_Value_11, Attribute_Value_12, Date_Value_1, Date_Value_2, Date_Value_3, Date_Value_4, Date_Value_5, 
                         Spread_Amount, Spread_Curve, Status, Create_Date, Create_User, Update_Date, Update_User, Invalid
                     ) VALUES (
-                        @RegPlan_ID, @WF_Scenario_Name, @WF_Profile_Name, @WF_Time_Name, @Activity_ID,@Entity, @Approval_Level_ID, 
+                        @RegPlan_ID, @WF_Scenario_Name, @WF_Profile_Name, @WF_Time_Name, @Act_ID,@Entity, @Approval_Level_ID, 
                         @Register_ID_1, @Register_ID_2, @Register_ID, @Attribute_1, @Attribute_2, @Attribute_3, @Attribute_4, @Attribute_5, 
                         @Attribute_6, @Attribute_7, @Attribute_8, @Attribute_9, @Attribute_10, @Attribute_11, @Attribute_12, @Attribute_13, @Attribute_14, 
                         @Attribute_15, @Attribute_16, @Attribute_17, @Attribute_18, @Attribute_19, @Attribute_20, @Attribute_Value_1, @Attribute_Value_2, 
@@ -13282,7 +13282,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 adapter.InsertCommand.Parameters.Add("@WF_Scenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Scenario_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Profile_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Profile_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Time_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Time_Name";
-                adapter.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                adapter.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 adapter.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 adapter.InsertCommand.Parameters.Add("@Approval_Level_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Approval_Level_ID";
                 adapter.InsertCommand.Parameters.Add("@Register_ID_1", SqlDbType.Int).SourceColumn = "Register_ID_1";
@@ -13614,7 +13614,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             {
                 startTime = registerConfig_dt.Rows[0]["Start_Dt_Src"].ToString();
                 endTime = registerConfig_dt.Rows[0]["End_Dt_Src"].ToString();
-                g_activityID = Convert.ToInt32(registerConfig_dt.Rows[0]["Activity_ID"]);
+                g_activityID = Convert.ToInt32(registerConfig_dt.Rows[0]["Act_ID"]);
                 reg_TimePhasing = registerConfig_dt.Rows[0]["Time_Phasing"].ToString();
             }
 
@@ -13622,7 +13622,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             var scenarioName = wfUnitInfo.ScenarioName;
             var timeName = wfUnitInfo.TimeName;
             var modelID = g_modelID != -1 ? g_modelID : Convert.ToInt32(substVars.XFGetValue("Model_ID", "-1"));
-            var activityID = g_activityID != -1 ? g_activityID : Convert.ToInt32(substVars.XFGetValue("Activity_ID", "-1"));
+            var activityID = g_activityID != -1 ? g_activityID : Convert.ToInt32(substVars.XFGetValue("Act_ID", "-1"));
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             var connection = new SqlConnection(dbConnApp.ConnectionString);
@@ -13644,14 +13644,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 				    WHERE WF_Scenario_Name = @WFScenarioName
 				    AND WF_Profile_Name = @WFProfileName
 				    AND WF_Time_Name = @WFTimeName
-				    AND Activity_ID = @ActivityID"; // Added condition for Activity_ID
+				    AND Act_ID = @ActivityID"; // Added condition for Act_ID
 
                 var regPlan_parameters = new SqlParameter[]
                 {
                     new SqlParameter("@WFScenarioName", SqlDbType.VarChar) { Value = scenarioName },
                     new SqlParameter("@WFProfileName", SqlDbType.VarChar) { Value = profileName },
                     new SqlParameter("@WFTimeName", SqlDbType.VarChar) { Value = timeName },
-                    new SqlParameter("@ActivityID", SqlDbType.Int) { Value = activityID } // Added parameter for Activity_ID
+                    new SqlParameter("@ActivityID", SqlDbType.Int) { Value = activityID } // Added parameter for Act_ID
 				};
 
                 var sqlParam_Index = 4;
@@ -13739,7 +13739,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                         new_Register_Plan_Row["WF_Scenario_Name"] = scenarioName;
                         new_Register_Plan_Row["WF_Profile_Name"] = profileName;
                         new_Register_Plan_Row["WF_Time_Name"] = timeName;
-                        new_Register_Plan_Row["Activity_ID"] = activityID;
+                        new_Register_Plan_Row["Act_ID"] = activityID;
 
                         bool invalid = isRowInvalid(requiredColumns.ToArray(), tvr);
                         new_Register_Plan_Row["Invalid"] = invalid;
@@ -13932,7 +13932,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                                 new_Register_Plan_Details_Row["WF_Scenario_Name"] = scenarioName;
                                 new_Register_Plan_Details_Row["WF_Profile_Name"] = profileName;
                                 new_Register_Plan_Details_Row["WF_Time_Name"] = timeName;
-                                new_Register_Plan_Details_Row["Activity_ID"] = activityID;
+                                new_Register_Plan_Details_Row["Act_ID"] = activityID;
                                 new_Register_Plan_Details_Row["Model_ID"] = modelID;
                                 new_Register_Plan_Details_Row["Entity"] = tvr.Items["Entity"]?.Value.ToString() ?? string.Empty;
                                 //new_Register_Plan_Details_Row["Approval_Level_ID"] = tvr.Items["Approval_Level_ID"].Value.ToString() != string.Empty ? tvr.Items["Approval_Level_ID"].Value.ToString() : approvLevelID; // might need to do Guid.Parse()
@@ -14048,7 +14048,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             string timePhasing = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["Time_Phasing"]?.ToString() : string.Empty;
             string startTime = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["Start_Dt_Src"]?.ToString() : string.Empty;
             string endTime = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["End_Dt_Src"]?.ToString() : string.Empty;
-            g_activityID = Convert.ToInt32(registerConfig.Rows[0]["Activity_ID"]);
+            g_activityID = Convert.ToInt32(registerConfig.Rows[0]["Act_ID"]);
 
             // Fetch Workflow Information
             var wfInfoDetails = getWFInfoDetails();
@@ -14101,7 +14101,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 selectedColumns += ", " + string.Join(", ", timePhasingColumns);
             }
             string baseSelect = $"SELECT rp.Register_Plan_ID, rp.WF_Scenario_Name, rp.WF_Profile_Name, rp.WF_Time_Name, " +
-                                $"rp.Activity_ID, {selectedColumns}";
+                                $"rp.Act_ID, {selectedColumns}";
 
             var Plan_Units = string.Empty;
             Plan_Units = "'Test'";
@@ -14115,7 +14115,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                     string alias = $"rpd_{config.Year}";
                     joinClauses.Add($"LEFT JOIN Register_Plan_Details {alias} " +
                                     $"ON rp.Register_Plan_ID = {alias}.Register_Plan_ID " +
-                                    $"AND rp.Activity_ID = {alias}.Activity_ID " +
+                                    $"AND rp.Act_ID = {alias}.Act_ID " +
                                     $"AND rp.WF_Scenario_Name = {alias}.WF_Scenario_Name " +
                                     $"AND rp.Entity = {alias}.Entity " +
                                     $"AND rp.Approval_Level_ID = {alias}.Approval_Level_ID " +
@@ -14130,7 +14130,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             string whereClause = $"WHERE rp.WF_Scenario_Name = '{wfInfoDetails[scenarioDictKey]}' " +
                                  $"AND rp.WF_Profile_Name = '{wfInfoDetails[profileDictKey]}' " +
                                  $"AND rp.WF_Time_Name = {wfInfoDetails[timeDictKey]} " +
-                                 $"AND rp.Activity_ID = {g_activityID} ";
+                                 $"AND rp.Act_ID = {g_activityID} ";
 
             var whereConditions = new List<string>();
             // Append filter parameter conditions dynamically
@@ -14287,7 +14287,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             var sqlcolumns = string.Empty;
             sqlcolumns = @"
 							SELECT Name, Time_Phasing, Time_Phasing_Driver, Manual_Input_Plan_Units, Start_End_Dt_Src_Obj,Approval_Config,
-							Start_Dt_Src, End_Dt_Src, Activity_ID
+							Start_Dt_Src, End_Dt_Src, Act_ID
 							  FROM FMM_Reg_Config
 							  WHERE Reg_Config_ID = @Reg_Config_ID";
 
@@ -18621,14 +18621,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                     }
 
-                    if ((string)FMM_Src_Cell_DT_Row["Calc_Src_Type"] == "Dynamic Calc")
+                    if ((string)FMM_Src_Cell_DT_Row["Src_Type"] == "Dynamic Calc")
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit Dynamic");
                         GBL_BalCalc = "UnbalAlloc";
                     }
-                    GBL_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Calc_Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Close_Parens"].ToString().Trim());
+                    GBL_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
                     GBL_SrcCellDrillDown_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], src_Cell_Drill_Down);
-                    GBL_UnbalCalc_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Calc_Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Close_Parens"].ToString().Trim());
+                    GBL_UnbalCalc_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Calc_Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
                     FMM_Src_Cell_DT_Row["Calc_Src_ID_Order"] = src_Cell_Count;
                     FMM_Src_Cell_DT_Row["OS_Dynamic_Calc_Script"] = src_Cell_Drill_Down;
                     FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer"] = src_Cell_Drill_Down;
@@ -22923,7 +22923,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             GBL_FMM_Src_Cell_ID += 1;
             GBL_Curr_FMM_Src_Cell_ID = GBL_FMM_Src_Cell_ID;
-            // Check the target Cube_ID source cell config for duplicate Calc_Src_Item and Calc_Src_Type
+            // Check the target Cube_ID source cell config for duplicate Src_Item and Src_Type
             bool isDuplicate = tgt_Src_Cell_Config_DT.AsEnumerable()
                 .Any(row => row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
                             row["Model_ID"].ToString() == GBL_Curr_FMM_Models_ID.ToString() &&
@@ -22941,9 +22941,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Calc_ID"] = GBL_Curr_FMM_Calc_ID;
                 newTargetRow["Cell_ID"] = GBL_FMM_Src_Cell_ID;
                 newTargetRow["Calc_Src_ID_Order"] = src_Src_Cell_Config_Row.Field<int?>("Calc_Src_ID_Order") ?? 0;
-                newTargetRow["Calc_Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Type") ?? string.Empty;
-                newTargetRow["Calc_Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Item") ?? string.Empty;
-                newTargetRow["Calc_Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Open_Parens") ?? string.Empty;
+                newTargetRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
+                newTargetRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
+                newTargetRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
                 newTargetRow["Calc_Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Calc_Math_Operator") ?? string.Empty;
                 newTargetRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
                 newTargetRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
@@ -22963,7 +22963,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
                 newTargetRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
                 newTargetRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                newTargetRow["Calc_Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Close_Parens") ?? string.Empty;
+                newTargetRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
                 newTargetRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
                 newTargetRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
                 newTargetRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
@@ -23010,9 +23010,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     GBL_Curr_FMM_Src_Cell_ID = Convert.ToInt32(existingRow["Cell_ID"].ToString());
                     // Update fields as necessary
                     existingRow["Calc_Src_ID_Order"] = src_Src_Cell_Config_Row.Field<int?>("Calc_Src_ID_Order") ?? 0;
-                    existingRow["Calc_Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Type") ?? string.Empty;
-                    existingRow["Calc_Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Item") ?? string.Empty;
-                    existingRow["Calc_Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Open_Parens") ?? string.Empty;
+                    existingRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
+                    existingRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
+                    existingRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
                     existingRow["Calc_Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Calc_Math_Operator") ?? string.Empty;
                     existingRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
                     existingRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
@@ -23032,7 +23032,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
                     existingRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
                     existingRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                    existingRow["Calc_Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Close_Parens") ?? string.Empty;
+                    existingRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
                     existingRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
                     existingRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
                     existingRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
@@ -24173,8 +24173,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         private object api;
         private DashboardExtenderArgs args;
         private StringBuilder debugString;
-        public int Global_FMM_Activity_ID { get; set; }
-        public int Global_Curr_FMM_Activity_ID { get; set; }
+        public int Global_FMM_Act_ID { get; set; }
+        public int Global_Curr_FMM_Act_ID { get; set; }
         public int Global_FMM_Unit_ID { get; set; }
         public int Global_Curr_FMM_Unit_ID { get; set; }
         public int Global_FMM_Acct_ID { get; set; }
@@ -24541,7 +24541,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             try
             {
                 var save_Data_Task_Result = new XFSelectionChangedTaskResult();
-                var Act_Config_ID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Activity_ID", "0"));
+                var Act_Config_ID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0"));
                 var Cube_ID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
                 var new_OS_Model_Name = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Model_Name", String.Empty);
                 int new_Model_ID = 0;
@@ -24587,7 +24587,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         {
                             var newRow = FMM_Models_DT.NewRow();
                             newRow["Cube_ID"] = Cube_ID;
-                            newRow["Activity_ID"] = Act_Config_ID;
+                            newRow["Act_ID"] = Act_Config_ID;
                             newRow["Model_ID"] = new_Model_ID;
                             newRow["Name"] = new_OS_Model_Name;
                             newRow["Status"] = "Build";
@@ -24941,15 +24941,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var save_Data_Task_Result = new XFSelectionChangedTaskResult();
                 var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
                 var Cube_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Cube_ID", "0"));
-                var Activity_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Activity_ID", "0"));
+                var Act_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Act_ID", "0"));
                 var Appr_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Appr_ID", "0"));
                 var WFProfile_Step = custom_SubstVars.XFGetValue("IV_FMM_trv_Approval_Step_WFProfile", string.Empty);
                 var Reg_Config_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_Register_Profiles", "0"));
 
-                BRApi.ErrorLog.LogMessage(si, "Hit Approval Step: " + Cube_ID + "|" + Activity_ID + "|" + Appr_ID + "|" + WFProfile_Step);
+                BRApi.ErrorLog.LogMessage(si, "Hit Approval Step: " + Cube_ID + "|" + Act_ID + "|" + Appr_ID + "|" + WFProfile_Step);
                 int new_Appr_Step_ID = 0;
 
-                if (Cube_ID > 0 && Activity_ID > 0 && Appr_ID > 0 && Reg_Config_ID > 0 && WFProfile_Step != string.Empty && new_Appr_Step_ID == 0)
+                if (Cube_ID > 0 && Act_ID > 0 && Appr_ID > 0 && Reg_Config_ID > 0 && WFProfile_Step != string.Empty && new_Appr_Step_ID == 0)
                 {
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -24975,14 +24975,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		                    SELECT * 
 		                    FROM FMM_Approval_Step_Config
 		                    WHERE Cube_ID = @Cube_ID
-		                    AND Activity_ID = @Activity_ID
+		                    AND Act_ID = @Act_ID
 		                    AND Appr_ID = @Appr_ID
 		                    AND Register_Profile = @Register_Profile";
 
                         var parameters = new SqlParameter[]
                         {
                             new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
-                            new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Activity_ID },
+                            new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID },
                             new SqlParameter("@Appr_ID", SqlDbType.Int) { Value = Appr_ID },
                             new SqlParameter("@Register_Profile", SqlDbType.Int) { Value = Reg_Config_ID }
                         };
@@ -24994,13 +24994,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		                    SELECT * 
 		                    FROM FMM_Reg_Dtl_Cube_Map
 		                    WHERE Cube_ID = @Cube_ID
-		                    AND Activity_ID = @Activity_ID
+		                    AND Act_ID = @Act_ID
 		                    AND Appr_ID = @Appr_ID";
 
                         parameters = new SqlParameter[]
                         {
                             new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID },
-                            new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Activity_ID },
+                            new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID },
                             new SqlParameter("@Appr_ID", SqlDbType.Int) { Value = Appr_ID },
                         };
 
@@ -25080,7 +25080,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         {
                             var newRow = FMM_Approval_Step_Config_DT.NewRow();
                             newRow["Cube_ID"] = Cube_ID;
-                            newRow["Activity_ID"] = Activity_ID;
+                            newRow["Act_ID"] = Act_ID;
                             newRow["Appr_ID"] = Appr_ID;
                             newRow["WFProfile_Step"] = profile["ProfileKey"];
                             newRow["Appr_Step_ID"] = new_Appr_Step_ID++;
@@ -25105,7 +25105,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Insert into FMM_Reg_Dtl_Cube_Map
                             var mapRow = FMM_Reg_Dtl_Cube_Map_DT.NewRow();
                             mapRow["Cube_ID"] = Cube_ID;
-                            mapRow["Activity_ID"] = Activity_ID;
+                            mapRow["Act_ID"] = Act_ID;
                             mapRow["Appr_ID"] = Appr_ID;
                             mapRow["Appr_Step_ID"] = newRow["Appr_Step_ID"];
                             mapRow["Reg_Dtl_Cube_Map_ID"] = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Reg_Dtl_Cube_Map", "Reg_Dtl_Cube_Map_ID");
@@ -25152,15 +25152,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 BRApi.ErrorLog.LogMessage(si, "Save approval step activity runtype: " + RunType);
                 var save_Data_Task_Result = new XFSelectionChangedTaskResult();
                 var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
-                var Activity_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_Approval_Activity_ID", "0"));
+                var Act_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_Approval_Act_ID", "0"));
                 var Appr_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Appr_ID", "0"));
                 var Appr_Step_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Appr_Step_ID", "-1")); // this can actually be 0
                 var Reg_Config_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_Register_Profiles", "0"));
 
 
-                BRApi.ErrorLog.LogMessage(si, "save data: " + Activity_ID + " " + Appr_ID + " " + Appr_Step_ID + " " + Reg_Config_ID);
+                BRApi.ErrorLog.LogMessage(si, "save data: " + Act_ID + " " + Appr_ID + " " + Appr_Step_ID + " " + Reg_Config_ID);
 
-                if (RunType == "New" && Activity_ID > 0 && Appr_ID > 0 && Appr_Step_ID >= 0 && Reg_Config_ID > 0) // new row
+                if (RunType == "New" && Act_ID > 0 && Appr_ID > 0 && Appr_Step_ID >= 0 && Reg_Config_ID > 0) // new row
                 {
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -25171,7 +25171,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         connection.Open();
 
                         // Get the max ID for the Approval_Step_Config table
-                        int new_Approval_Step_Activity_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Approval_Step_Activity_Config", "Approval_Step_Activity_ID");
+                        int new_Approval_Step_Act_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Approval_Step_Activity_Config", "Approval_Step_Act_ID");
 
                         var sql_Adapter_FMM_Approval_Step_Activity_Config = new SQL_Adapter_FMM_Approval_Step_Activity_Config(si, connection);
                         var FMM_Approval_Step_Activity_Config_DT = new DataTable();
@@ -25181,13 +25181,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         string selectQuery = @"
 		                    SELECT * 
 		                    FROM FMM_Approval_Step_Activity_Config
-		                    WHERE Activity_ID = @Activity_ID
+		                    WHERE Act_ID = @Act_ID
 		                    AND Appr_ID = @Appr_ID
 							AND Appr_Step_ID = @Appr_Step_ID";
 
                         var parameters = new SqlParameter[]
                         {
-                            new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Activity_ID },
+                            new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID },
                             new SqlParameter("@Appr_ID", SqlDbType.Int) { Value = Appr_ID },
                             new SqlParameter("@Appr_Step_ID", SqlDbType.Int) { Value = Appr_Step_ID },
 
@@ -25199,10 +25199,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         FMM_Approval_Step_Activity_Config_DT.Clear(); // clear data, because we only want the column information to create a new row.
                                                                       // Insert into FMM_Approval_Step_Activity_Config_DT
                         var newRow = FMM_Approval_Step_Activity_Config_DT.NewRow();
-                        newRow["Activity_ID"] = Activity_ID;
+                        newRow["Act_ID"] = Act_ID;
                         newRow["Appr_ID"] = Appr_ID;
                         newRow["Appr_Step_ID"] = Appr_Step_ID;
-                        newRow["Approval_Step_Activity_ID"] = new_Approval_Step_Activity_ID;
+                        newRow["Approval_Step_Act_ID"] = new_Approval_Step_Act_ID;
                         newRow["Reg_Config_ID"] = Reg_Config_ID;
                         newRow["Description"] = "Desc";
                         newRow["Acct"] = noneVal;
@@ -25232,7 +25232,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     BRApi.ErrorLog.LogMessage(si, "Approval Step Assignments and Cube Map saved.");
                 }
-                else if (RunType == "Update" && Activity_ID > 0)
+                else if (RunType == "Update" && Act_ID > 0)
                 { // existing row
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -25247,12 +25247,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         string selectQuery = @"
 		                    SELECT * 
 		                    FROM FMM_Approval_Step_Activity_Config
-		                    WHERE Approval_Step_Activity_ID = @Approval_Step_Activity_ID";
+		                    WHERE Approval_Step_Act_ID = @Approval_Step_Act_ID";
 
                         var parameters = new SqlParameter[]
                         {
-							//kinda weird, but we're passing in Activity_ID as the Approval Step Activity ID when in update runtype
-		                    new SqlParameter("@Approval_Step_Activity_ID", SqlDbType.Int) { Value = Activity_ID },
+							//kinda weird, but we're passing in Act_ID as the Approval Step Activity ID when in update runtype
+		                    new SqlParameter("@Approval_Step_Act_ID", SqlDbType.Int) { Value = Act_ID },
 
                         };
 
@@ -25561,11 +25561,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     BRApi.ErrorLog.LogMessage(si, "Hti Copy");
                     Copy_Activities(activity_ConfigRow, ref tgt_FMM_Activity_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
-                    // Access Activity_ID from the current activity_ConfigRow
-                    var curr_srcActivityID = activity_ConfigRow["Activity_ID"] != DBNull.Value
-                                            ? (int)activity_ConfigRow["Activity_ID"]
-                                            : -1; // Handle null Activity_IDs as needed
-                    foreach (DataRow unit_ConfigRow in src_FMM_Unit_Config_DT.Select($"Activity_ID = {curr_srcActivityID}"))
+                    // Access Act_ID from the current activity_ConfigRow
+                    var curr_srcActivityID = activity_ConfigRow["Act_ID"] != DBNull.Value
+                                            ? (int)activity_ConfigRow["Act_ID"]
+                                            : -1; // Handle null Act_IDs as needed
+                    foreach (DataRow unit_ConfigRow in src_FMM_Unit_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcUnitID = unit_ConfigRow["Unit_ID"] != DBNull.Value
                         ? (int)unit_ConfigRow["Unit_ID"]
@@ -25576,7 +25576,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Accts(acct_ConfigRow, ref tgt_FMM_Acct_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow Reg_ConfigRow in src_FMM_Reg_Config_DT.Select($"Activity_ID = {curr_srcActivityID}"))
+                    foreach (DataRow Reg_ConfigRow in src_FMM_Reg_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcRegisterConfigID = Reg_ConfigRow["Reg_Config_ID"] != DBNull.Value
                         ? (int)Reg_ConfigRow["Reg_Config_ID"]
@@ -25587,7 +25587,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Col_Config(col_ConfigRow, ref tgt_FMM_Col_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow approval_ConfigRow in src_FMM_Appr_Config_DT.Select($"Activity_ID = {curr_srcActivityID}"))
+                    foreach (DataRow approval_ConfigRow in src_FMM_Appr_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcApprovalID = approval_ConfigRow["Appr_ID"] != DBNull.Value
                         ? (int)approval_ConfigRow["Appr_ID"]
@@ -25598,7 +25598,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Approval_Steps(approvalstep_ConfigRow, ref tgt_FMM_Approval_Step_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow models_ConfigRow in src_FMM_Models_DT.Select($"Activity_ID = {curr_srcActivityID}"))
+                    foreach (DataRow models_ConfigRow in src_FMM_Models_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcModelID = models_ConfigRow["Model_ID"] != DBNull.Value
                         ? (int)models_ConfigRow["Model_ID"]
@@ -25655,7 +25655,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             var src_Cube_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Cube_ID", "0"));
             var tgt_Cube_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_Cube_ID", "0"));
-            var src_Activity_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Activity_ID", "0"));
+            var src_Act_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Act_ID", "0"));
             BRApi.ErrorLog.LogMessage(si, "Hit Copy: " + src_Cube_ID + "-" + tgt_Cube_ID);
             #region "Define Data Tables"
             var src_FMM_Activity_Config_DT = new DataTable();
@@ -25857,11 +25857,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     BRApi.ErrorLog.LogMessage(si, "Hti Copy");
                     Copy_Activities(activity_ConfigRow, ref tgt_FMM_Activity_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
-                    // Access Activity_ID from the current activity_ConfigRow
-                    var curr_srcActivityID = activity_ConfigRow["Activity_ID"] != DBNull.Value
-                                            ? (int)activity_ConfigRow["Activity_ID"]
-                                            : -1; // Handle null Activity_IDs as needed
-                    foreach (DataRow unit_ConfigRow in src_FMM_Unit_Config_DT.Select($"Activity_ID = {curr_srcActivityID}"))
+                    // Access Act_ID from the current activity_ConfigRow
+                    var curr_srcActivityID = activity_ConfigRow["Act_ID"] != DBNull.Value
+                                            ? (int)activity_ConfigRow["Act_ID"]
+                                            : -1; // Handle null Act_IDs as needed
+                    foreach (DataRow unit_ConfigRow in src_FMM_Unit_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcUnitID = unit_ConfigRow["Unit_ID"] != DBNull.Value
                         ? (int)unit_ConfigRow["Unit_ID"]
@@ -25872,7 +25872,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Accts(acct_ConfigRow, ref tgt_FMM_Acct_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow Reg_ConfigRow in src_FMM_Reg_Config_DT.Select($"Activity_ID = {curr_srcActivityID}"))
+                    foreach (DataRow Reg_ConfigRow in src_FMM_Reg_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcRegisterConfigID = Reg_ConfigRow["Reg_Config_ID"] != DBNull.Value
                         ? (int)Reg_ConfigRow["Reg_Config_ID"]
@@ -25883,7 +25883,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Col_Config(col_ConfigRow, ref tgt_FMM_Col_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow approval_ConfigRow in src_FMM_Appr_Config_DT.Select($"Activity_ID = {curr_srcActivityID}"))
+                    foreach (DataRow approval_ConfigRow in src_FMM_Appr_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcApprovalID = approval_ConfigRow["Appr_ID"] != DBNull.Value
                         ? (int)approval_ConfigRow["Appr_ID"]
@@ -25894,7 +25894,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Approval_Steps(approvalstep_ConfigRow, ref tgt_FMM_Approval_Step_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow models_ConfigRow in src_FMM_Models_DT.Select($"Activity_ID = {curr_srcActivityID}"))
+                    foreach (DataRow models_ConfigRow in src_FMM_Models_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcModelID = models_ConfigRow["Model_ID"] != DBNull.Value
                         ? (int)models_ConfigRow["Model_ID"]
@@ -25979,12 +25979,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             var src_Cube_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Cube_ID", "0"));
             var tgt_Cube_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_Cube_ID", "0"));
-            var src_Activity_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Activity_ID", "0"));
-            var tgt_Activity_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_Activity_ID", "0"));
+            var src_Act_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Act_ID", "0"));
+            var tgt_Act_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_Act_ID", "0"));
             var src_Model_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Model_ID", "0"));
             var tgt_Model_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_Model_ID", "0"));
             var src_Calc_IDs = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Calc_IDs", "0"));
-            Global_Curr_FMM_Activity_ID = tgt_Activity_ID;
+            Global_Curr_FMM_Act_ID = tgt_Act_ID;
             Global_Curr_FMM_Models_ID = tgt_Model_ID;
             BRApi.ErrorLog.LogMessage(si, "Hit Copy Calc: " + src_Cube_ID + "-" + tgt_Cube_ID);
             #region "Define Data Tables"
@@ -26014,11 +26014,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Call for get_FMM_Calc_Config_Data
                 get_FMM_Calc_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID },
-                                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = src_Activity_ID },
+                                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = src_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = src_Model_ID },
                                          new SqlParameter("@Calc_ID", SqlDbType.NVarChar) {Value = src_Calc_IDs }},
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID },
-                                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = tgt_Activity_ID },
+                                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = tgt_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = tgt_Model_ID }},
                     sql_FMM_Get_DataSets, sql_Adapter_FMM_Calc_Config,
                     ref src_FMM_Calc_Config_DT, ref tgt_FMM_Calc_Config_DT, sql_FMM_Get_Max_ID
@@ -26027,11 +26027,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Call for get_FMM_Dest_Cell_Data
                 get_FMM_Dest_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID },
-                                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = src_Activity_ID },
+                                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = src_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = src_Model_ID },
                                          new SqlParameter("@Calc_ID", SqlDbType.NVarChar) {Value = src_Calc_IDs }},
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID },
-                                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = tgt_Activity_ID },
+                                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = tgt_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = tgt_Model_ID }},
                     sql_FMM_Get_DataSets, sql_Adapter_FMM_Dest_Cell,
                     ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_FMM_Get_Max_ID
@@ -26040,11 +26040,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Call for get_FMM_Src_Cell_Data
                 get_FMM_Src_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID },
-                                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = src_Activity_ID },
+                                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = src_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = src_Model_ID },
                                          new SqlParameter("@Calc_ID", SqlDbType.NVarChar) {Value = src_Calc_IDs }},
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID },
-                                         new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = tgt_Activity_ID },
+                                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = tgt_Act_ID },
                                          new SqlParameter("@Model_ID", SqlDbType.Int) { Value = tgt_Model_ID }},
                     sql_FMM_Get_DataSets, sql_Adapter_FMM_Src_Cell,
                     ref src_FMM_Src_Cell_DT, ref tgt_FMM_Src_Cell_DT, sql_FMM_Get_Max_ID
@@ -26097,7 +26097,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{tgt_Where_Clause}";
             sql_Adapter_FMM_Activity_Config.Fill_FMM_Activity_Config_DataTable(si, tgt_FMM_Activity_Config_sqlDataAdapter, tgt_FMM_Activity_Config_DT, tgt_FMM_Activity_Config_selectQuery, tgt_FMM_Activity_Config_parameters);
 
-            Global_FMM_Activity_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Activity_Config", "Activity_ID");
+            Global_FMM_Act_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Activity_Config", "Act_ID");
         }
         private void get_FMM_Unit_Config_Data(SqlParameter[] src_FMM_Unit_Config_parameters, SqlParameter[] tgt_FMM_Unit_Config_parameters, SQL_FMM_Get_DataSets sql_FMM_Get_DataSets, SQL_Adapter_FMM_Unit_Config sql_Adapter_FMM_Unit_Config, ref DataTable src_FMM_Unit_Config_DT, ref DataTable tgt_FMM_Unit_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
         {
@@ -26407,12 +26407,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // If not duplicate, add the new Activity Name and Calc_Type to the target DataTable
             if (!isDuplicate)
             {
-                Global_FMM_Activity_ID += 1;
-                Global_Curr_FMM_Activity_ID = Global_FMM_Activity_ID;
+                Global_FMM_Act_ID += 1;
+                Global_Curr_FMM_Act_ID = Global_FMM_Act_ID;
                 DataRow newTargetRow = tgt_FMM_Activity_Config_DT.NewRow();
 
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_FMM_Act_ID;
                 newTargetRow["Name"] = src_FMM_Activity_Config_Row.Field<string>("Name") ?? string.Empty;
                 newTargetRow["Calc_Type"] = src_FMM_Activity_Config_Row.Field<string>("Calc_Type") ?? string.Empty;
                 newTargetRow["Status"] = row_Status; // Set initial status as "Build"
@@ -26431,7 +26431,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                            row["Calc_Type"].ToString() == src_FMM_Activity_Config_Row["Calc_Type"].ToString());
                 if (existingRow != null)
                 {
-                    Global_Curr_FMM_Activity_ID = existingRow.Field<int>("Activity_ID");
+                    Global_Curr_FMM_Act_ID = existingRow.Field<int>("Act_ID");
                     existingRow["Status"] = row_Status; // Update status or other fields as needed
                     existingRow["Update_Date"] = DateTime.Now;
                     existingRow["Update_User"] = si.UserName; // Set the appropriate user context
@@ -26443,7 +26443,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID units for duplicate Unit_Name
             bool isDuplicate = tgt_FMM_Unit_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_FMM_Unit_Config_Row["Name"].ToString() &&
-                            row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString());
+                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Unit to the target DataTable
             if (!isDuplicate)
@@ -26453,7 +26453,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 DataRow newTargetRow = tgt_FMM_Unit_Config_DT.NewRow();
 
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Unit_ID"] = Global_FMM_Unit_ID;
                 newTargetRow["Name"] = src_FMM_Unit_Config_Row.Field<string>("Name") ?? string.Empty;
                 newTargetRow["Create_Date"] = DateTime.Now;
@@ -26468,7 +26468,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Find the matching row and update it
                 DataRow existingRow = tgt_FMM_Unit_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Unit_Config_Row["Name"].ToString() &&
-                                           row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString());
+                                           row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
                 if (existingRow != null)
                 {
@@ -26483,7 +26483,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID accounts for duplicate Acct_Name
             bool isDuplicate = tgt_FMM_Acct_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_FMM_Acct_Config_Row["Name"].ToString() &&
-                            row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                             row["Unit_ID"].ToString() == Global_Curr_FMM_Unit_ID.ToString());
 
             // If not duplicate, add the new Account to the target DataTable
@@ -26495,7 +26495,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 // Insert values using Field<T> and handling nulls
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Unit_ID"] = Global_Curr_FMM_Unit_ID;
                 newTargetRow["Acct_ID"] = Global_FMM_Acct_ID;
                 newTargetRow["Name"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Name") ?? string.Empty; // Handle nulls
@@ -26512,7 +26512,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Find the matching row and update it
                 DataRow existingRow = tgt_FMM_Acct_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Acct_Config_Row["Name"].ToString() &&
-                                           row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                                           row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                                            row["Unit_ID"].ToString() == Global_Curr_FMM_Unit_ID.ToString());
 
                 if (existingRow != null)
@@ -26532,7 +26532,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID register config for duplicate Register_Name
             bool isDuplicate = tgt_Reg_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_Reg_Config_Row["Name"].ToString() &&
-                            row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString());
+                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Register Config to the target DataTable
             if (!isDuplicate)
@@ -26543,7 +26543,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 // Insert values using Field<T> and handling nulls
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Reg_Config_ID"] = Global_FMM_Reg_Config_ID;
                 newTargetRow["Name"] = src_Reg_Config_Row.Field<string>("Name") ?? string.Empty; // Handle nulls
                 newTargetRow["Time_Phasing"] = src_Reg_Config_Row.Field<string>("Time_Phasing") ?? string.Empty; // Handle nulls
@@ -26563,7 +26563,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Find the matching row and update it
                 DataRow existingRow = tgt_Reg_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_Reg_Config_Row["Name"].ToString() &&
-                                           row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString());
+                                           row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
                 if (existingRow != null)
                 {
@@ -26586,7 +26586,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID column config for duplicate Col_Name
             bool isDuplicate = tgt_Col_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_Col_Config_Row["Name"].ToString() &&
-                            row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                             row["Reg_Config_ID"].ToString() == Global_Curr_FMM_Reg_Config_ID.ToString());
 
             // If not duplicate, add the new Column Config to the target DataTable
@@ -26596,7 +26596,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Global_Curr_FMM_Col_ID = Global_FMM_Col_ID;
                 DataRow newTargetRow = tgt_Col_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Reg_Config_ID"] = Global_Curr_FMM_Reg_Config_ID;
                 newTargetRow["Col_ID"] = Global_FMM_Col_ID;
                 newTargetRow["Name"] = src_Col_Config_Row.Field<string>("Name") ?? string.Empty;
@@ -26621,7 +26621,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Find the matching row and update it
                 DataRow existingRow = tgt_Col_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_Col_Config_Row["Name"].ToString() &&
-                                    row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                                    row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                                     row["Reg_Config_ID"].ToString() == Global_Curr_FMM_Reg_Config_ID.ToString());
 
                 if (existingRow != null)
@@ -26648,7 +26648,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID approvals for duplicate Approval_Name
             bool isDuplicate = tgt_FMM_Appr_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_FMM_Appr_Config_Row["Name"].ToString() &&
-                            row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString());
+                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Approval to the target DataTable
             if (!isDuplicate)
@@ -26657,7 +26657,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Global_Curr_FMM_Appr_ID = Global_FMM_Appr_ID;
                 DataRow newTargetRow = tgt_FMM_Appr_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Appr_ID"] = Global_FMM_Appr_ID;
                 newTargetRow["Name"] = src_FMM_Appr_Config_Row.Field<string>("Name") ?? string.Empty;
                 newTargetRow["Status"] = row_Status; // Set initial status as appropriate
@@ -26673,7 +26673,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Find the matching row and update it
                 DataRow existingRow = tgt_FMM_Appr_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Appr_Config_Row["Name"].ToString() &&
-                                           row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString());
+                                           row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
                 if (existingRow != null)
                 {
@@ -26691,7 +26691,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             bool isDuplicate = tgt_FMM_Approval_Step_Config_DT.AsEnumerable()
                 .Any(row => row["Step_Num"].ToString() == src_FMM_Approval_Step_Config_Row["Step_Num"].ToString() &&
                             row["WFProfile_Step"].ToString() == src_FMM_Approval_Step_Config_Row["WFProfile_Step"].ToString() &&
-                            row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                             row["Appr_ID"].ToString() == Global_Curr_FMM_Appr_ID.ToString());
 
             // If not duplicate, add the new Approval Step to the target DataTable
@@ -26701,7 +26701,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Global_Curr_FMM_Appr_Step_ID = Global_FMM_Appr_Step_ID;
                 DataRow newTargetRow = tgt_FMM_Approval_Step_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_FMM_Act_ID;
                 newTargetRow["Appr_ID"] = Global_FMM_Appr_ID;
                 newTargetRow["Appr_Step_ID"] = Global_FMM_Appr_Step_ID;
                 newTargetRow["Step_Num"] = src_FMM_Approval_Step_Config_Row.Field<int?>("Step_Num") ?? 0;
@@ -26728,7 +26728,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 DataRow existingRow = tgt_FMM_Approval_Step_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Step_Num"].ToString() == src_FMM_Approval_Step_Config_Row["Step_Num"].ToString() &&
                                            row["WFProfile_Step"].ToString() == src_FMM_Approval_Step_Config_Row["WFProfile_Step"].ToString() &&
-                                           row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                                           row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                                            row["Appr_ID"].ToString() == Global_Curr_FMM_Appr_ID.ToString());
 
                 if (existingRow != null)
@@ -26754,7 +26754,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID model config for duplicate Model_Name
             bool isDuplicate = tgt_Model_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_Model_Config_Row["Name"].ToString() &&
-                            row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString());
+                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Model Config to the target DataTable
             if (!isDuplicate)
@@ -26763,7 +26763,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Global_Curr_FMM_Models_ID = Global_FMM_Models_ID;
                 DataRow newTargetRow = tgt_Model_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Model_ID"] = Global_FMM_Models_ID;
                 newTargetRow["Name"] = src_Model_Config_Row.Field<string>("Name") ?? string.Empty;
                 newTargetRow["Status"] = row_Status; // Set initial status as appropriate
@@ -26779,7 +26779,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Find the matching row and update it
                 DataRow existingRow = tgt_Model_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_Model_Config_Row["Name"].ToString() &&
-                                           row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString());
+                                           row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
                 if (existingRow != null)
                 {
@@ -26796,7 +26796,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID calculation config for duplicate Calc_Name and Calc_Type
             bool isDuplicate = tgt_Calc_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_Calc_Config_Row["Name"].ToString() &&
-                            row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                             row["Model_ID"].ToString() == Global_Curr_FMM_Models_ID.ToString());
 
             // If not duplicate, add the new Calculation Config to the target DataTable
@@ -26807,7 +26807,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 DataRow newTargetRow = tgt_Calc_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Model_ID"] = Global_Curr_FMM_Models_ID;
                 newTargetRow["Calc_ID"] = Global_FMM_Calc_ID;
                 if (RunType == "Model Calc Copy")
@@ -26848,7 +26848,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Find the matching row and update it
                 DataRow existingRow = tgt_Calc_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_Calc_Config_Row["Name"].ToString() &&
-                                           row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                                           row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                                            row["Model_ID"].ToString() == Global_Curr_FMM_Models_ID.ToString());
 
                 if (existingRow != null)
@@ -26876,7 +26876,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             // Check the target Cube_ID destination cell config for duplicate Cell_Name and Cell_Type
             bool isDuplicate = tgt_Cell_Config_DT.AsEnumerable()
-                .Any(row => row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                .Any(row => row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                             row["Model_ID"].ToString() == Global_Curr_FMM_Models_ID.ToString() &&
                             row["Calc_ID"].ToString() == Global_Curr_FMM_Calc_ID.ToString());
 
@@ -26888,7 +26888,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 DataRow newTargetRow = tgt_Cell_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID; // Correct Activity_ID assignment
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID; // Correct Act_ID assignment
                 newTargetRow["Model_ID"] = Global_Curr_FMM_Models_ID;
                 newTargetRow["Calc_ID"] = Global_Curr_FMM_Calc_ID;
                 newTargetRow["OS_Cell_ID"] = Global_FMM_Dest_Cell_ID;
@@ -26934,7 +26934,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 // Find the matching row and update it
                 DataRow existingRow = tgt_Cell_Config_DT.AsEnumerable()
-                    .FirstOrDefault(row => row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                    .FirstOrDefault(row => row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                                             row["Model_ID"].ToString() == Global_Curr_FMM_Models_ID.ToString() &&
                                            row["Calc_ID"].ToString() == Global_Curr_FMM_Calc_ID.ToString());
 
@@ -26981,9 +26981,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             Global_FMM_Src_Cell_ID += 1;
             Global_Curr_FMM_Src_Cell_ID = Global_FMM_Src_Cell_ID;
-            // Check the target Cube_ID source cell config for duplicate Calc_Src_Item and Calc_Src_Type
+            // Check the target Cube_ID source cell config for duplicate Src_Item and Src_Type
             bool isDuplicate = tgt_Src_Cell_Config_DT.AsEnumerable()
-                .Any(row => row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                .Any(row => row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                             row["Model_ID"].ToString() == Global_Curr_FMM_Models_ID.ToString() &&
                             row["Calc_ID"].ToString() == Global_Curr_FMM_Calc_ID.ToString() &&
                             row["Cell_ID"].ToString() == Global_Curr_FMM_Src_Cell_ID.ToString());
@@ -26994,14 +26994,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 DataRow newTargetRow = tgt_Src_Cell_Config_DT.NewRow();
 
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = Global_Curr_FMM_Activity_ID;
+                newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Model_ID"] = Global_Curr_FMM_Models_ID;
                 newTargetRow["Calc_ID"] = Global_Curr_FMM_Calc_ID;
                 newTargetRow["Cell_ID"] = Global_FMM_Src_Cell_ID;
                 newTargetRow["Calc_Src_ID_Order"] = src_Src_Cell_Config_Row.Field<int?>("Calc_Src_ID_Order") ?? 0;
-                newTargetRow["Calc_Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Type") ?? string.Empty;
-                newTargetRow["Calc_Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Item") ?? string.Empty;
-                newTargetRow["Calc_Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Open_Parens") ?? string.Empty;
+                newTargetRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
+                newTargetRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
+                newTargetRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
                 newTargetRow["Calc_Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Calc_Math_Operator") ?? string.Empty;
                 newTargetRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
                 newTargetRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
@@ -27021,7 +27021,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
                 newTargetRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
                 newTargetRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                newTargetRow["Calc_Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Close_Parens") ?? string.Empty;
+                newTargetRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
                 newTargetRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
                 newTargetRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
                 newTargetRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
@@ -27058,7 +27058,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 // Find the matching row and update it
                 DataRow existingRow = tgt_Src_Cell_Config_DT.AsEnumerable()
-                    .FirstOrDefault(row => row["Activity_ID"].ToString() == Global_Curr_FMM_Activity_ID.ToString() &&
+                    .FirstOrDefault(row => row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString() &&
                                            row["Model_ID"].ToString() == Global_Curr_FMM_Models_ID.ToString() &&
                                            row["Calc_ID"].ToString() == Global_Curr_FMM_Calc_ID.ToString() &&
                                            row["Cell_ID"].ToString() == Global_Curr_FMM_Src_Cell_ID.ToString());
@@ -27068,9 +27068,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     Global_Curr_FMM_Src_Cell_ID = Convert.ToInt32(existingRow["Cell_ID"].ToString());
                     // Update fields as necessary
                     existingRow["Calc_Src_ID_Order"] = src_Src_Cell_Config_Row.Field<int?>("Calc_Src_ID_Order") ?? 0;
-                    existingRow["Calc_Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Type") ?? string.Empty;
-                    existingRow["Calc_Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Calc_Src_Item") ?? string.Empty;
-                    existingRow["Calc_Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Open_Parens") ?? string.Empty;
+                    existingRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
+                    existingRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
+                    existingRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
                     existingRow["Calc_Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Calc_Math_Operator") ?? string.Empty;
                     existingRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
                     existingRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
@@ -27090,7 +27090,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
                     existingRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
                     existingRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                    existingRow["Calc_Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Calc_Close_Parens") ?? string.Empty;
+                    existingRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
                     existingRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
                     existingRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
                     existingRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
@@ -27135,7 +27135,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Global_Curr_FMM_Model_Grps_ID = Global_FMM_Model_Grps_ID;
                 DataRow newTargetRow = tgt_Model_Grp_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = targetCubeID;
+                newTargetRow["Act_ID"] = targetCubeID;
                 newTargetRow["Model_Grp_Config_ID"] = Global_FMM_Model_Grps_ID;
                 newTargetRow["Group_Name"] = src_Model_Grp_Config_Row["Group_Name"].ToString();
                 newTargetRow["Group_Type"] = src_Model_Grp_Config_Row["Group_Type"].ToString();
@@ -27179,7 +27179,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Global_Curr_FMM_Model_Grp_Assign_Model_ID = Global_FMM_Model_Grp_Assign_Model_ID;
                 DataRow newTargetRow = tgt_Model_Grp_Assign_Model_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = targetCubeID;
+                newTargetRow["Act_ID"] = targetCubeID;
                 newTargetRow["Model_Grp_Assign_Model_ID"] = Global_FMM_Model_Grp_Assign_Model_ID;
                 newTargetRow["Group_Name"] = src_Model_Grp_Assign_Model_Row["Group_Name"].ToString();
                 newTargetRow["Model_Name"] = src_Model_Grp_Assign_Model_Row["Model_Name"].ToString();
@@ -27223,7 +27223,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Global_Curr_FMM_Calc_Unit_Config_ID = Global_FMM_Calc_Unit_Config_ID;
                 DataRow newTargetRow = tgt_Calc_Unit_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = targetCubeID;
+                newTargetRow["Act_ID"] = targetCubeID;
                 newTargetRow["Calc_Unit_Config_ID"] = Global_FMM_Calc_Unit_Config_ID;
                 newTargetRow["DU_Name"] = src_Calc_Unit_Config_Row["DU_Name"].ToString();
                 newTargetRow["DU_Type"] = src_Calc_Unit_Config_Row["DU_Type"].ToString();
@@ -27267,7 +27267,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Global_Curr_FMM_Calc_Unit_Assign_Model_Grp_ID = Global_FMM_Calc_Unit_Assign_Model_Grp_ID;
                 DataRow newTargetRow = tgt_Calc_Unit_Assign_Model_Grp_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Activity_ID"] = targetCubeID;
+                newTargetRow["Act_ID"] = targetCubeID;
                 newTargetRow["Calc_Unit_Assign_Model_Grp_ID"] = Global_FMM_Calc_Unit_Assign_Model_Grp_ID;
                 newTargetRow["DU_Name"] = src_Calc_Unit_Assign_Model_Grp_Row["DU_Name"].ToString();
                 newTargetRow["Model_Grp_Name"] = src_Calc_Unit_Assign_Model_Grp_Row["Model_Grp_Name"].ToString();
@@ -27352,7 +27352,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #region "Check Duplicates"
 
         #region "Duplicate Models"
-        private void Duplicate_Model_List(int Cube_ID, int Activity_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult Save_Data_Task_Result)
+        private void Duplicate_Model_List(int Cube_ID, int Act_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult Save_Data_Task_Result)
         {
             try
             {
@@ -27374,12 +27374,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		                        SELECT *
 		                        FROM FMM_Models
 		                        WHERE Cube_ID = @Cube_ID
-								AND Activity_ID = @Activity_ID";
+								AND Act_ID = @Act_ID";
                             // Create an array of SqlParameter objects
                             var ds_parameters = new SqlParameter[]
                             {
                                 new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID},
-                                new SqlParameter("@Activity_ID", SqlDbType.Int) { Value = Activity_ID}
+                                new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Act_ID}
                             };
 
                             // Attempt to fill the data table and check for any issues
@@ -27398,7 +27398,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Populate Global_Model_List_Dict and handle errors
                             foreach (DataRow cube_Model_Row in FMM_Models_DT.Rows)
                             {
-                                string ModelKey = Cube_ID + "|" + Activity_ID + "|" + (int)cube_Model_Row["Model_ID"];
+                                string ModelKey = Cube_ID + "|" + Act_ID + "|" + (int)cube_Model_Row["Model_ID"];
                                 Global_Models_Dict.Add(ModelKey, (string)cube_Model_Row["Name"]);
                             }
                         }
@@ -28455,7 +28455,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and parameters
                 string insertQuery = @"
                     INSERT INTO FMM_Calc_Config (
-                        Cube_ID, Activity_ID, Model_ID, Calc_ID, Name, Sequence, 
+                        Cube_ID, Act_ID, Model_ID, Calc_ID, Name, Sequence, 
                         Calc_Condition, Calc_Explanation, Time_Phasing, Input_Frequency, 
                         MultiDim_Alloc, MbrList_Calc, MbrList_1_Dim, MbrList_1_Filter, 
                         MbrList_1_DimType, MbrList_1_Filter, MbrList_2_Dim, 
@@ -28467,7 +28467,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Unbal_Calc, Table_Calc_SQL_Logic, Status, Create_Date, Create_User, 
                         Update_Date, Update_User
                     ) VALUES (
-                        @Cube_ID, @Activity_ID, @Model_ID, @Calc_ID, @Name, @Sequence, 
+                        @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Name, @Sequence, 
                         @Calc_Condition, @Calc_Explanation, @Time_Phasing, @Input_Frequency, 
                         @MultiDim_Alloc, @MbrList_Calc, @MbrList_1_Dim, @MbrList_1_Filter, 
                         @MbrList_1_DimType, @MbrList_1_Filter, @MbrList_2_Dim, 
@@ -28484,7 +28484,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Add parameters for the insert command
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_ID", SqlDbType.Int).SourceColumn = "Calc_ID";
                 sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
@@ -29961,14 +29961,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string insertQuery = @"
                 INSERT INTO [dbo].[FMM_Src_Cell]
                 (
-                    [Cube_ID], [Activity_ID], [Model_ID], [Calc_ID], [Cell_ID],
-                    [Calc_Src_ID_Order], [Calc_Src_Type], [Calc_Src_Item], 
-                    [Calc_Open_Parens], [Calc_Math_Operator], [Entity], 
+                    [Cube_ID], [Act_ID], [Model_ID], [Calc_ID], [Cell_ID],
+                    [Calc_Src_ID_Order], [Src_Type], [Src_Item], 
+                    [Open_Parens], [Calc_Math_Operator], [Entity], 
                     [Cons], [Scenario], [Time], [Origin], 
                     [IC], [View], [Src_Plan_Units], [Acct], 
                     [Flow], [UD1], [UD2], [UD3], 
                     [UD4], [UD5], [UD6], [UD7], 
-                    [UD8], [Calc_Close_Parens], [Unbal_Src_Cell_Buffer], 
+                    [UD8], [Close_Parens], [Unbal_Src_Cell_Buffer], 
                     [Unbal_Origin_Override], [Unbal_IC_Override], 
                     [Unbal_Acct_Override], [Unbal_Flow_Override], 
                     [Unbal_UD1_Override], [Unbal_UD2_Override], 
@@ -29983,14 +29983,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 )
                 VALUES
                 (
-                    @Cube_ID, @Activity_ID, @Model_ID, @Calc_ID, @Cell_ID,
-                    @Calc_Src_ID_Order, @Calc_Src_Type, @Calc_Src_Item, 
+                    @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Cell_ID,
+                    @Calc_Src_ID_Order, @Src_Type, @Src_Item, 
                     @Open_Parens, @Math_Operator, @Entity, 
                     @Cons, @Scenario, @Time, @Origin, 
                     @IC, @View, @Src_Plan_Units, @Acct, 
                     @Flow, @UD1, @UD2, @UD3, 
                     @UD4, @UD5, @UD6, @UD7, 
-                    @UD8, @Calc_Close_Parens, @Unbal_Src_Cell_Buffer, 
+                    @UD8, @Close_Parens, @Unbal_Src_Cell_Buffer, 
                     @Unbal_Origin_Override, @Unbal_IC_Override, 
                     @Unbal_Acct_Override, @Unbal_Flow_Override, 
                     @Unbal_UD1_Override, @Unbal_UD2_Override, 
@@ -30008,14 +30008,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Add parameters to the insert command
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_ID", SqlDbType.Int).SourceColumn = "Calc_ID";
                 sqa.InsertCommand.Parameters.Add("@Cell_ID", SqlDbType.Int).SourceColumn = "Cell_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_Src_ID_Order", SqlDbType.Int).SourceColumn = "Calc_Src_ID_Order";
-                sqa.InsertCommand.Parameters.Add("@Calc_Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Calc_Src_Type";
-                sqa.InsertCommand.Parameters.Add("@Calc_Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Calc_Src_Item";
-                sqa.InsertCommand.Parameters.Add("@Calc_Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Open_Parens";
+                sqa.InsertCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
+                sqa.InsertCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
+                sqa.InsertCommand.Parameters.Add("@Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Open_Parens";
                 sqa.InsertCommand.Parameters.Add("@Calc_Math_Operator", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Math_Operator";
                 sqa.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 sqa.InsertCommand.Parameters.Add("@Cons", SqlDbType.NVarChar, 100).SourceColumn = "Cons";
@@ -30031,7 +30031,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.InsertCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
                 }
-                sqa.InsertCommand.Parameters.Add("@Calc_Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Close_Parens";
+                sqa.InsertCommand.Parameters.Add("@Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Close_Parens";
                 sqa.InsertCommand.Parameters.Add("@Unbal_Src_Cell_Buffer", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer";
                 sqa.InsertCommand.Parameters.Add("@Unbal_Origin_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_Origin_Override";
                 sqa.InsertCommand.Parameters.Add("@Unbal_IC_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_IC_Override";
@@ -30061,9 +30061,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the update query and parameters
                 string updateQuery = @"
                 UPDATE [dbo].[FMM_Src_Cell]
-                SET [Cube_ID] = @Cube_ID, [Activity_ID] = @Activity_ID, [Model_ID] = @Model_ID, 
-                    [Calc_Src_ID_Order] = @Calc_Src_ID_Order, [Calc_Src_Type] = @Calc_Src_Type,
-                    [Calc_Src_Item] = @Calc_Src_Item, [Calc_Open_Parens] = @Open_Parens, 
+                SET [Cube_ID] = @Cube_ID, [Act_ID] = @Act_ID, [Model_ID] = @Model_ID, 
+                    [Calc_Src_ID_Order] = @Calc_Src_ID_Order, [Src_Type] = @Src_Type,
+                    [Src_Item] = @Src_Item, [Open_Parens] = @Open_Parens, 
                     [Calc_Math_Operator] = @Math_Operator, [Entity] = @Entity, 
                     [Cons] = @Cons, [Scenario] = @Scenario, 
                     [Time] = @Time, [Origin] = @Origin, 
@@ -30073,7 +30073,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     [UD2] = @UD2, [UD3] = @UD3, 
                     [UD4] = @UD4, [UD5] = @UD5, 
                     [UD6] = @UD6, [UD7] = @UD7, 
-                    [UD8] = @UD8, [Calc_Close_Parens] = @Calc_Close_Parens,
+                    [UD8] = @UD8, [Close_Parens] = @Close_Parens,
                     [Unbal_Src_Cell_Buffer] = @Unbal_Src_Cell_Buffer, 
                     [Unbal_Origin_Override] = @Unbal_Origin_Override,
                     [Unbal_IC_Override] = @Unbal_IC_Override, 
@@ -30104,12 +30104,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Add parameters for the update command
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Cell_ID", SqlDbType.Int) { SourceColumn = "Cell_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.UpdateCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.UpdateCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.UpdateCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.UpdateCommand.Parameters.Add("@Calc_Src_ID_Order", SqlDbType.Int).SourceColumn = "Calc_Src_ID_Order";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Calc_Src_Type";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Calc_Src_Item";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Open_Parens";
+                sqa.UpdateCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
+                sqa.UpdateCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
+                sqa.UpdateCommand.Parameters.Add("@Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Open_Parens";
                 sqa.UpdateCommand.Parameters.Add("@Calc_Math_Operator", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Math_Operator";
                 sqa.UpdateCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 sqa.UpdateCommand.Parameters.Add("@Cons", SqlDbType.NVarChar, 100).SourceColumn = "Cons";
@@ -30125,7 +30125,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.UpdateCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
                 }
-                sqa.UpdateCommand.Parameters.Add("@Calc_Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Close_Parens";
+                sqa.UpdateCommand.Parameters.Add("@Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Close_Parens";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Src_Cell_Buffer", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Origin_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_Origin_Override";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_IC_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_IC_Override";
@@ -30421,7 +30421,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 { "Table", new ColumnConfig[]
                     {
                         new ColumnConfig { ColumnName = "Cube_ID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_Cube_ID!|" },
-                        new ColumnConfig { ColumnName = "Activity_ID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_Activity_ID!|" },
+                        new ColumnConfig { ColumnName = "Act_ID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_Act_ID!|" },
                         new ColumnConfig { ColumnName = "Model_ID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_Model_ID!|" },
                         new ColumnConfig { ColumnName = "Sequence", Description = "Seq", IsVisible = true },
                         new ColumnConfig { ColumnName = "Name", Description = "[Calc Name]", IsVisible = true },
@@ -30442,7 +30442,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 { "Cube", new ColumnConfig[]
                     {
                         new ColumnConfig { ColumnName = "Cube_ID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_Cube_ID!|" },
-                        new ColumnConfig { ColumnName = "Activity_ID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_Activity_ID!|" },
+                        new ColumnConfig { ColumnName = "Act_ID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_Act_ID!|" },
                         new ColumnConfig { ColumnName = "Model_ID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_Model_ID!|" },
                         new ColumnConfig { ColumnName = "Sequence", Description = "Seq", IsVisible = true },
                         new ColumnConfig { ColumnName = "Name", Description = "[Calc Name]", IsVisible = true },
@@ -30541,16 +30541,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     {
                         new ColumnConfig { ColumnName = "Cell_ID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Cube_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Cube_ID!|" },
-                        new ColumnConfig { ColumnName = "Activity_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Activity_ID!|" },
+                        new ColumnConfig { ColumnName = "Act_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Act_ID!|" },
                         new ColumnConfig { ColumnName = "Model_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Model_ID!|" },
                         new ColumnConfig { ColumnName = "Calc_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Calc_ID!|" },
                         new ColumnConfig { ColumnName = "Calc_Src_ID_Order", Description = "Order", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Calc_Src_Type", Description = "[Source/Calc Type]", ParameterName = "DL_FMM_Table_Calc_Source", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Calc_Src_Item", Description = "[Source/Calc Item]", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Calc_Open_Parens", Description = "(", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Src_Type", Description = "[Source/Calc Type]", ParameterName = "DL_FMM_Table_Calc_Source", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Src_Item", Description = "[Source/Calc Item]", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Open_Parens", Description = "(", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Calc_Math_Operator", Description = "Op", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Table_Calc_Expression", Description = "[Calc Expression]", Width = "200", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Calc_Close_Parens", Description = ")", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Close_Parens", Description = ")", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Table_Join_Expression", Description = "[Join Expression]", Width = "200", IsVisible = true },
                         new ColumnConfig { ColumnName = "Table_Filter_Expression", Description = "[Filter Expression]", Width = "200", IsVisible = true },
                         new ColumnConfig { ColumnName = "Map_Type", Description = "[Map Type]", Width = "Auto", IsVisible = true },
@@ -30563,11 +30563,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     {
                         new ColumnConfig { ColumnName = "Cell_ID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Cube_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Cube_ID!|" },
-                        new ColumnConfig { ColumnName = "Activity_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Activity_ID!|" },
+                        new ColumnConfig { ColumnName = "Act_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Act_ID!|" },
                         new ColumnConfig { ColumnName = "Model_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Model_ID!|" },
                         new ColumnConfig { ColumnName = "Calc_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Calc_ID!|" },
                         new ColumnConfig { ColumnName = "Calc_Src_ID_Order", Description = "Order", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Calc_Open_Parens", Description = "(", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Open_Parens", Description = "(", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Calc_Math_Operator", Description = "Op", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Entity", Description = "Entity", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Cons", Description = "Cons", Width = "Auto", IsVisible = true },
@@ -30586,8 +30586,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Calc_Close_Parens", Description = ")", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Calc_Src_Type", Description = "[Source Type]", ParameterName = "DL_FMM_Cube_Calc_Source", DefaultValue = "[Stored Cell]", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Close_Parens", Description = ")", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Src_Type", Description = "[Source Type]", ParameterName = "DL_FMM_Cube_Calc_Source", DefaultValue = "[Stored Cell]", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }
                 }

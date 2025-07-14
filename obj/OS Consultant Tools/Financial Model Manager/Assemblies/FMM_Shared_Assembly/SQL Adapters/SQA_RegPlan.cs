@@ -49,7 +49,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 string insertQuery = @"
                     INSERT INTO RegPlan (
-                        RegPlan_ID, WF_Scenario_Name, WF_Profile_Name, WF_Time_Name, Activity_ID, Entity, Approval_Level_ID, 
+                        RegPlan_ID, WF_Scenario_Name, WF_Profile_Name, WF_Time_Name, Act_ID, Entity, Approval_Level_ID, 
                         Register_ID_1, Register_ID_2, Register_ID, Attribute_1, Attribute_2, Attribute_3, Attribute_4, Attribute_5, 
                         Attribute_6, Attribute_7, Attribute_8, Attribute_9, Attribute_10, Attribute_11, Attribute_12, Attribute_13, Attribute_14, 
                         Attribute_15, Attribute_16, Attribute_17, Attribute_18, Attribute_19, Attribute_20, Attribute_Value_1, Attribute_Value_2, 
@@ -57,7 +57,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Attribute_Value_10, Attribute_Value_11, Attribute_Value_12, Date_Value_1, Date_Value_2, Date_Value_3, Date_Value_4, Date_Value_5, 
                         Spread_Amount, Spread_Curve, Status, Create_Date, Create_User, Update_Date, Update_User, Invalid
                     ) VALUES (
-                        @RegPlan_ID, @WF_Scenario_Name, @WF_Profile_Name, @WF_Time_Name, @Activity_ID,@Entity, @Approval_Level_ID, 
+                        @RegPlan_ID, @WF_Scenario_Name, @WF_Profile_Name, @WF_Time_Name, @Act_ID,@Entity, @Approval_Level_ID, 
                         @Register_ID_1, @Register_ID_2, @Register_ID, @Attribute_1, @Attribute_2, @Attribute_3, @Attribute_4, @Attribute_5, 
                         @Attribute_6, @Attribute_7, @Attribute_8, @Attribute_9, @Attribute_10, @Attribute_11, @Attribute_12, @Attribute_13, @Attribute_14, 
                         @Attribute_15, @Attribute_16, @Attribute_17, @Attribute_18, @Attribute_19, @Attribute_20, @Attribute_Value_1, @Attribute_Value_2, 
@@ -71,7 +71,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 adapter.InsertCommand.Parameters.Add("@WF_Scenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Scenario_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Profile_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Profile_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Time_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Time_Name";
-                adapter.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                adapter.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 adapter.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 adapter.InsertCommand.Parameters.Add("@Approval_Level_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Approval_Level_ID";
                 adapter.InsertCommand.Parameters.Add("@Register_ID_1", SqlDbType.Int).SourceColumn = "Register_ID_1";

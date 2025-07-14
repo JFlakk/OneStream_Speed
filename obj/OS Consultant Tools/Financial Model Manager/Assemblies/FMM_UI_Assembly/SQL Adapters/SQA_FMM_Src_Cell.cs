@@ -54,14 +54,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string insertQuery = @"
                 INSERT INTO [dbo].[FMM_Src_Cell]
                 (
-                    [Cube_ID], [Activity_ID], [Model_ID], [Calc_ID], [Cell_ID],
-                    [Calc_Src_ID_Order], [Calc_Src_Type], [Calc_Src_Item], 
-                    [Calc_Open_Parens], [Calc_Math_Operator], [Entity], 
+                    [Cube_ID], [Act_ID], [Model_ID], [Calc_ID], [Cell_ID],
+                    [Calc_Src_ID_Order], [Src_Type], [Src_Item], 
+                    [Open_Parens], [Calc_Math_Operator], [Entity], 
                     [Cons], [Scenario], [Time], [Origin], 
                     [IC], [View], [Src_Plan_Units], [Acct], 
                     [Flow], [UD1], [UD2], [UD3], 
                     [UD4], [UD5], [UD6], [UD7], 
-                    [UD8], [Calc_Close_Parens], [Unbal_Src_Cell_Buffer], 
+                    [UD8], [Close_Parens], [Unbal_Src_Cell_Buffer], 
                     [Unbal_Origin_Override], [Unbal_IC_Override], 
                     [Unbal_Acct_Override], [Unbal_Flow_Override], 
                     [Unbal_UD1_Override], [Unbal_UD2_Override], 
@@ -76,14 +76,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 )
                 VALUES
                 (
-                    @Cube_ID, @Activity_ID, @Model_ID, @Calc_ID, @Cell_ID,
-                    @Calc_Src_ID_Order, @Calc_Src_Type, @Calc_Src_Item, 
+                    @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Cell_ID,
+                    @Calc_Src_ID_Order, @Src_Type, @Src_Item, 
                     @Open_Parens, @Math_Operator, @Entity, 
                     @Cons, @Scenario, @Time, @Origin, 
                     @IC, @View, @Src_Plan_Units, @Acct, 
                     @Flow, @UD1, @UD2, @UD3, 
                     @UD4, @UD5, @UD6, @UD7, 
-                    @UD8, @Calc_Close_Parens, @Unbal_Src_Cell_Buffer, 
+                    @UD8, @Close_Parens, @Unbal_Src_Cell_Buffer, 
                     @Unbal_Origin_Override, @Unbal_IC_Override, 
                     @Unbal_Acct_Override, @Unbal_Flow_Override, 
                     @Unbal_UD1_Override, @Unbal_UD2_Override, 
@@ -101,14 +101,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Add parameters to the insert command
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_ID", SqlDbType.Int).SourceColumn = "Calc_ID";
                 sqa.InsertCommand.Parameters.Add("@Cell_ID", SqlDbType.Int).SourceColumn = "Cell_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_Src_ID_Order", SqlDbType.Int).SourceColumn = "Calc_Src_ID_Order";
-                sqa.InsertCommand.Parameters.Add("@Calc_Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Calc_Src_Type";
-                sqa.InsertCommand.Parameters.Add("@Calc_Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Calc_Src_Item";
-                sqa.InsertCommand.Parameters.Add("@Calc_Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Open_Parens";
+                sqa.InsertCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
+                sqa.InsertCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
+                sqa.InsertCommand.Parameters.Add("@Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Open_Parens";
                 sqa.InsertCommand.Parameters.Add("@Calc_Math_Operator", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Math_Operator";
                 sqa.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 sqa.InsertCommand.Parameters.Add("@Cons", SqlDbType.NVarChar, 100).SourceColumn = "Cons";
@@ -124,7 +124,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.InsertCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
                 }
-                sqa.InsertCommand.Parameters.Add("@Calc_Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Close_Parens";
+                sqa.InsertCommand.Parameters.Add("@Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Close_Parens";
                 sqa.InsertCommand.Parameters.Add("@Unbal_Src_Cell_Buffer", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer";
                 sqa.InsertCommand.Parameters.Add("@Unbal_Origin_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_Origin_Override";
                 sqa.InsertCommand.Parameters.Add("@Unbal_IC_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_IC_Override";
@@ -154,9 +154,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the update query and parameters
                 string updateQuery = @"
                 UPDATE [dbo].[FMM_Src_Cell]
-                SET [Cube_ID] = @Cube_ID, [Activity_ID] = @Activity_ID, [Model_ID] = @Model_ID, 
-                    [Calc_Src_ID_Order] = @Calc_Src_ID_Order, [Calc_Src_Type] = @Calc_Src_Type,
-                    [Calc_Src_Item] = @Calc_Src_Item, [Calc_Open_Parens] = @Open_Parens, 
+                SET [Cube_ID] = @Cube_ID, [Act_ID] = @Act_ID, [Model_ID] = @Model_ID, 
+                    [Calc_Src_ID_Order] = @Calc_Src_ID_Order, [Src_Type] = @Src_Type,
+                    [Src_Item] = @Src_Item, [Open_Parens] = @Open_Parens, 
                     [Calc_Math_Operator] = @Math_Operator, [Entity] = @Entity, 
                     [Cons] = @Cons, [Scenario] = @Scenario, 
                     [Time] = @Time, [Origin] = @Origin, 
@@ -166,7 +166,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     [UD2] = @UD2, [UD3] = @UD3, 
                     [UD4] = @UD4, [UD5] = @UD5, 
                     [UD6] = @UD6, [UD7] = @UD7, 
-                    [UD8] = @UD8, [Calc_Close_Parens] = @Calc_Close_Parens,
+                    [UD8] = @UD8, [Close_Parens] = @Close_Parens,
                     [Unbal_Src_Cell_Buffer] = @Unbal_Src_Cell_Buffer, 
                     [Unbal_Origin_Override] = @Unbal_Origin_Override,
                     [Unbal_IC_Override] = @Unbal_IC_Override, 
@@ -197,12 +197,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Add parameters for the update command
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Cell_ID", SqlDbType.Int) { SourceColumn = "Cell_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.UpdateCommand.Parameters.Add("@Activity_ID", SqlDbType.Int).SourceColumn = "Activity_ID";
+                sqa.UpdateCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.UpdateCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.UpdateCommand.Parameters.Add("@Calc_Src_ID_Order", SqlDbType.Int).SourceColumn = "Calc_Src_ID_Order";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Calc_Src_Type";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Calc_Src_Item";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Open_Parens";
+                sqa.UpdateCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
+                sqa.UpdateCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
+                sqa.UpdateCommand.Parameters.Add("@Open_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Open_Parens";
                 sqa.UpdateCommand.Parameters.Add("@Calc_Math_Operator", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Math_Operator";
                 sqa.UpdateCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 sqa.UpdateCommand.Parameters.Add("@Cons", SqlDbType.NVarChar, 100).SourceColumn = "Cons";
@@ -218,7 +218,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.UpdateCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
                 }
-                sqa.UpdateCommand.Parameters.Add("@Calc_Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Calc_Close_Parens";
+                sqa.UpdateCommand.Parameters.Add("@Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Close_Parens";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Src_Cell_Buffer", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Origin_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_Origin_Override";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_IC_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_IC_Override";
