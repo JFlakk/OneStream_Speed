@@ -346,7 +346,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string bal_buffer_cell_SQL = @"
 												Select Acct, View,Origin,IC,Flow,UD1,
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
-													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
+													Curr_Cube_Buffer_Filter,Buffer_Filter
 													FROM MCM_Cell
 													WHERE Calc_ID = @Calc_ID";
 
@@ -373,7 +373,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var ud7 = reader["UD7"] != DBNull.Value ? reader["UD7"].ToString() : null;
                         var ud8 = reader["UD8"] != DBNull.Value ? reader["UD8"].ToString() : null;
 
-                        var os_Curr_Cube_Buffer = reader["OS_Curr_Cube_Buffer_Filter"].ToString();
+                        var os_Curr_Cube_Buffer = reader["Curr_Cube_Buffer_Filter"].ToString();
                         var Buffer = reader["Buffer_Filter"].ToString();
                         //Test RemoveNoData and RemoveZeroes
                         var currCubeBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers({view},{os_Curr_Cube_Buffer})");
@@ -426,7 +426,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string unbal_buffer_cell_SQL = @"
 												Select Acct, View,Origin,IC,Flow,UD1,
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
-													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
+													Curr_Cube_Buffer_Filter,Buffer_Filter
 													FROM MCM_Cell
 													WHERE Calc_ID = @Calc_ID";
             string src_cell_SQL = @"
@@ -535,7 +535,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var ud7 = reader["UD7"] != DBNull.Value ? reader["UD7"].ToString() : null;
                         var ud8 = reader["UD8"] != DBNull.Value ? reader["UD8"].ToString() : null;
 
-                        var os_Curr_Cube_Buffer = reader["OS_Curr_Cube_Buffer_Filter"].ToString();
+                        var os_Curr_Cube_Buffer = reader["Curr_Cube_Buffer_Filter"].ToString();
                         var Buffer = reader["Buffer_Filter"].ToString();
                         //Test RemoveNoData and RemoveZeroes
                         var currCubeBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers({view},{os_Curr_Cube_Buffer})");
@@ -623,7 +623,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string unbal_buffer_cell_SQL = @"
 												Select Acct, View,Origin,IC,Flow,UD1,
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
-													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
+													Curr_Cube_Buffer_Filter,Buffer_Filter
 													FROM MCM_Cell
 													WHERE Calc_ID = @Calc_ID";
             string src_cell_SQL = @"
@@ -730,7 +730,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var ud7 = reader["UD7"] != DBNull.Value ? reader["UD7"].ToString() : null;
                         var ud8 = reader["UD8"] != DBNull.Value ? reader["UD8"].ToString() : null;
 
-                        var os_Curr_Cube_Buffer = reader["OS_Curr_Cube_Buffer_Filter"].ToString();
+                        var os_Curr_Cube_Buffer = reader["Curr_Cube_Buffer_Filter"].ToString();
                         var Buffer = reader["Buffer_Filter"].ToString();
                         //Test RemoveNoData and RemoveZeroes
                         var currCubeBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers({view},{os_Curr_Cube_Buffer})");
@@ -885,7 +885,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string unbal_buffer_cell_SQL = @"
 													Select Acct, View,Origin,IC,Flow,UD1,
 														UD2,UD3,UD4,UD5,UD6,UD7,UD8,
-														OS_Curr_Cube_Buffer_Filter,Buffer_Filter
+														Curr_Cube_Buffer_Filter,Buffer_Filter
 														FROM FMM_Dest_Cell
 														WHERE Calc_ID = @Calc_ID";
 
@@ -902,7 +902,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     {
 
                         var view = reader["View"].ToString();
-                        var os_Curr_Cube_Buffer = reader["OS_Curr_Cube_Buffer_Filter"].ToString();
+                        var os_Curr_Cube_Buffer = reader["Curr_Cube_Buffer_Filter"].ToString();
 
                         //Test RemoveNoData and RemoveZeroes
                         var currCubeBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers({view},{os_Curr_Cube_Buffer})");
@@ -1237,7 +1237,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     }
                 }
 
-                var os_Curr_Cube_Buffer = destrow["OS_Curr_Cube_Buffer_Filter"].ToString();
+                var os_Curr_Cube_Buffer = destrow["Curr_Cube_Buffer_Filter"].ToString();
                 var Buffer = destrow["Buffer_Filter"].ToString();
 
                 //BRApi.ErrorLog.LogMessage(si, "balBufferCalc: " + bal_buffer_calc + " srcbuff: " + Buffer);

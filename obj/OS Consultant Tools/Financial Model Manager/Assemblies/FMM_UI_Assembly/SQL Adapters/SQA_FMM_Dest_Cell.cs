@@ -58,10 +58,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                Origin, IC, Flow, UD1, 
 		                UD2, UD3, UD4, UD5, 
 		                UD6, UD7, UD8, Time_Filter, 
-		                Acct_Filter, Origin_Filter, OS_IC_Filter, OS_Flow_Filter, 
-		                OS_UD1_Filter, OS_UD2_Filter, OS_UD3_Filter, UD4_Filter, 
-		                OS_UD5_Filter, OS_UD6_Filter, OS_UD7_Filter, OS_UD8_Filter, 
-		                OS_Conditional_Filter, OS_Curr_Cube_Buffer_Filter, Buffer_Filter, 
+		                Acct_Filter, Origin_Filter, IC_Filter, Flow_Filter, 
+		                UD1_Filter, UD2_Filter, UD3_Filter, UD4_Filter, 
+		                UD5_Filter, UD6_Filter, UD7_Filter, UD8_Filter, 
+		                Conditional_Filter, Curr_Cube_Buffer_Filter, Buffer_Filter, 
 		                Dest_Cell_Logic, SQL_Logic, Create_Date, Create_User, Update_Date, Update_User
 		            ) VALUES (
 		                @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Dest_Cell_ID, 
@@ -69,10 +69,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                @Origin, @IC, @Flow, @UD1, 
 		                @UD2, @UD3, @UD4, @UD5, 
 		                @UD6, @UD7, @UD8, @Time_Filter, 
-		                @Acct_Filter, @Origin_Filter, @OS_IC_Filter, @OS_Flow_Filter, 
-		                @OS_UD1_Filter, @OS_UD2_Filter, @OS_UD3_Filter, @UD4_Filter, 
-		                @OS_UD5_Filter, @OS_UD6_Filter, @OS_UD7_Filter, @OS_UD8_Filter, 
-		                @OS_Conditional_Filter, @OS_Curr_Cube_Buffer_Filter, @Buffer_Filter, 
+		                @Acct_Filter, @Origin_Filter, @IC_Filter, @Flow_Filter, 
+		                @UD1_Filter, @UD2_Filter, @UD3_Filter, @UD4_Filter, 
+		                @UD5_Filter, @UD6_Filter, @UD7_Filter, @UD8_Filter, 
+		                @Conditional_Filter, @Curr_Cube_Buffer_Filter, @Buffer_Filter, 
 		                @Dest_Cell_Logic, @SQL_Logic, GETDATE(), @Create_User, GETDATE(), @Update_User
 		            )";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
@@ -97,14 +97,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Time_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Time_Filter";
                 sqa.InsertCommand.Parameters.Add("@Acct_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Acct_Filter";
                 sqa.InsertCommand.Parameters.Add("@Origin_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Origin_Filter";
-                sqa.InsertCommand.Parameters.Add("@OS_IC_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_IC_Filter";
-                sqa.InsertCommand.Parameters.Add("@OS_Flow_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Flow_Filter";
+                sqa.InsertCommand.Parameters.Add("@IC_Filter", SqlDbType.NVarChar, 200).SourceColumn = "IC_Filter";
+                sqa.InsertCommand.Parameters.Add("@Flow_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Flow_Filter";
                 for (int i = 1; i <= 8; i++)
                 {
                     sqa.InsertCommand.Parameters.Add($"@UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"UD{i}_Filter";
                 }
-                sqa.InsertCommand.Parameters.Add("@OS_Conditional_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "OS_Conditional_Filter";
-                sqa.InsertCommand.Parameters.Add("@OS_Curr_Cube_Buffer_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "OS_Curr_Cube_Buffer_Filter";
+                sqa.InsertCommand.Parameters.Add("@Conditional_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "Conditional_Filter";
+                sqa.InsertCommand.Parameters.Add("@Curr_Cube_Buffer_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "Curr_Cube_Buffer_Filter";
                 sqa.InsertCommand.Parameters.Add("@Buffer_Filter", SqlDbType.NVarChar, 2000).SourceColumn = "Buffer_Filter";
                 sqa.InsertCommand.Parameters.Add("@Dest_Cell_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "Dest_Cell_Logic";
                 sqa.InsertCommand.Parameters.Add("@SQL_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "SQL_Logic";
@@ -124,13 +124,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                UD5 = @UD5, UD6 = @UD6, 
 		                UD7 = @UD7, UD8 = @UD8, 
 		                Time_Filter = @Time_Filter, Acct_Filter = @Acct_Filter, 
-		                Origin_Filter = @Origin_Filter, OS_IC_Filter = @OS_IC_Filter, 
-		                OS_Flow_Filter = @OS_Flow_Filter, OS_UD1_Filter = @OS_UD1_Filter, 
-		                OS_UD2_Filter = @OS_UD2_Filter, OS_UD3_Filter = @OS_UD3_Filter, 
-		                UD4_Filter = @UD4_Filter, OS_UD5_Filter = @OS_UD5_Filter, 
-		                OS_UD6_Filter = @OS_UD6_Filter, OS_UD7_Filter = @OS_UD7_Filter, 
-		                OS_UD8_Filter = @OS_UD8_Filter, OS_Conditional_Filter = @OS_Conditional_Filter, 
-		                OS_Curr_Cube_Buffer_Filter = @OS_Curr_Cube_Buffer_Filter, 
+		                Origin_Filter = @Origin_Filter, IC_Filter = @IC_Filter, 
+		                Flow_Filter = @Flow_Filter, UD1_Filter = @UD1_Filter, 
+		                UD2_Filter = @UD2_Filter, UD3_Filter = @UD3_Filter, 
+		                UD4_Filter = @UD4_Filter, UD5_Filter = @UD5_Filter, 
+		                UD6_Filter = @UD6_Filter, UD7_Filter = @UD7_Filter, 
+		                UD8_Filter = @UD8_Filter, Conditional_Filter = @Conditional_Filter, 
+		                Curr_Cube_Buffer_Filter = @Curr_Cube_Buffer_Filter, 
 		                Buffer_Filter = @Buffer_Filter, Dest_Cell_Logic = @Dest_Cell_Logic, 
 		                SQL_Logic = @SQL_Logic, Update_Date = GETDATE(), Update_User = @Update_User
 		            WHERE Dest_Cell_ID = @Dest_Cell_ID";
@@ -156,14 +156,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Time_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Time_Filter";
                 sqa.UpdateCommand.Parameters.Add("@Acct_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Acct_Filter";
                 sqa.UpdateCommand.Parameters.Add("@Origin_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Origin_Filter";
-                sqa.UpdateCommand.Parameters.Add("@OS_IC_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_IC_Filter";
-                sqa.UpdateCommand.Parameters.Add("@OS_Flow_Filter", SqlDbType.NVarChar, 200).SourceColumn = "OS_Flow_Filter";
+                sqa.UpdateCommand.Parameters.Add("@IC_Filter", SqlDbType.NVarChar, 200).SourceColumn = "IC_Filter";
+                sqa.UpdateCommand.Parameters.Add("@Flow_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Flow_Filter";
                 for (int i = 1; i <= 8; i++)
                 {
                     sqa.UpdateCommand.Parameters.Add($"@UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"UD{i}_Filter";
                 }
-                sqa.UpdateCommand.Parameters.Add("@OS_Conditional_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "OS_Conditional_Filter";
-                sqa.UpdateCommand.Parameters.Add("@OS_Curr_Cube_Buffer_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "OS_Curr_Cube_Buffer_Filter";
+                sqa.UpdateCommand.Parameters.Add("@Conditional_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "Conditional_Filter";
+                sqa.UpdateCommand.Parameters.Add("@Curr_Cube_Buffer_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "Curr_Cube_Buffer_Filter";
                 sqa.UpdateCommand.Parameters.Add("@Buffer_Filter", SqlDbType.NVarChar, 2000).SourceColumn = "Buffer_Filter";
                 sqa.UpdateCommand.Parameters.Add("@Dest_Cell_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "Dest_Cell_Logic";
                 sqa.UpdateCommand.Parameters.Add("@SQL_Logic", SqlDbType.NVarChar, 2000).SourceColumn = "SQL_Logic";

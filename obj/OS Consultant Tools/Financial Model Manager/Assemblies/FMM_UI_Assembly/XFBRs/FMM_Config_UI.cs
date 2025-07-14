@@ -205,7 +205,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Time_Filter", Description = "Time Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "OS_Conditional_Filter", Description = "Conditional Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Conditional_Filter", Description = "Conditional Filter", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }
                 },

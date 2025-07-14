@@ -66,7 +66,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     Select Sequence,Src_Type,Src_Item,Table_Calc_Expression,
 					Table_Join_Expression,Table_Filter_Expression,Calc_Plan_Units,Acct,View,IC,
 					Flow,UD1,UD2,UD3,UD4,UD5,UD6,UD7,
-					UD8,Time_Filter,OS_Conditional_Filter
+					UD8,Time_Filter,Conditional_Filter
                     FROM FMM_Calc_Config calc
                     JOIN FMM_Src_Cell Src
                     ON calc.Calc_ID = Src.Calc_ID
