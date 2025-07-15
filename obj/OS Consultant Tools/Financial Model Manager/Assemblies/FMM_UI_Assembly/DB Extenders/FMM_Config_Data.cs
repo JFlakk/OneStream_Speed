@@ -4637,9 +4637,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     };
 
                     sqa_fmm_calc_unit_config.Fill_FMM_Calc_Unit_Config_DT(si, sqa,FMM_Calc_Unit_Config_DT, sql, sqlparams);
-
-                    var EntDimPk = BRApi.Finance.Dim.GetDimPk(si, "DHP_ConsolEntities_Dim");
-                    var Calc_Unit_EntList = BRApi.Finance.Members.GetMembersUsingFilter(si, EntDimPk, Calc_Unit_Entity_MFB, true);
+					var cubeInfo = BRApi.Finance.Cubes.GetCubeInfo(si,"Army_RMW_Consol");
+					var ent_DimID = cubeInfo.Cube.CubeDims.GetEntityDimId();
+					var cubeDim_Lookup = cubeInfo.Cube.CubeDims.CubeDimsDictionary.Values.ToLookup(dim => dim.DimId);
+					IEnumerable<CubeDim> ent_Dim = cubeDim_Lookup[ent_DimID];
+					var Calc_Unit_EntList = new List<MemberInfo>();
+					foreach (CubeDim dim in ent_Dim)
+					{
+						var dimTypeID = dim.CubeDimPk.DimTypeId;
+						var ent_DimPk = new DimPk(dimTypeID, ent_DimID);
+                    //var EntDimPk = BRApi.Finance.Dim.GetDimPk(si, "DHP_ConsolEntities_Dim");
+                    	Calc_Unit_EntList = BRApi.Finance.Members.GetMembersUsingFilter(si, ent_DimPk, Calc_Unit_Entity_MFB, true);
+					}
 
                     // Loop through the Calc_Unit_EntList and add new rows to FMM_Calc_Unit_Config_DT
                     foreach (var entity in Calc_Unit_EntList)
