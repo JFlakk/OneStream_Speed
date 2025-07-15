@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OneStream_Speed")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+86c7ade549e2e18bdd808d7ed7e513fea206e2eb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33f9da8d54715b0eac6e7f082424ff4195303f0b")]
 [assembly: System.Reflection.AssemblyProductAttribute("OneStream_Speed")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OneStream_Speed")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
