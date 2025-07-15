@@ -20,16 +20,16 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class SQA_FMM_Appr_Config
+    public class SQA_FMM_Config
     {
         private readonly SqlConnection _connection;
 
-        public SQA_FMM_Appr_Config(SessionInfo si, SqlConnection connection)
+        public SQA_FMM_Config(SessionInfo si, SqlConnection connection)
         {
             _connection = connection;
         }
 
-        public void Fill_FMM_Appr_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
+        public void Fill_FMM_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
         {
             using (SqlCommand command = new SqlCommand(sql, _connection))
             {
@@ -46,13 +46,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        public void Update_FMM_Appr_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
+        public void Update_FMM_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
                 string insertQuery = @"
-                    INSERT INTO FMM_Appr_Config (
+                    INSERT INTO FMM_Config (
                         Cube_ID,Appr_ID, Name, 
                         Status, Create_Date, Create_User, Update_Date, Update_User)
                     VALUES
@@ -70,7 +71,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Define the update query and parameters
                 string updateQuery = @"
-                    UPDATE FMM_Appr_Config SET
+                    UPDATE FMM_Config SET
                         Name = @Name,
                         Status = @Status,
                         Update_Date = @Update_Date,
@@ -85,7 +86,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Define the delete query and parameters
                 string deleteQuery = @"
-                    DELETE FROM FMM_Appr_Config 
+                    DELETE FROM FMM_Config 
                     WHERE Appr_ID = @Appr_ID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Appr_ID", SqlDbType.Int) { SourceColumn = "Appr_ID", SourceVersion = DataRowVersion.Original });
@@ -94,9 +95,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

@@ -48,19 +48,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Appr_Step_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
                 string insertQuery = @"
                     INSERT INTO FMM_Appr_Step_Config (
                         Cube_ID, Appr_ID, Appr_Step_ID, Step_Num,
-                        WFProfile_Step, Appr_User_Group, Appr_Logic, Appr_Item,
-                        Appr_Level, Appr_Config, Init_Status, Appr_Status,
+                        WFProfile_Step, User_Group, Logic, Item,
+                        Level, Config, Init_Status, Appr_Status,
                         Rej_Status, Status, Create_Date, Create_User, Update_Date, Update_User)
                     VALUES
                         (@Cube_ID, @Appr_ID, @Appr_Step_ID, @Step_Num,
-                        @WFProfile_Step, @Appr_User_Group, @Appr_Logic, @Appr_Item,
-                        @Appr_Level, @Appr_Config, @Init_Status, @Appr_Status,
+                        @WFProfile_Step, @User_Group, @Logic, @Item,
+                        @Level, @Config, @Init_Status, @Appr_Status,
                         @Rej_Status, @Status, @Create_Date, @Create_User, @Update_Date, @Update_User)";
 
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
@@ -69,11 +70,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Appr_Step_ID", SqlDbType.Int).SourceColumn = "Appr_Step_ID";
                 sqa.InsertCommand.Parameters.Add("@Step_Num", SqlDbType.Int).SourceColumn = "Step_Num";
                 sqa.InsertCommand.Parameters.Add("@WFProfile_Step", SqlDbType.NVarChar, 100).SourceColumn = "WFProfile_Step";
-                sqa.InsertCommand.Parameters.Add("@Appr_User_Group", SqlDbType.NVarChar, 250).SourceColumn = "Appr_User_Group";
-                sqa.InsertCommand.Parameters.Add("@Appr_Logic", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Logic";
-                sqa.InsertCommand.Parameters.Add("@Appr_Item", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Item";
-                sqa.InsertCommand.Parameters.Add("@Appr_Level", SqlDbType.Int).SourceColumn = "Appr_Level";
-                sqa.InsertCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
+                sqa.InsertCommand.Parameters.Add("@User_Group", SqlDbType.NVarChar, 250).SourceColumn = "User_Group";
+                sqa.InsertCommand.Parameters.Add("@Logic", SqlDbType.NVarChar, 100).SourceColumn = "Logic";
+                sqa.InsertCommand.Parameters.Add("@Item", SqlDbType.NVarChar, 100).SourceColumn = "Item";
+                sqa.InsertCommand.Parameters.Add("@Level", SqlDbType.Int).SourceColumn = "Level";
+                sqa.InsertCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
                 sqa.InsertCommand.Parameters.Add("@Init_Status", SqlDbType.NVarChar, 100).SourceColumn = "Init_Status";
                 sqa.InsertCommand.Parameters.Add("@Appr_Status", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Status";
                 sqa.InsertCommand.Parameters.Add("@Rej_Status", SqlDbType.NVarChar, 100).SourceColumn = "Rej_Status";
@@ -88,11 +89,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     UPDATE FMM_Appr_Step_Config SET
                         Step_Num = @Step_Num,
                         WFProfile_Step = @WFProfile_Step,
-                        Appr_User_Group = @Appr_User_Group,
-                        Appr_Logic = @Appr_Logic,
-                        Appr_Item = @Appr_Item,
-                        Appr_Level = @Appr_Level,
-                        Appr_Config = @Appr_Config,
+                        User_Group = @User_Group,
+                        Logic = @Logic,
+                        Item = @Item,
+                        Level = @Level,
+                        Config = @Config,
                         Init_Status = @Init_Status,
                         Appr_Status = @Appr_Status,
                         Rej_Status = @Rej_Status,
@@ -105,11 +106,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Appr_Step_ID", SqlDbType.Int) { SourceColumn = "Appr_Step_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Step_Num", SqlDbType.Int).SourceColumn = "Step_Num";
                 sqa.UpdateCommand.Parameters.Add("@WFProfile_Step", SqlDbType.NVarChar, 100).SourceColumn = "WFProfile_Step";
-                sqa.UpdateCommand.Parameters.Add("@Appr_User_Group", SqlDbType.NVarChar, 250).SourceColumn = "Appr_User_Group";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Logic", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Logic";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Item", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Item";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Level", SqlDbType.Int).SourceColumn = "Appr_Level";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
+                sqa.UpdateCommand.Parameters.Add("@User_Group", SqlDbType.NVarChar, 250).SourceColumn = "User_Group";
+                sqa.UpdateCommand.Parameters.Add("@Logic", SqlDbType.NVarChar, 100).SourceColumn = "Logic";
+                sqa.UpdateCommand.Parameters.Add("@Item", SqlDbType.NVarChar, 100).SourceColumn = "Item";
+                sqa.UpdateCommand.Parameters.Add("@Level", SqlDbType.Int).SourceColumn = "Level";
+                sqa.UpdateCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
                 sqa.UpdateCommand.Parameters.Add("@Init_Status", SqlDbType.NVarChar, 100).SourceColumn = "Init_Status";
                 sqa.UpdateCommand.Parameters.Add("@Appr_Status", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Status";
                 sqa.UpdateCommand.Parameters.Add("@Rej_Status", SqlDbType.NVarChar, 100).SourceColumn = "Rej_Status";

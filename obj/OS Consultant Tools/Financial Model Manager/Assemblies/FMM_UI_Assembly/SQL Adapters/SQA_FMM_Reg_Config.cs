@@ -48,6 +48,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Reg_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
@@ -55,12 +56,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     INSERT INTO FMM_Reg_Config (
                         Cube_ID, Act_ID, Reg_Config_ID, Name, Time_Phasing, 
 						Time_Phasing_Driver,Manual_Input_Plan_Units,Start_End_Dt_Src_Obj,
-                        Start_Dt_Src, End_Dt_Src, Appr_Config, Status, Create_Date, 
+                        Start_Dt_Src, End_Dt_Src, Config, Status, Create_Date, 
                         Create_User, Update_Date, Update_User
                     ) VALUES (
                         @Cube_ID, @Act_ID, @Reg_Config_ID, @Name, @Time_Phasing, 
 						@Time_Phasing_Driver,@Manual_Input_Plan_Units,@Start_End_Dt_Src_Obj,
-                        @Start_Dt_Src, @End_Dt_Src, @Appr_Config, @Status, @Create_Date, 
+                        @Start_Dt_Src, @End_Dt_Src, @Config, @Status, @Create_Date, 
                         @Create_User, @Update_Date, @Update_User
                     )";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
@@ -74,7 +75,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Start_End_Dt_Src_Obj", SqlDbType.NVarChar, 250).SourceColumn = "Start_End_Dt_Src_Obj";
                 sqa.InsertCommand.Parameters.Add("@Start_Dt_Src", SqlDbType.NVarChar, 100).SourceColumn = "Start_Dt_Src";
                 sqa.InsertCommand.Parameters.Add("@End_Dt_Src", SqlDbType.NVarChar, 100).SourceColumn = "End_Dt_Src";
-                sqa.InsertCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
+                sqa.InsertCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -88,7 +89,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Time_Phasing = @Time_Phasing, Time_Phasing_Driver = @Time_Phasing_Driver,
                         Manual_Input_Plan_Units = @Manual_Input_Plan_Units,
 						Start_End_Dt_Src_Obj = @Start_End_Dt_Src_Obj,Start_Dt_Src = @Start_Dt_Src, 
-                        End_Dt_Src = @End_Dt_Src, Appr_Config = @Appr_Config, 
+                        End_Dt_Src = @End_Dt_Src, Config = @Config, 
                         Status = @Status, Create_Date = @Create_Date, 
                         Create_User = @Create_User, Update_Date = @Update_Date, 
                         Update_User = @Update_User
@@ -104,7 +105,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Start_End_Dt_Src_Obj", SqlDbType.NVarChar, 250).SourceColumn = "Start_End_Dt_Src_Obj";
                 sqa.UpdateCommand.Parameters.Add("@Start_Dt_Src", SqlDbType.NVarChar, 100).SourceColumn = "Start_Dt_Src";
                 sqa.UpdateCommand.Parameters.Add("@End_Dt_Src", SqlDbType.NVarChar, 100).SourceColumn = "End_Dt_Src";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
+                sqa.UpdateCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.UpdateCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -122,9 +123,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

@@ -138,7 +138,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             //setup HierarchyDict
             HierarchyDict.Add("0_FMM_Cube_Config", CubeConfig);
             HierarchyDict.Add("0_FMM_Unit_and_Acct_Config", UnitAcctConfig);
-            HierarchyDict.Add("0_FMM_Appr_Config", ApprovalConfig);
+            HierarchyDict.Add("0_FMM_Config", ApprovalConfig);
             HierarchyDict.Add("0_FMM_Register_Col_Config", RegisterConfig);
             HierarchyDict.Add("0_FMM_Model", BuildModel);
             HierarchyDict.Add("0_FMM_Model_Group", BuildModelGroup);
@@ -583,7 +583,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
-                                    if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
+                                    if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config")
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
@@ -604,7 +604,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
-                                if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config" && priorDependencyChanged)
+                                if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config" && priorDependencyChanged)
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
@@ -652,7 +652,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 Get_Calc_Type(taskResult);
                             }
-                            if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
+                            if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config")
                             {
                                 Get_Calc_Type(taskResult);
                             }

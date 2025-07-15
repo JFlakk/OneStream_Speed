@@ -143,12 +143,12 @@
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
                                 <parameterCommandType>Method</parameterCommandType>
-                                <sqlQuery>SELECT * FROM FMM_Appr_Config
+                                <sqlQuery>SELECT * FROM FMM_Config
 WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Appr_Config}{cubeID = |!IV_FMM_Cube_ID!|, activityID = |!IV_FMM_Act_ID!|}</methodQuery>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_Config}{cubeID = |!IV_FMM_Cube_ID!|, activityID = |!IV_FMM_Act_ID!|}</methodQuery>
                                 <resultsTableName>Approval_Config</resultsTableName>
                                 <displayMember>Name</displayMember>
                                 <valueMember>Appr_ID</valueMember>
@@ -559,7 +559,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="DL_FMM_Appr_Config" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                            <parameter name="DL_FMM_Config" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
                                 <defaultValue>2</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -1213,7 +1213,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                 <displayMember></displayMember>
                                 <valueMember></valueMember>
                                 <displayItems>Cube Config,Unit and Account Config, Approval Config,Register Config</displayItems>
-                                <valueItems>0_FMM_Cube_Config,0_FMM_Unit_and_Acct_Config, 0_FMM_Appr_Config,0_FMM_Register_Col_Config</valueItems>
+                                <valueItems>0_FMM_Cube_Config,0_FMM_Unit_and_Acct_Config, 0_FMM_Config,0_FMM_Register_Col_Config</valueItems>
                                 <cubeName></cubeName>
                                 <dimType></dimType>
                                 <dimName></dimName>
@@ -3039,7 +3039,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="Embedded 0_FMM_Appr_Config" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0_FMM_Appr_Config" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="Embedded 0_FMM_Config" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0_FMM_Config" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -4533,14 +4533,14 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="ted_FMM_Appr_Config" description="Approvals" xfText="" toolTip="" componentType="SqlTableEditor" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_Appr_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                            <component name="ted_FMM_Config" description="Approvals" xfText="" toolTip="" componentType="SqlTableEditor" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_Appr_ID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <dashboardsToRedraw>0b3b_FMM_Approvals_Content</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFSqlTableEditorDefinition>
                                         <DbLocation>Application</DbLocation>
                                         <ExternalDBConnName />
                                         <SchemaName />
-                                        <TableName>FMM_Appr_Config</TableName>
+                                        <TableName>FMM_Config</TableName>
                                         <ViewName />
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
@@ -4665,19 +4665,19 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = WFProfile_Step, Description = [WF Profile Step], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Appr_User_Group, Description = [Approval User Group], IsVisible = True, ParameterName = BL_FMM_Security_Groups</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = User_Group, Description = [Approval User Group], IsVisible = True, ParameterName = BL_FMM_Security_Groups</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Appr_Logic, Description = [Approval Logic], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Logic, Description = [Approval Logic], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Appr_Item, Description = [Approval Item], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Item, Description = [Approval Item], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Appr_Level, Description = [Approval Level], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Level, Description = [Approval Level], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Appr_Config, Description = [Approval Config], IsVisible = True</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Config, Description = [Approval Config], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = Init_Status, Description = [Approval Init Status], IsVisible = True</ColumnFormat>
@@ -5423,7 +5423,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = End_Dt_Src, Description = [End Dt Src], IsVisible = True</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Appr_Config, Description = [Approval Config], IsVisible = True, ParameterName = DL_FMM_Appr_Config</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = Config, Description = [Approval Config], IsVisible = True, ParameterName = DL_FMM_Config</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = Status, Description = Status, ParameterName = DL_FMM_Status</ColumnFormat>
@@ -6013,7 +6013,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                             </dashboardGroup>
                             <dashboardGroup name="FMM Approval Config" description="" accessGroup="Administrators">
                                 <dashboards>
-                                    <dashboard name="0_FMM_Appr_Config" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="0_FMM_Config" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -6230,7 +6230,7 @@ WHERE Cube_ID = |!IV_FMM_Cube_ID!| and Act_ID = |!IV_FMM_Act_ID!|</sqlQuery>
                                             </GridLayoutDefinition>
                                         </DashboardDefinition>
                                         <componentMembers>
-                                            <componentMember name="ted_FMM_Appr_Config" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="ted_FMM_Config" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="0b3b_FMM_Approvals_Content" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -15045,12 +15045,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_WFProfile_Hierarchy();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Appr_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Config"))
                         {
 
                             string cubeID = args.NameValuePairs.XFGetValue("cubeID");
                             //string ActID = args.NameValuePairs.XFGetValue("ActID");
-                            return get_FMM_Appr_Config(cubeID);
+                            return get_FMM_Config(cubeID);
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Reg_Config"))
                         {
@@ -16326,7 +16326,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable get_FMM_Appr_Config(string cubeID)
+        private DataTable get_FMM_Config(string cubeID)
         {
 
             //			BRApi.ErrorLog.LogMessage(si, "cube: " + cubeID + " activity: " + ActID);
@@ -16342,7 +16342,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT * FROM FMM_Appr_Config
+			        	SELECT * FROM FMM_Config
 						WHERE Cube_ID = @Cube_ID";
                     //AND Act_ID = @Act_ID";
                     // Create an array of SqlParameter objects
@@ -16751,9 +16751,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             return save_Result;
 
                         }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Appr_Config"))
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Config"))
                         {
-                            save_Result = Save_Appr_Config();
+                            save_Result = Save_Config();
 
                             return save_Result;
 
@@ -17971,7 +17971,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Time_Phasing"] = (string)xfRow.ModifiedDataRow.Items["Time_Phasing"];
                             newRow["Start_Dt_Src"] = (string)xfRow.ModifiedDataRow.Items["Start_Dt_Src"];
                             newRow["End_Dt_Src"] = (string)xfRow.ModifiedDataRow.Items["End_Dt_Src"];
-                            newRow["Appr_Config"] = (int)xfRow.ModifiedDataRow["Appr_Config"];
+                            newRow["Config"] = (int)xfRow.ModifiedDataRow["Config"];
                             newRow["Status"] = "Build";
                             newRow["Create_Date"] = DateTime.Now;
                             newRow["Create_User"] = si.UserName;
@@ -17990,7 +17990,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Time_Phasing"] = (string)xfRow.ModifiedDataRow["Time_Phasing"];
                                 rowToUpdate["Start_Dt_Src"] = (string)xfRow.ModifiedDataRow["Start_Dt_Src"];
                                 rowToUpdate["End_Dt_Src"] = (string)xfRow.ModifiedDataRow["End_Dt_Src"];
-                                rowToUpdate["Appr_Config"] = (int)xfRow.ModifiedDataRow["Appr_Config"];
+                                rowToUpdate["Config"] = (int)xfRow.ModifiedDataRow["Config"];
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
@@ -18159,7 +18159,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #endregion
 
         #region "Activity Approval Inputs"
-        private XFSqlTableEditorSaveDataTaskResult Save_Appr_Config()
+        private XFSqlTableEditorSaveDataTaskResult Save_Config()
         {
             try
             {
@@ -18171,24 +18171,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_appr_config = new SQA_FMM_Appr_Config(si, connection);
-                    var FMM_Appr_Config_DT = new DataTable();
+                    var sqa_fmm_Config = new SQA_FMM_Config(si, connection);
+                    var FMM_Config_DT = new DataTable();
                     var sqa = new SqlDataAdapter();
                     var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     BRApi.ErrorLog.LogMessage(si, "Hit" + Cube_ID);
-                    Duplicate_Appr_Config(Cube_ID, "Initiate", ref save_Result);
+                    Duplicate_Config(Cube_ID, "Initiate", ref save_Result);
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
                     string sql = @"
 						                SELECT * 
-						                FROM FMM_Appr_Config
+						                FROM FMM_Config
 										WHERE Cube_ID = @Cube_ID";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Cube_ID }
                     };
-                    sqa_fmm_appr_config.Fill_FMM_Appr_Config_DT(si, sqa,FMM_Appr_Config_DT, sql, sqlparams);
+                    sqa_fmm_Config.Fill_FMM_Config_DT(si, sqa,FMM_Config_DT, sql, sqlparams);
 
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -18197,9 +18197,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
                             var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
-                            OS_Appr_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
+                            OS_Appr_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Config", "Appr_ID");
 
-                            var newRow = FMM_Appr_Config_DT.NewRow();
+                            var newRow = FMM_Config_DT.NewRow();
                             BRApi.ErrorLog.LogMessage(si, "Hit" + (int)xfRow.ModifiedDataRow["Cube_ID"]);
                             newRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
                             newRow["Appr_ID"] = OS_Appr_ID;
@@ -18209,13 +18209,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Create_User"] = si.UserName;
                             newRow["Update_Date"] = DateTime.Now;
                             newRow["Update_User"] = si.UserName;
-                            FMM_Appr_Config_DT.Rows.Add(newRow);
-                            Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Result, "Insert", xfRow);
+                            FMM_Config_DT.Rows.Add(newRow);
+                            Duplicate_Config(Cube_ID, "Update Row", ref save_Result, "Insert", xfRow);
 
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
                         {
-                            var rowsToUpdate = FMM_Appr_Config_DT.Select($"Appr_ID = {(int)xfRow.ModifiedDataRow["Appr_ID"]}");
+                            var rowsToUpdate = FMM_Config_DT.Select($"Appr_ID = {(int)xfRow.ModifiedDataRow["Appr_ID"]}");
                             if (rowsToUpdate.Length > 0)
                             {
                                 var rowToUpdate = rowsToUpdate[0];
@@ -18223,18 +18223,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
-                                Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Result, "Update", xfRow);
+                                Duplicate_Config(Cube_ID, "Update Row", ref save_Result, "Update", xfRow);
                             }
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
                         {
-                            var rowsToDelete = FMM_Appr_Config_DT.Select($"Appr_ID = {(int)xfRow.OriginalDataRow["Appr_ID"]}");
+                            var rowsToDelete = FMM_Config_DT.Select($"Appr_ID = {(int)xfRow.OriginalDataRow["Appr_ID"]}");
                             if (rowsToDelete.Length > 0)
                             {
                                 foreach (var row in rowsToDelete)
                                 {
                                     row.Delete();
-                                    Duplicate_Appr_Config(Cube_ID, "Update Row", ref save_Result, "Delete", xfRow);
+                                    Duplicate_Config(Cube_ID, "Update Row", ref save_Result, "Delete", xfRow);
                                 }
                             }
                         }
@@ -18258,7 +18258,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
-                        sqa_fmm_appr_config.Update_FMM_Appr_Config(si, FMM_Appr_Config_DT, sqa);
+                        sqa_fmm_Config.Update_FMM_Config(si, FMM_Config_DT, sqa);
                     }
                 }
 
@@ -18320,11 +18320,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Appr_Step_ID"] = (int)xfRow.ModifiedDataRow["Appr_Step_ID"];
                             newRow["WFProfile_Step"] = (string)xfRow.ModifiedDataRow["WFProfile_Step"];
                             newRow["Step_Num"] = (int)xfRow.ModifiedDataRow["Step_Num"];
-                            newRow["Appr_User_Group"] = (string)xfRow.ModifiedDataRow["Appr_User_Group"];
-                            newRow["Appr_Logic"] = (string)xfRow.ModifiedDataRow["Appr_Logic"];
-                            newRow["Appr_Item"] = (string)xfRow.ModifiedDataRow["Appr_Item"];
-                            newRow["Appr_Level"] = (int)xfRow.ModifiedDataRow["Appr_Level"];
-                            newRow["Appr_Config"] = (int)xfRow.ModifiedDataRow["Appr_Config"];
+                            newRow["User_Group"] = (string)xfRow.ModifiedDataRow["User_Group"];
+                            newRow["Logic"] = (string)xfRow.ModifiedDataRow["Logic"];
+                            newRow["Item"] = (string)xfRow.ModifiedDataRow["Item"];
+                            newRow["Level"] = (int)xfRow.ModifiedDataRow["Level"];
+                            newRow["Config"] = (int)xfRow.ModifiedDataRow["Config"];
                             newRow["Init_Status"] = (string)xfRow.ModifiedDataRow["Init_Status"];
                             newRow["Appr_Status"] = (string)xfRow.ModifiedDataRow["Appr_Status"];
                             newRow["Rej_Status"] = (string)xfRow.ModifiedDataRow["Rej_Status"];
@@ -18347,11 +18347,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 var rowToUpdate = rowsToUpdate[0];
                                 rowToUpdate["Step_Num"] = (int)xfRow.ModifiedDataRow["Step_Num"];
-                                rowToUpdate["Appr_User_Group"] = (string)xfRow.ModifiedDataRow["Appr_User_Group"];
-                                rowToUpdate["Appr_Logic"] = (string)xfRow.ModifiedDataRow["Appr_Logic"];
-                                rowToUpdate["Appr_Item"] = (string)xfRow.ModifiedDataRow["Appr_Item"];
-                                rowToUpdate["Appr_Level"] = (int)xfRow.ModifiedDataRow["Appr_Level"];
-                                rowToUpdate["Appr_Config"] = (int)xfRow.ModifiedDataRow["Appr_Config"];
+                                rowToUpdate["User_Group"] = (string)xfRow.ModifiedDataRow["User_Group"];
+                                rowToUpdate["Logic"] = (string)xfRow.ModifiedDataRow["Logic"];
+                                rowToUpdate["Item"] = (string)xfRow.ModifiedDataRow["Item"];
+                                rowToUpdate["Level"] = (int)xfRow.ModifiedDataRow["Level"];
+                                rowToUpdate["Config"] = (int)xfRow.ModifiedDataRow["Config"];
                                 rowToUpdate["Init_Status"] = (string)xfRow.ModifiedDataRow["Init_Status"];
                                 rowToUpdate["Appr_Status"] = (string)xfRow.ModifiedDataRow["Appr_Status"];
                                 rowToUpdate["Rej_Status"] = (string)xfRow.ModifiedDataRow["Rej_Status"];
@@ -19697,7 +19697,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #endregion
 
         #region "Duplicate Approvals"
-        private void Duplicate_Appr_Config(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Appr_Config_DataRow)
+        private void Duplicate_Config(int Cube_ID, String Dup_Process_Step, ref XFSqlTableEditorSaveDataTaskResult save_Result, [Optional] String DDL_Process, [Optional] XFEditedDataRow Modified_FMM_Config_DataRow)
         {
             try
             {
@@ -19713,11 +19713,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             // Create a new DataTable
                             var sqa = new SqlDataAdapter();
-                            var FMM_Appr_Config_DT = new DataTable();
+                            var FMM_Config_DT = new DataTable();
                             // Define the select query and parameters
                             string sql = @"
 		                        SELECT *
-		                        FROM FMM_Appr_Config
+		                        FROM FMM_Config
 		                        WHERE Cube_ID = @Cube_ID";
                             // Create an array of SqlParameter objects
                             var sqlparams = new SqlParameter[]
@@ -19728,7 +19728,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Attempt to fill the data table and check for any issues
                             try
                             {
-                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Appr_Config_DT, sql, sqlparams);
+                                sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Config_DT, sql, sqlparams);
                             }
                             catch (Exception ex)
                             {
@@ -19739,7 +19739,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
 
                             // Populate GBL_Appr_Dict and handle errors
-                            foreach (DataRow Appr_Row in FMM_Appr_Config_DT.Rows)
+                            foreach (DataRow Appr_Row in FMM_Config_DT.Rows)
                             {
                                 string approvalKey = Cube_ID + "|" + (int)Appr_Row["Appr_ID"];
                                 string approvalValue = (string)Appr_Row["Name"];
@@ -19760,8 +19760,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     case "Update Row":
 
-                        string newApprovalName = (string)Modified_FMM_Appr_Config_DataRow.ModifiedDataRow["Name"];
-                        string ApprovalKey = Cube_ID + "|" + (int)Modified_FMM_Appr_Config_DataRow.ModifiedDataRow["Appr_ID"];
+                        string newApprovalName = (string)Modified_FMM_Config_DataRow.ModifiedDataRow["Name"];
+                        string ApprovalKey = Cube_ID + "|" + (int)Modified_FMM_Config_DataRow.ModifiedDataRow["Appr_ID"];
 
                         if (DDL_Process == "Insert")
                         {
@@ -19769,7 +19769,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                         else if (DDL_Process == "Update")
                         {
-                            string origApprovalName = (string)Modified_FMM_Appr_Config_DataRow.OriginalDataRow["Name"];
+                            string origApprovalName = (string)Modified_FMM_Config_DataRow.OriginalDataRow["Name"];
 
                             if (origApprovalName != newApprovalName)
                             {
@@ -20281,7 +20281,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 DefaultColumns = new List<ColumnConfig>
                 {
                     new ColumnConfig { Col_Name = "Entity", Col_Alias = "Entity", Col_Order = 1 },
-                    new ColumnConfig { Col_Name = "Appr_Level_ID", Col_Alias = "Approval Level ID", Col_Order = 2 },
+                    new ColumnConfig { Col_Name = "Level_ID", Col_Alias = "Approval Level ID", Col_Order = 2 },
                     new ColumnConfig { Col_Name = "Register_ID", Col_Alias = "Register ID", Col_Order = 3 },
                     new ColumnConfig { Col_Name = "Register_ID_1", Col_Alias = "Register ID 1", Col_Order = 4 },
                     new ColumnConfig { Col_Name = "Register_ID_2", Col_Alias = "Register ID 2", Col_Order = 5 },
@@ -21077,11 +21077,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             newRow["Appr_Step_ID"] = new_Appr_Step_ID++;
                             newRow["Step_Num"] = 0;
                             newRow["Register_Profile"] = Reg_Config_ID;
-                            newRow["Appr_User_Group"] = "Test";
-                            newRow["Appr_Logic"] = "Test";
-                            newRow["Appr_Item"] = "Test";
-                            newRow["Appr_Level"] = 0;
-                            newRow["Appr_Config"] = 0;
+                            newRow["User_Group"] = "Test";
+                            newRow["Logic"] = "Test";
+                            newRow["Item"] = "Test";
+                            newRow["Level"] = 0;
+                            newRow["Config"] = 0;
                             newRow["Init_Status"] = "Testy";
                             newRow["Appr_Status"] = "Testy";
                             newRow["Rej_Status"] = "Testy";
@@ -21354,8 +21354,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var tgt_FMM_Unit_Config_DT = new DataTable();
             var src_FMM_Acct_Config_DT = new DataTable();
             var tgt_FMM_Acct_Config_DT = new DataTable();
-            var src_FMM_Appr_Config_DT = new DataTable();
-            var tgt_FMM_Appr_Config_DT = new DataTable();
+            var src_FMM_Config_DT = new DataTable();
+            var tgt_FMM_Config_DT = new DataTable();
             var src_FMM_Appr_Step_Config_DT = new DataTable();
             var tgt_FMM_Appr_Step_Config_DT = new DataTable();
             var src_FMM_Reg_Config_DT = new DataTable();
@@ -21389,7 +21389,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sqa = new SqlDataAdapter();
                 var sqa_fmm_acct_config = new SQA_FMM_Acct_Config(si, connection);
                 var sqa_fmm_act_config = new SQA_FMM_Act_Config(si, connection);
-                var sqa_fmm_appr_config = new SQA_FMM_Appr_Config(si, connection);
+                var sqa_fmm_Config = new SQA_FMM_Config(si, connection);
                 var sqa_fmm_appr_step_config = new SQA_FMM_Appr_Step_Config(si, connection);
                 var sqa_fmm_calc_config = new SQA_FMM_Calc_Config(si, connection);
                 var sqa_fmm_col_config = new SQA_FMM_Col_Config(si, connection);
@@ -21430,12 +21430,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_gbl_get_max_id
                 );
 
-                // Call for get_FMM_Appr_Config_Data
-                get_FMM_Appr_Config_Data(
+                // Call for get_FMM_Config_Data
+                get_FMM_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_gbl_get_datasets, sqa_fmm_appr_config,
-                    ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_gbl_get_max_id
+                    sql_gbl_get_datasets, sqa_fmm_Config,
+                    ref src_FMM_Config_DT, ref tgt_FMM_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for get_FMM_Appr_Step_Config_Data
@@ -21558,12 +21558,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Col_Config(col_ConfigRow, ref tgt_FMM_Col_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow Appr_ConfigRow in src_FMM_Appr_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
+                    foreach (DataRow ConfigRow in src_FMM_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
-                        var curr_srcApprovalID = Appr_ConfigRow["Appr_ID"] != DBNull.Value
-                        ? (int)Appr_ConfigRow["Appr_ID"]
+                        var curr_srcApprovalID = ConfigRow["Appr_ID"] != DBNull.Value
+                        ? (int)ConfigRow["Appr_ID"]
                         : -1; // Handle null Unit_IDs as needed
-                        Copy_Approvals(Appr_ConfigRow, ref tgt_FMM_Appr_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
+                        Copy_Approvals(ConfigRow, ref tgt_FMM_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         foreach (DataRow approvalstep_ConfigRow in src_FMM_Appr_Step_Config_DT.Select($"Appr_ID = {curr_srcApprovalID}"))
                         {
                             Copy_Appr_Steps(approvalstep_ConfigRow, ref tgt_FMM_Appr_Step_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
@@ -21607,7 +21607,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sqa);
                 sqa_fmm_reg_config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sqa);
                 sqa_fmm_col_config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sqa);
-                sqa_fmm_appr_config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sqa);
+                sqa_fmm_Config.Update_FMM_Config(si, tgt_FMM_Config_DT, sqa);
                 sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa);
                 sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa);
                 sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa);
@@ -21634,8 +21634,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var tgt_FMM_Unit_Config_DT = new DataTable();
             var src_FMM_Acct_Config_DT = new DataTable();
             var tgt_FMM_Acct_Config_DT = new DataTable();
-            var src_FMM_Appr_Config_DT = new DataTable();
-            var tgt_FMM_Appr_Config_DT = new DataTable();
+            var src_FMM_Config_DT = new DataTable();
+            var tgt_FMM_Config_DT = new DataTable();
             var src_FMM_Appr_Step_Config_DT = new DataTable();
             var tgt_FMM_Appr_Step_Config_DT = new DataTable();
             var src_FMM_Reg_Config_DT = new DataTable();
@@ -21670,7 +21670,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sqa = new SqlDataAdapter();
                 var sqa_fmm_acct_config = new SQA_FMM_Acct_Config(si, connection);
                 var sqa_fmm_act_config = new SQA_FMM_Act_Config(si, connection);
-                var sqa_fmm_appr_config = new SQA_FMM_Appr_Config(si, connection);
+                var sqa_fmm_Config = new SQA_FMM_Config(si, connection);
                 var sqa_fmm_appr_step_config = new SQA_FMM_Appr_Step_Config(si, connection);
                 var sqa_fmm_calc_config = new SQA_FMM_Calc_Config(si, connection);
                 var sqa_fmm_col_config = new SQA_FMM_Col_Config(si, connection);
@@ -21711,12 +21711,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_gbl_get_max_id
                 );
 
-                // Call for get_FMM_Appr_Config_Data
-                get_FMM_Appr_Config_Data(
+                // Call for get_FMM_Config_Data
+                get_FMM_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_gbl_get_datasets, sqa_fmm_appr_config,
-                    ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_gbl_get_max_id
+                    sql_gbl_get_datasets, sqa_fmm_Config,
+                    ref src_FMM_Config_DT, ref tgt_FMM_Config_DT, sql_gbl_get_max_id
                 );
 
                 // Call for get_FMM_Appr_Step_Config_Data
@@ -21839,12 +21839,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Col_Config(col_ConfigRow, ref tgt_FMM_Col_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow Appr_ConfigRow in src_FMM_Appr_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
+                    foreach (DataRow ConfigRow in src_FMM_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
-                        var curr_srcApprovalID = Appr_ConfigRow["Appr_ID"] != DBNull.Value
-                        ? (int)Appr_ConfigRow["Appr_ID"]
+                        var curr_srcApprovalID = ConfigRow["Appr_ID"] != DBNull.Value
+                        ? (int)ConfigRow["Appr_ID"]
                         : -1; // Handle null Unit_IDs as needed
-                        Copy_Approvals(Appr_ConfigRow, ref tgt_FMM_Appr_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
+                        Copy_Approvals(ConfigRow, ref tgt_FMM_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         foreach (DataRow approvalstep_ConfigRow in src_FMM_Appr_Step_Config_DT.Select($"Appr_ID = {curr_srcApprovalID}"))
                         {
                             Copy_Appr_Steps(approvalstep_ConfigRow, ref tgt_FMM_Appr_Step_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
@@ -21889,7 +21889,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sqa_fmm_acct_config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sqa);
                 sqa_fmm_reg_config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sqa);
                 sqa_fmm_col_config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sqa);
-                sqa_fmm_appr_config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sqa);
+                sqa_fmm_Config.Update_FMM_Config(si, tgt_FMM_Config_DT, sqa);
                 sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa);
                 sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa);
                 sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa);
@@ -22094,25 +22094,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             GBL_FMM_Acct_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Acct_Config", "Acct_ID");
         }
-        private void get_FMM_Appr_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Appr_Config SQA_FMM_Appr_Config, ref DataTable src_FMM_Appr_Config_DT, ref DataTable tgt_FMM_Appr_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
+        private void get_FMM_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Config SQA_FMM_Config, ref DataTable src_FMM_Config_DT, ref DataTable tgt_FMM_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
             var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
 		        SELECT *
-		        FROM FMM_Appr_Config
+		        FROM FMM_Config
 		        {Where_Clause}";
-            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Appr_Config_DT, sql, src_sqlparams);
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
 		        SELECT *
-		        FROM FMM_Appr_Config
+		        FROM FMM_Config
 		        {Where_Clause}";
-            SQA_FMM_Appr_Config.Fill_FMM_Appr_Config_DT(si, sqa, tgt_FMM_Appr_Config_DT, sql, tgt_sqlparams);
+            SQA_FMM_Config.Fill_FMM_Config_DT(si, sqa, tgt_FMM_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Appr_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
+            GBL_FMM_Appr_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Config", "Appr_ID");
         }
         private void get_FMM_Appr_Step_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Appr_Step_Config sqa_fmm_appr_step_config, ref DataTable src_FMM_Appr_Step_Config_DT, ref DataTable tgt_FMM_Appr_Step_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -22491,7 +22491,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Time_Phasing"] = src_Reg_Config_Row.Field<string>("Time_Phasing") ?? string.Empty; // Handle nulls
                 newTargetRow["Start_Dt_Src"] = src_Reg_Config_Row.Field<string>("Start_Dt_Src") ?? string.Empty; // Handle nulls
                 newTargetRow["End_Dt_Src"] = src_Reg_Config_Row.Field<string>("End_Dt_Src") ?? string.Empty; // Handle nulls
-                newTargetRow["Appr_Config"] = src_Reg_Config_Row.Field<string>("Appr_Config") ?? string.Empty; // Handle nulls
+                newTargetRow["Config"] = src_Reg_Config_Row.Field<string>("Config") ?? string.Empty; // Handle nulls
                 newTargetRow["Status"] = row_Status; // Set initial status as appropriate
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // Set appropriate user context
@@ -22515,7 +22515,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existingRow["Time_Phasing"] = src_Reg_Config_Row.Field<string>("Time_Phasing") ?? existingRow.Field<string>("Time_Phasing");
                     existingRow["Start_Dt_Src"] = src_Reg_Config_Row.Field<string>("Start_Dt_Src") ?? existingRow.Field<string>("Start_Dt_Src");
                     existingRow["End_Dt_Src"] = src_Reg_Config_Row.Field<string>("End_Dt_Src") ?? existingRow.Field<string>("End_Dt_Src");
-                    existingRow["Appr_Config"] = src_Reg_Config_Row.Field<string>("Appr_Config") ?? existingRow.Field<string>("Appr_Config");
+                    existingRow["Config"] = src_Reg_Config_Row.Field<string>("Config") ?? existingRow.Field<string>("Config");
                     existingRow["Status"] = row_Status;
                     existingRow["Update_Date"] = DateTime.Now;
                     existingRow["Update_User"] = si.UserName; // Set appropriate user context
@@ -22583,13 +22583,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
             }
         }
-        private void Copy_Approvals(DataRow src_FMM_Appr_Config_Row, ref DataTable tgt_FMM_Appr_Config_DT, int targetCubeID, ref XFSelectionChangedTaskResult XFCopyTaskResult)
+        private void Copy_Approvals(DataRow src_FMM_Config_Row, ref DataTable tgt_FMM_Config_DT, int targetCubeID, ref XFSelectionChangedTaskResult XFCopyTaskResult)
         {
             BRApi.ErrorLog.LogMessage(si, "Hit Approval");
             var row_Status = "Build";
             // Check the target Cube_ID approvals for duplicate Appr_Name
-            bool isDuplicate = tgt_FMM_Appr_Config_DT.AsEnumerable()
-                .Any(row => row["Name"].ToString() == src_FMM_Appr_Config_Row["Name"].ToString() &&
+            bool isDuplicate = tgt_FMM_Config_DT.AsEnumerable()
+                .Any(row => row["Name"].ToString() == src_FMM_Config_Row["Name"].ToString() &&
                             row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Approval to the target DataTable
@@ -22597,24 +22597,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 GBL_FMM_Appr_ID += 1;
                 GBL_Curr_FMM_Appr_ID = GBL_FMM_Appr_ID;
-                DataRow newTargetRow = tgt_FMM_Appr_Config_DT.NewRow();
+                DataRow newTargetRow = tgt_FMM_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
                 newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
                 newTargetRow["Appr_ID"] = GBL_FMM_Appr_ID;
-                newTargetRow["Name"] = src_FMM_Appr_Config_Row.Field<string>("Name") ?? string.Empty;
+                newTargetRow["Name"] = src_FMM_Config_Row.Field<string>("Name") ?? string.Empty;
                 newTargetRow["Status"] = row_Status; // Set initial status as appropriate
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // or appropriate user context
                 newTargetRow["Update_Date"] = DateTime.Now;
                 newTargetRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_FMM_Appr_Config_DT.Rows.Add(newTargetRow);
+                tgt_FMM_Config_DT.Rows.Add(newTargetRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_FMM_Appr_Config_DT.AsEnumerable()
-                    .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Appr_Config_Row["Name"].ToString() &&
+                DataRow existingRow = tgt_FMM_Config_DT.AsEnumerable()
+                    .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Config_Row["Name"].ToString() &&
                                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
 
                 if (existingRow != null)
@@ -22648,11 +22648,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 newTargetRow["Appr_Step_ID"] = GBL_FMM_Appr_Step_ID;
                 newTargetRow["Step_Num"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Step_Num") ?? 0;
                 newTargetRow["WFProfile_Step"] = src_FMM_Appr_Step_Config_Row.Field<Guid?>("WFProfile_Step") ?? Guid.Empty;
-                newTargetRow["Appr_User_Group"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_User_Group") ?? string.Empty;
-                newTargetRow["Appr_Logic"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Logic") ?? string.Empty;
-                newTargetRow["Appr_Item"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Item") ?? string.Empty;
-                newTargetRow["Appr_Level"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Appr_Level") ?? 0;
-                newTargetRow["Appr_Config"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Appr_Config") ?? 0;
+                newTargetRow["User_Group"] = src_FMM_Appr_Step_Config_Row.Field<string>("User_Group") ?? string.Empty;
+                newTargetRow["Logic"] = src_FMM_Appr_Step_Config_Row.Field<string>("Logic") ?? string.Empty;
+                newTargetRow["Item"] = src_FMM_Appr_Step_Config_Row.Field<string>("Item") ?? string.Empty;
+                newTargetRow["Level"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Level") ?? 0;
+                newTargetRow["Config"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Config") ?? 0;
                 newTargetRow["Init_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Init_Status") ?? string.Empty;
                 newTargetRow["Appr_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Status") ?? string.Empty;
                 newTargetRow["Rej_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Rej_Status") ?? string.Empty;
@@ -22676,11 +22676,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 if (existingRow != null)
                 {
                     GBL_Curr_FMM_Appr_Step_ID = existingRow.Field<int>("Appr_Step_ID");
-                    existingRow["Appr_User_Group"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_User_Group") ?? string.Empty;
-                    existingRow["Appr_Logic"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Logic") ?? string.Empty;
-                    existingRow["Appr_Item"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Item") ?? string.Empty;
-                    existingRow["Appr_Level"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Appr_Level") ?? 0;
-                    existingRow["Appr_Config"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Appr_Config") ?? 0;
+                    existingRow["User_Group"] = src_FMM_Appr_Step_Config_Row.Field<string>("User_Group") ?? string.Empty;
+                    existingRow["Logic"] = src_FMM_Appr_Step_Config_Row.Field<string>("Logic") ?? string.Empty;
+                    existingRow["Item"] = src_FMM_Appr_Step_Config_Row.Field<string>("Item") ?? string.Empty;
+                    existingRow["Level"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Level") ?? 0;
+                    existingRow["Config"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Config") ?? 0;
                     existingRow["Init_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Init_Status") ?? string.Empty;
                     existingRow["Appr_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Status") ?? string.Empty;
                     existingRow["Rej_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Rej_Status") ?? string.Empty;
@@ -23568,7 +23568,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             //setup HierarchyDict
             HierarchyDict.Add("0_FMM_Cube_Config", CubeConfig);
             HierarchyDict.Add("0_FMM_Unit_and_Acct_Config", UnitAcctConfig);
-            HierarchyDict.Add("0_FMM_Appr_Config", ApprovalConfig);
+            HierarchyDict.Add("0_FMM_Config", ApprovalConfig);
             HierarchyDict.Add("0_FMM_Register_Col_Config", RegisterConfig);
             HierarchyDict.Add("0_FMM_Model", BuildModel);
             HierarchyDict.Add("0_FMM_Model_Group", BuildModelGroup);
@@ -24013,7 +24013,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
-                                    if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
+                                    if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config")
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
@@ -24034,7 +24034,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
-                                if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config" && priorDependencyChanged)
+                                if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config" && priorDependencyChanged)
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
@@ -24082,7 +24082,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 Get_Calc_Type(taskResult);
                             }
-                            if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
+                            if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config")
                             {
                                 Get_Calc_Type(taskResult);
                             }
@@ -25368,8 +25368,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var tgt_FMM_Unit_Config_DT = new DataTable();
             var src_FMM_Acct_Config_DT = new DataTable();
             var tgt_FMM_Acct_Config_DT = new DataTable();
-            var src_FMM_Appr_Config_DT = new DataTable();
-            var tgt_FMM_Appr_Config_DT = new DataTable();
+            var src_FMM_Config_DT = new DataTable();
+            var tgt_FMM_Config_DT = new DataTable();
             var src_FMM_Approval_Step_Config_DT = new DataTable();
             var tgt_FMM_Approval_Step_Config_DT = new DataTable();
             var src_FMM_Reg_Config_DT = new DataTable();
@@ -25404,8 +25404,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sql_Data_Adapter_FMM_Acct_Config = new SqlDataAdapter();
                 var sql_Adapter_FMM_Activity_Config = new SQL_Adapter_FMM_Activity_Config(si, connection);
                 var sql_Data_Adapter_FMM_Activity_Config = new SqlDataAdapter();
-                var sql_Adapter_FMM_Appr_Config = new SQL_Adapter_FMM_Appr_Config(si, connection);
-                var sql_Data_Adapter_FMM_Appr_Config = new SqlDataAdapter();
+                var sql_Adapter_FMM_Config = new SQL_Adapter_FMM_Config(si, connection);
+                var sql_Data_Adapter_FMM_Config = new SqlDataAdapter();
                 var sql_Adapter_FMM_Approval_Step_Config = new SQL_Adapter_FMM_Approval_Step_Config(si, connection);
                 var sql_Data_Adapter_FMM_Approval_Step_Config = new SqlDataAdapter();
                 var sql_Adapter_FMM_Calc_Config = new SQL_Adapter_FMM_Calc_Config(si, connection);
@@ -25459,12 +25459,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_FMM_Get_Max_ID
                 );
 
-                // Call for get_FMM_Appr_Config_Data
-                get_FMM_Appr_Config_Data(
+                // Call for get_FMM_Config_Data
+                get_FMM_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_FMM_Get_DataSets, sql_Adapter_FMM_Appr_Config,
-                    ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_FMM_Get_Max_ID
+                    sql_FMM_Get_DataSets, sql_Adapter_FMM_Config,
+                    ref src_FMM_Config_DT, ref tgt_FMM_Config_DT, sql_FMM_Get_Max_ID
                 );
 
                 // Call for get_FMM_Approval_Step_Config_Data
@@ -25587,12 +25587,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Col_Config(col_ConfigRow, ref tgt_FMM_Col_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow approval_ConfigRow in src_FMM_Appr_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
+                    foreach (DataRow approval_ConfigRow in src_FMM_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcApprovalID = approval_ConfigRow["Appr_ID"] != DBNull.Value
                         ? (int)approval_ConfigRow["Appr_ID"]
                         : -1; // Handle null Unit_IDs as needed
-                        Copy_Approvals(approval_ConfigRow, ref tgt_FMM_Appr_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
+                        Copy_Approvals(approval_ConfigRow, ref tgt_FMM_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         foreach (DataRow approvalstep_ConfigRow in src_FMM_Approval_Step_Config_DT.Select($"Appr_ID = {curr_srcApprovalID}"))
                         {
                             Copy_Approval_Steps(approvalstep_ConfigRow, ref tgt_FMM_Approval_Step_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
@@ -25636,7 +25636,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sql_Adapter_FMM_Acct_Config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sql_Data_Adapter_FMM_Acct_Config);
                 sql_Adapter_FMM_Reg_Config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sql_Data_Adapter_FMM_Reg_Config);
                 sql_Adapter_FMM_Col_Config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sql_Data_Adapter_FMM_Col_Config);
-                sql_Adapter_FMM_Appr_Config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sql_Data_Adapter_FMM_Appr_Config);
+                sql_Adapter_FMM_Config.Update_FMM_Config(si, tgt_FMM_Config_DT, sql_Data_Adapter_FMM_Config);
                 sql_Adapter_FMM_Approval_Step_Config.Update_FMM_Approval_Step_Config(si, tgt_FMM_Approval_Step_Config_DT, sql_Data_Adapter_FMM_Approval_Step_Config);
                 sql_Adapter_FMM_Models.Update_FMM_Models(si, tgt_FMM_Models_DT, sql_Data_Adapter_FMM_Models);
                 sql_Adapter_FMM_Calc_Config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sql_Data_Adapter_FMM_Calc_Config);
@@ -25664,8 +25664,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var tgt_FMM_Unit_Config_DT = new DataTable();
             var src_FMM_Acct_Config_DT = new DataTable();
             var tgt_FMM_Acct_Config_DT = new DataTable();
-            var src_FMM_Appr_Config_DT = new DataTable();
-            var tgt_FMM_Appr_Config_DT = new DataTable();
+            var src_FMM_Config_DT = new DataTable();
+            var tgt_FMM_Config_DT = new DataTable();
             var src_FMM_Approval_Step_Config_DT = new DataTable();
             var tgt_FMM_Approval_Step_Config_DT = new DataTable();
             var src_FMM_Reg_Config_DT = new DataTable();
@@ -25700,8 +25700,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sql_Data_Adapter_FMM_Acct_Config = new SqlDataAdapter();
                 var sql_Adapter_FMM_Activity_Config = new SQL_Adapter_FMM_Activity_Config(si, connection);
                 var sql_Data_Adapter_FMM_Activity_Config = new SqlDataAdapter();
-                var sql_Adapter_FMM_Appr_Config = new SQL_Adapter_FMM_Appr_Config(si, connection);
-                var sql_Data_Adapter_FMM_Appr_Config = new SqlDataAdapter();
+                var sql_Adapter_FMM_Config = new SQL_Adapter_FMM_Config(si, connection);
+                var sql_Data_Adapter_FMM_Config = new SqlDataAdapter();
                 var sql_Adapter_FMM_Approval_Step_Config = new SQL_Adapter_FMM_Approval_Step_Config(si, connection);
                 var sql_Data_Adapter_FMM_Approval_Step_Config = new SqlDataAdapter();
                 var sql_Adapter_FMM_Calc_Config = new SQL_Adapter_FMM_Calc_Config(si, connection);
@@ -25755,12 +25755,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ref src_FMM_Acct_Config_DT, ref tgt_FMM_Acct_Config_DT, sql_FMM_Get_Max_ID
                 );
 
-                // Call for get_FMM_Appr_Config_Data
-                get_FMM_Appr_Config_Data(
+                // Call for get_FMM_Config_Data
+                get_FMM_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_FMM_Get_DataSets, sql_Adapter_FMM_Appr_Config,
-                    ref src_FMM_Appr_Config_DT, ref tgt_FMM_Appr_Config_DT, sql_FMM_Get_Max_ID
+                    sql_FMM_Get_DataSets, sql_Adapter_FMM_Config,
+                    ref src_FMM_Config_DT, ref tgt_FMM_Config_DT, sql_FMM_Get_Max_ID
                 );
 
                 // Call for get_FMM_Approval_Step_Config_Data
@@ -25883,12 +25883,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             Copy_Col_Config(col_ConfigRow, ref tgt_FMM_Col_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         }
                     }
-                    foreach (DataRow approval_ConfigRow in src_FMM_Appr_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
+                    foreach (DataRow approval_ConfigRow in src_FMM_Config_DT.Select($"Act_ID = {curr_srcActivityID}"))
                     {
                         var curr_srcApprovalID = approval_ConfigRow["Appr_ID"] != DBNull.Value
                         ? (int)approval_ConfigRow["Appr_ID"]
                         : -1; // Handle null Unit_IDs as needed
-                        Copy_Approvals(approval_ConfigRow, ref tgt_FMM_Appr_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
+                        Copy_Approvals(approval_ConfigRow, ref tgt_FMM_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
                         foreach (DataRow approvalstep_ConfigRow in src_FMM_Approval_Step_Config_DT.Select($"Appr_ID = {curr_srcApprovalID}"))
                         {
                             Copy_Approval_Steps(approvalstep_ConfigRow, ref tgt_FMM_Approval_Step_Config_DT, tgt_Cube_ID, ref XFCopyTaskResult);
@@ -25932,7 +25932,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sql_Adapter_FMM_Acct_Config.Update_FMM_Acct_Config(si, tgt_FMM_Acct_Config_DT, sql_Data_Adapter_FMM_Acct_Config);
                 sql_Adapter_FMM_Reg_Config.Update_FMM_Reg_Config(si, tgt_FMM_Reg_Config_DT, sql_Data_Adapter_FMM_Reg_Config);
                 sql_Adapter_FMM_Col_Config.Update_FMM_Col_Config(si, tgt_FMM_Col_Config_DT, sql_Data_Adapter_FMM_Col_Config);
-                sql_Adapter_FMM_Appr_Config.Update_FMM_Appr_Config(si, tgt_FMM_Appr_Config_DT, sql_Data_Adapter_FMM_Appr_Config);
+                sql_Adapter_FMM_Config.Update_FMM_Config(si, tgt_FMM_Config_DT, sql_Data_Adapter_FMM_Config);
                 sql_Adapter_FMM_Approval_Step_Config.Update_FMM_Approval_Step_Config(si, tgt_FMM_Approval_Step_Config_DT, sql_Data_Adapter_FMM_Approval_Step_Config);
                 sql_Adapter_FMM_Models.Update_FMM_Models(si, tgt_FMM_Models_DT, sql_Data_Adapter_FMM_Models);
                 sql_Adapter_FMM_Calc_Config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sql_Data_Adapter_FMM_Calc_Config);
@@ -26141,26 +26141,26 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             Global_FMM_Acct_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Acct_Config", "Acct_ID");
         }
-        private void get_FMM_Appr_Config_Data(SqlParameter[] src_FMM_Appr_Config_parameters, SqlParameter[] tgt_FMM_Appr_Config_parameters, SQL_FMM_Get_DataSets sql_FMM_Get_DataSets, SQL_Adapter_FMM_Appr_Config sql_Adapter_FMM_Appr_Config, ref DataTable src_FMM_Appr_Config_DT, ref DataTable tgt_FMM_Appr_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
+        private void get_FMM_Config_Data(SqlParameter[] src_FMM_Config_parameters, SqlParameter[] tgt_FMM_Config_parameters, SQL_FMM_Get_DataSets sql_FMM_Get_DataSets, SQL_Adapter_FMM_Config sql_Adapter_FMM_Config, ref DataTable src_FMM_Config_DT, ref DataTable tgt_FMM_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
         {
-            var src_FMM_Appr_Config_sqlDataAdapter = new SqlDataAdapter();
+            var src_FMM_Config_sqlDataAdapter = new SqlDataAdapter();
             // Construct WHERE clause for the source query
-            string src_Where_Clause = Construct_Where_Clause(src_FMM_Appr_Config_parameters);
-            string src_FMM_Appr_Config_selectQuery = $@"
+            string src_Where_Clause = Construct_Where_Clause(src_FMM_Config_parameters);
+            string src_FMM_Config_selectQuery = $@"
 		        SELECT *
-		        FROM FMM_Appr_Config
+		        FROM FMM_Config
 		        {src_Where_Clause}";
-            sql_FMM_Get_DataSets.Fill_get_FMM_DataTable(si, src_FMM_Appr_Config_sqlDataAdapter, src_FMM_Appr_Config_DT, src_FMM_Appr_Config_selectQuery, src_FMM_Appr_Config_parameters);
+            sql_FMM_Get_DataSets.Fill_get_FMM_DataTable(si, src_FMM_Config_sqlDataAdapter, src_FMM_Config_DT, src_FMM_Config_selectQuery, src_FMM_Config_parameters);
 
-            var tgt_FMM_Appr_Config_sqlDataAdapter = new SqlDataAdapter();
-            string tgt_Where_Clause = Construct_Where_Clause(tgt_FMM_Appr_Config_parameters);
-            string tgt_FMM_Appr_Config_selectQuery = $@"
+            var tgt_FMM_Config_sqlDataAdapter = new SqlDataAdapter();
+            string tgt_Where_Clause = Construct_Where_Clause(tgt_FMM_Config_parameters);
+            string tgt_FMM_Config_selectQuery = $@"
 		        SELECT *
-		        FROM FMM_Appr_Config
+		        FROM FMM_Config
 		        {tgt_Where_Clause}";
-            sql_Adapter_FMM_Appr_Config.Fill_FMM_Appr_Config_DataTable(si, tgt_FMM_Appr_Config_sqlDataAdapter, tgt_FMM_Appr_Config_DT, tgt_FMM_Appr_Config_selectQuery, tgt_FMM_Appr_Config_parameters);
+            sql_Adapter_FMM_Config.Fill_FMM_Config_DataTable(si, tgt_FMM_Config_sqlDataAdapter, tgt_FMM_Config_DT, tgt_FMM_Config_selectQuery, tgt_FMM_Config_parameters);
 
-            Global_FMM_Appr_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
+            Global_FMM_Appr_ID = sql_FMM_Get_Max_ID.Get_Max_ID(si, "FMM_Config", "Appr_ID");
         }
         private void get_FMM_Approval_Step_Config_Data(SqlParameter[] src_FMM_Approval_Step_Config_parameters, SqlParameter[] tgt_FMM_Approval_Step_Config_parameters, SQL_FMM_Get_DataSets sql_FMM_Get_DataSets, SQL_Adapter_FMM_Approval_Step_Config sql_Adapter_FMM_Approval_Step_Config, ref DataTable src_FMM_Approval_Step_Config_DT, ref DataTable tgt_FMM_Approval_Step_Config_DT, SQL_FMM_Get_Max_ID sql_FMM_Get_Max_ID)
         {
@@ -26641,13 +26641,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
             }
         }
-        private void Copy_Approvals(DataRow src_FMM_Appr_Config_Row, ref DataTable tgt_FMM_Appr_Config_DT, int targetCubeID, ref XFSelectionChangedTaskResult XFCopyTaskResult)
+        private void Copy_Approvals(DataRow src_FMM_Config_Row, ref DataTable tgt_FMM_Config_DT, int targetCubeID, ref XFSelectionChangedTaskResult XFCopyTaskResult)
         {
             BRApi.ErrorLog.LogMessage(si, "Hit Approval");
             var row_Status = "Build";
             // Check the target Cube_ID approvals for duplicate Approval_Name
-            bool isDuplicate = tgt_FMM_Appr_Config_DT.AsEnumerable()
-                .Any(row => row["Name"].ToString() == src_FMM_Appr_Config_Row["Name"].ToString() &&
+            bool isDuplicate = tgt_FMM_Config_DT.AsEnumerable()
+                .Any(row => row["Name"].ToString() == src_FMM_Config_Row["Name"].ToString() &&
                             row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Approval to the target DataTable
@@ -26655,24 +26655,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 Global_FMM_Appr_ID += 1;
                 Global_Curr_FMM_Appr_ID = Global_FMM_Appr_ID;
-                DataRow newTargetRow = tgt_FMM_Appr_Config_DT.NewRow();
+                DataRow newTargetRow = tgt_FMM_Config_DT.NewRow();
                 newTargetRow["Cube_ID"] = targetCubeID;
                 newTargetRow["Act_ID"] = Global_Curr_FMM_Act_ID;
                 newTargetRow["Appr_ID"] = Global_FMM_Appr_ID;
-                newTargetRow["Name"] = src_FMM_Appr_Config_Row.Field<string>("Name") ?? string.Empty;
+                newTargetRow["Name"] = src_FMM_Config_Row.Field<string>("Name") ?? string.Empty;
                 newTargetRow["Status"] = row_Status; // Set initial status as appropriate
                 newTargetRow["Create_Date"] = DateTime.Now;
                 newTargetRow["Create_User"] = si.UserName; // or appropriate user context
                 newTargetRow["Update_Date"] = DateTime.Now;
                 newTargetRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_FMM_Appr_Config_DT.Rows.Add(newTargetRow);
+                tgt_FMM_Config_DT.Rows.Add(newTargetRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_FMM_Appr_Config_DT.AsEnumerable()
-                    .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Appr_Config_Row["Name"].ToString() &&
+                DataRow existingRow = tgt_FMM_Config_DT.AsEnumerable()
+                    .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Config_Row["Name"].ToString() &&
                                            row["Act_ID"].ToString() == Global_Curr_FMM_Act_ID.ToString());
 
                 if (existingRow != null)
@@ -28142,7 +28142,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     }
 }]]></sourceCode>
                                         </file>
-                                        <file name="SQA_FMM_Appr_Config.cs" fileType="CSharp" businessRuleType="Unknown" compilerActionType="Compile" isEncrypted="false">
+                                        <file name="SQA_FMM_Config.cs" fileType="CSharp" businessRuleType="Unknown" compilerActionType="Compile" isEncrypted="false">
                                             <sourceCode><![CDATA[﻿using System;
 using System.Collections.Generic;
 using System.Data;
@@ -28165,16 +28165,16 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class SQA_FMM_Appr_Config
+    public class SQA_FMM_Config
     {
         private readonly SqlConnection _connection;
 
-        public SQA_FMM_Appr_Config(SessionInfo si, SqlConnection connection)
+        public SQA_FMM_Config(SessionInfo si, SqlConnection connection)
         {
             _connection = connection;
         }
 
-        public void Fill_FMM_Appr_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
+        public void Fill_FMM_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
         {
             using (SqlCommand command = new SqlCommand(sql, _connection))
             {
@@ -28191,13 +28191,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        public void Update_FMM_Appr_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
+        public void Update_FMM_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
                 string insertQuery = @"
-                    INSERT INTO FMM_Appr_Config (
+                    INSERT INTO FMM_Config (
                         Cube_ID,Appr_ID, Name, 
                         Status, Create_Date, Create_User, Update_Date, Update_User)
                     VALUES
@@ -28215,7 +28215,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Define the update query and parameters
                 string updateQuery = @"
-                    UPDATE FMM_Appr_Config SET
+                    UPDATE FMM_Config SET
                         Name = @Name,
                         Status = @Status,
                         Update_Date = @Update_Date,
@@ -28230,7 +28230,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 // Define the delete query and parameters
                 string deleteQuery = @"
-                    DELETE FROM FMM_Appr_Config 
+                    DELETE FROM FMM_Config 
                     WHERE Appr_ID = @Appr_ID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Appr_ID", SqlDbType.Int) { SourceColumn = "Appr_ID", SourceVersion = DataRowVersion.Original });
@@ -28310,13 +28310,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string insertQuery = @"
                     INSERT INTO FMM_Appr_Step_Config (
                         Cube_ID, Appr_ID, Appr_Step_ID, Step_Num,
-                        WFProfile_Step, Appr_User_Group, Appr_Logic, Appr_Item,
-                        Appr_Level, Appr_Config, Init_Status, Appr_Status,
+                        WFProfile_Step, User_Group, Logic, Item,
+                        Level, Config, Init_Status, Appr_Status,
                         Rej_Status, Status, Create_Date, Create_User, Update_Date, Update_User)
                     VALUES
                         (@Cube_ID, @Appr_ID, @Appr_Step_ID, @Step_Num,
-                        @WFProfile_Step, @Appr_User_Group, @Appr_Logic, @Appr_Item,
-                        @Appr_Level, @Appr_Config, @Init_Status, @Appr_Status,
+                        @WFProfile_Step, @User_Group, @Logic, @Item,
+                        @Level, @Config, @Init_Status, @Appr_Status,
                         @Rej_Status, @Status, @Create_Date, @Create_User, @Update_Date, @Update_User)";
 
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
@@ -28325,11 +28325,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Appr_Step_ID", SqlDbType.Int).SourceColumn = "Appr_Step_ID";
                 sqa.InsertCommand.Parameters.Add("@Step_Num", SqlDbType.Int).SourceColumn = "Step_Num";
                 sqa.InsertCommand.Parameters.Add("@WFProfile_Step", SqlDbType.NVarChar, 100).SourceColumn = "WFProfile_Step";
-                sqa.InsertCommand.Parameters.Add("@Appr_User_Group", SqlDbType.NVarChar, 250).SourceColumn = "Appr_User_Group";
-                sqa.InsertCommand.Parameters.Add("@Appr_Logic", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Logic";
-                sqa.InsertCommand.Parameters.Add("@Appr_Item", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Item";
-                sqa.InsertCommand.Parameters.Add("@Appr_Level", SqlDbType.Int).SourceColumn = "Appr_Level";
-                sqa.InsertCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
+                sqa.InsertCommand.Parameters.Add("@User_Group", SqlDbType.NVarChar, 250).SourceColumn = "User_Group";
+                sqa.InsertCommand.Parameters.Add("@Logic", SqlDbType.NVarChar, 100).SourceColumn = "Logic";
+                sqa.InsertCommand.Parameters.Add("@Item", SqlDbType.NVarChar, 100).SourceColumn = "Item";
+                sqa.InsertCommand.Parameters.Add("@Level", SqlDbType.Int).SourceColumn = "Level";
+                sqa.InsertCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
                 sqa.InsertCommand.Parameters.Add("@Init_Status", SqlDbType.NVarChar, 100).SourceColumn = "Init_Status";
                 sqa.InsertCommand.Parameters.Add("@Appr_Status", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Status";
                 sqa.InsertCommand.Parameters.Add("@Rej_Status", SqlDbType.NVarChar, 100).SourceColumn = "Rej_Status";
@@ -28344,11 +28344,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     UPDATE FMM_Appr_Step_Config SET
                         Step_Num = @Step_Num,
                         WFProfile_Step = @WFProfile_Step,
-                        Appr_User_Group = @Appr_User_Group,
-                        Appr_Logic = @Appr_Logic,
-                        Appr_Item = @Appr_Item,
-                        Appr_Level = @Appr_Level,
-                        Appr_Config = @Appr_Config,
+                        User_Group = @User_Group,
+                        Logic = @Logic,
+                        Item = @Item,
+                        Level = @Level,
+                        Config = @Config,
                         Init_Status = @Init_Status,
                         Appr_Status = @Appr_Status,
                         Rej_Status = @Rej_Status,
@@ -28361,11 +28361,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Appr_Step_ID", SqlDbType.Int) { SourceColumn = "Appr_Step_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Step_Num", SqlDbType.Int).SourceColumn = "Step_Num";
                 sqa.UpdateCommand.Parameters.Add("@WFProfile_Step", SqlDbType.NVarChar, 100).SourceColumn = "WFProfile_Step";
-                sqa.UpdateCommand.Parameters.Add("@Appr_User_Group", SqlDbType.NVarChar, 250).SourceColumn = "Appr_User_Group";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Logic", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Logic";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Item", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Item";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Level", SqlDbType.Int).SourceColumn = "Appr_Level";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
+                sqa.UpdateCommand.Parameters.Add("@User_Group", SqlDbType.NVarChar, 250).SourceColumn = "User_Group";
+                sqa.UpdateCommand.Parameters.Add("@Logic", SqlDbType.NVarChar, 100).SourceColumn = "Logic";
+                sqa.UpdateCommand.Parameters.Add("@Item", SqlDbType.NVarChar, 100).SourceColumn = "Item";
+                sqa.UpdateCommand.Parameters.Add("@Level", SqlDbType.Int).SourceColumn = "Level";
+                sqa.UpdateCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
                 sqa.UpdateCommand.Parameters.Add("@Init_Status", SqlDbType.NVarChar, 100).SourceColumn = "Init_Status";
                 sqa.UpdateCommand.Parameters.Add("@Appr_Status", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Status";
                 sqa.UpdateCommand.Parameters.Add("@Rej_Status", SqlDbType.NVarChar, 100).SourceColumn = "Rej_Status";
@@ -29823,12 +29823,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     INSERT INTO FMM_Reg_Config (
                         Cube_ID, Act_ID, Reg_Config_ID, Name, Time_Phasing, 
 						Time_Phasing_Driver,Manual_Input_Plan_Units,Start_End_Dt_Src_Obj,
-                        Start_Dt_Src, End_Dt_Src, Appr_Config, Status, Create_Date, 
+                        Start_Dt_Src, End_Dt_Src, Config, Status, Create_Date, 
                         Create_User, Update_Date, Update_User
                     ) VALUES (
                         @Cube_ID, @Act_ID, @Reg_Config_ID, @Name, @Time_Phasing, 
 						@Time_Phasing_Driver,@Manual_Input_Plan_Units,@Start_End_Dt_Src_Obj,
-                        @Start_Dt_Src, @End_Dt_Src, @Appr_Config, @Status, @Create_Date, 
+                        @Start_Dt_Src, @End_Dt_Src, @Config, @Status, @Create_Date, 
                         @Create_User, @Update_Date, @Update_User
                     )";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
@@ -29842,7 +29842,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Start_End_Dt_Src_Obj", SqlDbType.NVarChar, 250).SourceColumn = "Start_End_Dt_Src_Obj";
                 sqa.InsertCommand.Parameters.Add("@Start_Dt_Src", SqlDbType.NVarChar, 100).SourceColumn = "Start_Dt_Src";
                 sqa.InsertCommand.Parameters.Add("@End_Dt_Src", SqlDbType.NVarChar, 100).SourceColumn = "End_Dt_Src";
-                sqa.InsertCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
+                sqa.InsertCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -29856,7 +29856,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Time_Phasing = @Time_Phasing, Time_Phasing_Driver = @Time_Phasing_Driver,
                         Manual_Input_Plan_Units = @Manual_Input_Plan_Units,
 						Start_End_Dt_Src_Obj = @Start_End_Dt_Src_Obj,Start_Dt_Src = @Start_Dt_Src, 
-                        End_Dt_Src = @End_Dt_Src, Appr_Config = @Appr_Config, 
+                        End_Dt_Src = @End_Dt_Src, Config = @Config, 
                         Status = @Status, Create_Date = @Create_Date, 
                         Create_User = @Create_User, Update_Date = @Update_Date, 
                         Update_User = @Update_User
@@ -29872,7 +29872,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Start_End_Dt_Src_Obj", SqlDbType.NVarChar, 250).SourceColumn = "Start_End_Dt_Src_Obj";
                 sqa.UpdateCommand.Parameters.Add("@Start_Dt_Src", SqlDbType.NVarChar, 100).SourceColumn = "Start_Dt_Src";
                 sqa.UpdateCommand.Parameters.Add("@End_Dt_Src", SqlDbType.NVarChar, 100).SourceColumn = "End_Dt_Src";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
+                sqa.UpdateCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.UpdateCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";

@@ -44,49 +44,45 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // return names;
                         break;
                     case DashboardDataSetFunctionType.GetDataSet:
-                        if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cubes"))
+                        if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Names"))
                         {
-                            return get_FMM_Cubes();
+                            return get_FMM_Cube_Names();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Scen_Types"))
                         {
                             return get_FMM_Scen_Types();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Cubes"))
                         {
-                            return get_FMM_Cube_Config("All");
+                            return get_FMM_Cubes("All");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Act_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cubes_With_Table_Act"))
                         {
-                            return get_FMM_Cube_Config("With_Table_Act");
+                            return get_FMM_Cubes("With_Table_Act");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Cube_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Cubes"))
                         {
-                            return get_FMM_Cube_Config("Source");
+                            return get_FMM_Cubes("Source");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Cube_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Cubes"))
                         {
-                            return get_FMM_Cube_Config("Target");
+                            return get_FMM_Cubes("Target");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Table_Cube_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Acts"))
                         {
-                            return get_FMM_Cube_Config("Cube_Table_Act");
+                            return get_FMM_Acts("Source");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Act_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Acts"))
                         {
-                            return get_FMM_Act_Config("Source");
+                            return get_FMM_Acts("Target");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Act_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_By_Cube"))
                         {
-                            return get_FMM_Act_Config("Target");
+                            return get_FMM_Acts("By_Cube");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Act_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_Table"))
                         {
-                            return get_FMM_Act_Config("All");
-                        }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Table_Act_Config"))
-                        {
-                            return get_FMM_Act_Config("Table");
+                            return get_FMM_Acts("Table");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Approval_Act_Config"))
                         {
@@ -141,11 +137,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_Calc_Units("All");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Register_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Reg_Config"))
+                        {
+                            return get_FMM_Registers("By_Act");
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Reg_Configs"))
                         {
                             return get_FMM_Registers("Source");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Register_List"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Tgt_Reg_Configs"))
                         {
                             return get_FMM_Registers("Target");
                         }
@@ -154,13 +154,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_WFProfile_Hierarchy();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Appr_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Config"))
                         {
                             return get_FMM_Apprs("By_Act");
-                        }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Reg_Config"))
-                        {
-                            return get_FMM_Registers("By_Act");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Register_Profiles_by_Activity"))
                         {
@@ -186,7 +182,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
         #region "Helper Queries"
-        private DataTable get_FMM_Cubes()
+        private DataTable get_FMM_Cube_Names()
         {
             try
             {
@@ -301,7 +297,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable get_FMM_Cube_Config(string cubeType)
+        private DataTable get_FMM_Cubes(string cubeType)
         {
             try
             {
@@ -316,14 +312,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 {
                     dt.TableName = "Tgt_Cube_Config";
                 }
-                else if (cubeType.XFEqualsIgnoreCase("Cube_Table_Act"))
+                else if (cubeType.XFEqualsIgnoreCase("With_Table_Act"))
                 {
-                    dt.TableName = "Cube_Table_Act_Config";
+                    dt.TableName = "Cubes_With_Table_Act";
                     // This query is used to get the Cube Config for Table Activities
-                    sql = @"SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS OS_Cube,Cube.Cube_ID
+                    sql = @"SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS Cube,Cube.Cube_ID
                             FROM FMM_Cube_Config Cube
                             JOIN FMM_Act_Config Act
-                            ON Cube.Cube_ID = Act.Cube_ID";
+                            ON Cube.Cube_ID = Act.Cube_ID
+                            WHERE Act.Calc_Type = 'Table'";
                 }
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -347,31 +344,90 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable get_FMM_Act_Config(string actType)
+        private DataTable get_FMM_Acts(string actType)
         {
             try
             {
                 var cube_ID = args.NameValuePairs.XFGetValue("Cube_ID", "-1");
-                var dt = new DataTable("Table_Act_Config");
+                var dt = new DataTable("Act_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                    // Create a new DataTable
                     var sqa = new SqlDataAdapter();
-                    // Define the select query and sqlparams
-                    var sql = @"SELECT CONCAT(Name, ' - ',Calc_Type) AS Act,Act_ID
+                    string sql = "";
+                    SqlParameter[] sqlparams;
+
+                    // Determine SQL and parameters based on actType
+                    if (actType.XFEqualsIgnoreCase("Source"))
+                    {
+                        dt.TableName = "Src_Act_Config";
+                        sql = @"SELECT CONCAT(Name, ' - ',Calc_Type) AS Act,Act_ID
                                 FROM FMM_Cube_Config Con
-                                JOIN FMM_Act_Config Act
-                                ON Con.Cube_ID = Act.Cube_ID
+                                JOIN FMM_Act_Config Act ON Con.Cube_ID = Act.Cube_ID
+                                WHERE Con.Cube_ID = @Cube_ID
+                                AND Act.Calc_Type = 'Source'
+                                ORDER BY Cube,Scen_Type,Name";
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID.XFConvertToInt() }
+                        };
+                    }
+                    else if (actType.XFEqualsIgnoreCase("Target"))
+                    {
+                        dt.TableName = "Tgt_Act_Config";
+                        sql = @"SELECT CONCAT(Name, ' - ',Calc_Type) AS Act,Act_ID
+                                FROM FMM_Cube_Config Con
+                                JOIN FMM_Act_Config Act ON Con.Cube_ID = Act.Cube_ID
+                                WHERE Con.Cube_ID = @Cube_ID
+                                AND Act.Calc_Type = 'Target'
+                                ORDER BY Cube,Scen_Type,Name";
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID.XFConvertToInt() }
+                        };
+                    }
+                    else if (actType.XFEqualsIgnoreCase("By_Cube"))
+                    {
+                        dt.TableName = "Acts_By_Cube";
+                        sql = @"SELECT CONCAT(Name, ' - ',Calc_Type) AS Act,Act_ID
+                                FROM FMM_Cube_Config Con
+                                JOIN FMM_Act_Config Act ON Con.Cube_ID = Act.Cube_ID
+                                WHERE Con.Cube_ID = @Cube_ID
+                                ORDER BY Cube,Scen_Type,Name";
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID.XFConvertToInt() }
+                        };
+                    }
+                    else if (actType.XFEqualsIgnoreCase("Table"))
+                    {
+                        dt.TableName = "Table_Act_Config";
+                        sql = @"SELECT CONCAT(Name, ' - ',Calc_Type) AS Act,Act_ID
+                                FROM FMM_Cube_Config Con
+                                JOIN FMM_Act_Config Act ON Con.Cube_ID = Act.Cube_ID
                                 WHERE Con.Cube_ID = @Cube_ID
                                 AND Act.Calc_Type = 'Table'
                                 ORDER BY Cube,Scen_Type,Name";
-                    // Create an array of SqlParameter objects
-                    var sqlparams = new SqlParameter[]
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID.XFConvertToInt() }
+                        };
+                    }
+                    else
                     {
-                        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID.XFConvertToInt()}
-                    };
+                        // Default: return all activities for the cube
+                        sql = @"SELECT CONCAT(Name, ' - ',Calc_Type) AS Act,Act_ID
+                                FROM FMM_Cube_Config Con
+                                JOIN FMM_Act_Config Act ON Con.Cube_ID = Act.Cube_ID
+                                WHERE Con.Cube_ID = @Cube_ID
+                                ORDER BY Cube,Scen_Type,Name";
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID.XFConvertToInt() }
+                        };
+                    }
+
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
 
@@ -883,7 +939,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT * FROM FMM_Appr_Config
+			        	SELECT * FROM FMM_Config
 						WHERE Cube_ID = @Cube_ID";
                     //AND Act_ID = @Act_ID";
                     // Create an array of SqlParameter objects
