@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -121,7 +121,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_Model_Grps("By_Cube");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Model_Grp_Seqs"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Model_Grp_Seqs_By_Cube"))
                         {
                             return get_FMM_Model_Grp_Seqs("By_Cube");
                         }
@@ -154,7 +154,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_WFProfile_Hierarchy();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Appr_Config"))
                         {
                             return get_FMM_Apprs("By_Act");
                         }
@@ -552,6 +552,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             AND Act_ID = @Act_ID
                             ORDER BY Name";
                 }
+                else if (modelType.XFEqualsIgnoreCase("By_Act"))
+                {
+                    dt.TableName = "Models_By_Act";
+                    sql = @"SELECT Name,Model_ID
+                            FROM FMM_Models
+                            WHERE Cube_ID = @Cube_ID
+                            AND Act_ID = @Act_ID
+                            ORDER BY Name";
+                }
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -563,7 +572,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
-                    };
+                        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(cube_ID) },
+                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Convert.ToInt16(act_ID) }
+                 };
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
 
                 }
@@ -657,7 +668,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
                 var cube_ID = args.NameValuePairs.XFGetValue("Cube_ID", "-1");
                 var act_ID = args.NameValuePairs.XFGetValue("Act_ID", "-1");
-                var dt = new DataTable("Model_Grp_Seq_List");
+                var dt = new DataTable("Model_Grp_Seqs");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -665,11 +676,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Create a new DataTable
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
-                    var sql = @"
-			        	SELECT Name, Model_Grp_Seq_ID
-			       		FROM FMM_Model_Grp_Seqs
-						WHERE Cube_ID = @Cube_ID
-						ORDER BY Name";
+                    var sql = @"SELECT Name, Model_Grp_Seq_ID
+                                FROM FMM_Model_Grp_Seqs
+                                WHERE Cube_ID = @Cube_ID
+                                ORDER BY Name";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
@@ -774,20 +784,35 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                    // Create a new DataTable
                     var sqa = new SqlDataAdapter();
-                    // Define the select query and sqlparams
-                    var sql = @"
-			        	SELECT CONCAT(Entity_MFB, ' - ',WFChannel) as DisplayValue,Calc_Unit_ID as StoredValue
-			       		FROM FMM_Calc_Unit_Config";
+                    var sql = string.Empty;
+                    SqlParameter[] sqlparams;
 
-                    // Create an array of SqlParameter objects
-                    var sqlparams = new SqlParameter[]
+                    if (calcUnitType.XFEqualsIgnoreCase("By_Cube"))
                     {
-                    };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                        var cube_ID = args.NameValuePairs.XFGetValue("Cube_ID", "-1");
+                        dt.TableName = "Calc_Units_By_Cube";
+                        sql = @"
+                            SELECT CONCAT(Entity_MFB, ' - ',WFChannel) as Calc_Unit_Desc,Calc_Unit_ID
+                            FROM FMM_Calc_Unit_Config
+                            WHERE Cube_ID = @Cube_ID";
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt16(cube_ID) }
+                        };
+                    }
+                    else // "All" or default
+                    {
+                        dt.TableName = "FMM_Calc_Unit_Config";
+                        sql = @"
+                            SELECT CONCAT(Entity_MFB, ' - ',WFChannel) as Calc_Unit_Desc,Calc_Unit_ID
+                            FROM FMM_Calc_Unit_Config";
+                        sqlparams = new SqlParameter[] { };
+                    }
 
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
+
 
                 return dt;
             }
@@ -939,7 +964,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     // Define the select query and sqlparams
                     var sql = @"
-			        	SELECT * FROM FMM_Config
+			        	SELECT * FROM FMM_Appr_Config
 						WHERE Cube_ID = @Cube_ID";
                     //AND Act_ID = @Act_ID";
                     // Create an array of SqlParameter objects

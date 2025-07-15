@@ -42,7 +42,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         // key string is dialog name, string array is list of IVs associated to textboxes that should be set to empty strings
         private Dictionary<string, string[]> clearTextBoxDict = new Dictionary<string, string[]>() {
             {"1_FMM_Model_Dialog_Add", new string[] {"IV_FMM_Model_Name"}},
-            {"1_FMM_Cube_Config_Dialog_Add", new string[] {"IV_FMM_Cube_Config_Description"}},
+            {"1_FMM_Cube_Config_Dialog_Add", new string[] {"IV_FMM_Cube_Descr"}},
             {"1_FMM_Model_Grp_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Name"}},
             {"1_FMM_Model_Grp_Seq_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Seq_Name"}},
 
@@ -138,10 +138,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             //setup HierarchyDict
             HierarchyDict.Add("0_FMM_Cube_Config", CubeConfig);
             HierarchyDict.Add("0_FMM_Unit_and_Acct_Config", UnitAcctConfig);
-            HierarchyDict.Add("0_FMM_Config", ApprovalConfig);
-            HierarchyDict.Add("0_FMM_Register_Col_Config", RegisterConfig);
+            HierarchyDict.Add("0_FMM_Appr_Config", ApprovalConfig);
+            HierarchyDict.Add("0_FMM_Reg_Col_Config", RegisterConfig);
             HierarchyDict.Add("0_FMM_Model", BuildModel);
-            HierarchyDict.Add("0_FMM_Model_Group", BuildModelGroup);
+            HierarchyDict.Add("0_FMM_Model_Grp", BuildModelGroup);
             HierarchyDict.Add("0_FMM_Model_Grp_Seq", BuildModelGroupSeq);
 
             // setup dialogs for hierarchy dict
@@ -583,7 +583,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
-                                    if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config")
+                                    if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
@@ -604,7 +604,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
-                                if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config" && priorDependencyChanged)
+                                if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config" && priorDependencyChanged)
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
@@ -652,7 +652,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 Get_Calc_Type(taskResult);
                             }
-                            if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Config")
+                            if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
                             {
                                 Get_Calc_Type(taskResult);
                             }
