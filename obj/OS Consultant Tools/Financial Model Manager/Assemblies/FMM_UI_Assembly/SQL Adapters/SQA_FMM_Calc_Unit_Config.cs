@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -60,6 +60,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         (@Cube_ID, @Calc_Unit_ID, @Entity_MFB, @WFChannel, @Status, 
                         @Create_Date, @Create_User, @Update_Date, @Update_User)";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
+                sqa.InsertCommand.UpdatedRowSource = UpdateRowSource.None;
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_Unit_ID", SqlDbType.Int).SourceColumn = "Calc_Unit_ID";
                 sqa.InsertCommand.Parameters.Add("@Entity_MFB", SqlDbType.NVarChar, 250).SourceColumn = "Entity_MFB";
@@ -80,6 +81,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Update_User = @Update_User
                     WHERE Calc_Unit_ID = @Calc_Unit_ID";
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
+                sqa.UpdateCommand.UpdatedRowSource = UpdateRowSource.None;
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Calc_Unit_ID", SqlDbType.Int) { SourceColumn = "Calc_Unit_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Entity_MFB", SqlDbType.NVarChar, 250).SourceColumn = "Entity_MFB";
                 sqa.UpdateCommand.Parameters.Add("@WFChannel", SqlDbType.NVarChar, 100).SourceColumn = "WFChannel";
@@ -92,6 +94,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     DELETE FROM FMM_Calc_Unit_Config 
                     WHERE Calc_Unit_ID = @Calc_Unit_ID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
+                sqa.DeleteCommand.UpdatedRowSource = UpdateRowSource.None;
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Calc_Unit_ID", SqlDbType.Int) { SourceColumn = "Calc_Unit_ID", SourceVersion = DataRowVersion.Original });
 
                 try

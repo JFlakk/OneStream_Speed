@@ -84,14 +84,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_Acts("Table");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Approval_Act_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Approval_Acts_Config"))
                         {
 
                             return get_FMM_Approval_Acts();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Approval_Act_Config"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Acts_Config"))
                         {
-                            return get_FMM_Approval_Acts();
+                            return get_FMM_Acts("All");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Models"))
                         {
@@ -878,7 +878,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var hierarchy = new XFTreeItemCollection();
                 var hierarchy_mbrs = new List<XFTreeItem>();
                 var parent_child = new Dictionary<string, string>();
-                var rootProfileName = "DHA_Consol_PGM"; //args.CustomSubstVars.XFGetValue("BL_WFM_Root_WF_Profiles");
+                var rootProfileName = "Army_RMW_Consol_CMD_PGM"; //args.CustomSubstVars.XFGetValue("BL_WFM_Root_WF_Profiles");
 
                 var dt = new DataTable();
 
