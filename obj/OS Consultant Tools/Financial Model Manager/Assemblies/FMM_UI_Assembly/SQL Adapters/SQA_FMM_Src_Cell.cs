@@ -55,21 +55,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string insertQuery = @"
                 INSERT INTO [dbo].[FMM_Src_Cell]
                 (
-                    [Cube_ID], [Act_ID], [Model_ID], [Calc_ID], [Cell_ID],
+                    [Cube_ID], [Act_ID], [Model_ID], [Calc_ID], [Src_Cell_ID],
                     [Src_Order], [Src_Type], [Src_Item], 
                     [Open_Parens], [Math_Operator], [Entity], 
                     [Cons], [Scenario], [Time], [Origin], 
                     [IC], [View], [Src_Plan_Units], [Acct], 
                     [Flow], [UD1], [UD2], [UD3], 
                     [UD4], [UD5], [UD6], [UD7], 
-                    [UD8], [Close_Parens], [Unbal_Src_Cell_Buffer], 
+                    [UD8], [Close_Parens], [Unbal_Buffer], 
                     [Unbal_Origin_Override], [Unbal_IC_Override], 
                     [Unbal_Acct_Override], [Unbal_Flow_Override], 
                     [Unbal_UD1_Override], [Unbal_UD2_Override], 
                     [Unbal_UD3_Override], [Unbal_UD4_Override], 
                     [Unbal_UD5_Override], [Unbal_UD6_Override], 
                     [Unbal_UD7_Override], [Unbal_UD8_Override], 
-                    [Unbal_Src_Cell_Buffer_Filter], [Dyn_Calc_Script], 
+                    [Unbal_Buffer_Filter], [Dyn_Calc_Script], 
                     [Override_Value], [Table_Calc_Expression], [Table_Join_Expression], 
                     [Table_Filter_Expression], [Map_Type], [Map_Source], 
                     [Map_Logic], [Src_SQL_Stmt], [Use_Temp_Table], [Temp_Table_Name], 
@@ -77,21 +77,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 )
                 VALUES
                 (
-                    @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Cell_ID,
+                    @Cube_ID, @Act_ID, @Model_ID, @Calc_ID, @Src_Cell_ID,
                     @Src_Order, @Src_Type, @Src_Item, 
                     @Open_Parens, @Math_Operator, @Entity, 
                     @Cons, @Scenario, @Time, @Origin, 
                     @IC, @View, @Src_Plan_Units, @Acct, 
                     @Flow, @UD1, @UD2, @UD3, 
                     @UD4, @UD5, @UD6, @UD7, 
-                    @UD8, @Close_Parens, @Unbal_Src_Cell_Buffer, 
+                    @UD8, @Close_Parens, @Unbal_Buffer, 
                     @Unbal_Origin_Override, @Unbal_IC_Override, 
                     @Unbal_Acct_Override, @Unbal_Flow_Override, 
                     @Unbal_UD1_Override, @Unbal_UD2_Override, 
                     @Unbal_UD3_Override, @Unbal_UD4_Override, 
                     @Unbal_UD5_Override, @Unbal_UD6_Override, 
                     @Unbal_UD7_Override, @Unbal_UD8_Override, 
-                    @Unbal_Src_Cell_Buffer_Filter, @Dyn_Calc_Script, 
+                    @Unbal_Buffer_Filter, @Dyn_Calc_Script, 
                     @Override_Value, @Table_Calc_Expression, @Table_Join_Expression, 
                     @Table_Filter_Expression, @Map_Type, @Map_Source, 
                     @Map_Logic, @Src_SQL_Stmt, @Use_Temp_Table, @Temp_Table_Name, 
@@ -105,7 +105,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
                 sqa.InsertCommand.Parameters.Add("@Calc_ID", SqlDbType.Int).SourceColumn = "Calc_ID";
-                sqa.InsertCommand.Parameters.Add("@Cell_ID", SqlDbType.Int).SourceColumn = "Cell_ID";
+                sqa.InsertCommand.Parameters.Add("@Src_Cell_ID", SqlDbType.Int).SourceColumn = "Src_Cell_ID";
                 sqa.InsertCommand.Parameters.Add("@Src_Order", SqlDbType.Int).SourceColumn = "Src_Order";
                 sqa.InsertCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 20).SourceColumn = "Src_Type";
                 sqa.InsertCommand.Parameters.Add("@Src_Item", SqlDbType.NVarChar, 50).SourceColumn = "Src_Item";
@@ -126,7 +126,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     sqa.InsertCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
                 }
                 sqa.InsertCommand.Parameters.Add("@Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Close_Parens";
-                sqa.InsertCommand.Parameters.Add("@Unbal_Src_Cell_Buffer", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer";
+                sqa.InsertCommand.Parameters.Add("@Unbal_Buffer", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Buffer";
                 sqa.InsertCommand.Parameters.Add("@Unbal_Origin_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_Origin_Override";
                 sqa.InsertCommand.Parameters.Add("@Unbal_IC_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_IC_Override";
                 sqa.InsertCommand.Parameters.Add("@Unbal_Acct_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_Acct_Override";
@@ -135,7 +135,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.InsertCommand.Parameters.Add($"@Unbal_UD{i}_Override", SqlDbType.NVarChar, 200).SourceColumn = $"Unbal_UD{i}_Override";
                 }
-                sqa.InsertCommand.Parameters.Add("@Unbal_Src_Cell_Buffer_Filter", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer_Filter";
+                sqa.InsertCommand.Parameters.Add("@Unbal_Buffer_Filter", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Buffer_Filter";
                 sqa.InsertCommand.Parameters.Add("@Dyn_Calc_Script", SqlDbType.NVarChar, 500).SourceColumn = "Dyn_Calc_Script";
                 sqa.InsertCommand.Parameters.Add("@Override_Value", SqlDbType.NVarChar, 200).SourceColumn = "Override_Value";
                 sqa.InsertCommand.Parameters.Add("@Table_Calc_Expression", SqlDbType.NVarChar, 1000).SourceColumn = "Table_Calc_Expression";
@@ -168,7 +168,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     [UD4] = @UD4, [UD5] = @UD5, 
                     [UD6] = @UD6, [UD7] = @UD7, 
                     [UD8] = @UD8, [Close_Parens] = @Close_Parens,
-                    [Unbal_Src_Cell_Buffer] = @Unbal_Src_Cell_Buffer, 
+                    [Unbal_Buffer] = @Unbal_Buffer, 
                     [Unbal_Origin_Override] = @Unbal_Origin_Override,
                     [Unbal_IC_Override] = @Unbal_IC_Override, 
                     [Unbal_Acct_Override] = @Unbal_Acct_Override,
@@ -181,7 +181,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     [Unbal_UD6_Override] = @Unbal_UD6_Override, 
                     [Unbal_UD7_Override] = @Unbal_UD7_Override,
                     [Unbal_UD8_Override] = @Unbal_UD8_Override, 
-                    [Unbal_Src_Cell_Buffer_Filter] = @Unbal_Src_Cell_Buffer_Filter,
+                    [Unbal_Buffer_Filter] = @Unbal_Buffer_Filter,
                     [Dyn_Calc_Script] = @Dyn_Calc_Script, 
                     [Override_Value] = @Override_Value, 
                     [Table_Calc_Expression] = @Table_Calc_Expression, 
@@ -191,12 +191,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     [Map_Logic] = @Map_Logic, [Src_SQL_Stmt] = @Src_SQL_Stmt, 
                     [Use_Temp_Table] = @Use_Temp_Table, [Temp_Table_Name] = @Temp_Table_Name, 
                     [Update_Date] = @Update_Date, [Update_User] = @Update_User
-                WHERE Cell_ID = @Cell_ID";
+                WHERE Src_Cell_ID = @Src_Cell_ID";
 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
 
                 // Add parameters for the update command
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Cell_ID", SqlDbType.Int) { SourceColumn = "Cell_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Src_Cell_ID", SqlDbType.Int) { SourceColumn = "Src_Cell_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
                 sqa.UpdateCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.UpdateCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
@@ -220,7 +220,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     sqa.UpdateCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
                 }
                 sqa.UpdateCommand.Parameters.Add("@Close_Parens", SqlDbType.NVarChar, 10).SourceColumn = "Close_Parens";
-                sqa.UpdateCommand.Parameters.Add("@Unbal_Src_Cell_Buffer", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer";
+                sqa.UpdateCommand.Parameters.Add("@Unbal_Buffer", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Buffer";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Origin_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_Origin_Override";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_IC_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_IC_Override";
                 sqa.UpdateCommand.Parameters.Add("@Unbal_Acct_Override", SqlDbType.NVarChar, 200).SourceColumn = "Unbal_Acct_Override";
@@ -229,7 +229,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.UpdateCommand.Parameters.Add($"@Unbal_UD{i}_Override", SqlDbType.NVarChar, 200).SourceColumn = $"Unbal_UD{i}_Override";
                 }
-                sqa.UpdateCommand.Parameters.Add("@Unbal_Src_Cell_Buffer_Filter", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Src_Cell_Buffer_Filter";
+                sqa.UpdateCommand.Parameters.Add("@Unbal_Buffer_Filter", SqlDbType.NVarChar, 500).SourceColumn = "Unbal_Buffer_Filter";
                 sqa.UpdateCommand.Parameters.Add("@Dyn_Calc_Script", SqlDbType.NVarChar, 500).SourceColumn = "Dyn_Calc_Script";
                 sqa.UpdateCommand.Parameters.Add("@Override_Value", SqlDbType.NVarChar, 200).SourceColumn = "Override_Value";
                 sqa.UpdateCommand.Parameters.Add("@Table_Calc_Expression", SqlDbType.NVarChar, 1000).SourceColumn = "Table_Calc_Expression";
@@ -247,9 +247,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the delete query and parameters
                 string deleteQuery = @"
 		            DELETE FROM [dbo].[FMM_Src_Cell] 
-		            WHERE Cell_ID = @Cell_ID";
+		            WHERE Src_Cell_ID = @Src_Cell_ID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Cell_ID", SqlDbType.Int) { SourceColumn = "Cell_ID", SourceVersion = DataRowVersion.Original });
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Src_Cell_ID", SqlDbType.Int) { SourceColumn = "Src_Cell_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {

@@ -55,7 +55,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string insertQuery = @"
 		            INSERT INTO FMM_Dest_Cell (
 		                Cube_ID, Act_ID, Model_ID, Calc_ID, Dest_Cell_ID, 
-		                Location, Calc_Plan_Units, Acct, View, 
+		                Location, Calc_Plan_Units, Acct, [View], 
 		                Origin, IC, Flow, UD1, 
 		                UD2, UD3, UD4, UD5, 
 		                UD6, UD7, UD8, Time_Filter, 
@@ -118,7 +118,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                Cube_ID = @Cube_ID, Act_ID = @Act_ID, Model_ID = @Model_ID,
 		                Calc_ID = @Calc_ID, Location = @Location, 
 		                Calc_Plan_Units = @Calc_Plan_Units, Acct = @Acct, 
-		                View = @View, Origin = @Origin, 
+		                [View] = @View, Origin = @Origin, 
 		                IC = @IC, Flow = @Flow, 
 		                UD1 = @UD1, UD2 = @UD2, 
 		                UD3 = @UD3, UD4 = @UD4, 

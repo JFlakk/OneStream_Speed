@@ -246,13 +246,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             {
                 { "Table", new ColumnConfig[]
                     {
-                        new ColumnConfig { ColumnName = "Cell_ID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "Src_Cell_ID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Cube_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Cube_ID!|" },
                         new ColumnConfig { ColumnName = "Act_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Act_ID!|" },
                         new ColumnConfig { ColumnName = "Model_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Model_ID!|" },
                         new ColumnConfig { ColumnName = "Calc_ID", IsVisible = false, DefaultValue = "|!IV_FMM_Calc_ID!|" },
                         new ColumnConfig { ColumnName = "Src_Order", Description = "Order", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Src_Type", Description = "[Source/Calc Type]", ParameterName = "DL_FMM_Table_Calc_Source", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Src_Type", Description = "[Source/Calc Type]", ParameterName = "DL_FMM_Table_Calc_Src", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Src_Item", Description = "[Source/Calc Item]", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Open_Parens", Description = "(", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Math_Operator", Description = "Op", Width = "Auto", IsVisible = true },

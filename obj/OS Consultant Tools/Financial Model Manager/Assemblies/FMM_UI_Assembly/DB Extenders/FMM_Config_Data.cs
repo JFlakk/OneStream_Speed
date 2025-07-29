@@ -27,75 +27,75 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
     public class MainClass
     {
         #region "Global Variables"
-        public int GBL_Calc_ID { get; set; }
-        public string GBL_BalCalc { get; set; } = string.Empty;
-        public string GBL_BalBufferCalc { get; set; } = string.Empty;
-        public string GBL_UnbalBufferCalc { get; set; } = string.Empty;
-        public string GBL_UnbalCalc { get; set; } = string.Empty;
-        public string GBL_Table_CalcLogic { get; set; } = string.Empty;
-        public int GBL_Table_SrcCell { get; set; }
-        public int GBL_Src_Cell_Cnt { get; set; }
-        public string GBL_Model_Type { get; set; } = "Cube";
-        public Dictionary<int, string> GBL_SrcCell_Dict { get; set; } = new Dictionary<int, string>();
-        public Dictionary<int, string> GBL_UnbalCalc_Dict { get; set; } = new Dictionary<int, string>();
-        public Dictionary<int, string> GBL_SrcCellDrillDown_Dict { get; set; } = new Dictionary<int, string>();
-        public Dictionary<string, string> GBL_Act_Config_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Calc_Unit_Config_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Unit_Config_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Acct_Config_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Appr_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Appr_Step_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Register_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Col_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Calc_Dict { get; set; } = new Dictionary<string, string>();
-        public bool GBL_Duplicate_Activity { get; set; } = false;
-        public bool GBL_Duplicate_Calc_Unit_Config { get; set; } = false;
-        public bool GBL_Duplicate_Unit_Config { get; set; } = false;
-        public bool GBL_Duplicate_Acct_Config { get; set; } = false;
-        public bool GBL_Duplicate_Approval { get; set; } = false;
-        public bool GBL_Duplicate_Appr_Step { get; set; } = false;
-        public bool GBL_Duplicate_Reg_Config { get; set; } = false;
-        public bool GBL_Duplicate_Col_Config { get; set; } = false;
-        public bool GBL_Duplicate_Calc_Config { get; set; } = false;
+        public int gbl_Calc_ID { get; set; }
+        public string gbl_Bal_Calc { get; set; } = string.Empty;
+        public string gbl_Bal_Buffer_Calc { get; set; } = string.Empty;
+        public string gbl_Unbal_Buffer_Calc { get; set; } = string.Empty;
+        public string gbl_Unbal_Calc { get; set; } = string.Empty;
+        public string gbl_Table_Calc_Logic { get; set; } = string.Empty;
+        public int gbl_Table_SrcCell { get; set; }
+        public int gbl_Src_Cell_Cnt { get; set; }
+        public string gbl_Model_Type { get; set; } = "Cube";
+        public Dictionary<int, string> gbl_SrcCell_Dict { get; set; } = new Dictionary<int, string>();
+        public Dictionary<int, string> gbl_Unbal_Calc_Dict { get; set; } = new Dictionary<int, string>();
+        public Dictionary<int, string> gbl_SrcCell_Drill_Dict { get; set; } = new Dictionary<int, string>();
+        public Dictionary<string, string> gbl_Act_Config_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Calc_Unit_Config_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Unit_Config_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Acct_Config_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Appr_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Appr_Step_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Register_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Col_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Calc_Dict { get; set; } = new Dictionary<string, string>();
+        public bool gbl_Duplicate_Activity { get; set; } = false;
+        public bool gbl_Duplicate_Calc_Unit_Config { get; set; } = false;
+        public bool gbl_Duplicate_Unit_Config { get; set; } = false;
+        public bool gbl_Duplicate_Acct_Config { get; set; } = false;
+        public bool gbl_Duplicate_Approval { get; set; } = false;
+        public bool gbl_Duplicate_Appr_Step { get; set; } = false;
+        public bool gbl_Duplicate_Reg_Config { get; set; } = false;
+        public bool gbl_Duplicate_Col_Config { get; set; } = false;
+        public bool gbl_Duplicate_Calc_Config { get; set; } = false;
         private SessionInfo si;
         private BRGlobals globals;
         private object api;
         private DashboardExtenderArgs args;
         private StringBuilder debugString;
-        public int GBL_FMM_Act_ID { get; set; }
-        public int GBL_Curr_FMM_Act_ID { get; set; }
-        public int GBL_FMM_Unit_ID { get; set; }
-        public int GBL_Curr_FMM_Unit_ID { get; set; }
-        public int GBL_FMM_Acct_ID { get; set; }
-        public int GBL_Curr_FMM_Acct_ID { get; set; }
-        public int GBL_FMM_Appr_ID { get; set; }
-        public int GBL_Curr_FMM_Appr_ID { get; set; }
-        public int GBL_FMM_Appr_Step_ID { get; set; }
-        public int GBL_Curr_FMM_Appr_Step_ID { get; set; }
-        public int GBL_FMM_Reg_Config_ID { get; set; }
-        public int GBL_Curr_FMM_Reg_Config_ID { get; set; }
-        public int GBL_FMM_Col_ID { get; set; }
-        public int GBL_Curr_FMM_Col_ID { get; set; }
-        public int GBL_FMM_Models_ID { get; set; }
-        public int GBL_Curr_FMM_Models_ID { get; set; }
-        public int GBL_FMM_Calc_ID { get; set; }
-        public int GBL_Curr_FMM_Calc_ID { get; set; }
-        public int GBL_FMM_Dest_Cell_ID { get; set; }
-        public int GBL_Curr_FMM_Dest_Cell_ID { get; set; }
-        public int GBL_FMM_Src_Cell_ID { get; set; }
-        public int GBL_Curr_FMM_Src_Cell_ID { get; set; }
-        public int GBL_FMM_Model_Grps_ID { get; set; }
-        public int GBL_Curr_FMM_Model_Grps_ID { get; set; }
-        public int GBL_FMM_Model_Grp_Assign_ID { get; set; }
-        public int GBL_Curr_FMM_Model_Grp_Assign_ID { get; set; }
-        public int GBL_FMM_Calc_Unit_ID { get; set; }
-        public int GBL_Curr_FMM_Calc_Unit_ID { get; set; }
-        public int GBL_FMM_Calc_Unit_Assign_ID { get; set; }
-        public int GBL_Curr_FMM_Calc_Unit_Assign_ID { get; set; }
-        public Dictionary<string, string> GBL_Models_Dict { get; set; } = new Dictionary<string, string>();
-        public Dictionary<string, string> GBL_Model_Grps_Dict { get; set; } = new Dictionary<string, string>();
-        public bool GBL_Duplicate_Models { get; set; } = false;
-        public bool GBL_Duplicate_Model_Grps { get; set; } = false;
+        public int gbl_FMM_Act_ID { get; set; }
+        public int gbl_Curr_FMM_Act_ID { get; set; }
+        public int gbl_FMM_Unit_ID { get; set; }
+        public int gbl_Curr_FMM_Unit_ID { get; set; }
+        public int gbl_FMM_Acct_ID { get; set; }
+        public int gbl_Curr_FMM_Acct_ID { get; set; }
+        public int gbl_FMM_Appr_ID { get; set; }
+        public int gbl_Curr_FMM_Appr_ID { get; set; }
+        public int gbl_FMM_Appr_Step_ID { get; set; }
+        public int gbl_Curr_FMM_Appr_Step_ID { get; set; }
+        public int gbl_FMM_Reg_Config_ID { get; set; }
+        public int gbl_Curr_FMM_Reg_Config_ID { get; set; }
+        public int gbl_FMM_Col_ID { get; set; }
+        public int gbl_Curr_FMM_Col_ID { get; set; }
+        public int gbl_FMM_Models_ID { get; set; }
+        public int gbl_Curr_FMM_Models_ID { get; set; }
+        public int gbl_FMM_Calc_ID { get; set; }
+        public int gbl_Curr_FMM_Calc_ID { get; set; }
+        public int gbl_FMM_Dest_Cell_ID { get; set; }
+        public int gbl_Curr_FMM_Dest_Cell_ID { get; set; }
+        public int gbl_FMM_Src_Cell_ID { get; set; }
+        public int gbl_Curr_FMM_Src_Cell_ID { get; set; }
+        public int gbl_FMM_Model_Grps_ID { get; set; }
+        public int gbl_Curr_FMM_Model_Grps_ID { get; set; }
+        public int gbl_FMM_Model_Grp_Assign_ID { get; set; }
+        public int gbl_Curr_FMM_Model_Grp_Assign_ID { get; set; }
+        public int gbl_FMM_Calc_Unit_ID { get; set; }
+        public int gbl_Curr_FMM_Calc_Unit_ID { get; set; }
+        public int gbl_FMM_Calc_Unit_Assign_ID { get; set; }
+        public int gbl_Curr_FMM_Calc_Unit_Assign_ID { get; set; }
+        public Dictionary<string, string> gbl_Models_Dict { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, string> gbl_Model_Grps_Dict { get; set; } = new Dictionary<string, string>();
+        public bool gbl_Duplicate_Models { get; set; } = false;
+        public bool gbl_Duplicate_Model_Grps { get; set; } = false;
         #endregion
 
         public MainClass()
@@ -122,29 +122,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         switch (args.FunctionName)
                         {
                             case var fn when fn.XFEqualsIgnoreCase("Save_Calc_Config_Rows"):
-                                GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
+                                gbl_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
                                 save_Result = Save_Calc_Config_Rows();
-                                if (GBL_Model_Type == "Cube")
+                                if (gbl_Model_Type == "Cube")
                                 {
-                                    Evaluate_Calc_Config_Setup(GBL_Calc_ID);
+                                    Evaluate_Calc_Config_Setup(gbl_Calc_ID);
                                 }
                                 return save_Result;
 
                             case var fn when fn.XFEqualsIgnoreCase("save_Dest_Cell_Rows"):
-                                GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
+                                gbl_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
                                 save_Result = save_Dest_Cell_Rows();
-                                if (GBL_Model_Type == "Cube")
+                                if (gbl_Model_Type == "Cube")
                                 {
-                                    Evaluate_Calc_Config_Setup(GBL_Calc_ID);
+                                    Evaluate_Calc_Config_Setup(gbl_Calc_ID);
                                 }
                                 return save_Result;
 
                             case var fn when fn.XFEqualsIgnoreCase("Save_Src_Cell_Rows"):
-                                GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
+                                gbl_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
                                 save_Result = Save_Src_Cell_Rows();
-                                if (GBL_Model_Type == "Cube")
+                                if (gbl_Model_Type == "Cube")
                                 {
-                                    Evaluate_Calc_Config_Setup(GBL_Calc_ID);
+                                    Evaluate_Calc_Config_Setup(gbl_Calc_ID);
                                 }
                                 return save_Result;
 
@@ -181,8 +181,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return save_Result;
                         }
                         break;
-					                    
-					case DashboardExtenderFunctionType.ComponentSelectionChanged:
+                                        
+                    case DashboardExtenderFunctionType.ComponentSelectionChanged:
                         var changed_Result = new XFSelectionChangedTaskResult();
                         switch (args.FunctionName)
                         {
@@ -217,12 +217,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 changed_Result = Save_Calc_Unit_Assign("New");
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Save_New_Appr_Step"):
-                                BRApi.ErrorLog.LogMessage(si, "Hit Sve Approval step: ");
                                 changed_Result = Save_Appr_Step("New");
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Save_New_Act_Appr_Step_Config"):
                                 var runType = args.NameValuePairs.XFGetValue("runType");
-                                BRApi.ErrorLog.LogMessage(si, "Hit Sve Approval step activity: " + runType);
                                 changed_Result = Save_Act_Appr_Step_Config(runType);
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Process_Bulk_Calc_Unit"):
@@ -275,7 +273,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Save the Calc Config data rows
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
 
-                DimChecker checker = new DimChecker();
+                var checker = new MbrList_Dim_Checker();
                 var createNewDestCell = false;
                 var cube_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                 var act_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
@@ -324,7 +322,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             // Get the max ID for the "FMM_Calc_Config" table
                             calc_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Config", "Calc_ID");
-                            GBL_Calc_ID = calc_ID;
+                            gbl_Calc_ID = calc_ID;
 
                             xfRow.ModifiedDataRow.SetValue("Calc_ID", calc_ID, XFDataType.Int16);
                             xfRow.ModifiedDataRow.SetValue("Status", "Build", XFDataType.Text);
@@ -341,11 +339,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 {
                                     if (dc.ColumnName.XFContainsIgnoreCase("_DimType"))
                                     {
-                                        new_config_Row[dc.ColumnName] = checker.CheckForDim(new_config_Row, dc.ColumnName.Replace("_DimType", "_Filter"));
+                                        new_config_Row[dc.ColumnName] = checker.Dim_Check(new_config_Row, dc.ColumnName.Replace("_DimType", "_Filter"));
                                     }
                                     else if (dc.ColumnName.XFContainsIgnoreCase("_Filter"))
                                     {
-                                        new_config_Row[dc.ColumnName] = checker.GetSrcDestFilter(new_config_Row, dc.ColumnName.Replace("_Filter", "_Filter"));
+                                        new_config_Row[dc.ColumnName] = checker.Get_Src_Dest_Filter(new_config_Row, dc.ColumnName.Replace("_Filter", "_Filter"));
                                     }
                                     else
                                     {
@@ -420,7 +418,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             if (rowsToUpdate.Length > 0)
                             {
                                 var rowToUpdate = rowsToUpdate[0];
-                                GBL_Calc_ID = rowToUpdate["Calc_ID"] != DBNull.Value ? Convert.ToInt32(rowToUpdate["Calc_ID"]) : 0;
+                                gbl_Calc_ID = rowToUpdate["Calc_ID"] != DBNull.Value ? Convert.ToInt32(rowToUpdate["Calc_ID"]) : 0;
                                 // Set the updated fields
                                 xfRow.ModifiedDataRow.SetValue("Update_Date", DateTime.Now, XFDataType.DateTime);
                                 xfRow.ModifiedDataRow.SetValue("Update_User", si.UserName, XFDataType.Text);
@@ -430,11 +428,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     {
                                         if (column.ColumnName.XFContainsIgnoreCase("_DimType"))
                                         {
-                                            rowToUpdate[column.ColumnName] = checker.CheckForDim(rowToUpdate, column.ColumnName.Replace("_DimType", "_Filter"));
+                                            rowToUpdate[column.ColumnName] = checker.Dim_Check(rowToUpdate, column.ColumnName.Replace("_DimType", "_Filter"));
                                         }
                                         else if (column.ColumnName.XFContainsIgnoreCase("_Filter"))
                                         {
-                                            rowToUpdate[column.ColumnName] = checker.GetSrcDestFilter(rowToUpdate, column.ColumnName.Replace("_Filter", "_Filter"));
+                                            rowToUpdate[column.ColumnName] = checker.Get_Src_Dest_Filter(rowToUpdate, column.ColumnName.Replace("_Filter", "_Filter"));
                                         }
                                         else
                                         {
@@ -460,15 +458,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                     }
                     // Check for duplicates in the dictionary
-                    var dup_Calc_Config = GBL_Calc_Dict
+                    var dup_Calc_Config = gbl_Calc_Dict
                                          .GroupBy(x => x.Value)
                                          .Where(g => g.Count() > 1)
                                          .Select(g => g.Key)
                                          .ToList();
 
-                    GBL_Duplicate_Calc_Config = dup_Calc_Config.Count > 0;
+                    gbl_Duplicate_Calc_Config = dup_Calc_Config.Count > 0;
 
-                    if (GBL_Duplicate_Calc_Config)
+                    if (gbl_Duplicate_Calc_Config)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -509,7 +507,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // Save the Calc Config data rows
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
 
-                GBL_Calc_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Calc_ID", "0").XFConvertToInt();
+                gbl_Calc_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Calc_ID", "0").XFConvertToInt();
 
                 // Create SQL connection and adapters
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -528,7 +526,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
-                    new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = GBL_Calc_ID }
+                    new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID }
                     };
 
                     sqa_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, sqa,FMM_Dest_Cell_DT, sql, sqlparams);
@@ -576,7 +574,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             try
             {
                 var calc_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Calc_ID");
-                GBL_Calc_ID = Convert.ToInt32(calc_ID);
+                gbl_Calc_ID = Convert.ToInt32(calc_ID);
                 var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -593,7 +591,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
-                    new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = GBL_Calc_ID },
+                    new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID },
                     };
 
                     sqa_fmm_src_cell.Fill_FMM_Src_Cell_DT(si, sqa, FMM_Src_Cell_DT, sql, sqlparams);
@@ -602,7 +600,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     // Save the Calc Config data rows
                     var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
                     var Calc_Config_Dict = new Dictionary<int, string>();
-                    int Cell_ID = 0;
+                    var src_Cell_ID = 0;
                     var SaveRowType = "Update";
 
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -615,13 +613,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
 
                             // Example: Get the max ID for the "FMM_Calc_Config" table
-                            Cell_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Src_Cell", "Cell_ID");
+                            src_Cell_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Src_Cell", "Src_Cell_ID");
 
-                            BRApi.ErrorLog.LogMessage(si, "HitInsert SRC: " + Cell_ID + "-" + GBL_Calc_ID);
-                            xfRow.ModifiedDataRow["Cell_ID"] = Cell_ID;
+                            BRApi.ErrorLog.LogMessage(si, "HitInsert SRC: " + src_Cell_ID + "-" + gbl_Calc_ID);
+                            xfRow.ModifiedDataRow["Src_Cell_ID"] = src_Cell_ID;
 
                             // Create a new row and populate it with data
-                            var newRow = FMM_Src_Cell_DT.NewRow();
+                            var new_DataRow = FMM_Src_Cell_DT.NewRow();
 
                             foreach (DataColumn column in FMM_Src_Cell_DT.Columns)
                             {
@@ -636,37 +634,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                         {
                                             string stringValue = originalValue.ToString();
                                             // Replace single quotes with two single quotes for SQL string safety
-                                            newRow[column.ColumnName] = stringValue.Replace("'", "''");
+                                            new_DataRow[column.ColumnName] = stringValue.Replace("'", "''");
                                         }
                                         else
                                         {
                                             // If the original value is null or it is an empty string, assign it directly
-                                            newRow[column.ColumnName] = DBNull.Value;
+                                            new_DataRow[column.ColumnName] = DBNull.Value;
                                         }
                                     }
                                     else
                                     {
                                         // For non-string columns, just assign the value
-                                        newRow[column.ColumnName] = xfRow.ModifiedDataRow[column.ColumnName];
+                                        new_DataRow[column.ColumnName] = xfRow.ModifiedDataRow[column.ColumnName];
                                     }
                                 }
                             }
 
                             // set updated and created users for new row as they are not contained within the sql table editor
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            BRApi.ErrorLog.LogMessage(si, "HitEnd Insert SRC: " + Cell_ID);
-                            FMM_Src_Cell_DT.Rows.Add(newRow);
-                            BRApi.ErrorLog.LogMessage(si, "HitEnd 2Insert SRC: " + Cell_ID);
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+
+                            FMM_Src_Cell_DT.Rows.Add(new_DataRow);
+
                         }
                         #endregion
                         #region "Update Src Cell Row"
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
                         {
                             // Find the row to update and modify its data
-                            var rowsToUpdate = FMM_Src_Cell_DT.Select($"Cell_ID = {xfRow.ModifiedDataRow["Cell_ID"]}");
+                            var rowsToUpdate = FMM_Src_Cell_DT.Select($"Src_Cell_ID = {xfRow.ModifiedDataRow["Src_Cell_ID"]}");
                             if (rowsToUpdate.Length > 0)
                             {
                                 var rowToUpdate = rowsToUpdate[0];
@@ -712,7 +710,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
                         {
                             // Find the row
-                            var Deleted_Row = FMM_Src_Cell_DT.Rows.Find(xfRow.OriginalDataRow["Cell_ID"]);
+                            var Deleted_Row = FMM_Src_Cell_DT.Rows.Find(xfRow.OriginalDataRow["Src_Cell_ID"]);
 
                             if (Deleted_Row != null)
                             {
@@ -731,7 +729,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     sqa_fmm_src_cell.Update_FMM_Src_Cell(si, FMM_Src_Cell_DT, sqa);
 
 
-                    //                    if (GBL_BalCalc == "Unbalanced" || GBL_BalCalc == "UnbalAlloc")
+                    //                    if (gbl_Bal_Calc == "Unbalanced" || gbl_Bal_Calc == "UnbalAlloc")
                     //                    {
                     //                        foreach (DataRow Row in FMM_Dest_Cell_DT.Rows)
                     //                        {
@@ -767,7 +765,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var save_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
-                int act_ID = 0;
+                var act_ID = 0;
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -799,17 +797,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                                 act_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Act_Config", "Act_ID");
 
-                                var newRow = FMM_Act_Config_DT.NewRow();
-                                newRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
-                                newRow["Act_ID"] = act_ID;
-                                newRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                                newRow["Calc_Type"] = (string)xfRow.ModifiedDataRow.Items["Calc_Type"];
-                                newRow["Status"] = "Build";
-                                newRow["Create_Date"] = DateTime.Now;
-                                newRow["Create_User"] = si.UserName;
-                                newRow["Update_Date"] = DateTime.Now;
-                                newRow["Update_User"] = si.UserName;
-                                FMM_Act_Config_DT.Rows.Add(newRow);
+                                var new_DataRow = FMM_Act_Config_DT.NewRow();
+                                new_DataRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
+                                new_DataRow["Act_ID"] = act_ID;
+                                new_DataRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
+                                new_DataRow["Calc_Type"] = (string)xfRow.ModifiedDataRow.Items["Calc_Type"];
+                                new_DataRow["Status"] = "Build";
+                                new_DataRow["Create_Date"] = DateTime.Now;
+                                new_DataRow["Create_User"] = si.UserName;
+                                new_DataRow["Update_Date"] = DateTime.Now;
+                                new_DataRow["Update_User"] = si.UserName;
+                                FMM_Act_Config_DT.Rows.Add(new_DataRow);
                                 Duplicate_Act_Config(cube_ID, "Update Row", ref save_Result, "Insert", xfRow);
                             }
                         }
@@ -842,15 +840,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
 
                     // Check for duplicates in the dictionary
-                    var dup_Activity_Config = GBL_Act_Config_Dict
+                    var dup_Activity_Config = gbl_Act_Config_Dict
                                              .GroupBy(x => x.Value)
                                              .Where(g => g.Count() > 1)
                                              .Select(g => g.Key)
                                              .ToList();
 
-                    GBL_Duplicate_Activity = dup_Activity_Config.Count > 0;
+                    gbl_Duplicate_Activity = dup_Activity_Config.Count > 0;
 
-                    if (GBL_Duplicate_Activity)
+                    if (gbl_Duplicate_Activity)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -896,8 +894,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     // Fill the DataTable with the current data from FMM_Act_Config
                     var sql = @"SELECT * 
-				                FROM FMM_Calc_Unit_Config
-								WHERE Cube_ID = @Cube_ID";
+                                FROM FMM_Calc_Unit_Config
+                                WHERE Cube_ID = @Cube_ID";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
@@ -914,17 +912,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                             calc_Unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
 
-                            var newRow = FMM_Calc_Unit_Config_DT.NewRow();
-                            newRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
-                            newRow["Calc_Unit_ID"] = calc_Unit_ID;
-                            newRow["Entity_MFB"] = (string)xfRow.ModifiedDataRow.Items["Entity_MFB"];
-                            newRow["WFChannel"] = (string)xfRow.ModifiedDataRow.Items["WFChannel"];
-                            newRow["Status"] = "Build";
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
-                            FMM_Calc_Unit_Config_DT.Rows.Add(newRow);
+                            var new_DataRow = FMM_Calc_Unit_Config_DT.NewRow();
+                            new_DataRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
+                            new_DataRow["Calc_Unit_ID"] = calc_Unit_ID;
+                            new_DataRow["Entity_MFB"] = (string)xfRow.ModifiedDataRow.Items["Entity_MFB"];
+                            new_DataRow["WFChannel"] = (string)xfRow.ModifiedDataRow.Items["WFChannel"];
+                            new_DataRow["Status"] = "Build";
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
+                            FMM_Calc_Unit_Config_DT.Rows.Add(new_DataRow);
                             Duplicate_Calc_Unit_Config(cube_ID, "Update Row", ref save_Result, "Insert", xfRow);
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
@@ -943,28 +941,28 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Delete)
                         {
                             var rowsToDelete = FMM_Calc_Unit_Config_DT.Select($"Calc_Unit_ID = {(int)xfRow.OriginalDataRow["Calc_Unit_ID"]}");
-							
+                            
                             if (rowsToDelete.Length > 0)
                             {
-								BRApi.ErrorLog.LogMessage(si,$"Hit found Delete {FMM_Calc_Unit_Config_DT.Rows.Count}");
+                                BRApi.ErrorLog.LogMessage(si,$"Hit found Delete {FMM_Calc_Unit_Config_DT.Rows.Count}");
                                 foreach (var row in rowsToDelete)
                                 {
                                     Duplicate_Calc_Unit_Config(cube_ID, "Update Row", ref save_Result, "Delete", xfRow);
-									row.Delete();
+                                    row.Delete();
                                 }
                             }
                         }
                     }
                     // Check for duplicates in the dictionary
-                    var dup_Calc_Unit_Config = GBL_Calc_Unit_Config_Dict
+                    var dup_Calc_Unit_Config = gbl_Calc_Unit_Config_Dict
                                                  .GroupBy(x => x.Value)
                                                  .Where(g => g.Count() > 1)
                                                  .Select(g => g.Key)
                                                  .ToList();
 
-                    GBL_Duplicate_Calc_Unit_Config = dup_Calc_Unit_Config.Count > 0;
+                    gbl_Duplicate_Calc_Unit_Config = dup_Calc_Unit_Config.Count > 0;
 
-                    if (GBL_Duplicate_Calc_Unit_Config)
+                    if (gbl_Duplicate_Calc_Unit_Config)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -1040,17 +1038,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                             unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Unit_Config", "Unit_ID");
                             BRApi.ErrorLog.LogMessage(si, "Hit: " + cube_ID + " | " + unit_ID);
-                            var newRow = FMM_Unit_Config_DT.NewRow();
-                            newRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
-                            newRow["Act_ID"] = (int)xfRow.ModifiedDataRow["Act_ID"];
-                            newRow["Unit_ID"] = unit_ID;
-                            newRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                            newRow["Status"] = (string)xfRow.ModifiedDataRow.Items["Status"];
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
-                            FMM_Unit_Config_DT.Rows.Add(newRow);
+                            var new_DataRow = FMM_Unit_Config_DT.NewRow();
+                            new_DataRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
+                            new_DataRow["Act_ID"] = (int)xfRow.ModifiedDataRow["Act_ID"];
+                            new_DataRow["Unit_ID"] = unit_ID;
+                            new_DataRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
+                            new_DataRow["Status"] = (string)xfRow.ModifiedDataRow.Items["Status"];
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
+                            FMM_Unit_Config_DT.Rows.Add(new_DataRow);
                             Duplicate_Unit_Config(cube_ID, act_ID, "Update Row", ref save_Result, "Insert", xfRow);
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
@@ -1080,15 +1078,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                     }
                     // Check for duplicates in the dictionary
-                    var dup_Unit_Config = GBL_Unit_Config_Dict
+                    var dup_Unit_Config = gbl_Unit_Config_Dict
                                          .GroupBy(x => x.Value)
                                          .Where(g => g.Count() > 1)
                                          .Select(g => g.Key)
                                          .ToList();
 
-                    GBL_Duplicate_Unit_Config = dup_Unit_Config.Count > 0;
+                    gbl_Duplicate_Unit_Config = dup_Unit_Config.Count > 0;
 
-                    if (GBL_Duplicate_Unit_Config)
+                    if (gbl_Duplicate_Unit_Config)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -1162,23 +1160,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Example: Get the max ID for the "FMM_Calc_Config" table
                             acct_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Acct_Config", "Acct_ID");
 
-                            var newRow = FMM_Acct_Config_DT.NewRow();
-                            newRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
-                            newRow["Act_ID"] = (int)xfRow.ModifiedDataRow["Act_ID"];
-                            newRow["Unit_ID"] = (int)xfRow.ModifiedDataRow["Unit_ID"];
-                            newRow["Acct_ID"] = acct_ID;
-                            newRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                            newRow["Map_Req"] = (bool)xfRow.ModifiedDataRow.Items["Map_Req"];
-                            newRow["Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Map_Type"];
-                            newRow["Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Map_Loc"];
-                            newRow["Map_Logic"] = (string)xfRow.ModifiedDataRow.Items["Map_Logic"];
-                            newRow["Status"] = "Build";
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
+                            var new_DataRow = FMM_Acct_Config_DT.NewRow();
+                            new_DataRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
+                            new_DataRow["Act_ID"] = (int)xfRow.ModifiedDataRow["Act_ID"];
+                            new_DataRow["Unit_ID"] = (int)xfRow.ModifiedDataRow["Unit_ID"];
+                            new_DataRow["Acct_ID"] = acct_ID;
+                            new_DataRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
+                            new_DataRow["Map_Req"] = (bool)xfRow.ModifiedDataRow.Items["Map_Req"];
+                            new_DataRow["Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Map_Type"];
+                            new_DataRow["Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Map_Loc"];
+                            new_DataRow["Map_Logic"] = (string)xfRow.ModifiedDataRow.Items["Map_Logic"];
+                            new_DataRow["Status"] = "Build";
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
                             // Set other column values for the new row as needed
-                            FMM_Acct_Config_DT.Rows.Add(newRow);
+                            FMM_Acct_Config_DT.Rows.Add(new_DataRow);
                             Duplicate_Acct_Config(cube_ID, act_ID, unit_ID, "Update Row", ref save_Result, "Insert", xfRow);
 
                         }
@@ -1218,15 +1216,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
 
                     // Check for duplicates in the dictionary
-                    var dup_Acct_Config = GBL_Acct_Config_Dict
+                    var dup_Acct_Config = gbl_Acct_Config_Dict
                                          .GroupBy(x => x.Value)
                                          .Where(g => g.Count() > 1)
                                          .Select(g => g.Key)
                                          .ToList();
 
-                    GBL_Duplicate_Acct_Config = dup_Acct_Config.Count > 0;
+                    gbl_Duplicate_Acct_Config = dup_Acct_Config.Count > 0;
 
-                    if (GBL_Duplicate_Acct_Config)
+                    if (gbl_Duplicate_Acct_Config)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -1298,24 +1296,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                             reg_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Reg_Config", "Reg_Config_ID");
                             new_Reg_List.Add(reg_Config_ID);
-                            var newRow = FMM_Reg_Config_DT.NewRow();
-                            newRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
-                            newRow["Act_ID"] = (int)xfRow.ModifiedDataRow["Act_ID"];
-                            newRow["Reg_Config_ID"] = reg_Config_ID;
-                            newRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                            newRow["Time_Phase"] = (string)xfRow.ModifiedDataRow.Items["Time_Phase"];
-                            newRow["Time_Phase_Driver"] = (string)xfRow.ModifiedDataRow.Items["Time_Phase_Driver"];
-                            newRow["Manual_Input_Plan_Units"] = (string)xfRow.ModifiedDataRow.Items["Manual_Input_Plan_Units"];
-                            newRow["Start_End_Dt_Src_Obj"] = (string)xfRow.ModifiedDataRow.Items["Start_End_Dt_Src_Obj"];
-                            newRow["Start_Dt_Src"] = (string)xfRow.ModifiedDataRow.Items["Start_Dt_Src"];
-                            newRow["End_Dt_Src"] = (string)xfRow.ModifiedDataRow.Items["End_Dt_Src"];
-                            newRow["Appr_Config"] = (int)xfRow.ModifiedDataRow["Appr_Config"];
-                            newRow["Status"] = "Build";
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
-                            FMM_Reg_Config_DT.Rows.Add(newRow);
+                            var new_DataRow = FMM_Reg_Config_DT.NewRow();
+                            new_DataRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
+                            new_DataRow["Act_ID"] = (int)xfRow.ModifiedDataRow["Act_ID"];
+                            new_DataRow["Reg_Config_ID"] = reg_Config_ID;
+                            new_DataRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
+                            new_DataRow["Time_Phase"] = (string)xfRow.ModifiedDataRow.Items["Time_Phase"];
+                            new_DataRow["Time_Phase_Driver"] = (string)xfRow.ModifiedDataRow.Items["Time_Phase_Driver"];
+                            new_DataRow["Manual_Input_Plan_Units"] = (string)xfRow.ModifiedDataRow.Items["Manual_Input_Plan_Units"];
+                            new_DataRow["Start_End_Dt_Src_Obj"] = (string)xfRow.ModifiedDataRow.Items["Start_End_Dt_Src_Obj"];
+                            new_DataRow["Start_Dt_Src"] = (string)xfRow.ModifiedDataRow.Items["Start_Dt_Src"];
+                            new_DataRow["End_Dt_Src"] = (string)xfRow.ModifiedDataRow.Items["End_Dt_Src"];
+                            new_DataRow["Appr_Config"] = (int)xfRow.ModifiedDataRow["Appr_Config"];
+                            new_DataRow["Status"] = "Build";
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
+                            FMM_Reg_Config_DT.Rows.Add(new_DataRow);
                             Duplicate_Reg_Config(cube_ID, act_ID, "Update Row", ref save_Result, "Insert", xfRow);
                         }
                         else if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
@@ -1353,15 +1351,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
 
                     // Check for duplicates in the dictionary
-                    var dup_Reg_Config = GBL_Register_Dict
+                    var dup_Reg_Config = gbl_Register_Dict
                                          .GroupBy(x => x.Value)
                                          .Where(g => g.Count() > 1)
                                          .Select(g => g.Key)
                                          .ToList();
 
-                    GBL_Duplicate_Reg_Config = dup_Reg_Config.Count > 0;
+                    gbl_Duplicate_Reg_Config = dup_Reg_Config.Count > 0;
 
-                    if (GBL_Duplicate_Reg_Config)
+                    if (gbl_Duplicate_Reg_Config)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -1463,15 +1461,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
 
                     // Check for duplicates in the dictionary
-                    var dup_Col_Config = GBL_Col_Dict
+                    var dup_Col_Config = gbl_Col_Dict
                                          .GroupBy(x => x.Value)
                                          .Where(g => g.Count() > 1)
                                          .Select(g => g.Key)
                                          .ToList();
 
-                    GBL_Duplicate_Col_Config = dup_Col_Config.Count > 0;
+                    gbl_Duplicate_Col_Config = dup_Col_Config.Count > 0;
 
-                    if (GBL_Duplicate_Col_Config)
+                    if (gbl_Duplicate_Col_Config)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -1538,17 +1536,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                             appr_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
 
-                            var newRow = FMM_Appr_Config_DT.NewRow();
+                            var new_DataRow = FMM_Appr_Config_DT.NewRow();
                             BRApi.ErrorLog.LogMessage(si, "Hit" + (int)xfRow.ModifiedDataRow["Cube_ID"]);
-                            newRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
-                            newRow["Appr_ID"] = appr_ID;
-                            newRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                            newRow["Status"] = "Build";
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
-                            FMM_Appr_Config_DT.Rows.Add(newRow);
+                            new_DataRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
+                            new_DataRow["Appr_ID"] = appr_ID;
+                            new_DataRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
+                            new_DataRow["Status"] = "Build";
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
+                            FMM_Appr_Config_DT.Rows.Add(new_DataRow);
                             Duplicate_Config(cube_ID, "Update Row", ref save_Result, "Insert", xfRow);
 
                         }
@@ -1579,15 +1577,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                     }
                     // Check for duplicates in the dictionary
-                    var dup_Approvals = GBL_Appr_Dict
+                    var dup_Approvals = gbl_Appr_Dict
                                         .GroupBy(x => x.Value)
                                         .Where(g => g.Count() > 1)
                                         .Select(g => g.Key)
                                         .ToList();
 
-                    GBL_Duplicate_Approval = dup_Approvals.Count > 0;
+                    gbl_Duplicate_Approval = dup_Approvals.Count > 0;
 
-                    if (GBL_Duplicate_Approval)
+                    if (gbl_Duplicate_Approval)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -1635,9 +1633,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
                     string sql = @"SELECT * 
-					                FROM FMM_Appr_Step_Config
-									WHERE Cube_ID = @Cube_ID
-									AND Appr_ID = @Appr_ID";
+                                    FROM FMM_Appr_Step_Config
+                                    WHERE Cube_ID = @Cube_ID
+                                    AND Appr_ID = @Appr_ID";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
@@ -1652,29 +1650,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
                             // Create a new row and populate its fields
-                            var newRow = FMM_Appr_Step_Config_DT.NewRow();
+                            var new_DataRow = FMM_Appr_Step_Config_DT.NewRow();
 
-                            newRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
-                            newRow["Appr_ID"] = (int)xfRow.ModifiedDataRow["Appr_ID"];
-                            newRow["Appr_Step_ID"] = (int)xfRow.ModifiedDataRow["Appr_Step_ID"];
-                            newRow["WFProfile_Step"] = (string)xfRow.ModifiedDataRow["WFProfile_Step"];
-                            newRow["Step_Num"] = (int)xfRow.ModifiedDataRow["Step_Num"];
-                            newRow["User_Group"] = (string)xfRow.ModifiedDataRow["User_Group"];
-                            newRow["Logic"] = (string)xfRow.ModifiedDataRow["Logic"];
-                            newRow["Item"] = (string)xfRow.ModifiedDataRow["Item"];
-                            newRow["Level"] = (int)xfRow.ModifiedDataRow["Level"];
-                            newRow["Appr_Config"] = (int)xfRow.ModifiedDataRow["Appr_Config"];
-                            newRow["Init_Status"] = (string)xfRow.ModifiedDataRow["Init_Status"];
-                            newRow["Appr_Status"] = (string)xfRow.ModifiedDataRow["Appr_Status"];
-                            newRow["Rej_Status"] = (string)xfRow.ModifiedDataRow["Rej_Status"];
-                            newRow["Status"] = (string)xfRow.ModifiedDataRow["Status"];
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
+                            new_DataRow["Cube_ID"] = (int)xfRow.ModifiedDataRow["Cube_ID"];
+                            new_DataRow["Appr_ID"] = (int)xfRow.ModifiedDataRow["Appr_ID"];
+                            new_DataRow["Appr_Step_ID"] = (int)xfRow.ModifiedDataRow["Appr_Step_ID"];
+                            new_DataRow["WFProfile_Step"] = (string)xfRow.ModifiedDataRow["WFProfile_Step"];
+                            new_DataRow["Step_Num"] = (int)xfRow.ModifiedDataRow["Step_Num"];
+                            new_DataRow["User_Group"] = (string)xfRow.ModifiedDataRow["User_Group"];
+                            new_DataRow["Logic"] = (string)xfRow.ModifiedDataRow["Logic"];
+                            new_DataRow["Item"] = (string)xfRow.ModifiedDataRow["Item"];
+                            new_DataRow["Level"] = (int)xfRow.ModifiedDataRow["Level"];
+                            new_DataRow["Appr_Config"] = (int)xfRow.ModifiedDataRow["Appr_Config"];
+                            new_DataRow["Init_Status"] = (string)xfRow.ModifiedDataRow["Init_Status"];
+                            new_DataRow["Appr_Status"] = (string)xfRow.ModifiedDataRow["Appr_Status"];
+                            new_DataRow["Rej_Status"] = (string)xfRow.ModifiedDataRow["Rej_Status"];
+                            new_DataRow["Status"] = (string)xfRow.ModifiedDataRow["Status"];
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
 
                             // Add the row to the DataTable
-                            FMM_Appr_Step_Config_DT.Rows.Add(newRow);
+                            FMM_Appr_Step_Config_DT.Rows.Add(new_DataRow);
 
                             // Check for duplicates before saving
                             Duplicate_Appr_Step_Config(cube_ID, appr_ID, "Insert Row", ref save_Result, "Insert", xfRow);
@@ -1714,15 +1712,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                     }
                     // Check for duplicates in the dictionary
-                    var dup_Appr_Steps = GBL_Appr_Step_Dict
+                    var dup_Appr_Steps = gbl_Appr_Step_Dict
                                         .GroupBy(x => x.Value)
                                         .Where(g => g.Count() > 1)
                                         .Select(g => g.Key)
                                         .ToList();
 
-                    GBL_Duplicate_Appr_Step = dup_Appr_Steps.Count > 0;
+                    gbl_Duplicate_Appr_Step = dup_Appr_Steps.Count > 0;
 
-                    if (GBL_Duplicate_Appr_Step)
+                    if (gbl_Duplicate_Appr_Step)
                     {
                         save_Result.IsOK = false;
                         save_Result.ShowMessageBox = true;
@@ -1757,117 +1755,116 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         private void Update_Src_Cell_Columns(DataRow Data_Row)
         {
             var balances = new Dictionary<string, int>();
-            var srcAttributes = new Dictionary<string, string>();
-            var targetAttributes = new Dictionary<string, string>();
+            var src_Attributes = new Dictionary<string, string>();
+            var dest_Attributes = new Dictionary<string, string>();
             var dim_token = new Dictionary<string, List<string>>();
             string src_Cell_Drill_Down = string.Empty;
             int src_Cell_Drill_Down_Count = 0;
             int src_Cell_Count = 0;
             bool balanced_Src_Row = true;
-            string UnbalancedSrcCellBufferFilter = string.Empty;
-            int unbalancedSrcCellBufferFilterCount = 0;
+            string unbal_Src_Cell_Buffer_Filter = string.Empty;
+            int unbal_Src_Cell_Buffer_FilterCount = 0;
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
-                var sqlAdapterMcmSrcCell = new SQA_FMM_Src_Cell(si, connection);
+                var sqa_fmm_src_cell = new SQA_FMM_Src_Cell(si, connection);
                 var sqlDataAdapter = new SqlDataAdapter();
                 var FMM_Src_Cell_DT = new DataTable();
 
                 // Fill the DataTable with the current data from FMM_Dest_Cell
-                string selectQuery = @"
-		            SELECT * 
-		            FROM FMM_Src_Cell
-		            WHERE Calc_ID = @Calc_ID
-					ORDER BY Cell_ID";
+                var sql = @"SELECT * 
+                            FROM FMM_Src_Cell
+                            WHERE Calc_ID = @Calc_ID
+                            ORDER BY Src_Cell_ID";
                 var parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = GBL_Calc_ID }
+                    new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID }
                 };
 
                 connection.Open();
 
-                sqlAdapterMcmSrcCell.Fill_FMM_Src_Cell_DT(si, sqlDataAdapter, FMM_Src_Cell_DT, selectQuery, parameters);
+                sqa_fmm_src_cell.Fill_FMM_Src_Cell_DT(si, sqlDataAdapter, FMM_Src_Cell_DT, sql, parameters);
 
-                string[] All_Dim_Types = { "Entity", "Cons", "Scenario", "Time", "View", "Acct", "IC", "Origin", "Flow", "UD1", "UD2", "UD3", "UD4", "UD5", "UD6", "UD7", "UD8" };
+                string[] all_Dim_Types = { "Entity", "Cons", "Scenario", "Time", "View", "Acct", "IC", "Origin", "Flow", "UD1", "UD2", "UD3", "UD4", "UD5", "UD6", "UD7", "UD8" };
                 #region "All Dim Types"
-                foreach (var Dim_Type in All_Dim_Types)
+                foreach (var dim_Type in all_Dim_Types)
                 {
-                    switch (Dim_Type)
+                    switch (dim_Type)
                     {
                         case "Entity":
-                            dim_token[Dim_Type] = new List<string> { "E#" };
+                            dim_token[dim_Type] = new List<string> { "E#" };
                             break;
                         case "Cons":
-                            dim_token[Dim_Type] = new List<string> { "C#" };
+                            dim_token[dim_Type] = new List<string> { "C#" };
                             break;
                         case "Scenario":
-                            dim_token[Dim_Type] = new List<string> { "S#" };
+                            dim_token[dim_Type] = new List<string> { "S#" };
                             break;
                         case "Time":
-                            dim_token[Dim_Type] = new List<string> { "T#" };
+                            dim_token[dim_Type] = new List<string> { "T#" };
                             break;
                         case "View":
-                            dim_token[Dim_Type] = new List<string> { "V#" };
+                            dim_token[dim_Type] = new List<string> { "V#" };
                             break;
                         case "Acct":
-                            dim_token[Dim_Type] = new List<string> { "A#" };
+                            dim_token[dim_Type] = new List<string> { "A#" };
                             break;
                         case "IC":
-                            dim_token[Dim_Type] = new List<string> { "I#", "IC#" };
+                            dim_token[dim_Type] = new List<string> { "I#", "IC#" };
                             break;
                         case "Origin":
-                            dim_token[Dim_Type] = new List<string> { "O#" };
+                            dim_token[dim_Type] = new List<string> { "O#" };
                             break;
                         case "Flow":
-                            dim_token[Dim_Type] = new List<string> { "F#" };
+                            dim_token[dim_Type] = new List<string> { "F#" };
                             break;
                         case "UD1":
-                            dim_token[Dim_Type] = new List<string> { "UD1#", "U1#" };
+                            dim_token[dim_Type] = new List<string> { "UD1#", "U1#" };
                             break;
                         case "UD2":
-                            dim_token[Dim_Type] = new List<string> { "UD2#", "U2#" };
+                            dim_token[dim_Type] = new List<string> { "UD2#", "U2#" };
                             break;
                         case "UD3":
-                            dim_token[Dim_Type] = new List<string> { "UD3#", "U3#" };
+                            dim_token[dim_Type] = new List<string> { "UD3#", "U3#" };
                             break;
                         case "UD4":
-                            dim_token[Dim_Type] = new List<string> { "UD4#", "U4#" };
+                            dim_token[dim_Type] = new List<string> { "UD4#", "U4#" };
                             break;
                         case "UD5":
-                            dim_token[Dim_Type] = new List<string> { "UD5#", "U5#" };
+                            dim_token[dim_Type] = new List<string> { "UD5#", "U5#" };
                             break;
                         case "UD6":
-                            dim_token[Dim_Type] = new List<string> { "UD6#", "U6#" };
+                            dim_token[dim_Type] = new List<string> { "UD6#", "U6#" };
                             break;
                         case "UD7":
-                            dim_token[Dim_Type] = new List<string> { "UD7#", "U7#" };
+                            dim_token[dim_Type] = new List<string> { "UD7#", "U7#" };
                             break;
                         case "UD8":
-                            dim_token[Dim_Type] = new List<string> { "UD8#", "U8#" };
+                            dim_token[dim_Type] = new List<string> { "UD8#", "U8#" };
                             break;
                     }
                 }
                 #endregion
                 string[] Supp_Dim_Types = { "Entity", "Cons", "Scenario", "Time" };
-                string[] Core_Dim_Types = { "Acct", "IC", "Origin", "Flow", "UD1", "UD2", "UD3", "UD4", "UD5", "UD6", "UD7", "UD8" };
+                string[] core_Dim_Types = { "Acct", "IC", "Origin", "Flow", "UD1", "UD2", "UD3", "UD4", "UD5", "UD6", "UD7", "UD8" };
                 foreach (var FMM_Src_Cell_DT_Row in FMM_Src_Cell_DT.Rows.Cast<DataRow>())
                 {
                     src_Cell_Drill_Down = string.Empty;
                     src_Cell_Drill_Down_Count = 0;
                     //If Cube												
                     src_Cell_Count += 1;
-                    foreach (var Dim_Type in All_Dim_Types)
+                    foreach (var dim_Type in all_Dim_Types)
                     {
-                        balances[Dim_Type] = 0;
-                        srcAttributes[Dim_Type] = string.Empty;
-                        targetAttributes[Dim_Type] = string.Empty;
+                        balances[dim_Type] = 0;
+                        src_Attributes[dim_Type] = string.Empty;
+                        dest_Attributes[dim_Type] = string.Empty;
                     }
                     foreach (var Supp_Dim_Type in Supp_Dim_Types)
                     {
-                        string srcField = "" + Supp_Dim_Type;
-                        string dim_token_1 = string.Empty;
-                        string dim_token_2 = string.Empty;
+                        var src_Field = "" + Supp_Dim_Type;
+                        var dim_token_1 = string.Empty;
+                        var dim_token_2 = string.Empty;
                         List<string> dim_tokens = dim_token[Supp_Dim_Type];
                         if (dim_tokens.Count == 1)
                         {
@@ -1879,25 +1876,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             dim_token_1 = dim_tokens[0];
                             dim_token_2 = dim_tokens[1];
                         }
-                        if (FMM_Src_Cell_DT_Row[srcField] != DBNull.Value)
-                            if (FMM_Src_Cell_DT_Row[srcField].ToString().IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 FMM_Src_Cell_DT_Row[srcField].ToString().IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (FMM_Src_Cell_DT_Row[src_Field] != DBNull.Value)
+                            if (FMM_Src_Cell_DT_Row[src_Field].ToString().IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 FMM_Src_Cell_DT_Row[src_Field].ToString().IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
                             {
-                                srcAttributes[Supp_Dim_Type] = FMM_Src_Cell_DT_Row[srcField].ToString();
+                                src_Attributes[Supp_Dim_Type] = FMM_Src_Cell_DT_Row[src_Field].ToString();
                                 // Assuming srcCellDrillDown and srcCellDrillDownCount are initialized and declared elsewhere												
-                                src_Cell_Drill_Down += src_Cell_Drill_Down_Count == 0 ? srcAttributes[Supp_Dim_Type] : ":" + srcAttributes[Supp_Dim_Type];
+                                src_Cell_Drill_Down += src_Cell_Drill_Down_Count == 0 ? src_Attributes[Supp_Dim_Type] : ":" + src_Attributes[Supp_Dim_Type];
                                 src_Cell_Drill_Down_Count += 1;
                             }
                     }
-                    foreach (var Core_Dim_Type in Core_Dim_Types)
+                    foreach (var core_Dim_Type in core_Dim_Types)
                     {
-                        string targetField = "" + Core_Dim_Type;
-                        string srcField = "" + Core_Dim_Type;
-                        string filterField = "OS_" + Core_Dim_Type + "_Filter";
-                        string balanceKey = Core_Dim_Type;
-                        string dim_token_1 = string.Empty;
-                        string dim_token_2 = string.Empty;
-                        List<string> dim_tokens = dim_token[Core_Dim_Type];
+                        var dest_Field = core_Dim_Type;
+                        var src_Field = core_Dim_Type;
+                        var filter_Field = $"{core_Dim_Type}_Filter";
+                        var balanceKey = core_Dim_Type;
+                        var dim_token_1 = string.Empty;
+                        var dim_token_2 = string.Empty;
+                        List<string> dim_tokens = dim_token[core_Dim_Type];
                         if (dim_tokens.Count == 1)
                         {
                             dim_token_1 = dim_tokens[0];
@@ -1908,53 +1905,53 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             dim_token_1 = dim_tokens[0];
                             dim_token_2 = dim_tokens[1];
                         }
-                        if (Data_Row[targetField] != DBNull.Value)
-                            if (Data_Row[targetField].ToString().IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                Data_Row[targetField].ToString().IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (Data_Row[dest_Field] != DBNull.Value)
+                            if (Data_Row[dest_Field].ToString().IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                Data_Row[dest_Field].ToString().IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
                             {
-                                targetAttributes[Core_Dim_Type] = Data_Row[targetField].ToString();
-                                balances[Core_Dim_Type] = 1;  // Assume resetting or incrementing depends on the logic												
+                                dest_Attributes[core_Dim_Type] = Data_Row[dest_Field].ToString();
+                                balances[core_Dim_Type] = 1;  // Assume resetting or incrementing depends on the logic												
                             }
-                            else if (Data_Row[filterField] != DBNull.Value)
-                                if (Data_Row[filterField].ToString().IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                    Data_Row[filterField].ToString().IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
+                            else if (Data_Row[filter_Field] != DBNull.Value)
+                                if (Data_Row[filter_Field].ToString().IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                    Data_Row[filter_Field].ToString().IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
                                 {
-                                    targetAttributes[Core_Dim_Type] = Data_Row[filterField].ToString();
-                                    balances[Core_Dim_Type] = 0;  // Assume resetting or incrementing depends on the logic												
+                                    dest_Attributes[core_Dim_Type] = Data_Row[filter_Field].ToString();
+                                    balances[core_Dim_Type] = 0;  // Assume resetting or incrementing depends on the logic												
                                 }
-                        if (FMM_Src_Cell_DT_Row[srcField] != DBNull.Value)
-                            if (FMM_Src_Cell_DT_Row[srcField].ToString().IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
-                                 FMM_Src_Cell_DT_Row[srcField].ToString().IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (FMM_Src_Cell_DT_Row[src_Field] != DBNull.Value)
+                            if (FMM_Src_Cell_DT_Row[src_Field].ToString().IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                 FMM_Src_Cell_DT_Row[src_Field].ToString().IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
                             {
-                                srcAttributes[Core_Dim_Type] = FMM_Src_Cell_DT_Row[srcField].ToString();
+                                src_Attributes[core_Dim_Type] = FMM_Src_Cell_DT_Row[src_Field].ToString();
                                 // Assuming srcCellDrillDown and srcCellDrillDownCount are initialized and declared elsewhere												
-                                src_Cell_Drill_Down += src_Cell_Drill_Down_Count == 0 ? srcAttributes[Core_Dim_Type] : ":" + srcAttributes[Core_Dim_Type];
+                                src_Cell_Drill_Down += src_Cell_Drill_Down_Count == 0 ? src_Attributes[core_Dim_Type] : ":" + src_Attributes[core_Dim_Type];
                                 src_Cell_Drill_Down_Count += 1;
-                                balances[Core_Dim_Type] += 1;
+                                balances[core_Dim_Type] += 1;
                             }
-                        if (balances[Core_Dim_Type] == 1)
+                        if (balances[core_Dim_Type] == 1)
                         {
-                            FMM_Src_Cell_DT_Row[$"Unbal_{Core_Dim_Type}_Override"] = "Common";
+                            FMM_Src_Cell_DT_Row[$"Unbal_{core_Dim_Type}_Override"] = "Common";
                             if (src_Cell_Count == 1)
                             {
-                                GBL_BalCalc = "UnbalAlloc";
+                                gbl_Bal_Calc = "UnbalAlloc";
                             }
                             else
                             {
-                                GBL_BalCalc = "Unbalanced";
+                                gbl_Bal_Calc = "Unbalanced";
                             }
                             balanced_Src_Row = false;
                         }
                         else
                         {
-                            FMM_Src_Cell_DT_Row[$"Unbal_{Core_Dim_Type}_Override"] = string.Empty;
-                            if (Data_Row[$"OS_{Core_Dim_Type}_Filter"] != DBNull.Value)
+                            FMM_Src_Cell_DT_Row[$"Unbal_{core_Dim_Type}_Override"] = string.Empty;
+                            if (Data_Row[$"OS_{core_Dim_Type}_Filter"] != DBNull.Value)
                             {
-                                string os_core_dimtype_Filter = Data_Row[$"OS_{Core_Dim_Type}_Filter"].ToString();
-                                if (os_core_dimtype_Filter.IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 || os_core_dimtype_Filter.IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
+                                var core_Dim_Type_Filter = Data_Row[$"OS_{core_Dim_Type}_Filter"].ToString();
+                                if (core_Dim_Type_Filter.IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 || core_Dim_Type_Filter.IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
                                 {
-                                    UnbalancedSrcCellBufferFilter = "[" + os_core_dimtype_Filter + "]";
-                                    unbalancedSrcCellBufferFilterCount++;
+                                    unbal_Src_Cell_Buffer_Filter = "[" + core_Dim_Type_Filter + "]";
+                                    unbal_Src_Cell_Buffer_FilterCount++;
                                 }
                             }
                         }
@@ -1963,15 +1960,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     if ((string)FMM_Src_Cell_DT_Row["Src_Type"] == "Dynamic Calc")
                     {
                         BRApi.ErrorLog.LogMessage(si, "Hit Dynamic");
-                        GBL_BalCalc = "UnbalAlloc";
+                        gbl_Bal_Calc = "UnbalAlloc";
                     }
-                    GBL_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
-                    GBL_SrcCellDrillDown_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], src_Cell_Drill_Down);
-                    GBL_UnbalCalc_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
+                    gbl_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Math_Operator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
+                    gbl_SrcCell_Drill_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], src_Cell_Drill_Down);
+                    gbl_Unbal_Calc_Dict.Add((int)FMM_Src_Cell_DT_Row["Cell_ID"], (string)FMM_Src_Cell_DT_Row["Open_Parens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["Math_Operator"].ToString().Trim() + " -Calculation- " + "|" + (string)FMM_Src_Cell_DT_Row["Close_Parens"].ToString().Trim());
                     FMM_Src_Cell_DT_Row["Src_Order"] = src_Cell_Count;
                     FMM_Src_Cell_DT_Row["Dyn_Calc_Script"] = src_Cell_Drill_Down;
                     FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer"] = src_Cell_Drill_Down;
-                    FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer_Filter"] = UnbalancedSrcCellBufferFilter;
+                    FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer_Filter"] = unbal_Src_Cell_Buffer_Filter;
                     BRApi.ErrorLog.LogMessage(si, "dyn calc script: " + src_Cell_Drill_Down);
                 }
 
@@ -1980,48 +1977,48 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 //							GBL_BalancedCalc = "DB Model""												
                 //						End If"												
 
-                //						GBL_SrcCell_Dict.Add(SrcDtRow.Item("OSCalcSrcCellID")"	SrcDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SrcDtRow.Item("OSCalcMathOperator").ToString.Trim() & " " & SrcCellDrillDown & "|" & SrcDtRow.Item("OSCalcCloseParens").ToString.Trim())											
+                //						gbl_SrcCell_Dict.Add(src_DataRow.Item("OSCalcSrcCellID")"	src_DataRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & src_DataRow.Item("OSCalcMathOperator").ToString.Trim() & " " & SrcCellDrillDown & "|" & src_DataRow.Item("OSCalcCloseParens").ToString.Trim())											
                 //						If Cubedt.Rows.Item(0).Item("ModelType").ToString.XFEqualsIgnoreCase("Table")"												
-                //							If SRCDtRow.Item("OSCalcSrcLocation").ToString.Trim().XFEqualsIgnoreCase("Cube")"												
-                //								GBL_UnbalCalc_Dict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & SRCDtRow.Item("OSCalcSrcLocation").ToString.Trim() &  "-Calculation-|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
+                //							If src_DataRow.Item("OSCalcSrcLocation").ToString.Trim().XFEqualsIgnoreCase("Cube")"												
+                //								gbl_Unbal_Calc_Dict.Add(src_DataRow.Item("OSCalcSrcCellID")"	src_DataRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & src_DataRow.Item("OSCalcMathOperator").ToString.Trim() & src_DataRow.Item("OSCalcSrcLocation").ToString.Trim() &  "-Calculation-|" & src_DataRow.Item("OSCalcCloseParens").ToString.Trim())											
                 //							Else"												
-                //								GBL_UnbalCalc_Dict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & SRCDtRow.Item("OSCalcSrcLocation").ToString.Trim() &  "|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
+                //								gbl_Unbal_Calc_Dict.Add(src_DataRow.Item("OSCalcSrcCellID")"	src_DataRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & src_DataRow.Item("OSCalcMathOperator").ToString.Trim() & src_DataRow.Item("OSCalcSrcLocation").ToString.Trim() &  "|" & src_DataRow.Item("OSCalcCloseParens").ToString.Trim())											
                 //							End If"												
                 //						Else"												
-                //							GBL_UnbalCalc_Dict.Add(SRCDtRow.Item("OSCalcSrcCellID")"	SRCDtRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & SRCDtRow.Item("OSCalcMathOperator").ToString.Trim() & " -Calculation- " &  "|" & SRCDtRow.Item("OSCalcCloseParens").ToString.Trim())											
+                //							gbl_Unbal_Calc_Dict.Add(src_DataRow.Item("OSCalcSrcCellID")"	src_DataRow.Item("OSCalcOpenParens").ToString.Trim() & "|" & src_DataRow.Item("OSCalcMathOperator").ToString.Trim() & " -Calculation- " &  "|" & src_DataRow.Item("OSCalcCloseParens").ToString.Trim())											
                 //						End If"																							
 
                 //						'--------------------------------------------------------------------------------	"																							
 
                 //						dml.AppendLine("UPDATE THG_ModelMgr_SrcCell ")"												
-                //						dml.AppendLine("SET UnbalancedSrcCellBuffer = '"  & srccelldrilldown & "'"	UnbalancedSrcCellBufferFilter = '" & UnbalancedSrcCellBufferFilter & "' ")											
-                //						dml.AppendLine("WHERE OSCalcSrcCellID = " & SrcDtRow.Item("OSCalcSrcCellID") & " ")"												
+                //						dml.AppendLine("SET UnbalancedSrcCellBuffer = '"  & srccelldrilldown & "'"	unbal_Src_Cell_Buffer_Filter = '" & unbal_Src_Cell_Buffer_Filter & "' ")											
+                //						dml.AppendLine("WHERE OSCalcSrcCellID = " & src_DataRow.Item("OSCalcSrcCellID") & " ")"												
                 //						dml.AppendLine("AND OSCalcID = " & GBL_OSCalcID & ";")"												
-                sqlAdapterMcmSrcCell.Update_FMM_Src_Cell(si, FMM_Src_Cell_DT, sqlDataAdapter);
+                sqa_fmm_src_cell.Update_FMM_Src_Cell(si, FMM_Src_Cell_DT, sqlDataAdapter);
             }
         }
 
-        private void Update_Unbal_Src_Columns(DataRow destDataRow)
+        private void Update_Unbal_Src_Columns(DataRow dest_DataRow)
         {
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
-            string unbalancedSrcCellBufferFilter = string.Empty;
-            int unbalancedSrcCellBufferFilterCnt = 0;
-            string overrideDestValue = string.Empty;
-            int overrideCnt = 0;
+            string unbal_Src_Cell_Buffer_Filter = string.Empty;
+            int unbal_Src_Cell_Buffer_Filter_Cnt = 0;
+            string override_Dest_Val = string.Empty;
+            int override_Dest_Cnt = 0;
             int countSrcCells = 0;
             BRApi.ErrorLog.LogMessage(si, "hit");
 
             string countSql = @"
-		        SELECT COUNT(*) as Count 
-		        FROM FMM_Src_Cell 
-		        WHERE Calc_ID = @Calc_ID";
+                SELECT COUNT(*) as Count 
+                FROM FMM_Src_Cell 
+                WHERE Calc_ID = @Calc_ID";
 
             DataTable srcDt;
             DataTable countDt;
 
             var sql_paramList = new List<DbParamInfo>
             {
-                new DbParamInfo("@Calc_ID", GBL_Calc_ID)
+                new DbParamInfo("@Calc_ID", gbl_Calc_ID)
             };
 
             using (dbConnApp)
@@ -2036,52 +2033,51 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqlAdapterMcmSrcCell = new SQA_FMM_Src_Cell(si, connection);
+                    var sqa_fmm_src_cell = new SQA_FMM_Src_Cell(si, connection);
                     var FMM_Src_Cell_DT = new DataTable();
-                    var sqlSrcDataAdapter = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
-                    string src_selectQuery = @"
-									SELECT * 
-									FROM FMM_Src_Cell 
-									WHERE Calc_ID = @Calc_ID
-									ORDER BY Src_Order";
+                    var sql = @"SELECT * 
+                                FROM FMM_Src_Cell 
+                                WHERE Calc_ID = @Calc_ID
+                                ORDER BY Src_Order";
                     // Create an array of SqlParameter objects
-                    var src_parameters = new SqlParameter[]
+                    var sqlparams = new SqlParameter[]
                     {
-                new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = GBL_Calc_ID },
+                        new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID },
                     };
 
-                    sqlAdapterMcmSrcCell.Fill_FMM_Src_Cell_DT(si, sqlSrcDataAdapter, FMM_Src_Cell_DT, src_selectQuery, src_parameters);
+                    sqa_fmm_src_cell.Fill_FMM_Src_Cell_DT(si, sqa, FMM_Src_Cell_DT, sql, sqlparams);
 
                     FMM_Src_Cell_DT.PrimaryKey = new DataColumn[] { FMM_Src_Cell_DT.Columns["Cell_ID"] };
 
-                    foreach (DataRow srcDtRow in FMM_Src_Cell_DT.Rows)
+                    foreach (DataRow src_DataRow in FMM_Src_Cell_DT.Rows)
                     {
-                        unbalancedSrcCellBufferFilter = string.Empty;
-                        unbalancedSrcCellBufferFilterCnt = 0;
-                        overrideDestValue = string.Empty;
-                        overrideCnt = 0;
+                        unbal_Src_Cell_Buffer_Filter = string.Empty;
+                        unbal_Src_Cell_Buffer_Filter_Cnt = 0;
+                        override_Dest_Val = string.Empty;
+                        override_Dest_Cnt = 0;
 
                         // Filter columns come from FMM_Dest_Cell (first arg)
 
 
-                        EvaluateDimension("Acct_Filter", "Acct", "A#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("Origin_Filter", "Origin", "O#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("Flow_Filter", "Flow", "F#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("IC_Filter", "IC", "I#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("UD1_Filter", "UD1", "U1#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("UD2_Filter", "UD2", "U2#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("UD3_Filter", "UD3", "U3#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("UD4_Filter", "UD4", "U4#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("UD5_Filter", "UD5", "U5#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("UD6_Filter", "UD6", "U6#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("UD7_Filter", "UD7", "U7#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        EvaluateDimension("UD8_Filter", "UD8", "U8#", FMM_Src_Cell_DT, srcDtRow, ref unbalancedSrcCellBufferFilter, ref unbalancedSrcCellBufferFilterCnt, destDataRow, ref overrideDestValue, ref overrideCnt);
-                        srcDtRow["Unbal_Src_Cell_Buffer_Filter"] = unbalancedSrcCellBufferFilter;
-                        srcDtRow["Override_Value"] = overrideDestValue;
+                        Evaluate_Dim("Acct_Filter", "Acct", "A#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("Origin_Filter", "Origin", "O#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("Flow_Filter", "Flow", "F#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("IC_Filter", "IC", "I#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("UD1_Filter", "UD1", "U1#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("UD2_Filter", "UD2", "U2#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("UD3_Filter", "UD3", "U3#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("UD4_Filter", "UD4", "U4#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("UD5_Filter", "UD5", "U5#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("UD6_Filter", "UD6", "U6#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("UD7_Filter", "UD7", "U7#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        Evaluate_Dim("UD8_Filter", "UD8", "U8#", FMM_Src_Cell_DT, src_DataRow, ref unbal_Src_Cell_Buffer_Filter, ref unbal_Src_Cell_Buffer_Filter_Cnt, dest_DataRow, ref override_Dest_Val, ref override_Dest_Cnt);
+                        src_DataRow["Unbal_Buffer_Filter"] = unbal_Src_Cell_Buffer_Filter;
+                        src_DataRow["Override_Value"] = override_Dest_Val;
                     }
-                    sqlAdapterMcmSrcCell.Update_FMM_Src_Cell(si, FMM_Src_Cell_DT, sqlSrcDataAdapter);
+                    sqa_fmm_src_cell.Update_FMM_Src_Cell(si, FMM_Src_Cell_DT, sqa);
                 }
             }
         }
@@ -2091,52 +2087,52 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             try
             {
                 var dim_token = new Dictionary<string, List<string>>();
-                string CurrCubeBufferFilter = String.Empty;
-                string SrcBufferFilter = String.Empty;
-                int CurrCubeBufferFilterCnt = 0;
-                int SrcBufferFilterCnt = 0;
+                var curr_Cube_Buffer_Filter = String.Empty;
+                var src_Buffer_Filter = String.Empty;
+                int curr_Cube_Buffer_FilterCnt = 0;
+                int src_Buffer_FilterCnt = 0;
 
-                string[] Core_Dim_Types = { "Acct", "IC", "Origin", "Flow", "UD1", "UD2", "UD3", "UD4", "UD5", "UD6", "UD7", "UD8" };
+                string[] core_Dim_Types = { "Acct", "IC", "Origin", "Flow", "UD1", "UD2", "UD3", "UD4", "UD5", "UD6", "UD7", "UD8" };
                 #region "Core Dim Types"												
-                foreach (var Dim_Type in Core_Dim_Types)
+                foreach (var dim_Type in core_Dim_Types)
                 {
-                    switch (Dim_Type)
+                    switch (dim_Type)
                     {
                         case "Acct":
-                            dim_token[Dim_Type] = new List<string> { "A#" };
+                            dim_token[dim_Type] = new List<string> { "A#" };
                             break;
                         case "IC":
-                            dim_token[Dim_Type] = new List<string> { "I#", "IC#" };
+                            dim_token[dim_Type] = new List<string> { "I#", "IC#" };
                             break;
                         case "Origin":
-                            dim_token[Dim_Type] = new List<string> { "O#" };
+                            dim_token[dim_Type] = new List<string> { "O#" };
                             break;
                         case "Flow":
-                            dim_token[Dim_Type] = new List<string> { "F#" };
+                            dim_token[dim_Type] = new List<string> { "F#" };
                             break;
                         case "UD1":
-                            dim_token[Dim_Type] = new List<string> { "UD1#", "U1#" };
+                            dim_token[dim_Type] = new List<string> { "UD1#", "U1#" };
                             break;
                         case "UD2":
-                            dim_token[Dim_Type] = new List<string> { "UD2#", "U2#" };
+                            dim_token[dim_Type] = new List<string> { "UD2#", "U2#" };
                             break;
                         case "UD3":
-                            dim_token[Dim_Type] = new List<string> { "UD3#", "U3#" };
+                            dim_token[dim_Type] = new List<string> { "UD3#", "U3#" };
                             break;
                         case "UD4":
-                            dim_token[Dim_Type] = new List<string> { "UD4#", "U4#" };
+                            dim_token[dim_Type] = new List<string> { "UD4#", "U4#" };
                             break;
                         case "UD5":
-                            dim_token[Dim_Type] = new List<string> { "UD5#", "U5#" };
+                            dim_token[dim_Type] = new List<string> { "UD5#", "U5#" };
                             break;
                         case "UD6":
-                            dim_token[Dim_Type] = new List<string> { "UD6#", "U6#" };
+                            dim_token[dim_Type] = new List<string> { "UD6#", "U6#" };
                             break;
                         case "UD7":
-                            dim_token[Dim_Type] = new List<string> { "UD7#", "U7#" };
+                            dim_token[dim_Type] = new List<string> { "UD7#", "U7#" };
                             break;
                         case "UD8":
-                            dim_token[Dim_Type] = new List<string> { "UD8#", "U8#" };
+                            dim_token[dim_Type] = new List<string> { "UD8#", "U8#" };
                             break;
                     }
                 }
@@ -2151,41 +2147,40 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 //										ON Cube.Cube_ID = Model.Cube_ID
                 //										JOIN FMM_Act_Config Act
                 //										ON Act.Act_ID = Model.Act_ID
-                //	                                    Where Calc.Calc_ID = @GBL_Calc_ID";												
+                //	                                    Where Calc.Calc_ID = @gbl_Calc_ID";												
 
-                if (GBL_BalCalc != "DB Model")
+                if (gbl_Bal_Calc != "DB Model")
                 {
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        var SQA_FMM_Dest_Cell = new SQA_FMM_Dest_Cell(si, connection);
-                        var sqlDataAdapter = new SqlDataAdapter();
+                        var sqa_fmm_dest_cell = new SQA_FMM_Dest_Cell(si, connection);
+                        var sqa = new SqlDataAdapter();
                         var FMM_Dest_Cell_DT = new DataTable();
 
                         // Fill the DataTable with the current data from FMM_Dest_Cell
-                        string selectQuery = @"
-				            SELECT * 
-				            FROM FMM_Dest_Cell
-				            WHERE Calc_ID = @Calc_ID";
+                        var sql = @"SELECT * 
+                                    FROM FMM_Dest_Cell
+                                    WHERE Calc_ID = @Calc_ID";
 
-                        var parameters = new SqlParameter[]
+                        var sqlparams = new SqlParameter[]
                         {
-                            new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = GBL_Calc_ID }
+                            new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID }
                         };
 
                         connection.Open();
 
-                        SQA_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, sqlDataAdapter, FMM_Dest_Cell_DT, selectQuery, parameters);
+                        sqa_fmm_dest_cell.Fill_FMM_Dest_Cell_DT(si, sqa, FMM_Dest_Cell_DT, sql, sqlparams);
                         foreach (DataRow FMM_Dest_Cell_DT_Row in FMM_Dest_Cell_DT.Rows)
                         {
-                            foreach (var Dim_Type in Core_Dim_Types)
+                            foreach (var dim_Type in core_Dim_Types)
                             {
-                                string targetField = "" + Dim_Type;
-                                string filterField = "OS_" + Dim_Type + "_Filter";
-                                string balanceKey = Dim_Type;
+                                string dest_Field = "" + dim_Type;
+                                string filter_Field = "OS_" + dim_Type + "_Filter";
+                                string balanceKey = dim_Type;
                                 string dim_token_1 = string.Empty;
                                 string dim_token_2 = string.Empty;
-                                List<string> dim_tokens = dim_token[Dim_Type];
+                                List<string> dim_tokens = dim_token[dim_Type];
                                 if (dim_tokens.Count == 1)
                                 {
                                     dim_token_1 = dim_tokens[0];
@@ -2197,20 +2192,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     dim_token_2 = dim_tokens[1];
                                 }
 
-                                if (FMM_Dest_Cell_DT_Row[targetField] != DBNull.Value)
+                                if (FMM_Dest_Cell_DT_Row[dest_Field] != DBNull.Value)
                                 {
-                                    string targetValue = FMM_Dest_Cell_DT_Row[targetField].ToString();
+                                    string targetValue = FMM_Dest_Cell_DT_Row[dest_Field].ToString();
                                     if (targetValue.IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                         targetValue.IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
                                     {
-                                        CurrCubeBufferFilter += (CurrCubeBufferFilterCnt == 0 ? "[" : ",[") + targetValue + "]";
-                                        CurrCubeBufferFilterCnt++;
+                                        curr_Cube_Buffer_Filter += (curr_Cube_Buffer_FilterCnt == 0 ? "[" : ",[") + targetValue + "]";
+                                        curr_Cube_Buffer_FilterCnt++;
                                     }
                                 }
 
-                                if (FMM_Dest_Cell_DT_Row[filterField] != DBNull.Value)
+                                if (FMM_Dest_Cell_DT_Row[filter_Field] != DBNull.Value)
                                 {
-                                    string filterValue = FMM_Dest_Cell_DT_Row[filterField].ToString();
+                                    string filterValue = FMM_Dest_Cell_DT_Row[filter_Field].ToString();
                                     if (filterValue.IndexOf(dim_token_1, StringComparison.OrdinalIgnoreCase) >= 0 ||
                                         filterValue.IndexOf(dim_token_2, StringComparison.OrdinalIgnoreCase) >= 0)
                                     {
@@ -2228,30 +2223,30 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                             // Extract the number (substring between the pattern start and end)
                                             string number = filterValue.Substring(startIndex, endIndex - startIndex);
                                             // Call the function that selects from FMM_Calc_Config table and returns MbrList_x_Filter
-                                            string memberListFilter = GetMemberListFromCalcConfig(number); // Assuming this is your function
-                                            CurrCubeBufferFilter += (CurrCubeBufferFilterCnt == 0 ? "[" : ",[") + memberListFilter + "]";
-                                            SrcBufferFilter += (SrcBufferFilterCnt == 0 ? "[" : ",[") + filterValue + "]";
-                                            CurrCubeBufferFilterCnt++;
-                                            SrcBufferFilterCnt++;
-                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + CurrCubeBufferFilter);
+                                            string memberListFilter = Get_Calc_Config_MbrList(number); // Assuming this is your function
+                                            curr_Cube_Buffer_Filter += (curr_Cube_Buffer_FilterCnt == 0 ? "[" : ",[") + memberListFilter + "]";
+                                            src_Buffer_Filter += (src_Buffer_FilterCnt == 0 ? "[" : ",[") + filterValue + "]";
+                                            curr_Cube_Buffer_FilterCnt++;
+                                            src_Buffer_FilterCnt++;
+                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + curr_Cube_Buffer_Filter);
                                         }
                                         else
                                         {
-                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + CurrCubeBufferFilter);
-                                            CurrCubeBufferFilter += (CurrCubeBufferFilterCnt == 0 ? "[" : ",[") + filterValue + "]";
-                                            SrcBufferFilter += (SrcBufferFilterCnt == 0 ? "[" : ",[") + filterValue + "]";
-                                            CurrCubeBufferFilterCnt++;
-                                            SrcBufferFilterCnt++;
-                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + CurrCubeBufferFilter);
+                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + curr_Cube_Buffer_Filter);
+                                            curr_Cube_Buffer_Filter += (curr_Cube_Buffer_FilterCnt == 0 ? "[" : ",[") + filterValue + "]";
+                                            src_Buffer_Filter += (src_Buffer_FilterCnt == 0 ? "[" : ",[") + filterValue + "]";
+                                            curr_Cube_Buffer_FilterCnt++;
+                                            src_Buffer_FilterCnt++;
+                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + curr_Cube_Buffer_Filter);
                                         }
                                     }
                                 }
                             }
-                            BRApi.ErrorLog.LogMessage(si, "Hit: " + CurrCubeBufferFilter);
-                            FMM_Dest_Cell_DT_Row["Curr_Cube_Buffer_Filter"] = CurrCubeBufferFilter;
-                            FMM_Dest_Cell_DT_Row["Buffer_Filter"] = SrcBufferFilter;
+                            BRApi.ErrorLog.LogMessage(si, "Hit: " + curr_Cube_Buffer_Filter);
+                            FMM_Dest_Cell_DT_Row["Curr_Cube_Buffer_Filter"] = curr_Cube_Buffer_Filter;
+                            FMM_Dest_Cell_DT_Row["Buffer_Filter"] = src_Buffer_Filter;
                         }
-                        SQA_FMM_Dest_Cell.Update_FMM_Dest_Cell(si, FMM_Dest_Cell_DT, sqlDataAdapter);
+                        sqa_fmm_dest_cell.Update_FMM_Dest_Cell(si, FMM_Dest_Cell_DT, sqa);
 
                     }
 
@@ -2274,12 +2269,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
 
-                    string destSql = @"
-										Select *
-										FROM FMM_Dest_Cell
-										WHERE Calc_ID = @Curr_Calc_ID";
+                    var sql = @"Select *
+                                FROM FMM_Dest_Cell
+                                WHERE Calc_ID = @Curr_Calc_ID";
 
-                    using (var command = new SqlCommand(destSql, connection))
+                    using (var command = new SqlCommand(sql, connection))
                     {
                         command.Parameters.AddWithValue("@Curr_Calc_ID", Curr_Calc_ID);
                         using (var adapter = new SqlDataAdapter(command))
@@ -2292,19 +2286,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 foreach (DataRow destRow in DT.Rows)
                 {
-                    GBL_BalCalc = "Balanced";
+                    gbl_Bal_Calc = "Balanced";
                     Update_Src_Cell_Columns(destRow);
                     Update_Cell_Columns();
                     Update_Globals();
 
-                    if (GBL_BalCalc == "Unbalanced" || GBL_BalCalc == "UnbalAlloc" || GBL_BalCalc == "Ext_Unbalanced" || GBL_BalCalc == "Ext_UnbalAlloc")
+                    if (gbl_Bal_Calc == "Unbalanced" || gbl_Bal_Calc == "UnbalAlloc" || gbl_Bal_Calc == "Ext_Unbalanced" || gbl_Bal_Calc == "Ext_UnbalAlloc")
                     {
                         Update_Unbal_Src_Columns(destRow);
                     }
                 }
 
                 Update_Calc_Config_Columns();
-                GBL_SrcCell_Dict.Clear();
+                gbl_SrcCell_Dict.Clear();
 
             }
             catch (Exception ex)
@@ -2321,23 +2315,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var SQA_FMM_Calc_Config = new SQA_FMM_Calc_Config(si, connection);
+                    var sqa_fmm_calc_config = new SQA_FMM_Calc_Config(si, connection);
                     var FMM_Calc_Config_DT = new DataTable();
-                    var sql_FMM_Calc_Config_DataAdapter = new SqlDataAdapter();
+                    var sqa = new SqlDataAdapter();
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell												
-                    string selectQuery = @"
-										SELECT * 												
-											FROM FMM_Calc_Config 												
-											WHERE Calc_ID = @Calc_ID";
+                    var sql = @"SELECT * 												
+                                FROM FMM_Calc_Config 												
+                                WHERE Calc_ID = @Calc_ID";
 
                     // Create an array of SqlParameter objects												
-                    var FMM_Calc_Config_params = new SqlParameter[]
+                    var sqlparams = new SqlParameter[]
                     {
-                            new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = GBL_Calc_ID }
+                            new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID }
                     };
 
-                    SQA_FMM_Calc_Config.Fill_FMM_Calc_Config_DT(si, sql_FMM_Calc_Config_DataAdapter, FMM_Calc_Config_DT, selectQuery, FMM_Calc_Config_params);
+                   sqa_fmm_calc_config.Fill_FMM_Calc_Config_DT(si, sqa, FMM_Calc_Config_DT, sql, sqlparams);
 
                     // Check if the DataTable has rows
                     if (FMM_Calc_Config_DT.Rows.Count > 0)
@@ -2347,60 +2340,60 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         {
                             if (row["MultiDim_Alloc"] != DBNull.Value && Convert.ToBoolean(row["MultiDim_Alloc"]))
                             {
-                                GBL_BalCalc = "MultiDim_Alloc";
-                                row["Balanced_Buffer"] = GBL_BalCalc;
-                                row["bal_buffer_calc"] = GBL_UnbalBufferCalc;
-                                row["Unbal_Calc"] = GBL_UnbalCalc;
+                                gbl_Bal_Calc = "MultiDim_Alloc";
+                                row["Bal_Buffer"] = gbl_Bal_Calc;
+                                row["Bal_Buffer_Calc"] = gbl_Unbal_Buffer_Calc;
+                                row["Unbal_Calc"] = gbl_Unbal_Calc;
                                 row["Update_Date"] = DateTime.Now;
                                 row["Update_User"] = si.UserName;
                             }
                             else if (row["MbrList_Calc"] != DBNull.Value && Convert.ToBoolean(row["MbrList_Calc"]))
                             {
-                                if (GBL_BalCalc == "Unbalanced")
+                                if (gbl_Bal_Calc == "Unbalanced")
                                 {
-                                    GBL_BalCalc = "Ext_Unbalanced";
-                                    row["Balanced_Buffer"] = GBL_BalCalc;
-                                    row["bal_buffer_calc"] = GBL_UnbalBufferCalc;
-                                    row["Unbal_Calc"] = GBL_UnbalCalc;
+                                    gbl_Bal_Calc = "Ext_Unbalanced";
+                                    row["Bal_Buffer"] = gbl_Bal_Calc;
+                                    row["Bal_Buffer_Calc"] = gbl_Unbal_Buffer_Calc;
+                                    row["Unbal_Calc"] = gbl_Unbal_Calc;
                                     row["Update_Date"] = DateTime.Now;
                                     row["Update_User"] = si.UserName;
                                 }
-                                else if (GBL_BalCalc == "UnbalAlloc")
+                                else if (gbl_Bal_Calc == "UnbalAlloc")
                                 {
-                                    GBL_BalCalc = "Ext_UnbalAlloc";
-                                    row["Balanced_Buffer"] = GBL_BalCalc;
-                                    row["bal_buffer_calc"] = GBL_UnbalBufferCalc;
-                                    row["Unbal_Calc"] = GBL_UnbalCalc;
+                                    gbl_Bal_Calc = "Ext_UnbalAlloc";
+                                    row["Bal_Buffer"] = gbl_Bal_Calc;
+                                    row["Bal_Buffer_Calc"] = gbl_Unbal_Buffer_Calc;
+                                    row["Unbal_Calc"] = gbl_Unbal_Calc;
                                     row["Update_Date"] = DateTime.Now;
                                     row["Update_User"] = si.UserName;
                                 }
                             }
                             else if (row["BR_Calc"] != DBNull.Value && Convert.ToBoolean(row["BR_Calc"]))
                             {
-                                GBL_BalCalc = "BR_Calc";
+                                gbl_Bal_Calc = "BR_Calc";
                             }
-                            else if (GBL_BalCalc == "Balanced")
+                            else if (gbl_Bal_Calc == "Balanced")
                             {
-                                row["Balanced_Buffer"] = "Balanced";
-                                row["bal_buffer_calc"] = GBL_BalBufferCalc;
+                                row["Bal_Buffer"] = "Balanced";
+                                row["Bal_Buffer_calc"] = gbl_Bal_Buffer_Calc;
                                 row["Unbal_Calc"] = String.Empty;
                                 row["Update_Date"] = DateTime.Now;
                                 row["Update_User"] = si.UserName;
 
                             }
-                            else if (GBL_BalCalc == "DB Model")
+                            else if (gbl_Bal_Calc == "DB Model")
                             {
-                                row["Balanced_Buffer"] = GBL_BalCalc;
-                                row["Table_Calc_Logic"] = GBL_Table_CalcLogic;
-                                row["Table_Src_Cell_Count"] = GBL_Table_SrcCell;
+                                row["Bal_Buffer"] = gbl_Bal_Calc;
+                                row["Table_Calc_Logic"] = gbl_Table_Calc_Logic;
+                                row["Table_Src_Cell_Count"] = gbl_Table_SrcCell;
                                 row["Update_Date"] = DateTime.Now;
                                 row["Update_User"] = si.UserName;
                             }
                             else
                             {
-                                row["Balanced_Buffer"] = GBL_BalCalc;
-                                row["bal_buffer_calc"] = GBL_UnbalBufferCalc;
-                                row["Unbal_Calc"] = GBL_UnbalCalc;
+                                row["Bal_Buffer"] = gbl_Bal_Calc;
+                                row["Bal_Buffer_calc"] = gbl_Unbal_Buffer_Calc;
+                                row["Unbal_Calc"] = gbl_Unbal_Calc;
                                 row["Update_Date"] = DateTime.Now;
                                 row["Update_User"] = si.UserName;
                             }
@@ -2408,7 +2401,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                         //BRApi.ErrorLog.LogMessage(si,"HIt Herere 3: " +  FMM_Calc_Config_DT.Rows[0]["Update_Date"]);						
                         // Update the FMM_Dest_Cell table based on the changes made to the DataTable												
-                        SQA_FMM_Calc_Config.Update_FMM_Calc_Config(si, FMM_Calc_Config_DT, sql_FMM_Calc_Config_DataAdapter);
+                        sqa_fmm_calc_config.Update_FMM_Calc_Config(si, FMM_Calc_Config_DT, sqa);
                     }
                     else
                     {
@@ -2427,38 +2420,38 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                // Assuming GBL_SrcCell_Dict is a Dictionary<int	 string>											
-                var sortedDict = GBL_SrcCell_Dict.OrderBy(entry => entry.Key);
+                // Assuming gbl_SrcCell_Dict is a Dictionary<int	 string>											
+                var sortedDict = gbl_SrcCell_Dict.OrderBy(entry => entry.Key);
 
-                BRApi.ErrorLog.LogMessage(si, "Hit Globals 1" + GBL_BalCalc);
+                BRApi.ErrorLog.LogMessage(si, "Hit Globals 1" + gbl_Bal_Calc);
 
                 int calcIterations = 1;
                 foreach (KeyValuePair<int, string> calcSegment in sortedDict)
                 {
-                    if (GBL_BalCalc != "DB Model")
+                    if (gbl_Bal_Calc != "DB Model")
                     {
-                        GBL_BalBufferCalc += StringHelper.ReplaceString(calcSegment.Value, "|", string.Empty, true);
-                        if (calcIterations == 1 && (GBL_BalCalc == "Unbalanced" || GBL_BalCalc == "UnbalAlloc"))
+                        gbl_Bal_Buffer_Calc += StringHelper.ReplaceString(calcSegment.Value, "|", string.Empty, true);
+                        if (calcIterations == 1 && (gbl_Bal_Calc == "Unbalanced" || gbl_Bal_Calc == "UnbalAlloc"))
                         {
-                            GBL_UnbalBufferCalc = GBL_SrcCellDrillDown_Dict[calcSegment.Key];
-                            GBL_UnbalCalc += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalc_Dict[calcSegment.Key], "-Calculation-", "BalancedBuffer", true), "|", "", true);
+                            gbl_Unbal_Buffer_Calc = gbl_SrcCell_Drill_Dict[calcSegment.Key];
+                            gbl_Unbal_Calc += StringHelper.ReplaceString(StringHelper.ReplaceString(gbl_Unbal_Calc_Dict[calcSegment.Key], "-Calculation-", "BalancedBuffer", true), "|", "", true);
                         }
-                        else if (GBL_BalCalc == "Unbalanced" || GBL_BalCalc == "UnbalAlloc")
+                        else if (gbl_Bal_Calc == "Unbalanced" || gbl_Bal_Calc == "UnbalAlloc")
                         {
                             BRApi.ErrorLog.LogMessage(si, "Hit Globals Unbal");
-                            GBL_UnbalCalc += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalc_Dict[calcSegment.Key], "-Calculation-", "SrcBufferValue" + calcIterations.ToString(), true), "|", "", true);
+                            gbl_Unbal_Calc += StringHelper.ReplaceString(StringHelper.ReplaceString(gbl_Unbal_Calc_Dict[calcSegment.Key], "-Calculation-", "SrcBufferValue" + calcIterations.ToString(), true), "|", "", true);
                         }
                     }
                     else
                     {
-                        GBL_UnbalBufferCalc = GBL_SrcCellDrillDown_Dict[calcSegment.Key];
-                        if (GBL_UnbalBufferCalc.Contains("T#|DBModelYear|", StringComparison.OrdinalIgnoreCase))
+                        gbl_Unbal_Buffer_Calc = gbl_SrcCell_Drill_Dict[calcSegment.Key];
+                        if (gbl_Unbal_Buffer_Calc.Contains("T#|DBModelYear|", StringComparison.OrdinalIgnoreCase))
                         {
-                            GBL_Table_CalcLogic += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalc_Dict[calcSegment.Key], "Cube-Calculation-", "Annual_Cube", true), "|", "", true);
+                            gbl_Table_Calc_Logic += StringHelper.ReplaceString(StringHelper.ReplaceString(gbl_Unbal_Calc_Dict[calcSegment.Key], "Cube-Calculation-", "Annual_Cube", true), "|", "", true);
                         }
                         else
                         {
-                            GBL_Table_CalcLogic += StringHelper.ReplaceString(StringHelper.ReplaceString(GBL_UnbalCalc_Dict[calcSegment.Key], "Cube-Calculation-", "Monthly_Cube", true), "|", "", true);
+                            gbl_Table_Calc_Logic += StringHelper.ReplaceString(StringHelper.ReplaceString(gbl_Unbal_Calc_Dict[calcSegment.Key], "Cube-Calculation-", "Monthly_Cube", true), "|", "", true);
                         }
                     }
                     calcIterations++;
@@ -2470,57 +2463,57 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private void EvaluateDimension(string destFilterColumn, string srcColumn, string filterPrefix, DataTable srcDt, DataRow srcDtRow, ref string bufferFilter, ref int bufferFilterCnt, DataRow destDataRow, ref string overrideDestValue, ref int override_Cnt)
+        private void Evaluate_Dim(string destFilterColumn, string src_Column, string filter_Prefix, DataTable srcDt, DataRow src_DataRow, ref string bufferFilter, ref int bufferFilterCnt, DataRow dest_DataRow, ref string override_Dest_Val, ref int override_Cnt)
         {
-            if (GBL_BalCalc == "Unbalanced" || (GBL_BalCalc == "UnbalAlloc" && Convert.ToInt32(srcDtRow["Src_Order"]) == 1))
+            if (gbl_Bal_Calc == "Unbalanced" || (gbl_Bal_Calc == "UnbalAlloc" && Convert.ToInt32(src_DataRow["Src_Order"]) == 1))
             {
-                if (destDataRow[destFilterColumn] != DBNull.Value && XFContainsIgnoreCase(destDataRow[destFilterColumn].ToString(), filterPrefix))
+                if (dest_DataRow[destFilterColumn] != DBNull.Value && XFContains_Ignore_Case(dest_DataRow[destFilterColumn].ToString(), filter_Prefix))
                 {
                     // based on discussion w/ Jeff, if the Src_ col is empty then the unbal src buffer filter in src should contain the associated dim filter
-                    if (srcDtRow["" + srcColumn] == DBNull.Value && !XFContainsIgnoreCase(srcDtRow["" + srcColumn].ToString(), filterPrefix))
+                    if (src_DataRow["" + src_Column] == DBNull.Value && !XFContains_Ignore_Case(src_DataRow["" + src_Column].ToString(), filter_Prefix))
                     {
-                        AddToBufferFilter(destDataRow[destFilterColumn].ToString(), ref bufferFilter, ref bufferFilterCnt);
+                        Add_to_Buffer_Filter(dest_DataRow[destFilterColumn].ToString(), ref bufferFilter, ref bufferFilterCnt);
                     }
                 }
             }
             else
             {
-                if (srcDtRow["" + srcColumn] == DBNull.Value || !XFContainsIgnoreCase(srcDtRow["" + srcColumn].ToString(), filterPrefix))
+                if (src_DataRow["" + src_Column] == DBNull.Value || !XFContains_Ignore_Case(src_DataRow["" + src_Column].ToString(), filter_Prefix))
                 {
                     // is this supposed to be checking 2 rows before? No Austin
                     // Check the FIlters in teh Dest Cell table and compare check the current cell for each of those dimensions.  If the dimension has explicit member defined for it, drop the Dest Cell Filter for that cell, otherwise keep it.
-                    if (srcDt.Rows[Convert.ToInt32(srcDtRow["Src_Order"]) - 2]["" + srcColumn] == DBNull.Value || !XFContainsIgnoreCase(srcDt.Rows[Convert.ToInt32(srcDtRow["Src_Order"]) - 2]["" + srcColumn].ToString(), filterPrefix))
+                    if (srcDt.Rows[Convert.ToInt32(src_DataRow["Src_Order"]) - 2]["" + src_Column] == DBNull.Value || !XFContains_Ignore_Case(srcDt.Rows[Convert.ToInt32(src_DataRow["Src_Order"]) - 2]["" + src_Column].ToString(), filter_Prefix))
                     {
-                        //AddToBufferFilter($"{filterPrefix}Replace", ref bufferFilter, ref bufferFilterCnt);
+                        //Add_to_Buffer_Filter($"{filter_Prefix}Replace", ref bufferFilter, ref bufferFilterCnt);
                     }
-                    else if (destDataRow[destFilterColumn] != DBNull.Value && XFContainsIgnoreCase(destDataRow[destFilterColumn].ToString(), filterPrefix))
+                    else if (dest_DataRow[destFilterColumn] != DBNull.Value && XFContains_Ignore_Case(dest_DataRow[destFilterColumn].ToString(), filter_Prefix))
                     {
-                        AddToBufferFilter(destDataRow[destFilterColumn].ToString(), ref bufferFilter, ref bufferFilterCnt);
+                        Add_to_Buffer_Filter(dest_DataRow[destFilterColumn].ToString(), ref bufferFilter, ref bufferFilterCnt);
                     }
                 }
             }
-            if (Convert.ToInt32(srcDtRow["Src_Order"]) != 1)
+            if (Convert.ToInt32(src_DataRow["Src_Order"]) != 1)
             {
-                if (((!destDataRow["" + srcColumn].ToString().XFContainsIgnoreCase(filterPrefix) && !destDataRow["OS_" + srcColumn + "_Filter"].ToString().XFContainsIgnoreCase(filterPrefix)) &&
-                     srcDtRow["Dyn_Calc_Script"].ToString().XFContainsIgnoreCase(filterPrefix)) ||
-                    (srcDt.Rows[Convert.ToInt32(srcDtRow["Src_Order"]) - 2]["" + srcColumn].ToString().XFContainsIgnoreCase(filterPrefix) &&
-                     srcDtRow["" + srcColumn] == DBNull.Value) &&
-                    !srcDtRow["Unbal_" + srcColumn + "_Override"].ToString().XFContainsIgnoreCase(filterPrefix))
+                if (((!dest_DataRow["" + src_Column].ToString().XFContainsIgnoreCase(filter_Prefix) && !dest_DataRow["OS_" + src_Column + "_Filter"].ToString().XFContainsIgnoreCase(filter_Prefix)) &&
+                     src_DataRow["Dyn_Calc_Script"].ToString().XFContainsIgnoreCase(filter_Prefix)) ||
+                    (srcDt.Rows[Convert.ToInt32(src_DataRow["Src_Order"]) - 2]["" + src_Column].ToString().XFContainsIgnoreCase(filter_Prefix) &&
+                     src_DataRow["" + src_Column] == DBNull.Value) &&
+                    !src_DataRow["Unbal_" + src_Column + "_Override"].ToString().XFContainsIgnoreCase(filter_Prefix))
                 {
                     if (override_Cnt > 0)
                     {
-                        overrideDestValue += "," + filterPrefix;
+                        override_Dest_Val += "," + filter_Prefix;
                     }
                     else
                     {
-                        overrideDestValue = filterPrefix;
+                        override_Dest_Val = filter_Prefix;
                     }
                     override_Cnt++;
                 }
             }
         }
 
-        private void AddToBufferFilter(string value, ref string bufferFilter, ref int bufferFilterCnt)
+        private void Add_to_Buffer_Filter(string value, ref string bufferFilter, ref int bufferFilterCnt)
         {
             if (bufferFilterCnt == 0)
             {
@@ -2533,12 +2526,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             bufferFilterCnt++;
         }
 
-        private bool XFContainsIgnoreCase(string source, string toCheck)
+        private bool XFContains_Ignore_Case(string source, string toCheck)
         {
             return source?.IndexOf(toCheck, StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
-        public class DimChecker
+        public class MbrList_Dim_Checker
         {
             // Define the dictionary as a static field, so it's created once and reused
             private static readonly Dictionary<string, string> patterns = new Dictionary<string, string>
@@ -2563,7 +2556,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 { "UD8#", "UD8" }
             };
 
-            public string CheckForDim(DataRow row, string columnName)
+            public string Dim_Check(DataRow row, string columnName)
             {
                 // Check if the column exists and is not null
                 if (row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value)
@@ -2584,7 +2577,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // If no match is found, return an empty string or other appropriate value
                 return string.Empty;
             }
-            public string GetSrcDestFilter(DataRow row, string columnName)
+            public string Get_Src_Dest_Filter(DataRow row, string columnName)
             {
                 // Check if the column exists and is not null
                 if (row.Table.Columns.Contains(columnName) && row[columnName] != DBNull.Value)
@@ -2600,7 +2593,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private string GetMemberListFromCalcConfig(string number)
+        private string Get_Calc_Config_MbrList(string number)
         {
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -2613,14 +2606,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sqa = new SqlDataAdapter();
                 var FMM_Calc_Config_DT = new DataTable();
                 // Define the select query and parameters
-                string sql = @$"
-                    SELECT MbrList_{number}_Filter
-                    FROM FMM_Calc_Config
-                    WHERE Calc_ID = @Calc_ID";
+                var sql = @$"SELECT MbrList_{number}_Filter
+                            FROM FMM_Calc_Config
+                            WHERE Calc_ID = @Calc_ID";
                 // Create an array of SqlParameter objects
                 var sqlparams = new SqlParameter[]
                 {
-                    new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = GBL_Calc_ID}
+                    new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID}
                 };
 
                 // Attempt to fill the data table and check for any issues
@@ -2684,11 +2676,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Act_Config_Dict and handle errors
+                            // Populate gbl_Act_Config_Dict and handle errors
                             foreach (DataRow cube_Activity_Row in FMM_Act_Config_DT.Rows)
                             {
                                 act_Key = cube_ID + "|" + (int)cube_Activity_Row["Act_ID"];
-                                GBL_Act_Config_Dict.Add(act_Key, (string)cube_Activity_Row["Name"] + "|" + (string)cube_Activity_Row["Calc_Type"]);
+                                gbl_Act_Config_Dict.Add(act_Key, (string)cube_Activity_Row["Name"] + "|" + (string)cube_Activity_Row["Calc_Type"]);
                             }
                         }
                         break;
@@ -2701,22 +2693,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (ddl_Process == "Insert")
                         {
-                            GBL_Act_Config_Dict.Add(act_Key, newact_Value);
+                            gbl_Act_Config_Dict.Add(act_Key, newact_Value);
                         }
                         else if (ddl_Process == "Update")
                         {
-                            string origact_Value = (string)Modified_FMM_Act_Config_DataRow.OriginalDataRow["Name"] + "|" + (string)Modified_FMM_Act_Config_DataRow.OriginalDataRow["Calc_Type"];
+                            var origact_Value = (string)Modified_FMM_Act_Config_DataRow.OriginalDataRow["Name"] + "|" + (string)Modified_FMM_Act_Config_DataRow.OriginalDataRow["Calc_Type"];
 
                             if (origact_Value != newact_Value)
                             {
-                                GBL_Act_Config_Dict.XFSetValue(act_Key, newact_Value);
+                                gbl_Act_Config_Dict.XFSetValue(act_Key, newact_Value);
                             }
                         }
                         else if (ddl_Process == "Delete")
                         {
-                            if (GBL_Act_Config_Dict.ContainsKey(act_Key))
+                            if (gbl_Act_Config_Dict.ContainsKey(act_Key))
                             {
-                                GBL_Act_Config_Dict.Remove(act_Key);
+                                gbl_Act_Config_Dict.Remove(act_Key);
                             }
                             else
                             {
@@ -2778,13 +2770,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Calc_Unit_Config_Dict and handle errors
+                            // Populate gbl_Calc_Unit_Config_Dict and handle errors
                             foreach (DataRow Calc_Unit_Row in FMM_Calc_Unit_Config_DT.Rows)
                             {
                                 config_Key = cube_ID + "|" + (int)Calc_Unit_Row["Calc_Unit_ID"];
                                 var config_Value = (string)Calc_Unit_Row["Entity_MFB"] + "|" + (string)Calc_Unit_Row["WFChannel"];
 
-                                GBL_Calc_Unit_Config_Dict.Add(config_Key, config_Value);
+                                gbl_Calc_Unit_Config_Dict.Add(config_Key, config_Value);
                             }
                         }
                         break;
@@ -2795,28 +2787,28 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (ddl_Process == "Insert")
                         {
-							config_Key = cube_ID + "|" + (int)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["Calc_Unit_ID"];
-                        	newconfig_Value = (string)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["Entity_MFB"] + "|" + (string)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["WFChannel"];
+                            config_Key = cube_ID + "|" + (int)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["Calc_Unit_ID"];
+                            newconfig_Value = (string)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["Entity_MFB"] + "|" + (string)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["WFChannel"];
 
-                            GBL_Calc_Unit_Config_Dict.Add(config_Key, newconfig_Value);
+                            gbl_Calc_Unit_Config_Dict.Add(config_Key, newconfig_Value);
                         }
                         else if (ddl_Process == "Update")
                         {
-                        	config_Key = cube_ID + "|" + (int)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["Calc_Unit_ID"];
-							newconfig_Value = (string)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["Entity_MFB"] + "|" + (string)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["WFChannel"];
+                            config_Key = cube_ID + "|" + (int)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["Calc_Unit_ID"];
+                            newconfig_Value = (string)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["Entity_MFB"] + "|" + (string)Modified_FMM_Calc_Unit_Config_DataRow.ModifiedDataRow["WFChannel"];
                             var origConfig_Value = (string)Modified_FMM_Calc_Unit_Config_DataRow.OriginalDataRow["Entity_MFB"] + "|" + (string)Modified_FMM_Calc_Unit_Config_DataRow.OriginalDataRow["WFChannel"];
 
                             if (origConfig_Value != newconfig_Value)
                             {
-                                GBL_Calc_Unit_Config_Dict.XFSetValue(config_Key, newconfig_Value);
+                                gbl_Calc_Unit_Config_Dict.XFSetValue(config_Key, newconfig_Value);
                             }
                         }
                         else if (ddl_Process == "Delete")
                         {
-							config_Key = cube_ID + "|" + (int)Modified_FMM_Calc_Unit_Config_DataRow.OriginalDataRow["Calc_Unit_ID"];
-							if (GBL_Calc_Unit_Config_Dict.ContainsKey(config_Key))
+                            config_Key = cube_ID + "|" + (int)Modified_FMM_Calc_Unit_Config_DataRow.OriginalDataRow["Calc_Unit_ID"];
+                            if (gbl_Calc_Unit_Config_Dict.ContainsKey(config_Key))
                             {
-                                GBL_Calc_Unit_Config_Dict.Remove(config_Key);
+                                gbl_Calc_Unit_Config_Dict.Remove(config_Key);
                             }
                             else
                             {
@@ -2884,13 +2876,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Unit_Config_Dict and handle errors
+                            // Populate gbl_Unit_Config_Dict and handle errors
                             foreach (DataRow cube_Unit_Row in FMM_Unit_Config_DT.Rows)
                             {
                                 config_Key = cube_ID + "|" + act_ID + "|" + (int)cube_Unit_Row["Unit_ID"];
                                 var config_Value = (string)cube_Unit_Row["Name"];
 
-                                GBL_Unit_Config_Dict.Add(config_Key, config_Value);
+                                gbl_Unit_Config_Dict.Add(config_Key, config_Value);
                             }
                         }
                         break;
@@ -2902,7 +2894,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (ddl_Process == "Insert")
                         {
-                            GBL_Unit_Config_Dict.Add(config_Key, newconfig_Value);
+                            gbl_Unit_Config_Dict.Add(config_Key, newconfig_Value);
                         }
                         else if (ddl_Process == "Update")
                         {
@@ -2910,14 +2902,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (origconfig_Value != newconfig_Value)
                             {
-                                GBL_Unit_Config_Dict.XFSetValue(config_Key, newconfig_Value);
+                                gbl_Unit_Config_Dict.XFSetValue(config_Key, newconfig_Value);
                             }
                         }
                         else if (ddl_Process == "Delete")
                         {
-                            if (GBL_Unit_Config_Dict.ContainsKey(config_Key))
+                            if (gbl_Unit_Config_Dict.ContainsKey(config_Key))
                             {
-                                GBL_Unit_Config_Dict.Remove(config_Key);
+                                gbl_Unit_Config_Dict.Remove(config_Key);
                             }
                             else
                             {
@@ -2984,13 +2976,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Acct_Config_Dict and handle errors
+                            // Populate gbl_Acct_Config_Dict and handle errors
                             foreach (DataRow cube_Acct_Row in FMM_Acct_Config_DT.Rows)
                             {
                                 config_Key = cube_ID + "|" + act_ID + "|" + unit_ID + "|" + (int)cube_Acct_Row["Acct_ID"];
                                 var config_Value = (string)cube_Acct_Row["Name"];
 
-                                GBL_Acct_Config_Dict.Add(config_Key, config_Value);
+                                gbl_Acct_Config_Dict.Add(config_Key, config_Value);
                             }
                         }
                         break;
@@ -3002,7 +2994,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (ddl_Process == "Insert")
                         {
-                            GBL_Acct_Config_Dict.Add(config_Key, newconfig_Value);
+                            gbl_Acct_Config_Dict.Add(config_Key, newconfig_Value);
                         }
                         else if (ddl_Process == "Update")
                         {
@@ -3010,14 +3002,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (origConfig_Value != newconfig_Value)
                             {
-                                GBL_Acct_Config_Dict.XFSetValue(config_Key, newconfig_Value);
+                                gbl_Acct_Config_Dict.XFSetValue(config_Key, newconfig_Value);
                             }
                         }
                         else if (ddl_Process == "Delete")
                         {
-                            if (GBL_Acct_Config_Dict.ContainsKey(config_Key))
+                            if (gbl_Acct_Config_Dict.ContainsKey(config_Key))
                             {
-                                GBL_Acct_Config_Dict.Remove(config_Key);
+                                gbl_Acct_Config_Dict.Remove(config_Key);
                             }
                             else
                             {
@@ -3061,10 +3053,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var sqa = new SqlDataAdapter();
                             var FMM_Appr_Config_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql = @"
-		                        SELECT *
-		                        FROM FMM_Appr_Config
-		                        WHERE Cube_ID = @Cube_ID";
+                            var sql = @"SELECT *
+                                        FROM FMM_Appr_Config
+                                        WHERE Cube_ID = @Cube_ID";
                             // Create an array of SqlParameter objects
                             var sqlparams = new SqlParameter[]
                             {
@@ -3084,15 +3075,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Appr_Dict and handle errors
+                            // Populate gbl_Appr_Dict and handle errors
                             foreach (DataRow Appr_Row in FMM_Appr_Config_DT.Rows)
                             {
                                 config_Key = cube_ID + "|" + (int)Appr_Row["Appr_ID"];
                                 var config_Value = (string)Appr_Row["Name"];
 
-                                if (!GBL_Appr_Dict.ContainsKey(config_Key))
+                                if (!gbl_Appr_Dict.ContainsKey(config_Key))
                                 {
-                                    GBL_Appr_Dict.Add(config_Key, config_Value);
+                                    gbl_Appr_Dict.Add(config_Key, config_Value);
                                 }
                                 else
                                 {
@@ -3111,7 +3102,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (ddl_Process == "Insert")
                         {
-                            GBL_Appr_Dict.Add(config_Key, newconfig_Value);
+                            gbl_Appr_Dict.Add(config_Key, newconfig_Value);
                         }
                         else if (ddl_Process == "Update")
                         {
@@ -3119,14 +3110,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (origconfig_Value != newconfig_Value)
                             {
-                                GBL_Appr_Dict.XFSetValue(config_Key, newconfig_Value);
+                                gbl_Appr_Dict.XFSetValue(config_Key, newconfig_Value);
                             }
                         }
                         else if (ddl_Process == "Delete")
                         {
-                            if (GBL_Appr_Dict.ContainsKey(config_Key))
+                            if (gbl_Appr_Dict.ContainsKey(config_Key))
                             {
-                                GBL_Appr_Dict.Remove(config_Key);
+                                gbl_Appr_Dict.Remove(config_Key);
                             }
                             else
                             {
@@ -3191,15 +3182,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Appr_Step_Dict and handle errors
+                            // Populate gbl_Appr_Step_Dict and handle errors
                             foreach (DataRow Appr_Step_Row in FMM_Appr_Step_Config_DT.Rows)
                             {
                                 config_Key = cube_ID + "|" + appr_ID + "|" + (int)Appr_Step_Row["Appr_Step_ID"];
                                 var config_Value = (string)Appr_Step_Row["Name"];
 
-                                if (!GBL_Appr_Step_Dict.ContainsKey(config_Key))
+                                if (!gbl_Appr_Step_Dict.ContainsKey(config_Key))
                                 {
-                                    GBL_Appr_Step_Dict.Add(config_Key, config_Value);
+                                    gbl_Appr_Step_Dict.Add(config_Key, config_Value);
                                 }
                                 else
                                 {
@@ -3218,7 +3209,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (ddl_Process == "Insert")
                         {
-                            GBL_Appr_Step_Dict.Add(config_Key, newconfig_Value);
+                            gbl_Appr_Step_Dict.Add(config_Key, newconfig_Value);
                         }
                         else if (ddl_Process == "Update")
                         {
@@ -3226,14 +3217,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (origconfig_Value != newconfig_Value)
                             {
-                                GBL_Appr_Step_Dict.XFSetValue(config_Key, newconfig_Value);
+                                gbl_Appr_Step_Dict.XFSetValue(config_Key, newconfig_Value);
                             }
                         }
                         else if (ddl_Process == "Delete")
                         {
-                            if (GBL_Appr_Step_Dict.ContainsKey(config_Key))
+                            if (gbl_Appr_Step_Dict.ContainsKey(config_Key))
                             {
-                                GBL_Appr_Step_Dict.Remove(config_Key);
+                                gbl_Appr_Step_Dict.Remove(config_Key);
                             }
                             else
                             {
@@ -3301,14 +3292,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Register_Dict and handle errors
+                            // Populate gbl_Register_Dict and handle errors
                             foreach (DataRow Register_Row in FMM_Reg_Config_DT.Rows)
                             {
                                 config_Key = cube_ID + "|" + act_ID + "|" + (int)Register_Row["Reg_Config_ID"];
                                 var config_Value = (string)Register_Row["Name"];
 
 
-                                GBL_Register_Dict.Add(config_Key, config_Value);
+                                gbl_Register_Dict.Add(config_Key, config_Value);
                             }
                         }
                         break;
@@ -3320,7 +3311,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (ddl_Process == "Insert")
                         {
-                            GBL_Register_Dict.Add(config_Key, newConfig_Value);
+                            gbl_Register_Dict.Add(config_Key, newConfig_Value);
                         }
                         else if (ddl_Process == "Update")
                         {
@@ -3328,14 +3319,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (origConfig_Value != newConfig_Value)
                             {
-                                GBL_Register_Dict.XFSetValue(config_Key, newConfig_Value);
+                                gbl_Register_Dict.XFSetValue(config_Key, newConfig_Value);
                             }
                         }
                         else if (ddl_Process == "Delete")
                         {
-                            if (GBL_Register_Dict.ContainsKey(config_Key))
+                            if (gbl_Register_Dict.ContainsKey(config_Key))
                             {
-                                GBL_Register_Dict.Remove(config_Key);
+                                gbl_Register_Dict.Remove(config_Key);
                             }
                             else
                             {
@@ -3401,7 +3392,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Col_Dict and handle errors
+                            // Populate gbl_Col_Dict and handle errors
                             foreach (DataRow Col_Row in FMM_Col_Config_DT.Rows)
                             {
                                 config_Key = cube_ID + "|" + act_ID + "|" + reg_config_ID + "|" + (int)Col_Row["Col_ID"];
@@ -3409,7 +3400,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                                 if (config_Value != "99")
                                 {
-                                    GBL_Col_Dict.Add(config_Key, config_Value);
+                                    gbl_Col_Dict.Add(config_Key, config_Value);
                                 }
                             }
                         }
@@ -3426,7 +3417,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (origconfig_Value != newconfig_Value)
                             {
-                                GBL_Col_Dict.XFSetValue(config_Key, newconfig_Value);
+                                gbl_Col_Dict.XFSetValue(config_Key, newconfig_Value);
                             }
                         }
                         break;
@@ -3489,14 +3480,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return; // Exit the process if data retrieval fails
                             }
 
-                            // Populate GBL_Calc_Dict and handle errors
+                            // Populate gbl_Calc_Dict and handle errors
                             foreach (DataRow Calc_Row in FMM_Calc_Config_DT.Rows)
                             {
                                 config_Key = cube_ID + "|" + act_ID + "|" + model_ID + "|" + (int)Calc_Row["Calc_ID"];
                                 var config_Value = (string)Calc_Row["Name"];
 
 
-                                GBL_Calc_Dict.Add(config_Key, config_Value);
+                                gbl_Calc_Dict.Add(config_Key, config_Value);
                             }
                         }
                         break;
@@ -3508,7 +3499,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         if (ddl_Process == "Insert")
                         {
-                            GBL_Calc_Dict.Add(config_Key, newconfig_Value);
+                            gbl_Calc_Dict.Add(config_Key, newconfig_Value);
                         }
                         else if (ddl_Process == "Update")
                         {
@@ -3516,14 +3507,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (origConfig_Value != newconfig_Value)
                             {
-                                GBL_Calc_Dict.XFSetValue(config_Key, newconfig_Value);
+                                gbl_Calc_Dict.XFSetValue(config_Key, newconfig_Value);
                             }
                         }
                         else if (ddl_Process == "Delete")
                         {
-                            if (GBL_Calc_Dict.ContainsKey(config_Key))
+                            if (gbl_Calc_Dict.ContainsKey(config_Key))
                             {
-                                GBL_Calc_Dict.Remove(config_Key);
+                                gbl_Calc_Dict.Remove(config_Key);
                             }
                             else
                             {
@@ -3567,11 +3558,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 BRApi.ErrorLog.LogMessage(si, "Hit Defaults 2");
                 // Fill the DataTable with the current data from FMM_Col_Config
                 string selectQuery_colSetup = @"
-				    SELECT * 
-				    FROM FMM_Col_Config 
-				    WHERE Cube_ID = @Cube_ID
-					AND Act_ID = @Act_ID
-					AND Reg_Config_ID = @Reg_Config_ID";
+                    SELECT * 
+                    FROM FMM_Col_Config 
+                    WHERE Cube_ID = @Cube_ID
+                    AND Act_ID = @Act_ID
+                    AND Reg_Config_ID = @Reg_Config_ID";
 
                 // Create an array of SqlParameter objects
                 var parameters_colSetup = new SqlParameter[]
@@ -3587,27 +3578,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var columnConfigDefaults = new ColumnConfigDefaults();
                 foreach (var columnConfig in columnConfigDefaults.DefaultColumns)
                 {
-                    var newRow = FMM_Col_Config_DT.NewRow();
-                    newRow["Cube_ID"] = cube_ID;
-                    newRow["Act_ID"] = act_ID;
-                    newRow["Reg_Config_ID"] = Reg_Config_ID;
-                    newRow["Col_ID"] = ++os_Col_ID; // Ensure unique IDs
-                    newRow["Name"] = columnConfig.Col_Name;
-                    newRow["InUse"] = true; // Set default value for Col_InUse if needed
-                    newRow["Required"] = true;
-                    newRow["Updates"] = true;
-                    newRow["Alias"] = columnConfig.Col_Alias;
-                    newRow["Order"] = columnConfig.Col_Order;
-                    newRow["Default"] = DBNull.Value; // Set default value if needed
-                    newRow["Param"] = DBNull.Value; // Set default value if needed
-                    newRow["Format"] = string.Empty; // Set default value if needed
-                    newRow["Filter_Param"] = DBNull.Value; // Set default value if needed
-                    newRow["Create_Date"] = DateTime.Now;
-                    newRow["Create_User"] = si.UserName;
-                    newRow["Update_Date"] = DateTime.Now;
-                    newRow["Update_User"] = si.UserName;
+                    var new_DataRow = FMM_Col_Config_DT.NewRow();
+                    new_DataRow["Cube_ID"] = cube_ID;
+                    new_DataRow["Act_ID"] = act_ID;
+                    new_DataRow["Reg_Config_ID"] = Reg_Config_ID;
+                    new_DataRow["Col_ID"] = ++os_Col_ID; // Ensure unique IDs
+                    new_DataRow["Name"] = columnConfig.Col_Name;
+                    new_DataRow["InUse"] = true; // Set default value for Col_InUse if needed
+                    new_DataRow["Required"] = true;
+                    new_DataRow["Updates"] = true;
+                    new_DataRow["Alias"] = columnConfig.Col_Alias;
+                    new_DataRow["Order"] = columnConfig.Col_Order;
+                    new_DataRow["Default"] = DBNull.Value; // Set default value if needed
+                    new_DataRow["Param"] = DBNull.Value; // Set default value if needed
+                    new_DataRow["Format"] = string.Empty; // Set default value if needed
+                    new_DataRow["Filter_Param"] = DBNull.Value; // Set default value if needed
+                    new_DataRow["Create_Date"] = DateTime.Now;
+                    new_DataRow["Create_User"] = si.UserName;
+                    new_DataRow["Update_Date"] = DateTime.Now;
+                    new_DataRow["Update_User"] = si.UserName;
 
-                    FMM_Col_Config_DT.Rows.Add(newRow);
+                    FMM_Col_Config_DT.Rows.Add(new_DataRow);
                 }
                 BRApi.ErrorLog.LogMessage(si, "Hit Defaults 2");
                 // Update the FMM_Col_Config table based on the changes made to the DataTable
@@ -3692,7 +3683,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             return dataRow;
         }
-		
+        
         #region "Class Helper Functions"	
         #region "Solution Setup"
         private XFSelectionChangedTaskResult Create_Schema_New_Install(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
@@ -3757,16 +3748,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     };
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Cube_Config_Count_DT, sql, sqlparams);
-					
-					var sqa_fmm_cube_config = new SQA_FMM_Cube_Config(si, connection);
+                    
+                    var sqa_fmm_cube_config = new SQA_FMM_Cube_Config(si, connection);
                     var FMM_Cube_Config_DT = new DataTable();
 
                     // Insert new cube config record
                     sql = "SELECT * FROM FMM_Cube_Config WHERE Cube_ID = @Cube_ID";
-					// Define the variable to hold the parameters
-				    sqlparams = new SqlParameter[]
-				    {
-				    };
+                    // Define the variable to hold the parameters
+                    sqlparams = new SqlParameter[]
+                    {
+                    };
 
                     // If no existing record and runType is "New", insert new record
                     if (runType == "New")
@@ -3774,29 +3765,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Get the next Cube_ID for the new record
                         new_Cube_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Cube_Config", "Cube_ID");
 
-					    // Assign a new array with the parameter to the variable
-					    sqlparams = new SqlParameter[]
-					    {
-					        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = new_Cube_ID }
-					    };
+                        // Assign a new array with the parameter to the variable
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = new_Cube_ID }
+                        };
 
                         sqa_fmm_cube_config.Fill_FMM_Cube_Config_DT(si, sqa,FMM_Cube_Config_DT, sql, sqlparams);
 
-                        var newRow = FMM_Cube_Config_DT.NewRow();
-                        newRow["Cube_ID"] = new_Cube_ID;
-                        newRow["Cube"] = Cube;
-                        newRow["Scen_Type"] = Scen_Type;
-                        newRow["Descr"] = cube_Description;
-                        newRow["Agg_Consol"] = agg_Consol;
-                        newRow["Entity_Dim"] = entity_Dim;
-                        newRow["Entity_MFB"] = entity_MFB;
-                        newRow["Status"] = "Build";
-                        newRow["Create_Date"] = DateTime.Now;
-                        newRow["Create_User"] = si.UserName;
-                        newRow["Update_Date"] = DateTime.Now;
-                        newRow["Update_User"] = si.UserName;
+                        var new_DataRow = FMM_Cube_Config_DT.NewRow();
+                        new_DataRow["Cube_ID"] = new_Cube_ID;
+                        new_DataRow["Cube"] = Cube;
+                        new_DataRow["Scen_Type"] = Scen_Type;
+                        new_DataRow["Descr"] = cube_Description;
+                        new_DataRow["Agg_Consol"] = agg_Consol;
+                        new_DataRow["Entity_Dim"] = entity_Dim;
+                        new_DataRow["Entity_MFB"] = entity_MFB;
+                        new_DataRow["Status"] = "Build";
+                        new_DataRow["Create_Date"] = DateTime.Now;
+                        new_DataRow["Create_User"] = si.UserName;
+                        new_DataRow["Update_Date"] = DateTime.Now;
+                        new_DataRow["Update_User"] = si.UserName;
 
-                        FMM_Cube_Config_DT.Rows.Add(newRow);
+                        FMM_Cube_Config_DT.Rows.Add(new_DataRow);
 
                         // Save the changes to the database
                         sqa_fmm_cube_config.Update_FMM_Cube_Config(si, FMM_Cube_Config_DT, sqa);
@@ -3811,9 +3802,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var cubeStatus = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Status", string.Empty);
                         new_Cube_ID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Cube_ID", "0"));
                         sqlparams = new SqlParameter[]
-						{
-						    new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = new_Cube_ID }
-						};
+                        {
+                            new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = new_Cube_ID }
+                        };
 
                         sqa_fmm_cube_config.Fill_FMM_Cube_Config_DT(si, sqa,FMM_Cube_Config_DT, sql, sqlparams);
 
@@ -3906,33 +3897,33 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         // Fill the DataTable with the current data from FMM_Dest_Cell
                         string sql = @"
-										SELECT * 
-										FROM FMM_Models 
-										WHERE Model_ID = @Model_ID";
+                                        SELECT * 
+                                        FROM FMM_Models 
+                                        WHERE Model_ID = @Model_ID";
 
                         BRApi.ErrorLog.LogMessage(si, "Hit: " + sql + "-" + new_Model_ID);
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
                         {
-                        	new SqlParameter("@Model_ID", SqlDbType.Int) { Value = new_Model_ID }
+                            new SqlParameter("@Model_ID", SqlDbType.Int) { Value = new_Model_ID }
                         };
 
                         sqa_fmm_models.Fill_FMM_Models_DT(si, sqa,FMM_Models_DT, sql, sqlparams);
                         if (runType == "New")
                         {
-                            var newRow = FMM_Models_DT.NewRow();
-                            newRow["Cube_ID"] = cube_ID;
-                            newRow["Act_ID"] = act_ID;
-                            newRow["Model_ID"] = new_Model_ID;
-                            newRow["Name"] = new_Model_Name;
-                            newRow["Status"] = "Build";
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
+                            var new_DataRow = FMM_Models_DT.NewRow();
+                            new_DataRow["Cube_ID"] = cube_ID;
+                            new_DataRow["Act_ID"] = act_ID;
+                            new_DataRow["Model_ID"] = new_Model_ID;
+                            new_DataRow["Name"] = new_Model_Name;
+                            new_DataRow["Status"] = "Build";
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
                             // Set other column values for the new row as needed
-                            FMM_Models_DT.Rows.Add(newRow);
+                            FMM_Models_DT.Rows.Add(new_DataRow);
                         }
                         else if (runType == "Update")
                         {
@@ -3989,9 +3980,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         // Fill the DataTable with the current data from FMM_Dest_Cell
                         string sql = @"
-										SELECT * 
-										FROM FMM_Model_Grps 
-										WHERE Model_Grp_ID = @Model_Grp_ID";
+                                        SELECT * 
+                                        FROM FMM_Model_Grps 
+                                        WHERE Model_Grp_ID = @Model_Grp_ID";
 
                         BRApi.ErrorLog.LogMessage(si, "Hit: " + sql);
 
@@ -4003,17 +3994,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         sqa_fmm_model_grps.Fill_FMM_Model_Grps_DT(si, sqa,FMM_Model_Grps_DT, sql, sqlparams);
 
-                        var newRow = FMM_Model_Grps_DT.NewRow();
-                        newRow["Cube_ID"] = new_OS_Model_Grp_Cube_ID;
-                        newRow["Model_Grp_ID"] = new_Model_Grp_ID;
-                        newRow["Name"] = new_Name;
-                        newRow["Status"] = "Build";
-                        newRow["Create_Date"] = DateTime.Now;
-                        newRow["Create_User"] = si.UserName;
-                        newRow["Update_Date"] = DateTime.Now;
-                        newRow["Update_User"] = si.UserName;
+                        var new_DataRow = FMM_Model_Grps_DT.NewRow();
+                        new_DataRow["Cube_ID"] = new_OS_Model_Grp_Cube_ID;
+                        new_DataRow["Model_Grp_ID"] = new_Model_Grp_ID;
+                        new_DataRow["Name"] = new_Name;
+                        new_DataRow["Status"] = "Build";
+                        new_DataRow["Create_Date"] = DateTime.Now;
+                        new_DataRow["Create_User"] = si.UserName;
+                        new_DataRow["Update_Date"] = DateTime.Now;
+                        new_DataRow["Update_User"] = si.UserName;
                         // Set other column values for the new row as needed
-                        FMM_Model_Grps_DT.Rows.Add(newRow);
+                        FMM_Model_Grps_DT.Rows.Add(new_DataRow);
                         BRApi.ErrorLog.LogMessage(si, "Hit 6: ");
 
                         // Update the FMM_Dest_Cell table based on the changes made to the DataTable
@@ -4056,9 +4047,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         // Fill the DataTable with the current data from FMM_Dest_Cell
                         string sql = @"
-										SELECT * 
-										FROM FMM_Model_Grp_Seqs 
-										WHERE Model_Grp_Seq_ID = @Model_Grp_Seq_ID";
+                                        SELECT * 
+                                        FROM FMM_Model_Grp_Seqs 
+                                        WHERE Model_Grp_Seq_ID = @Model_Grp_Seq_ID";
 
                         BRApi.ErrorLog.LogMessage(si, "Hit: " + sql);
 
@@ -4070,17 +4061,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         sqa_fmm_model_grp_seqs.Fill_FMM_Model_Grp_Seqs_DT(si, sqa,FMM_Model_Grp_Seqs_DT, sql, sqlparams);
 
-                        var newRow = FMM_Model_Grp_Seqs_DT.NewRow();
-                        newRow["Cube_ID"] = new_Cube_ID;
-                        newRow["Model_Grp_Seq_ID"] = new_Model_Grp_Seq_ID;
-                        newRow["Name"] = new_Name;
-                        newRow["Status"] = "Build";
-                        newRow["Create_Date"] = DateTime.Now;
-                        newRow["Create_User"] = si.UserName;
-                        newRow["Update_Date"] = DateTime.Now;
-                        newRow["Update_User"] = si.UserName;
+                        var new_DataRow = FMM_Model_Grp_Seqs_DT.NewRow();
+                        new_DataRow["Cube_ID"] = new_Cube_ID;
+                        new_DataRow["Model_Grp_Seq_ID"] = new_Model_Grp_Seq_ID;
+                        new_DataRow["Name"] = new_Name;
+                        new_DataRow["Status"] = "Build";
+                        new_DataRow["Create_Date"] = DateTime.Now;
+                        new_DataRow["Create_User"] = si.UserName;
+                        new_DataRow["Update_Date"] = DateTime.Now;
+                        new_DataRow["Update_User"] = si.UserName;
                         // Set other column values for the new row as needed
-                        FMM_Model_Grp_Seqs_DT.Rows.Add(newRow);
+                        FMM_Model_Grp_Seqs_DT.Rows.Add(new_DataRow);
                         BRApi.ErrorLog.LogMessage(si, "Hit 6: ");
 
                         // Update the FMM_Dest_Cell table based on the changes made to the DataTable
@@ -4129,10 +4120,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         // Fill the DataTable with the current data from FMM_Dest_Cell
                         string sql = @"
-										SELECT * 
-										FROM FMM_Model_Grp_Assign
-										WHERE Cube_ID = @Cube_ID
-								        AND Model_Grp_ID = @Model_Grp_ID";
+                                        SELECT * 
+                                        FROM FMM_Model_Grp_Assign
+                                        WHERE Cube_ID = @Cube_ID
+                                        AND Model_Grp_ID = @Model_Grp_ID";
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
@@ -4153,19 +4144,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 new_OS_Model_Grp_Assign_ID += 1;
                             }
                             isFirstIteration = false;
-                            var newRow = FMM_Model_Grp_Assign_DT.NewRow();
-                            newRow["Cube_ID"] = cube_ID;
-                            newRow["Model_Grp_ID"] = Model_Grp_ID;
-                            newRow["Model_ID"] = Convert.ToInt32(modelId.Trim());
-                            newRow["Model_Grp_Assign_ID"] = new_OS_Model_Grp_Assign_ID;
-                            newRow["Sequence"] = 0;
-                            newRow["Status"] = "Build";
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
+                            var new_DataRow = FMM_Model_Grp_Assign_DT.NewRow();
+                            new_DataRow["Cube_ID"] = cube_ID;
+                            new_DataRow["Model_Grp_ID"] = Model_Grp_ID;
+                            new_DataRow["Model_ID"] = Convert.ToInt32(modelId.Trim());
+                            new_DataRow["Model_Grp_Assign_ID"] = new_OS_Model_Grp_Assign_ID;
+                            new_DataRow["Sequence"] = 0;
+                            new_DataRow["Status"] = "Build";
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
 
-                            FMM_Model_Grp_Assign_DT.Rows.Add(newRow);
+                            FMM_Model_Grp_Assign_DT.Rows.Add(new_DataRow);
                         }
 
                         // Update the database with the new rows
@@ -4211,11 +4202,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var sqa = new SqlDataAdapter();
 
                         // Fill the DataTable with the current data from FMM_Dest_Cell
-                        string sql = @"
-										SELECT * 
-										FROM FMM_Calc_Unit_Assign
-										WHERE Cube_ID = @Cube_ID
-								        AND Model_Grp_Seq_ID = @Model_Grp_Seq_ID";
+                        var sql = @"SELECT * 
+                                    FROM FMM_Calc_Unit_Assign
+                                    WHERE Cube_ID = @Cube_ID
+                                    AND Model_Grp_Seq_ID = @Model_Grp_Seq_ID";
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
@@ -4239,20 +4229,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     new_Calc_Unit_Assign_ID += 1;
                                 }
                                 isFirstIteration = false;
-                                var newRow = FMM_Calc_Unit_Assign_DT.NewRow();
-                                newRow["Cube_ID"] = cube_ID;
-                                newRow["Model_Grp_ID"] = Convert.ToInt32(modelGroupId.Trim());
-                                newRow["Calc_Unit_ID"] = Convert.ToInt32(WfDuId.Trim());
-                                newRow["Model_Grp_Seq_ID"] = Model_Grp_Seq_ID;
-                                newRow["Calc_Unit_Assign_ID"] = new_Calc_Unit_Assign_ID;
-                                newRow["Sequence"] = 0;
-                                newRow["Status"] = "Build";
-                                newRow["Create_Date"] = DateTime.Now;
-                                newRow["Create_User"] = si.UserName;
-                                newRow["Update_Date"] = DateTime.Now;
-                                newRow["Update_User"] = si.UserName;
+                                var new_DataRow = FMM_Calc_Unit_Assign_DT.NewRow();
+                                new_DataRow["Cube_ID"] = cube_ID;
+                                new_DataRow["Model_Grp_ID"] = Convert.ToInt32(modelGroupId.Trim());
+                                new_DataRow["Calc_Unit_ID"] = Convert.ToInt32(WfDuId.Trim());
+                                new_DataRow["Model_Grp_Seq_ID"] = Model_Grp_Seq_ID;
+                                new_DataRow["Calc_Unit_Assign_ID"] = new_Calc_Unit_Assign_ID;
+                                new_DataRow["Sequence"] = 0;
+                                new_DataRow["Status"] = "Build";
+                                new_DataRow["Create_Date"] = DateTime.Now;
+                                new_DataRow["Create_User"] = si.UserName;
+                                new_DataRow["Update_Date"] = DateTime.Now;
+                                new_DataRow["Update_User"] = si.UserName;
 
-                                FMM_Calc_Unit_Assign_DT.Rows.Add(newRow);
+                                FMM_Calc_Unit_Assign_DT.Rows.Add(new_DataRow);
                             }
                         }
 
@@ -4281,7 +4271,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var wfProfile_Step = custom_SubstVars.XFGetValue("IV_FMM_trv_Appr_Step_WFProfile", string.Empty);
 
                 BRApi.ErrorLog.LogMessage(si, "Hit Approval Step: " + cube_ID + "|" + appr_ID + "|" + wfProfile_Step);
-                int new_Appr_Step_ID = 0;
+                var new_Appr_Step_ID = 0;
 
                 if (cube_ID > 0 && appr_ID > 0 && wfProfile_Step != string.Empty && new_Appr_Step_ID == 0)
                 {
@@ -4349,64 +4339,64 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         var topCubeInfo = BRApi.Finance.Cubes.GetCubeInfo(si, FMM_Cube_Config_DT.Rows[0].Field<string>("Cube"));
                         //var cubeScenarioType = ScenarioType.GetItem(FMM_Cube_Config_DT.Rows[0].Field<string>("Scen_Type")).Id;
-						var cubeScenarioType = ScenarioType.GetItem("Plan").Id;
+                        var cubeScenarioType = ScenarioType.GetItem("Plan").Id;
                         var cubeScenarioTypeId = ScenarioTypeId.LongTerm;
-						var rootProfileName = topCubeInfo.GetTopLevelCubeWFPName(si,cubeScenarioType);
-						var wfProfileSuffixes = new Dictionary<ScenarioTypeId, string>();
-						wfProfileSuffixes = topCubeInfo.TopLevelCubeWFPSuffixes;
-						var wfProfileSuffix = wfProfileSuffixes.XFGetValue(cubeScenarioTypeId,string.Empty);
+                        var rootProfileName = topCubeInfo.GetTopLevelCubeWFPName(si,cubeScenarioType);
+                        var wfProfileSuffixes = new Dictionary<ScenarioTypeId, string>();
+                        wfProfileSuffixes = topCubeInfo.TopLevelCubeWFPSuffixes;
+                        var wfProfileSuffix = wfProfileSuffixes.XFGetValue(cubeScenarioTypeId,string.Empty);
 
-						// Loop through each entry in the dictionary
-						foreach (var entry in wfProfileSuffixes)
-						{
-						    // You can access the key and value from the 'entry' variable
-						    ScenarioTypeId id = entry.Key;
-						    string suffix = entry.Value;
-						
-						    // Now you can use them, for example, print them to the console
-						    BRApi.ErrorLog.LogMessage(si,$"ID: {id} | Suffix: {suffix}");
-						}
+                        // Loop through each entry in the dictionary
+                        foreach (var entry in wfProfileSuffixes)
+                        {
+                            // You can access the key and value from the 'entry' variable
+                            ScenarioTypeId id = entry.Key;
+                            string suffix = entry.Value;
+                        
+                            // Now you can use them, for example, print them to the console
+                            BRApi.ErrorLog.LogMessage(si,$"ID: {id} | Suffix: {suffix}");
+                        }
 
-						BRApi.ErrorLog.LogMessage(si,$"Hit: {rootProfileName}_{wfProfileSuffix} - {cubeScenarioTypeId.ToString()}");
+                        BRApi.ErrorLog.LogMessage(si,$"Hit: {rootProfileName}_{wfProfileSuffix} - {cubeScenarioTypeId.ToString()}");
                         // Retrieve WFProfile information
                         sql = @"WITH RecursiveCTE AS (
-		                        SELECT 
-		                            prof.ProfileKey,
-		                            prof.ProfileName, 
-		                            CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier) AS ParentProfileKey, 
-		                            prof.HierarchyLevel, 
-		                            prof.HierarchyIndex
-		                        FROM 
-		                            WorkflowProfileHierarchy prof
-		                        WHERE 
-		                            prof.HierarchyLevel = 1
-		                            AND prof.IsTemplate = 0
-		                            AND prof.ProfileName = @rootprofilename 
-		                        UNION ALL
-		                        SELECT 
-		                            prof.ProfileKey,
-		                            prof.ProfileName,
-		                            prof.ParentProfileKey, 
-		                            prof.HierarchyLevel, 
-		                            prof.HierarchyIndex
-		                        FROM 
-		                            WorkflowProfileHierarchy prof
-		                        INNER JOIN 
-		                            RecursiveCTE rcte ON prof.ParentProfileKey = rcte.ProfileKey)
-		                    SELECT 
-		                        rcte.ProfileName, 
-		                        rcte.ProfileKey,
-		                        rcte.ParentProfileKey, 
-		                        parentProf.ProfileName as ParentProfileName, 
-		                        rcte.HierarchyLevel,
-		                        rcte.HierarchyIndex
-		                    FROM 
-		                        RecursiveCTE rcte
-		                    LEFT JOIN 
-		                        WorkflowProfileHierarchy parentProf ON rcte.ParentProfileKey = parentProf.ProfileKey
-		                    ORDER BY 
-		                        rcte.HierarchyLevel DESC, 
-		                        rcte.HierarchyIndex";
+                                SELECT 
+                                    prof.ProfileKey,
+                                    prof.ProfileName, 
+                                    CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier) AS ParentProfileKey, 
+                                    prof.HierarchyLevel, 
+                                    prof.HierarchyIndex
+                                FROM 
+                                    WorkflowProfileHierarchy prof
+                                WHERE 
+                                    prof.HierarchyLevel = 1
+                                    AND prof.IsTemplate = 0
+                                    AND prof.ProfileName = @rootprofilename 
+                                UNION ALL
+                                SELECT 
+                                    prof.ProfileKey,
+                                    prof.ProfileName,
+                                    prof.ParentProfileKey, 
+                                    prof.HierarchyLevel, 
+                                    prof.HierarchyIndex
+                                FROM 
+                                    WorkflowProfileHierarchy prof
+                                INNER JOIN 
+                                    RecursiveCTE rcte ON prof.ParentProfileKey = rcte.ProfileKey)
+                            SELECT 
+                                rcte.ProfileName, 
+                                rcte.ProfileKey,
+                                rcte.ParentProfileKey, 
+                                parentProf.ProfileName as ParentProfileName, 
+                                rcte.HierarchyLevel,
+                                rcte.HierarchyIndex
+                            FROM 
+                                RecursiveCTE rcte
+                            LEFT JOIN 
+                                WorkflowProfileHierarchy parentProf ON rcte.ParentProfileKey = parentProf.ProfileKey
+                            ORDER BY 
+                                rcte.HierarchyLevel DESC, 
+                                rcte.HierarchyIndex";
 
                         sqlparams = new SqlParameter[]
                         {
@@ -4415,7 +4405,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,FMM_Appr_Step_WFProfile_DT, sql, sqlparams);
 
-						BRApi.ErrorLog.LogMessage(si,$"Hit: {FMM_Appr_Step_WFProfile_DT.Rows.Count}");
+                        BRApi.ErrorLog.LogMessage(si,$"Hit: {FMM_Appr_Step_WFProfile_DT.Rows.Count}");
                         // LINQ query to filter WFProfiles based on WFProfile_Step
                         var filteredWFProfiles = from profile in FMM_Appr_Step_WFProfile_DT.AsEnumerable()
                                                  where profile["ProfileName"].ToString().Contains(wfProfile_Step)
@@ -4424,34 +4414,34 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Loop through filtered WFProfiles and insert new Approval Steps and Cube Map
                         foreach (var profile in filteredWFProfiles)
                         {
-							BRApi.ErrorLog.LogMessage(si,"Hit");
-                            var newRow = FMM_Appr_Step_Config_DT.NewRow();
-                            newRow["Cube_ID"] = cube_ID;
-                            newRow["Appr_ID"] = appr_ID;
-                            newRow["WFProfile_Step"] = profile["ProfileKey"];
-                            newRow["Appr_Step_ID"] = new_Appr_Step_ID++;
-                            newRow["Step_Num"] = 0;
-                            newRow["User_Group"] = "Test";
-                            newRow["Logic"] = "Test";
-                            newRow["Item"] = "Test";
-                            newRow["Level"] = 0;
-                            newRow["Appr_Config"] = 0;
-                            newRow["Init_Status"] = "Testy";
-                            newRow["Appr_Status"] = "Testy";
-                            newRow["Rej_Status"] = "Testy";
-                            newRow["Status"] = "Build";
-                            newRow["Create_Date"] = DateTime.Now;
-                            newRow["Create_User"] = si.UserName;
-                            newRow["Update_Date"] = DateTime.Now;
-                            newRow["Update_User"] = si.UserName;
+                            BRApi.ErrorLog.LogMessage(si,"Hit");
+                            var new_DataRow = FMM_Appr_Step_Config_DT.NewRow();
+                            new_DataRow["Cube_ID"] = cube_ID;
+                            new_DataRow["Appr_ID"] = appr_ID;
+                            new_DataRow["WFProfile_Step"] = profile["ProfileKey"];
+                            new_DataRow["Appr_Step_ID"] = new_Appr_Step_ID++;
+                            new_DataRow["Step_Num"] = 0;
+                            new_DataRow["User_Group"] = "Test";
+                            new_DataRow["Logic"] = "Test";
+                            new_DataRow["Item"] = "Test";
+                            new_DataRow["Level"] = 0;
+                            new_DataRow["Appr_Config"] = 0;
+                            new_DataRow["Init_Status"] = "Testy";
+                            new_DataRow["Appr_Status"] = "Testy";
+                            new_DataRow["Rej_Status"] = "Testy";
+                            new_DataRow["Status"] = "Build";
+                            new_DataRow["Create_Date"] = DateTime.Now;
+                            new_DataRow["Create_User"] = si.UserName;
+                            new_DataRow["Update_Date"] = DateTime.Now;
+                            new_DataRow["Update_User"] = si.UserName;
 
-                            FMM_Appr_Step_Config_DT.Rows.Add(newRow);
+                            FMM_Appr_Step_Config_DT.Rows.Add(new_DataRow);
 
 //                            // Insert into FMM_Reg_Dtl_Cube_Map
 //                            var mapRow = FMM_Act_Appr_Step_Config_DT.NewRow();
 //                            mapRow["Cube_ID"] = cube_ID;
 //                            mapRow["Appr_ID"] = appr_ID;
-//                            mapRow["Appr_Step_ID"] = newRow["Appr_Step_ID"];
+//                            mapRow["Appr_Step_ID"] = new_DataRow["Appr_Step_ID"];
 //                            mapRow["FMM_Act_Appr_Step_Config_ID"] = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Act_Appr_Step_Config", "FMM_Act_Appr_Step_Config_ID");
 //                            mapRow["Acct"] = "AcctValue"; // replace with actual values
 //                            mapRow["Flow"] = "FlowValue";
@@ -4504,18 +4494,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-	                var sqa_fmm_act_appr_step_config = new SQA_FMM_Act_Appr_Step_Config(si, connection);
-	                var FMM_Act_Appr_Step_Config_DT = new DataTable();
-	                var sqa = new SqlDataAdapter();
-	
-	                // Fill DataTable for Appr_Step_Activity_Config
-	                string sql = @"SELECT * 
+                    var sqa_fmm_act_appr_step_config = new SQA_FMM_Act_Appr_Step_Config(si, connection);
+                    var FMM_Act_Appr_Step_Config_DT = new DataTable();
+                    var sqa = new SqlDataAdapter();
+    
+                    // Fill DataTable for Appr_Step_Activity_Config
+                    var sql = @"SELECT * 
                                     FROM FMM_Act_Appr_Step_Config
                                     WHERE Act_ID = @Act_ID
                                     AND Appr_ID = @Appr_ID
                                     AND Appr_Step_ID = @Appr_Step_ID";
-					
-					var sqlparams = new SqlParameter[]{};
+                    
+                    var sqlparams = new SqlParameter[]{};
 
 
                 BRApi.ErrorLog.LogMessage(si, "save data: " + act_ID + " " + appr_ID + " " + appr_Step_ID + " " + reg_Config_ID);
@@ -4528,7 +4518,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     connection.Open();
 
                     // Get the max ID for the Appr_Step_Config table
-                    int new_Appr_Step_Act_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Act_Appr_Step_Config", "Act_Appr_Step_ID");
+                    var new_Appr_Step_Act_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Act_Appr_Step_Config", "Act_Appr_Step_ID");
 
 
                     sqlparams = new SqlParameter[]
@@ -4544,29 +4534,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     string noneVal = "None";
                     FMM_Act_Appr_Step_Config_DT.Clear(); // clear data, because we only want the column information to create a new row.
                                                                   // Insert into FMM_Appr_Step_Activity_Config_DT
-                    var newRow = FMM_Act_Appr_Step_Config_DT.NewRow();
-                    newRow["Act_ID"] = act_ID;
-                    newRow["Appr_ID"] = appr_ID;
-                    newRow["Appr_Step_ID"] = appr_Step_ID;
-                    newRow["Appr_Step_Act_ID"] = new_Appr_Step_Act_ID;
-                    newRow["Reg_Config_ID"] = reg_Config_ID;
-                    newRow["Description"] = "Desc";
-                    newRow["Acct"] = noneVal;
-                    newRow["Flow"] = noneVal;
-                    newRow["UD1"] = noneVal;
-                    newRow["UD2"] = noneVal;
-                    newRow["UD3"] = noneVal;
-                    newRow["UD4"] = noneVal;
-                    newRow["UD5"] = noneVal;
-                    newRow["UD6"] = noneVal;
-                    newRow["UD7"] = noneVal;
-                    newRow["UD8"] = noneVal;
-                    newRow["Create_Date"] = DateTime.Now;
-                    newRow["Create_User"] = si.UserName;
-                    newRow["Update_Date"] = DateTime.Now;
-                    newRow["Update_User"] = si.UserName;
+                    var new_DataRow = FMM_Act_Appr_Step_Config_DT.NewRow();
+                    new_DataRow["Act_ID"] = act_ID;
+                    new_DataRow["Appr_ID"] = appr_ID;
+                    new_DataRow["Appr_Step_ID"] = appr_Step_ID;
+                    new_DataRow["Appr_Step_Act_ID"] = new_Appr_Step_Act_ID;
+                    new_DataRow["Reg_Config_ID"] = reg_Config_ID;
+                    new_DataRow["Description"] = "Desc";
+                    new_DataRow["Acct"] = noneVal;
+                    new_DataRow["Flow"] = noneVal;
+                    new_DataRow["UD1"] = noneVal;
+                    new_DataRow["UD2"] = noneVal;
+                    new_DataRow["UD3"] = noneVal;
+                    new_DataRow["UD4"] = noneVal;
+                    new_DataRow["UD5"] = noneVal;
+                    new_DataRow["UD6"] = noneVal;
+                    new_DataRow["UD7"] = noneVal;
+                    new_DataRow["UD8"] = noneVal;
+                    new_DataRow["Create_Date"] = DateTime.Now;
+                    new_DataRow["Create_User"] = si.UserName;
+                    new_DataRow["Update_Date"] = DateTime.Now;
+                    new_DataRow["Update_User"] = si.UserName;
 
-                    FMM_Act_Appr_Step_Config_DT.Rows.Add(newRow);
+                    FMM_Act_Appr_Step_Config_DT.Rows.Add(new_DataRow);
 
                     // Save Approval Step Activity Config
                     sqa_fmm_act_appr_step_config.Update_FMM_Act_Appr_Step_Config(si, FMM_Act_Appr_Step_Config_DT, sqa);
@@ -4589,7 +4579,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     sqlparams = new SqlParameter[]
                     {
                         //kinda weird, but we're passing in Act_ID as the Approval Step Activity ID when in update runtype
-	                    new SqlParameter("@Appr_Step_Act_ID", SqlDbType.Int) { Value = act_ID }
+                        new SqlParameter("@Appr_Step_Act_ID", SqlDbType.Int) { Value = act_ID }
 
                     };
 
@@ -4604,7 +4594,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     // Save Approval Step Activity Config
                     sqa_fmm_act_appr_step_config.Update_FMM_Act_Appr_Step_Config(si, FMM_Act_Appr_Step_Config_DT, sqa);
                 }
-				}
+                }
                 return save_Result;
             }
             catch (Exception ex)
@@ -4641,8 +4631,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
                     string sql = @"SELECT * 
-								   FROM FMM_Calc_Unit_Config
-								   WHERE Cube_ID = @Cube_ID";
+                                   FROM FMM_Calc_Unit_Config
+                                   WHERE Cube_ID = @Cube_ID";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
@@ -4651,40 +4641,40 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     };
 
                     sqa_fmm_calc_unit_config.Fill_FMM_Calc_Unit_Config_DT(si, sqa,FMM_Calc_Unit_Config_DT, sql, sqlparams);
-					var cubeInfo = BRApi.Finance.Cubes.GetCubeInfo(si,"Army_RMW_Consol");
-					var ent_DimID = cubeInfo.Cube.CubeDims.GetEntityDimId();
-					var cubeDim_Lookup = cubeInfo.Cube.CubeDims.CubeDimsDictionary.Values.ToLookup(dim => dim.DimId);
-					IEnumerable<CubeDim> ent_Dim = cubeDim_Lookup[ent_DimID];
-					var Calc_Unit_EntList = new List<MemberInfo>();
-					foreach (CubeDim dim in ent_Dim)
-					{
-						var dimTypeID = dim.CubeDimPk.DimTypeId;
-						var ent_DimPk = new DimPk(dimTypeID, ent_DimID);
+                    var cubeInfo = BRApi.Finance.Cubes.GetCubeInfo(si,"Army_RMW_Consol");
+                    var ent_DimID = cubeInfo.Cube.CubeDims.GetEntityDimId();
+                    var cubeDim_Lookup = cubeInfo.Cube.CubeDims.CubeDimsDictionary.Values.ToLookup(dim => dim.DimId);
+                    IEnumerable<CubeDim> ent_Dim = cubeDim_Lookup[ent_DimID];
+                    var Calc_Unit_EntList = new List<MemberInfo>();
+                    foreach (CubeDim dim in ent_Dim)
+                    {
+                        var dimTypeID = dim.CubeDimPk.DimTypeId;
+                        var ent_DimPk = new DimPk(dimTypeID, ent_DimID);
                     //var EntDimPk = BRApi.Finance.Dim.GetDimPk(si, "DHP_ConsolEntities_Dim");
-                    	Calc_Unit_EntList = BRApi.Finance.Members.GetMembersUsingFilter(si, ent_DimPk, Calc_Unit_Entity_MFB, true);
-					}
+                        Calc_Unit_EntList = BRApi.Finance.Members.GetMembersUsingFilter(si, ent_DimPk, Calc_Unit_Entity_MFB, true);
+                    }
 
                     // Loop through the Calc_Unit_EntList and add new rows to FMM_Calc_Unit_Config_DT
                     foreach (var entity in Calc_Unit_EntList)
                     {
-                        var newRow = FMM_Calc_Unit_Config_DT.NewRow();
+                        var new_DataRow = FMM_Calc_Unit_Config_DT.NewRow();
                         if (loop_times == 0)
                         {
-                            newRow["Calc_Unit_ID"] = new_Calc_Unit_ID;
+                            new_DataRow["Calc_Unit_ID"] = new_Calc_Unit_ID;
                         }
                         {
-                            newRow["Calc_Unit_ID"] = ++new_Calc_Unit_ID;
+                            new_DataRow["Calc_Unit_ID"] = ++new_Calc_Unit_ID;
                         }
-                        newRow["Cube_ID"] = cube_ID;
-                        newRow["Entity_MFB"] = entity.Member.Name;
-                        newRow["WFChannel"] = WF_Channels;
-                        newRow["Status"] = "Build";
-                        newRow["Create_Date"] = DateTime.Now;
-                        newRow["Create_User"] = si.UserName;
-                        newRow["Update_Date"] = DateTime.Now;
-                        newRow["Update_User"] = si.UserName;
+                        new_DataRow["Cube_ID"] = cube_ID;
+                        new_DataRow["Entity_MFB"] = entity.Member.Name;
+                        new_DataRow["WFChannel"] = WF_Channels;
+                        new_DataRow["Status"] = "Build";
+                        new_DataRow["Create_Date"] = DateTime.Now;
+                        new_DataRow["Create_User"] = si.UserName;
+                        new_DataRow["Update_Date"] = DateTime.Now;
+                        new_DataRow["Update_User"] = si.UserName;
 
-                        FMM_Calc_Unit_Config_DT.Rows.Add(newRow);
+                        FMM_Calc_Unit_Config_DT.Rows.Add(new_DataRow);
                         loop_times += 1;
                     }
 
@@ -4753,7 +4743,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var sqa_fmm_calc_config = new SQA_FMM_Calc_Config(si, connection);
                 var sqa_fmm_col_config = new SQA_FMM_Col_Config(si, connection);
                 var sqa_fmm_cube_config = new SQA_FMM_Cube_Config(si, connection);
-                var sqa_FMM_Dest_Cell = new SQA_FMM_Dest_Cell(si, connection);
+                var sqa_fmm_dest_cell = new SQA_FMM_Dest_Cell(si, connection);
                 var sqa_fmm_model_grp_assign = new SQA_FMM_Model_Grp_Assign(si, connection);
                 var sqa_fmm_model_grps = new SQA_FMM_Model_Grps(si, connection);
                 var sqa_fmm_models = new SQA_FMM_Models(si, connection);
@@ -4841,7 +4831,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 get_FMM_Dest_Cell_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_gbl_get_datasets, sqa_FMM_Dest_Cell,
+                    sql_gbl_get_datasets, sqa_fmm_dest_cell,
                     ref src_FMM_Dest_Cell_DT, ref tgt_FMM_Dest_Cell_DT, sql_gbl_get_max_id
                 );
 
@@ -4970,7 +4960,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sqa_fmm_appr_step_config.Update_FMM_Appr_Step_Config(si, tgt_FMM_Appr_Step_Config_DT, sqa);
                 sqa_fmm_models.Update_FMM_Models(si, tgt_FMM_Models_DT, sqa);
                 sqa_fmm_calc_config.Update_FMM_Calc_Config(si, tgt_FMM_Calc_Config_DT, sqa);
-                sqa_FMM_Dest_Cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa);
+                sqa_fmm_dest_cell.Update_FMM_Dest_Cell(si, tgt_FMM_Dest_Cell_DT, sqa);
                 sqa_fmm_src_cell.Update_FMM_Src_Cell(si, tgt_FMM_Src_Cell_DT, sqa);
                 sqa_fmm_model_grp_assign.Update_FMM_Model_Grp_Assign(si, tgt_FMM_Model_Grp_Assign_DT, sqa);
                 sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, tgt_FMM_Calc_Unit_Config_DT, sqa);
@@ -5278,9 +5268,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var srcActivities_sqlDataAdapter = new SqlDataAdapter();
                 // Define the select query and parameters
                 string srcActivities_selectQuery = @"
-		        	SELECT CubeID, Name
-		       		FROM Cube
-		       		WHERE IsTopLevelCube = 1";
+                    SELECT CubeID, Name
+                    FROM Cube
+                    WHERE IsTopLevelCube = 1";
                 // Create an array of SqlParameter objects
                 var srcActivities_parameters = new SqlParameter[]
                 {
@@ -5300,8 +5290,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var src_Model_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Model_ID", "0"));
             var tgt_Model_ID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_Model_ID", "0"));
             var src_Calc_IDs = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_Calc_IDs", "0"));
-            GBL_Curr_FMM_Act_ID = tgt_Act_ID;
-            GBL_Curr_FMM_Models_ID = tgt_Model_ID;
+            gbl_Curr_FMM_Act_ID = tgt_Act_ID;
+            gbl_Curr_FMM_Models_ID = tgt_Model_ID;
             BRApi.ErrorLog.LogMessage(si, "Hit Copy Calc: " + src_Cube_ID + "-" + tgt_Cube_ID);
             #region "Define Data Tables"
             var src_FMM_Calc_Config_DT = new DataTable();
@@ -5399,19 +5389,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Act_Config
-				{Where_Clause}";
+                SELECT *
+                FROM FMM_Act_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Act_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Act_Config
-				{Where_Clause}";
+                SELECT *
+                FROM FMM_Act_Config
+                {Where_Clause}";
             sqa_fmm_act_config.Fill_FMM_Act_Config_DT(si, sqa,tgt_FMM_Act_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Act_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Act_Config", "Act_ID");
+           gbl_FMM_Act_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Act_Config", "Act_ID");
         }
         private void get_FMM_Unit_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Unit_Config SQA_FMM_Unit_Config, ref DataTable src_FMM_Unit_Config_DT, ref DataTable tgt_FMM_Unit_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5419,9 +5409,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Unit_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Unit_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Unit_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
@@ -5430,7 +5420,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {Where_Clause}";
             SQA_FMM_Unit_Config.Fill_FMM_Unit_Config_DT(si, sqa,tgt_FMM_Unit_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Unit_Config", "Unit_ID");
+            gbl_FMM_Unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Unit_Config", "Unit_ID");
         }
         private void get_FMM_Acct_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Acct_Config SQA_FMM_Acct_Config, ref DataTable src_FMM_Acct_Config_DT, ref DataTable tgt_FMM_Acct_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5438,19 +5428,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Acct_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Acct_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Acct_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Acct_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Acct_Config
+                {Where_Clause}";
             SQA_FMM_Acct_Config.Fill_FMM_Acct_Config_DT(si, sqa, tgt_FMM_Acct_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Acct_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Acct_Config", "Acct_ID");
+           gbl_FMM_Acct_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Acct_Config", "Acct_ID");
         }
         private void get_FMM_Appr_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Appr_Config SQA_FMM_Appr_Config, ref DataTable src_FMM_Appr_Config_DT, ref DataTable tgt_FMM_Appr_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5458,19 +5448,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Appr_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Appr_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Appr_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Appr_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Appr_Config
+                {Where_Clause}";
             SQA_FMM_Appr_Config.Fill_FMM_Appr_Config_DT(si, sqa, tgt_FMM_Appr_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Appr_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
+           gbl_FMM_Appr_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Config", "Appr_ID");
         }
         private void get_FMM_Appr_Step_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Appr_Step_Config sqa_fmm_appr_step_config, ref DataTable src_FMM_Appr_Step_Config_DT, ref DataTable tgt_FMM_Appr_Step_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5478,19 +5468,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Appr_Step_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Appr_Step_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Appr_Step_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Appr_Step_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Appr_Step_Config
+                {Where_Clause}";
             sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, sqa, tgt_FMM_Appr_Step_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Appr_Step_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Step_Config", "Appr_Step_ID");
+           gbl_FMM_Appr_Step_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Appr_Step_Config", "Appr_Step_ID");
         }
         private void get_FMM_Reg_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Reg_Config SQA_FMM_Reg_Config, ref DataTable src_FMM_Reg_Config_DT, ref DataTable tgt_FMM_Reg_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5498,19 +5488,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Reg_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Reg_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Reg_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Reg_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Reg_Config
+                {Where_Clause}";
             SQA_FMM_Reg_Config.Fill_FMM_Reg_Config_DT(si, sqa, tgt_FMM_Reg_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Reg_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Reg_Config", "Reg_Config_ID");
+           gbl_FMM_Reg_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Reg_Config", "Reg_Config_ID");
         }
         private void get_FMM_Col_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Col_Config SQA_FMM_Col_Config, ref DataTable src_FMM_Col_Config_DT, ref DataTable tgt_FMM_Col_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5518,19 +5508,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Col_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Col_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Col_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Col_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Col_Config
+                {Where_Clause}";
             SQA_FMM_Col_Config.Fill_FMM_Col_Config_DT(si, sqa, tgt_FMM_Col_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Col_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Col_Config", "Col_ID");
+            gbl_FMM_Col_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Col_Config", "Col_ID");
         }
         private void get_FMM_Models_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Models SQA_FMM_Models, ref DataTable src_FMM_Models_DT, ref DataTable tgt_FMM_Models_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5538,19 +5528,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Models
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Models
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Models_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Models
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Models
+                {Where_Clause}";
             SQA_FMM_Models.Fill_FMM_Models_DT(si, sqa, tgt_FMM_Models_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Models_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Models", "Model_ID");
+           gbl_FMM_Models_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Models", "Model_ID");
         }
         private void get_FMM_Calc_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Config SQA_FMM_Calc_Config, ref DataTable src_FMM_Calc_Config_DT, ref DataTable tgt_FMM_Calc_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5558,39 +5548,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Calc_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Calc_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Calc_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Calc_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Calc_Config
+                {Where_Clause}";
             SQA_FMM_Calc_Config.Fill_FMM_Calc_Config_DT(si, sqa, tgt_FMM_Calc_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Calc_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Config", "Calc_ID");
+           gbl_FMM_Calc_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Config", "Calc_ID");
         }
-        private void get_FMM_Dest_Cell_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Dest_Cell SQA_FMM_Dest_Cell, ref DataTable src_FMM_Dest_Cell_DT, ref DataTable tgt_FMM_Dest_Cell_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
+        private void get_FMM_Dest_Cell_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Dest_Cell sqa_fmm_dest_cell, ref DataTable src_FMM_Dest_Cell_DT, ref DataTable tgt_FMM_Dest_Cell_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
             var sqa = new SqlDataAdapter();
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
-            var sql = $@"
-		        SELECT *
-		        FROM FMM_Dest_Cell
-		        {Where_Clause}";
+            var sql = $@"SELECT *
+                        FROM FMM_Dest_Cell
+                        {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Dest_Cell_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
-            sql = $@"
-		        SELECT *
-		        FROM FMM_Dest_Cell
-		        {Where_Clause}";
-            SQA_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, sqa, tgt_FMM_Dest_Cell_DT, sql, tgt_sqlparams);
+            sql = $@"SELECT *
+                    FROM FMM_Dest_Cell
+                    {Where_Clause}";
+            sqa_fmm_dest_cell.Fill_FMM_Dest_Cell_DT(si, sqa, tgt_FMM_Dest_Cell_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Dest_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "Dest_Cell_ID");
+           gbl_FMM_Dest_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Dest_Cell", "Dest_Cell_ID");
         }
         private void get_FMM_Src_Cell_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Src_Cell SQA_FMM_Src_Cell, ref DataTable src_FMM_Src_Cell_DT, ref DataTable tgt_FMM_Src_Cell_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5598,19 +5586,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Src_Cell
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Src_Cell
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Src_Cell_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Src_Cell
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Src_Cell
+                {Where_Clause}";
             SQA_FMM_Src_Cell.Fill_FMM_Src_Cell_DT(si, sqa, tgt_FMM_Src_Cell_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Src_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Src_Cell", "Cell_ID");
+           gbl_FMM_Src_Cell_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Src_Cell", "Cell_ID");
         }
         private void get_FMM_Model_Grps_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Model_Grps SQA_FMM_Model_Grps, ref DataTable src_FMM_Model_Grps_DT, ref DataTable tgt_FMM_Model_Grps_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5618,19 +5606,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Model_Grps
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Model_Grps
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Model_Grps_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Model_Grps
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Model_Grps
+                {Where_Clause}";
             SQA_FMM_Model_Grps.Fill_FMM_Model_Grps_DT(si, sqa,tgt_FMM_Model_Grps_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Model_Grps_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grps", "Model_Grp_ID");
+           gbl_FMM_Model_Grps_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grps", "Model_Grp_ID");
         }
         private void get_FMM_Model_Grp_Assign_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Model_Grp_Assign SQA_FMM_Model_Grp_Assign, ref DataTable src_FMM_Model_Grp_Assign_DT, ref DataTable tgt_FMM_Model_Grp_Assign_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5638,20 +5626,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Model_Grp_Assign
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Model_Grp_Assign
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Model_Grp_Assign_DT, sql, src_sqlparams);
 
             var tgt_sqa = new SqlDataAdapter();
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Model_Grp_Assign
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Model_Grp_Assign
+                {Where_Clause}";
             SQA_FMM_Model_Grp_Assign.Fill_FMM_Model_Grp_Assign_DT(si, sqa,tgt_FMM_Model_Grp_Assign_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Model_Grp_Assign_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grp_Assign", "Model_Grp_Assign_ID");
+           gbl_FMM_Model_Grp_Assign_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grp_Assign", "Model_Grp_Assign_ID");
         }
         private void get_FMM_Calc_Unit_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Unit_Config SQA_FMM_Calc_Unit_Config, ref DataTable src_FMM_Calc_Unit_Config_DT, ref DataTable tgt_FMM_Calc_Unit_Config_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5659,19 +5647,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Calc_Unit_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Calc_Unit_Config
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Calc_Unit_Config_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Calc_Unit_Config
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Calc_Unit_Config
+                {Where_Clause}";
             SQA_FMM_Calc_Unit_Config.Fill_FMM_Calc_Unit_Config_DT(si, sqa,tgt_FMM_Calc_Unit_Config_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Calc_Unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
+           gbl_FMM_Calc_Unit_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
         }
         private void get_FMM_Calc_Unit_Assign_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, SQA_FMM_Calc_Unit_Assign sqa_fmm_calc_unit_assign, ref DataTable src_FMM_Calc_Unit_Assign_DT, ref DataTable tgt_FMM_Calc_Unit_Assign_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
@@ -5679,19 +5667,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Construct WHERE clause for the source query
             var Where_Clause = Construct_Where_Clause(src_sqlparams);
             var sql = $@"
-		        SELECT *
-		        FROM FMM_Calc_Unit_Assign
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Calc_Unit_Assign
+                {Where_Clause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa,src_FMM_Calc_Unit_Assign_DT, sql, src_sqlparams);
 
             Where_Clause = Construct_Where_Clause(tgt_sqlparams);
             sql = $@"
-		        SELECT *
-		        FROM FMM_Calc_Unit_Assign
-		        {Where_Clause}";
+                SELECT *
+                FROM FMM_Calc_Unit_Assign
+                {Where_Clause}";
             sqa_fmm_calc_unit_assign.Fill_FMM_Calc_Unit_Assign_DT(si, sqa,tgt_FMM_Calc_Unit_Assign_DT, sql, tgt_sqlparams);
 
-            GBL_FMM_Calc_Unit_Assign_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Assign", "Calc_Unit_Assign_ID");
+           gbl_FMM_Calc_Unit_Assign_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Calc_Unit_Assign", "Calc_Unit_Assign_ID");
         }
         #endregion
 
@@ -5707,34 +5695,34 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // If not duplicate, add the new Activity Name and Calc_Type to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Act_ID += 1;
-                GBL_Curr_FMM_Act_ID = GBL_FMM_Act_ID;
-                DataRow newTargetRow = tgt_FMM_Act_Config_DT.NewRow();
+               gbl_FMM_Act_ID += 1;
+                gbl_Curr_FMM_Act_ID =gbl_FMM_Act_ID;
+                DataRow new_DestDataRow = tgt_FMM_Act_Config_DT.NewRow();
 
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_FMM_Act_ID;
-                newTargetRow["Name"] = src_FMM_Act_Config_Row.Field<string>("Name") ?? string.Empty;
-                newTargetRow["Calc_Type"] = src_FMM_Act_Config_Row.Field<string>("Calc_Type") ?? string.Empty;
-                newTargetRow["Status"] = row_Status; // Set initial status as "Build"
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // Set the appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // Set the appropriate user context
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] =gbl_FMM_Act_ID;
+                new_DestDataRow["Name"] = src_FMM_Act_Config_Row.Field<string>("Name") ?? string.Empty;
+                new_DestDataRow["Calc_Type"] = src_FMM_Act_Config_Row.Field<string>("Calc_Type") ?? string.Empty;
+                new_DestDataRow["Status"] = row_Status; // Set initial status as "Build"
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // Set the appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // Set the appropriate user context
 
-                tgt_FMM_Act_Config_DT.Rows.Add(newTargetRow);
+                tgt_FMM_Act_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_FMM_Act_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_FMM_Act_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Act_Config_Row["Name"].ToString() &&
                                            row["Calc_Type"].ToString() == src_FMM_Act_Config_Row["Calc_Type"].ToString());
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Act_ID = existingRow.Field<int>("Act_ID");
-                    existingRow["Status"] = row_Status; // Update status or other fields as needed
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // Set the appropriate user context
+                    gbl_Curr_FMM_Act_ID = existing_DataRow.Field<int>("Act_ID");
+                    existing_DataRow["Status"] = row_Status; // Update status or other fields as needed
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // Set the appropriate user context
                 }
             }
         }
@@ -5743,38 +5731,38 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID units for duplicate Unit_Name
             bool isDuplicate = tgt_FMM_Unit_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_FMM_Unit_Config_Row["Name"].ToString() &&
-                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
+                            row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Unit to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Unit_ID += 1;
-                GBL_Curr_FMM_Unit_ID = GBL_FMM_Unit_ID;
-                DataRow newTargetRow = tgt_FMM_Unit_Config_DT.NewRow();
+                gbl_FMM_Unit_ID += 1;
+               gbl_Curr_FMM_Unit_ID = gbl_FMM_Unit_ID;
+                DataRow new_DestDataRow = tgt_FMM_Unit_Config_DT.NewRow();
 
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
-                newTargetRow["Unit_ID"] = GBL_FMM_Unit_ID;
-                newTargetRow["Name"] = src_FMM_Unit_Config_Row.Field<string>("Name") ?? string.Empty;
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // Set appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // Set appropriate user context
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID;
+                new_DestDataRow["Unit_ID"] = gbl_FMM_Unit_ID;
+                new_DestDataRow["Name"] = src_FMM_Unit_Config_Row.Field<string>("Name") ?? string.Empty;
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // Set appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // Set appropriate user context
 
-                tgt_FMM_Unit_Config_DT.Rows.Add(newTargetRow);
+                tgt_FMM_Unit_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_FMM_Unit_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_FMM_Unit_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Unit_Config_Row["Name"].ToString() &&
-                                           row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
+                                           row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Unit_ID = existingRow.Field<int>("Unit_ID");
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // Set appropriate user context
+                   gbl_Curr_FMM_Unit_ID = existing_DataRow.Field<int>("Unit_ID");
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // Set appropriate user context
                 }
             }
         }
@@ -5783,46 +5771,46 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID accounts for duplicate Acct_Name
             bool isDuplicate = tgt_FMM_Acct_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_FMM_Acct_Config_Row["Name"].ToString() &&
-                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                            row["Unit_ID"].ToString() == GBL_Curr_FMM_Unit_ID.ToString());
+                            row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                            row["Unit_ID"].ToString() ==gbl_Curr_FMM_Unit_ID.ToString());
 
             // If not duplicate, add the new Account to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Acct_ID += 1;
-                GBL_Curr_FMM_Acct_ID = GBL_FMM_Acct_ID;
-                DataRow newTargetRow = tgt_FMM_Acct_Config_DT.NewRow();
+               gbl_FMM_Acct_ID += 1;
+               gbl_Curr_FMM_Acct_ID =gbl_FMM_Acct_ID;
+                DataRow new_DestDataRow = tgt_FMM_Acct_Config_DT.NewRow();
 
                 // Insert values using Field<T> and handling nulls
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
-                newTargetRow["Unit_ID"] = GBL_Curr_FMM_Unit_ID;
-                newTargetRow["Acct_ID"] = GBL_FMM_Acct_ID;
-                newTargetRow["Name"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Name") ?? string.Empty; // Handle nulls
-                newTargetRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? string.Empty; // Handle nulls
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID;
+                new_DestDataRow["Unit_ID"] =gbl_Curr_FMM_Unit_ID;
+                new_DestDataRow["Acct_ID"] =gbl_FMM_Acct_ID;
+                new_DestDataRow["Name"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Name") ?? string.Empty; // Handle nulls
+                new_DestDataRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? string.Empty; // Handle nulls
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_FMM_Acct_Config_DT.Rows.Add(newTargetRow);
+                tgt_FMM_Acct_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_FMM_Acct_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_FMM_Acct_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Acct_Config_Row["Name"].ToString() &&
-                                           row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                                           row["Unit_ID"].ToString() == GBL_Curr_FMM_Unit_ID.ToString());
+                                           row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                                           row["Unit_ID"].ToString() ==gbl_Curr_FMM_Unit_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Acct_ID = existingRow.Field<int>("Acct_ID");
+                   gbl_Curr_FMM_Acct_ID = existing_DataRow.Field<int>("Acct_ID");
 
                     // Update fields, handle nulls using Field<T>
-                    existingRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? existingRow.Field<string>("Map_Logic");
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                    existing_DataRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? existing_DataRow.Field<string>("Map_Logic");
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -5832,51 +5820,51 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID register config for duplicate Register_Name
             bool isDuplicate = tgt_Reg_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_Reg_Config_Row["Name"].ToString() &&
-                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
+                            row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Register Config to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Reg_Config_ID += 1;
-                GBL_Curr_FMM_Reg_Config_ID = GBL_FMM_Reg_Config_ID;
-                DataRow newTargetRow = tgt_Reg_Config_DT.NewRow();
+               gbl_FMM_Reg_Config_ID += 1;
+               gbl_Curr_FMM_Reg_Config_ID =gbl_FMM_Reg_Config_ID;
+                DataRow new_DestDataRow = tgt_Reg_Config_DT.NewRow();
 
                 // Insert values using Field<T> and handling nulls
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
-                newTargetRow["Reg_Config_ID"] = GBL_FMM_Reg_Config_ID;
-                newTargetRow["Name"] = src_Reg_Config_Row.Field<string>("Name") ?? string.Empty; // Handle nulls
-                newTargetRow["Time_Phasing"] = src_Reg_Config_Row.Field<string>("Time_Phasing") ?? string.Empty; // Handle nulls
-                newTargetRow["Start_Dt_Src"] = src_Reg_Config_Row.Field<string>("Start_Dt_Src") ?? string.Empty; // Handle nulls
-                newTargetRow["End_Dt_Src"] = src_Reg_Config_Row.Field<string>("End_Dt_Src") ?? string.Empty; // Handle nulls
-                newTargetRow["Appr_Config"] = src_Reg_Config_Row.Field<string>("Appr_Config") ?? string.Empty; // Handle nulls
-                newTargetRow["Status"] = row_Status; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // Set appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // Set appropriate user context
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID;
+                new_DestDataRow["Reg_Config_ID"] =gbl_FMM_Reg_Config_ID;
+                new_DestDataRow["Name"] = src_Reg_Config_Row.Field<string>("Name") ?? string.Empty; // Handle nulls
+                new_DestDataRow["Time_Phasing"] = src_Reg_Config_Row.Field<string>("Time_Phasing") ?? string.Empty; // Handle nulls
+                new_DestDataRow["Start_Dt_Src"] = src_Reg_Config_Row.Field<string>("Start_Dt_Src") ?? string.Empty; // Handle nulls
+                new_DestDataRow["End_Dt_Src"] = src_Reg_Config_Row.Field<string>("End_Dt_Src") ?? string.Empty; // Handle nulls
+                new_DestDataRow["Appr_Config"] = src_Reg_Config_Row.Field<string>("Appr_Config") ?? string.Empty; // Handle nulls
+                new_DestDataRow["Status"] = row_Status; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // Set appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // Set appropriate user context
 
-                tgt_Reg_Config_DT.Rows.Add(newTargetRow);
+                tgt_Reg_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Reg_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_Reg_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_Reg_Config_Row["Name"].ToString() &&
-                                           row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
+                                           row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Reg_Config_ID = existingRow.Field<int>("Reg_Config_ID");
+                   gbl_Curr_FMM_Reg_Config_ID = existing_DataRow.Field<int>("Reg_Config_ID");
 
                     // Update fields, handle nulls using Field<T>
-                    existingRow["Time_Phasing"] = src_Reg_Config_Row.Field<string>("Time_Phasing") ?? existingRow.Field<string>("Time_Phasing");
-                    existingRow["Start_Dt_Src"] = src_Reg_Config_Row.Field<string>("Start_Dt_Src") ?? existingRow.Field<string>("Start_Dt_Src");
-                    existingRow["End_Dt_Src"] = src_Reg_Config_Row.Field<string>("End_Dt_Src") ?? existingRow.Field<string>("End_Dt_Src");
-                    existingRow["Appr_Config"] = src_Reg_Config_Row.Field<string>("Appr_Config") ?? existingRow.Field<string>("Appr_Config");
-                    existingRow["Status"] = row_Status;
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // Set appropriate user context
+                    existing_DataRow["Time_Phasing"] = src_Reg_Config_Row.Field<string>("Time_Phasing") ?? existing_DataRow.Field<string>("Time_Phasing");
+                    existing_DataRow["Start_Dt_Src"] = src_Reg_Config_Row.Field<string>("Start_Dt_Src") ?? existing_DataRow.Field<string>("Start_Dt_Src");
+                    existing_DataRow["End_Dt_Src"] = src_Reg_Config_Row.Field<string>("End_Dt_Src") ?? existing_DataRow.Field<string>("End_Dt_Src");
+                    existing_DataRow["Appr_Config"] = src_Reg_Config_Row.Field<string>("Appr_Config") ?? existing_DataRow.Field<string>("Appr_Config");
+                    existing_DataRow["Status"] = row_Status;
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // Set appropriate user context
                 }
             }
         }
@@ -5886,58 +5874,58 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID column config for duplicate Col_Name
             bool isDuplicate = tgt_Col_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_Col_Config_Row["Name"].ToString() &&
-                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                            row["Reg_Config_ID"].ToString() == GBL_Curr_FMM_Reg_Config_ID.ToString());
+                            row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                            row["Reg_Config_ID"].ToString() ==gbl_Curr_FMM_Reg_Config_ID.ToString());
 
             // If not duplicate, add the new Column Config to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Col_ID += 1;
-                GBL_Curr_FMM_Col_ID = GBL_FMM_Col_ID;
-                DataRow newTargetRow = tgt_Col_Config_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
-                newTargetRow["Reg_Config_ID"] = GBL_Curr_FMM_Reg_Config_ID;
-                newTargetRow["Col_ID"] = GBL_FMM_Col_ID;
-                newTargetRow["Name"] = src_Col_Config_Row.Field<string>("Name") ?? string.Empty;
-                newTargetRow["InUse"] = src_Col_Config_Row.Field<bool?>("InUse") ?? false;
-                newTargetRow["Required"] = src_Col_Config_Row.Field<bool?>("Required") ?? false;
-                newTargetRow["Updates"] = src_Col_Config_Row.Field<bool?>("Updates") ?? false;
-                newTargetRow["Alias"] = src_Col_Config_Row.Field<string>("Alias") ?? string.Empty;
-                newTargetRow["Order"] = src_Col_Config_Row.Field<int?>("Order") ?? 0;
-                newTargetRow["Default"] = src_Col_Config_Row.Field<string>("Default") ?? string.Empty;
-                newTargetRow["Param"] = src_Col_Config_Row.Field<string>("Param") ?? string.Empty;
-                newTargetRow["Format"] = src_Col_Config_Row.Field<string>("Format") ?? string.Empty;
-                newTargetRow["Status"] = row_Status; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+                gbl_FMM_Col_ID += 1;
+               gbl_Curr_FMM_Col_ID = gbl_FMM_Col_ID;
+                DataRow new_DestDataRow = tgt_Col_Config_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID;
+                new_DestDataRow["Reg_Config_ID"] =gbl_Curr_FMM_Reg_Config_ID;
+                new_DestDataRow["Col_ID"] = gbl_FMM_Col_ID;
+                new_DestDataRow["Name"] = src_Col_Config_Row.Field<string>("Name") ?? string.Empty;
+                new_DestDataRow["InUse"] = src_Col_Config_Row.Field<bool?>("InUse") ?? false;
+                new_DestDataRow["Required"] = src_Col_Config_Row.Field<bool?>("Required") ?? false;
+                new_DestDataRow["Updates"] = src_Col_Config_Row.Field<bool?>("Updates") ?? false;
+                new_DestDataRow["Alias"] = src_Col_Config_Row.Field<string>("Alias") ?? string.Empty;
+                new_DestDataRow["Order"] = src_Col_Config_Row.Field<int?>("Order") ?? 0;
+                new_DestDataRow["Default"] = src_Col_Config_Row.Field<string>("Default") ?? string.Empty;
+                new_DestDataRow["Param"] = src_Col_Config_Row.Field<string>("Param") ?? string.Empty;
+                new_DestDataRow["Format"] = src_Col_Config_Row.Field<string>("Format") ?? string.Empty;
+                new_DestDataRow["Status"] = row_Status; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_Col_Config_DT.Rows.Add(newTargetRow);
+                tgt_Col_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Col_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_Col_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_Col_Config_Row["Name"].ToString() &&
-                                    row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                                    row["Reg_Config_ID"].ToString() == GBL_Curr_FMM_Reg_Config_ID.ToString());
+                                    row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                                    row["Reg_Config_ID"].ToString() ==gbl_Curr_FMM_Reg_Config_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Col_ID = existingRow.Field<int>("Col_ID");
-                    existingRow["InUse"] = src_Col_Config_Row.Field<bool?>("InUse") ?? false;
-                    existingRow["Required"] = src_Col_Config_Row.Field<bool?>("Required") ?? false;
-                    existingRow["Updates"] = src_Col_Config_Row.Field<bool?>("Updates") ?? false;
-                    existingRow["Alias"] = src_Col_Config_Row.Field<string>("Alias") ?? string.Empty;
-                    existingRow["Order"] = src_Col_Config_Row.Field<int?>("Order") ?? 0;
-                    existingRow["Default"] = src_Col_Config_Row.Field<string>("Default") ?? string.Empty;
-                    existingRow["Param"] = src_Col_Config_Row.Field<string>("Param") ?? string.Empty;
-                    existingRow["Format"] = src_Col_Config_Row.Field<string>("Format") ?? string.Empty;
-                    existingRow["Status"] = row_Status; // Set initial status as appropriate
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                   gbl_Curr_FMM_Col_ID = existing_DataRow.Field<int>("Col_ID");
+                    existing_DataRow["InUse"] = src_Col_Config_Row.Field<bool?>("InUse") ?? false;
+                    existing_DataRow["Required"] = src_Col_Config_Row.Field<bool?>("Required") ?? false;
+                    existing_DataRow["Updates"] = src_Col_Config_Row.Field<bool?>("Updates") ?? false;
+                    existing_DataRow["Alias"] = src_Col_Config_Row.Field<string>("Alias") ?? string.Empty;
+                    existing_DataRow["Order"] = src_Col_Config_Row.Field<int?>("Order") ?? 0;
+                    existing_DataRow["Default"] = src_Col_Config_Row.Field<string>("Default") ?? string.Empty;
+                    existing_DataRow["Param"] = src_Col_Config_Row.Field<string>("Param") ?? string.Empty;
+                    existing_DataRow["Format"] = src_Col_Config_Row.Field<string>("Format") ?? string.Empty;
+                    existing_DataRow["Status"] = row_Status; // Set initial status as appropriate
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -5948,39 +5936,39 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID approvals for duplicate Appr_Name
             bool isDuplicate = tgt_FMM_Appr_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_FMM_Appr_Config_Row["Name"].ToString() &&
-                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
+                            row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Approval to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Appr_ID += 1;
-                GBL_Curr_FMM_Appr_ID = GBL_FMM_Appr_ID;
-                DataRow newTargetRow = tgt_FMM_Appr_Config_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
-                newTargetRow["Appr_ID"] = GBL_FMM_Appr_ID;
-                newTargetRow["Name"] = src_FMM_Appr_Config_Row.Field<string>("Name") ?? string.Empty;
-                newTargetRow["Status"] = row_Status; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+               gbl_FMM_Appr_ID += 1;
+               gbl_Curr_FMM_Appr_ID =gbl_FMM_Appr_ID;
+                DataRow new_DestDataRow = tgt_FMM_Appr_Config_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID;
+                new_DestDataRow["Appr_ID"] =gbl_FMM_Appr_ID;
+                new_DestDataRow["Name"] = src_FMM_Appr_Config_Row.Field<string>("Name") ?? string.Empty;
+                new_DestDataRow["Status"] = row_Status; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_FMM_Appr_Config_DT.Rows.Add(newTargetRow);
+                tgt_FMM_Appr_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_FMM_Appr_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_FMM_Appr_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_FMM_Appr_Config_Row["Name"].ToString() &&
-                                           row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
+                                           row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Appr_ID = existingRow.Field<int>("Appr_ID");
-                    existingRow["Status"] = row_Status; // Update status or other fields as needed
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                   gbl_Curr_FMM_Appr_ID = existing_DataRow.Field<int>("Appr_ID");
+                    existing_DataRow["Status"] = row_Status; // Update status or other fields as needed
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -5991,60 +5979,60 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             bool isDuplicate = tgt_FMM_Appr_Step_Config_DT.AsEnumerable()
                 .Any(row => row["Step_Num"].ToString() == src_FMM_Appr_Step_Config_Row["Step_Num"].ToString() &&
                             row["WFProfile_Step"].ToString() == src_FMM_Appr_Step_Config_Row["WFProfile_Step"].ToString() &&
-                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                            row["Appr_ID"].ToString() == GBL_Curr_FMM_Appr_ID.ToString());
+                            row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                            row["Appr_ID"].ToString() ==gbl_Curr_FMM_Appr_ID.ToString());
 
             // If not duplicate, add the new Approval Step to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Appr_Step_ID += 1;
-                GBL_Curr_FMM_Appr_Step_ID = GBL_FMM_Appr_Step_ID;
-                DataRow newTargetRow = tgt_FMM_Appr_Step_Config_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_FMM_Act_ID;
-                newTargetRow["Appr_ID"] = GBL_FMM_Appr_ID;
-                newTargetRow["Appr_Step_ID"] = GBL_FMM_Appr_Step_ID;
-                newTargetRow["Step_Num"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Step_Num") ?? 0;
-                newTargetRow["WFProfile_Step"] = src_FMM_Appr_Step_Config_Row.Field<Guid?>("WFProfile_Step") ?? Guid.Empty;
-                newTargetRow["User_Group"] = src_FMM_Appr_Step_Config_Row.Field<string>("User_Group") ?? string.Empty;
-                newTargetRow["Logic"] = src_FMM_Appr_Step_Config_Row.Field<string>("Logic") ?? string.Empty;
-                newTargetRow["Item"] = src_FMM_Appr_Step_Config_Row.Field<string>("Item") ?? string.Empty;
-                newTargetRow["Level"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Level") ?? 0;
-                newTargetRow["Appr_Config"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Appr_Config") ?? 0;
-                newTargetRow["Init_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Init_Status") ?? string.Empty;
-                newTargetRow["Appr_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Status") ?? string.Empty;
-                newTargetRow["Rej_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Rej_Status") ?? string.Empty;
-                newTargetRow["Status"] = row_Status; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+               gbl_FMM_Appr_Step_ID += 1;
+               gbl_Curr_FMM_Appr_Step_ID =gbl_FMM_Appr_Step_ID;
+                DataRow new_DestDataRow = tgt_FMM_Appr_Step_Config_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] =gbl_FMM_Act_ID;
+                new_DestDataRow["Appr_ID"] =gbl_FMM_Appr_ID;
+                new_DestDataRow["Appr_Step_ID"] =gbl_FMM_Appr_Step_ID;
+                new_DestDataRow["Step_Num"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Step_Num") ?? 0;
+                new_DestDataRow["WFProfile_Step"] = src_FMM_Appr_Step_Config_Row.Field<Guid?>("WFProfile_Step") ?? Guid.Empty;
+                new_DestDataRow["User_Group"] = src_FMM_Appr_Step_Config_Row.Field<string>("User_Group") ?? string.Empty;
+                new_DestDataRow["Logic"] = src_FMM_Appr_Step_Config_Row.Field<string>("Logic") ?? string.Empty;
+                new_DestDataRow["Item"] = src_FMM_Appr_Step_Config_Row.Field<string>("Item") ?? string.Empty;
+                new_DestDataRow["Level"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Level") ?? 0;
+                new_DestDataRow["Appr_Config"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Appr_Config") ?? 0;
+                new_DestDataRow["Init_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Init_Status") ?? string.Empty;
+                new_DestDataRow["Appr_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Status") ?? string.Empty;
+                new_DestDataRow["Rej_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Rej_Status") ?? string.Empty;
+                new_DestDataRow["Status"] = row_Status; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_FMM_Appr_Step_Config_DT.Rows.Add(newTargetRow);
+                tgt_FMM_Appr_Step_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_FMM_Appr_Step_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_FMM_Appr_Step_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Step_Num"].ToString() == src_FMM_Appr_Step_Config_Row["Step_Num"].ToString() &&
                                            row["WFProfile_Step"].ToString() == src_FMM_Appr_Step_Config_Row["WFProfile_Step"].ToString() &&
-                                           row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                                           row["Appr_ID"].ToString() == GBL_Curr_FMM_Appr_ID.ToString());
+                                           row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                                           row["Appr_ID"].ToString() ==gbl_Curr_FMM_Appr_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Appr_Step_ID = existingRow.Field<int>("Appr_Step_ID");
-                    existingRow["User_Group"] = src_FMM_Appr_Step_Config_Row.Field<string>("User_Group") ?? string.Empty;
-                    existingRow["Logic"] = src_FMM_Appr_Step_Config_Row.Field<string>("Logic") ?? string.Empty;
-                    existingRow["Item"] = src_FMM_Appr_Step_Config_Row.Field<string>("Item") ?? string.Empty;
-                    existingRow["Level"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Level") ?? 0;
-                    existingRow["Appr_Config"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Appr_Config") ?? 0;
-                    existingRow["Init_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Init_Status") ?? string.Empty;
-                    existingRow["Appr_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Status") ?? string.Empty;
-                    existingRow["Rej_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Rej_Status") ?? string.Empty;
-                    existingRow["Status"] = row_Status; // Set initial status as appropriate
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                   gbl_Curr_FMM_Appr_Step_ID = existing_DataRow.Field<int>("Appr_Step_ID");
+                    existing_DataRow["User_Group"] = src_FMM_Appr_Step_Config_Row.Field<string>("User_Group") ?? string.Empty;
+                    existing_DataRow["Logic"] = src_FMM_Appr_Step_Config_Row.Field<string>("Logic") ?? string.Empty;
+                    existing_DataRow["Item"] = src_FMM_Appr_Step_Config_Row.Field<string>("Item") ?? string.Empty;
+                    existing_DataRow["Level"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Level") ?? 0;
+                    existing_DataRow["Appr_Config"] = src_FMM_Appr_Step_Config_Row.Field<int?>("Appr_Config") ?? 0;
+                    existing_DataRow["Init_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Init_Status") ?? string.Empty;
+                    existing_DataRow["Appr_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Appr_Status") ?? string.Empty;
+                    existing_DataRow["Rej_Status"] = src_FMM_Appr_Step_Config_Row.Field<string>("Rej_Status") ?? string.Empty;
+                    existing_DataRow["Status"] = row_Status; // Set initial status as appropriate
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -6054,39 +6042,39 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID model config for duplicate Model_Name
             bool isDuplicate = tgt_Model_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_Model_Config_Row["Name"].ToString() &&
-                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
+                            row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString());
 
             // If not duplicate, add the new Model Config to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Models_ID += 1;
-                GBL_Curr_FMM_Models_ID = GBL_FMM_Models_ID;
-                DataRow newTargetRow = tgt_Model_Config_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
-                newTargetRow["Model_ID"] = GBL_FMM_Models_ID;
-                newTargetRow["Name"] = src_Model_Config_Row.Field<string>("Name") ?? string.Empty;
-                newTargetRow["Status"] = row_Status; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+               gbl_FMM_Models_ID += 1;
+                gbl_Curr_FMM_Models_ID =gbl_FMM_Models_ID;
+                DataRow new_DestDataRow = tgt_Model_Config_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID;
+                new_DestDataRow["Model_ID"] =gbl_FMM_Models_ID;
+                new_DestDataRow["Name"] = src_Model_Config_Row.Field<string>("Name") ?? string.Empty;
+                new_DestDataRow["Status"] = row_Status; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_Model_Config_DT.Rows.Add(newTargetRow);
+                tgt_Model_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Model_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_Model_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_Model_Config_Row["Name"].ToString() &&
-                                           row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString());
+                                           row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Models_ID = existingRow.Field<int>("Model_ID");
-                    existingRow["Status"] = row_Status; // Update status or other fields as needed
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                    gbl_Curr_FMM_Models_ID = existing_DataRow.Field<int>("Model_ID");
+                    existing_DataRow["Status"] = row_Status; // Update status or other fields as needed
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -6096,79 +6084,79 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // Check the target Cube_ID calculation config for duplicate Calc_Name and Calc_Type
             bool isDuplicate = tgt_Calc_Config_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_Calc_Config_Row["Name"].ToString() &&
-                            row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                            row["Model_ID"].ToString() == GBL_Curr_FMM_Models_ID.ToString());
+                            row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                            row["Model_ID"].ToString() == gbl_Curr_FMM_Models_ID.ToString());
 
             // If not duplicate, add the new Calculation Config to the target DataTable
             if (runType == "Model Calc Copy" || !isDuplicate)
             {
-                GBL_FMM_Calc_ID += 1;
-                GBL_Curr_FMM_Calc_ID = GBL_FMM_Calc_ID;
+               gbl_FMM_Calc_ID += 1;
+               gbl_Curr_FMM_Calc_ID =gbl_FMM_Calc_ID;
 
-                DataRow newTargetRow = tgt_Calc_Config_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
-                newTargetRow["Model_ID"] = GBL_Curr_FMM_Models_ID;
-                newTargetRow["Calc_ID"] = GBL_FMM_Calc_ID;
+                DataRow new_DestDataRow = tgt_Calc_Config_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID;
+                new_DestDataRow["Model_ID"] = gbl_Curr_FMM_Models_ID;
+                new_DestDataRow["Calc_ID"] =gbl_FMM_Calc_ID;
                 if (runType == "Model Calc Copy")
                 {
                     // Get the name from the source row
                     string calcName = src_Calc_Config_Row.Field<string>("Name") ?? string.Empty;
 
                     // Append " - Copy" to the name
-                    newTargetRow["Name"] = calcName + " - Copy";
+                    new_DestDataRow["Name"] = calcName + " - Copy";
                 }
                 else
                 {
                     // If runType is not "Model Calc Copy", assign the name without modification
-                    newTargetRow["Name"] = src_Calc_Config_Row.Field<string>("Name") ?? string.Empty;
+                    new_DestDataRow["Name"] = src_Calc_Config_Row.Field<string>("Name") ?? string.Empty;
                 }
-                newTargetRow["Sequence"] = src_Calc_Config_Row.Field<int?>("Sequence") ?? 0;
-                newTargetRow["Calc_Condition"] = src_Calc_Config_Row.Field<string>("Calc_Condition") ?? string.Empty;
-                newTargetRow["Calc_Explanation"] = src_Calc_Config_Row.Field<string>("Calc_Explanation") ?? string.Empty;
-                newTargetRow["Balanced_Buffer"] = src_Calc_Config_Row.Field<string>("Balanced_Buffer") ?? string.Empty;
-                newTargetRow["bal_buffer_calc"] = src_Calc_Config_Row.Field<string>("bal_buffer_calc") ?? string.Empty;
-                newTargetRow["Unbal_Calc"] = src_Calc_Config_Row.Field<string>("Unbal_Calc") ?? string.Empty;
-                newTargetRow["Table_Calc_SQL_Logic"] = src_Calc_Config_Row.Field<string>("Table_Calc_SQL_Logic") ?? string.Empty;
-                newTargetRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
-                newTargetRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
-                newTargetRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
-                newTargetRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
-                newTargetRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
-                newTargetRow["Status"] = row_Status;
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Sequence"] = src_Calc_Config_Row.Field<int?>("Sequence") ?? 0;
+                new_DestDataRow["Calc_Condition"] = src_Calc_Config_Row.Field<string>("Calc_Condition") ?? string.Empty;
+                new_DestDataRow["Calc_Explanation"] = src_Calc_Config_Row.Field<string>("Calc_Explanation") ?? string.Empty;
+                new_DestDataRow["Balanced_Buffer"] = src_Calc_Config_Row.Field<string>("Balanced_Buffer") ?? string.Empty;
+                new_DestDataRow["bal_buffer_calc"] = src_Calc_Config_Row.Field<string>("bal_buffer_calc") ?? string.Empty;
+                new_DestDataRow["Unbal_Calc"] = src_Calc_Config_Row.Field<string>("Unbal_Calc") ?? string.Empty;
+                new_DestDataRow["Table_Calc_SQL_Logic"] = src_Calc_Config_Row.Field<string>("Table_Calc_SQL_Logic") ?? string.Empty;
+                new_DestDataRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
+                new_DestDataRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
+                new_DestDataRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
+                new_DestDataRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
+                new_DestDataRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
+                new_DestDataRow["Status"] = row_Status;
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_Calc_Config_DT.Rows.Add(newTargetRow);
+                tgt_Calc_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Calc_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_Calc_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Name"].ToString() == src_Calc_Config_Row["Name"].ToString() &&
-                                           row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                                           row["Model_ID"].ToString() == GBL_Curr_FMM_Models_ID.ToString());
+                                           row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                                           row["Model_ID"].ToString() == gbl_Curr_FMM_Models_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Calc_ID = existingRow.Field<int>("Calc_ID");
-                    existingRow["Status"] = row_Status;
-                    existingRow["Sequence"] = src_Calc_Config_Row.Field<int?>("Sequence") ?? 0;
-                    existingRow["Calc_Condition"] = src_Calc_Config_Row.Field<string>("Calc_Condition") ?? string.Empty;
-                    existingRow["Calc_Explanation"] = src_Calc_Config_Row.Field<string>("Calc_Explanation") ?? string.Empty;
-                    existingRow["Balanced_Buffer"] = src_Calc_Config_Row.Field<string>("Balanced_Buffer") ?? string.Empty;
-                    existingRow["bal_buffer_calc"] = src_Calc_Config_Row.Field<string>("bal_buffer_calc") ?? string.Empty;
-                    existingRow["Unbal_Calc"] = src_Calc_Config_Row.Field<string>("Unbal_Calc") ?? string.Empty;
-                    existingRow["Table_Calc_SQL_Logic"] = src_Calc_Config_Row.Field<string>("Table_Calc_SQL_Logic") ?? string.Empty;
-                    existingRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
-                    existingRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
-                    existingRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
-                    existingRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
-                    existingRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                   gbl_Curr_FMM_Calc_ID = existing_DataRow.Field<int>("Calc_ID");
+                    existing_DataRow["Status"] = row_Status;
+                    existing_DataRow["Sequence"] = src_Calc_Config_Row.Field<int?>("Sequence") ?? 0;
+                    existing_DataRow["Calc_Condition"] = src_Calc_Config_Row.Field<string>("Calc_Condition") ?? string.Empty;
+                    existing_DataRow["Calc_Explanation"] = src_Calc_Config_Row.Field<string>("Calc_Explanation") ?? string.Empty;
+                    existing_DataRow["Balanced_Buffer"] = src_Calc_Config_Row.Field<string>("Balanced_Buffer") ?? string.Empty;
+                    existing_DataRow["bal_buffer_calc"] = src_Calc_Config_Row.Field<string>("bal_buffer_calc") ?? string.Empty;
+                    existing_DataRow["Unbal_Calc"] = src_Calc_Config_Row.Field<string>("Unbal_Calc") ?? string.Empty;
+                    existing_DataRow["Table_Calc_SQL_Logic"] = src_Calc_Config_Row.Field<string>("Table_Calc_SQL_Logic") ?? string.Empty;
+                    existing_DataRow["Time_Phasing"] = src_Calc_Config_Row.Field<string>("Time_Phasing") ?? string.Empty;
+                    existing_DataRow["Input_Frequency"] = src_Calc_Config_Row.Field<string>("Input_Frequency") ?? string.Empty;
+                    existing_DataRow["MultiDim_Alloc"] = src_Calc_Config_Row.Field<bool?>("MultiDim_Alloc") ?? false;
+                    existing_DataRow["BR_Calc"] = src_Calc_Config_Row.Field<bool?>("BR_Calc") ?? false;
+                    existing_DataRow["BR_Calc_Name"] = src_Calc_Config_Row.Field<string>("BR_Calc_Name") ?? string.Empty;
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -6176,248 +6164,248 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             // Check the target Cube_ID destination cell config for duplicate Cell_Name and Cell_Type
             bool isDuplicate = tgt_Cell_Config_DT.AsEnumerable()
-                .Any(row => row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                            row["Model_ID"].ToString() == GBL_Curr_FMM_Models_ID.ToString() &&
-                            row["Calc_ID"].ToString() == GBL_Curr_FMM_Calc_ID.ToString());
+                .Any(row => row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                            row["Model_ID"].ToString() == gbl_Curr_FMM_Models_ID.ToString() &&
+                            row["Calc_ID"].ToString() ==gbl_Curr_FMM_Calc_ID.ToString());
 
             // If not duplicate, add the new Destination Cell Config to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Dest_Cell_ID += 1;
-                GBL_Curr_FMM_Dest_Cell_ID = GBL_FMM_Dest_Cell_ID;
+               gbl_FMM_Dest_Cell_ID += 1;
+               gbl_Curr_FMM_Dest_Cell_ID =gbl_FMM_Dest_Cell_ID;
 
-                DataRow newTargetRow = tgt_Cell_Config_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID; // Correct Act_ID assignment
-                newTargetRow["Model_ID"] = GBL_Curr_FMM_Models_ID;
-                newTargetRow["Calc_ID"] = GBL_Curr_FMM_Calc_ID;
-                newTargetRow["Dest_Cell_ID"] = GBL_FMM_Dest_Cell_ID;
+                DataRow new_DestDataRow = tgt_Cell_Config_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID; // Correct Act_ID assignment
+                new_DestDataRow["Model_ID"] = gbl_Curr_FMM_Models_ID;
+                new_DestDataRow["Calc_ID"] =gbl_Curr_FMM_Calc_ID;
+                new_DestDataRow["Dest_Cell_ID"] =gbl_FMM_Dest_Cell_ID;
 
                 // Handle nullable fields
-                newTargetRow["Location"] = src_Cell_Config_Row.Field<string>("Location") ?? string.Empty;
-                newTargetRow["Calc_Plan_Units"] = src_Cell_Config_Row.Field<string>("Calc_Plan_Units") ?? string.Empty;
-                newTargetRow["Acct"] = src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
-                newTargetRow["View"] = src_Cell_Config_Row.Field<string>("View") ?? string.Empty;
-                newTargetRow["Origin"] = src_Cell_Config_Row.Field<string>("Origin") ?? string.Empty;
-                newTargetRow["IC"] = src_Cell_Config_Row.Field<string>("IC") ?? string.Empty;
-                newTargetRow["Flow"] = src_Cell_Config_Row.Field<string>("Flow") ?? string.Empty;
-                newTargetRow["UD1"] = src_Cell_Config_Row.Field<string>("UD1") ?? string.Empty;
-                newTargetRow["UD2"] = src_Cell_Config_Row.Field<string>("UD2") ?? string.Empty;
-                newTargetRow["UD3"] = src_Cell_Config_Row.Field<string>("UD3") ?? string.Empty;
-                newTargetRow["UD4"] = src_Cell_Config_Row.Field<string>("UD4") ?? string.Empty;
-                newTargetRow["UD5"] = src_Cell_Config_Row.Field<string>("UD5") ?? string.Empty;
-                newTargetRow["UD6"] = src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
-                newTargetRow["UD7"] = src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
-                newTargetRow["UD8"] = src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                newTargetRow["Time_Filter"] = src_Cell_Config_Row.Field<string>("Time_Filter") ?? string.Empty;
-                newTargetRow["Acct_Filter"] = src_Cell_Config_Row.Field<string>("Acct_Filter") ?? string.Empty;
-                newTargetRow["Origin_Filter"] = src_Cell_Config_Row.Field<string>("Origin_Filter") ?? string.Empty;
-                newTargetRow["IC_Filter"] = src_Cell_Config_Row.Field<string>("IC_Filter") ?? string.Empty;
-                newTargetRow["Flow_Filter"] = src_Cell_Config_Row.Field<string>("Flow_Filter") ?? string.Empty;
-                newTargetRow["UD1_Filter"] = src_Cell_Config_Row.Field<string>("UD1_Filter") ?? string.Empty;
-                newTargetRow["UD2_Filter"] = src_Cell_Config_Row.Field<string>("UD2_Filter") ?? string.Empty;
-                newTargetRow["UD3_Filter"] = src_Cell_Config_Row.Field<string>("UD3_Filter") ?? string.Empty;
-                newTargetRow["UD4_Filter"] = src_Cell_Config_Row.Field<string>("UD4_Filter") ?? string.Empty;
-                newTargetRow["UD5_Filter"] = src_Cell_Config_Row.Field<string>("UD5_Filter") ?? string.Empty;
-                newTargetRow["UD6_Filter"] = src_Cell_Config_Row.Field<string>("UD6_Filter") ?? string.Empty;
-                newTargetRow["UD7_Filter"] = src_Cell_Config_Row.Field<string>("UD7_Filter") ?? string.Empty;
-                newTargetRow["UD8_Filter"] = src_Cell_Config_Row.Field<string>("UD8_Filter") ?? string.Empty;
-                newTargetRow["Conditional_Filter"] = src_Cell_Config_Row.Field<string>("Conditional_Filter") ?? string.Empty;
-                newTargetRow["Curr_Cube_Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Curr_Cube_Buffer_Filter") ?? string.Empty;
-                newTargetRow["Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Buffer_Filter") ?? string.Empty;
-                newTargetRow["Dest_Cell_Logic"] = src_Cell_Config_Row.Field<string>("Dest_Cell_Logic") ?? string.Empty;
-                newTargetRow["SQL_Logic"] = src_Cell_Config_Row.Field<string>("SQL_Logic") ?? string.Empty;
+                new_DestDataRow["Location"] = src_Cell_Config_Row.Field<string>("Location") ?? string.Empty;
+                new_DestDataRow["Calc_Plan_Units"] = src_Cell_Config_Row.Field<string>("Calc_Plan_Units") ?? string.Empty;
+                new_DestDataRow["Acct"] = src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
+                new_DestDataRow["View"] = src_Cell_Config_Row.Field<string>("View") ?? string.Empty;
+                new_DestDataRow["Origin"] = src_Cell_Config_Row.Field<string>("Origin") ?? string.Empty;
+                new_DestDataRow["IC"] = src_Cell_Config_Row.Field<string>("IC") ?? string.Empty;
+                new_DestDataRow["Flow"] = src_Cell_Config_Row.Field<string>("Flow") ?? string.Empty;
+                new_DestDataRow["UD1"] = src_Cell_Config_Row.Field<string>("UD1") ?? string.Empty;
+                new_DestDataRow["UD2"] = src_Cell_Config_Row.Field<string>("UD2") ?? string.Empty;
+                new_DestDataRow["UD3"] = src_Cell_Config_Row.Field<string>("UD3") ?? string.Empty;
+                new_DestDataRow["UD4"] = src_Cell_Config_Row.Field<string>("UD4") ?? string.Empty;
+                new_DestDataRow["UD5"] = src_Cell_Config_Row.Field<string>("UD5") ?? string.Empty;
+                new_DestDataRow["UD6"] = src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
+                new_DestDataRow["UD7"] = src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
+                new_DestDataRow["UD8"] = src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
+                new_DestDataRow["Time_Filter"] = src_Cell_Config_Row.Field<string>("Time_Filter") ?? string.Empty;
+                new_DestDataRow["Acct_Filter"] = src_Cell_Config_Row.Field<string>("Acct_Filter") ?? string.Empty;
+                new_DestDataRow["Origin_Filter"] = src_Cell_Config_Row.Field<string>("Origin_Filter") ?? string.Empty;
+                new_DestDataRow["IC_Filter"] = src_Cell_Config_Row.Field<string>("IC_Filter") ?? string.Empty;
+                new_DestDataRow["Flow_Filter"] = src_Cell_Config_Row.Field<string>("Flow_Filter") ?? string.Empty;
+                new_DestDataRow["UD1_Filter"] = src_Cell_Config_Row.Field<string>("UD1_Filter") ?? string.Empty;
+                new_DestDataRow["UD2_Filter"] = src_Cell_Config_Row.Field<string>("UD2_Filter") ?? string.Empty;
+                new_DestDataRow["UD3_Filter"] = src_Cell_Config_Row.Field<string>("UD3_Filter") ?? string.Empty;
+                new_DestDataRow["UD4_Filter"] = src_Cell_Config_Row.Field<string>("UD4_Filter") ?? string.Empty;
+                new_DestDataRow["UD5_Filter"] = src_Cell_Config_Row.Field<string>("UD5_Filter") ?? string.Empty;
+                new_DestDataRow["UD6_Filter"] = src_Cell_Config_Row.Field<string>("UD6_Filter") ?? string.Empty;
+                new_DestDataRow["UD7_Filter"] = src_Cell_Config_Row.Field<string>("UD7_Filter") ?? string.Empty;
+                new_DestDataRow["UD8_Filter"] = src_Cell_Config_Row.Field<string>("UD8_Filter") ?? string.Empty;
+                new_DestDataRow["Conditional_Filter"] = src_Cell_Config_Row.Field<string>("Conditional_Filter") ?? string.Empty;
+                new_DestDataRow["Curr_Cube_Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Curr_Cube_Buffer_Filter") ?? string.Empty;
+                new_DestDataRow["Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Buffer_Filter") ?? string.Empty;
+                new_DestDataRow["Dest_Cell_Logic"] = src_Cell_Config_Row.Field<string>("Dest_Cell_Logic") ?? string.Empty;
+                new_DestDataRow["SQL_Logic"] = src_Cell_Config_Row.Field<string>("SQL_Logic") ?? string.Empty;
 
-                tgt_Cell_Config_DT.Rows.Add(newTargetRow);
+                tgt_Cell_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Cell_Config_DT.AsEnumerable()
-                    .FirstOrDefault(row => row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                                            row["Model_ID"].ToString() == GBL_Curr_FMM_Models_ID.ToString() &&
-                                           row["Calc_ID"].ToString() == GBL_Curr_FMM_Calc_ID.ToString());
+                DataRow existing_DataRow = tgt_Cell_Config_DT.AsEnumerable()
+                    .FirstOrDefault(row => row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                                            row["Model_ID"].ToString() == gbl_Curr_FMM_Models_ID.ToString() &&
+                                           row["Calc_ID"].ToString() ==gbl_Curr_FMM_Calc_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Dest_Cell_ID = existingRow.Field<int>("Dest_Cell_ID");
-                    existingRow["Location"] = src_Cell_Config_Row.Field<string>("Location") ?? string.Empty;
-                    existingRow["Calc_Plan_Units"] = src_Cell_Config_Row.Field<string>("Calc_Plan_Units") ?? string.Empty;
-                    existingRow["Acct"] = src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
-                    existingRow["View"] = src_Cell_Config_Row.Field<string>("View") ?? string.Empty;
-                    existingRow["Origin"] = src_Cell_Config_Row.Field<string>("Origin") ?? string.Empty;
-                    existingRow["IC"] = src_Cell_Config_Row.Field<string>("IC") ?? string.Empty;
-                    existingRow["Flow"] = src_Cell_Config_Row.Field<string>("Flow") ?? string.Empty;
-                    existingRow["UD1"] = src_Cell_Config_Row.Field<string>("UD1") ?? string.Empty;
-                    existingRow["UD2"] = src_Cell_Config_Row.Field<string>("UD2") ?? string.Empty;
-                    existingRow["UD3"] = src_Cell_Config_Row.Field<string>("UD3") ?? string.Empty;
-                    existingRow["UD4"] = src_Cell_Config_Row.Field<string>("UD4") ?? string.Empty;
-                    existingRow["UD5"] = src_Cell_Config_Row.Field<string>("UD5") ?? string.Empty;
-                    existingRow["UD6"] = src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
-                    existingRow["UD7"] = src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
-                    existingRow["UD8"] = src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                    existingRow["Time_Filter"] = src_Cell_Config_Row.Field<string>("Time_Filter") ?? string.Empty;
-                    existingRow["Acct_Filter"] = src_Cell_Config_Row.Field<string>("Acct_Filter") ?? string.Empty;
-                    existingRow["Origin_Filter"] = src_Cell_Config_Row.Field<string>("Origin_Filter") ?? string.Empty;
-                    existingRow["IC_Filter"] = src_Cell_Config_Row.Field<string>("IC_Filter") ?? string.Empty;
-                    existingRow["Flow_Filter"] = src_Cell_Config_Row.Field<string>("Flow_Filter") ?? string.Empty;
-                    existingRow["UD1_Filter"] = src_Cell_Config_Row.Field<string>("UD1_Filter") ?? string.Empty;
-                    existingRow["UD2_Filter"] = src_Cell_Config_Row.Field<string>("UD2_Filter") ?? string.Empty;
-                    existingRow["UD3_Filter"] = src_Cell_Config_Row.Field<string>("UD3_Filter") ?? string.Empty;
-                    existingRow["UD4_Filter"] = src_Cell_Config_Row.Field<string>("UD4_Filter") ?? string.Empty;
-                    existingRow["UD5_Filter"] = src_Cell_Config_Row.Field<string>("UD5_Filter") ?? string.Empty;
-                    existingRow["UD6_Filter"] = src_Cell_Config_Row.Field<string>("UD6_Filter") ?? string.Empty;
-                    existingRow["UD7_Filter"] = src_Cell_Config_Row.Field<string>("UD7_Filter") ?? string.Empty;
-                    existingRow["UD8_Filter"] = src_Cell_Config_Row.Field<string>("UD8_Filter") ?? string.Empty;
-                    existingRow["Conditional_Filter"] = src_Cell_Config_Row.Field<string>("Conditional_Filter") ?? string.Empty;
-                    existingRow["Curr_Cube_Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Curr_Cube_Buffer_Filter") ?? string.Empty;
-                    existingRow["Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Buffer_Filter") ?? string.Empty;
-                    existingRow["Dest_Cell_Logic"] = src_Cell_Config_Row.Field<string>("Dest_Cell_Logic") ?? string.Empty;
-                    existingRow["SQL_Logic"] = src_Cell_Config_Row.Field<string>("SQL_Logic") ?? string.Empty;
+                   gbl_Curr_FMM_Dest_Cell_ID = existing_DataRow.Field<int>("Dest_Cell_ID");
+                    existing_DataRow["Location"] = src_Cell_Config_Row.Field<string>("Location") ?? string.Empty;
+                    existing_DataRow["Calc_Plan_Units"] = src_Cell_Config_Row.Field<string>("Calc_Plan_Units") ?? string.Empty;
+                    existing_DataRow["Acct"] = src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
+                    existing_DataRow["View"] = src_Cell_Config_Row.Field<string>("View") ?? string.Empty;
+                    existing_DataRow["Origin"] = src_Cell_Config_Row.Field<string>("Origin") ?? string.Empty;
+                    existing_DataRow["IC"] = src_Cell_Config_Row.Field<string>("IC") ?? string.Empty;
+                    existing_DataRow["Flow"] = src_Cell_Config_Row.Field<string>("Flow") ?? string.Empty;
+                    existing_DataRow["UD1"] = src_Cell_Config_Row.Field<string>("UD1") ?? string.Empty;
+                    existing_DataRow["UD2"] = src_Cell_Config_Row.Field<string>("UD2") ?? string.Empty;
+                    existing_DataRow["UD3"] = src_Cell_Config_Row.Field<string>("UD3") ?? string.Empty;
+                    existing_DataRow["UD4"] = src_Cell_Config_Row.Field<string>("UD4") ?? string.Empty;
+                    existing_DataRow["UD5"] = src_Cell_Config_Row.Field<string>("UD5") ?? string.Empty;
+                    existing_DataRow["UD6"] = src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
+                    existing_DataRow["UD7"] = src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
+                    existing_DataRow["UD8"] = src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
+                    existing_DataRow["Time_Filter"] = src_Cell_Config_Row.Field<string>("Time_Filter") ?? string.Empty;
+                    existing_DataRow["Acct_Filter"] = src_Cell_Config_Row.Field<string>("Acct_Filter") ?? string.Empty;
+                    existing_DataRow["Origin_Filter"] = src_Cell_Config_Row.Field<string>("Origin_Filter") ?? string.Empty;
+                    existing_DataRow["IC_Filter"] = src_Cell_Config_Row.Field<string>("IC_Filter") ?? string.Empty;
+                    existing_DataRow["Flow_Filter"] = src_Cell_Config_Row.Field<string>("Flow_Filter") ?? string.Empty;
+                    existing_DataRow["UD1_Filter"] = src_Cell_Config_Row.Field<string>("UD1_Filter") ?? string.Empty;
+                    existing_DataRow["UD2_Filter"] = src_Cell_Config_Row.Field<string>("UD2_Filter") ?? string.Empty;
+                    existing_DataRow["UD3_Filter"] = src_Cell_Config_Row.Field<string>("UD3_Filter") ?? string.Empty;
+                    existing_DataRow["UD4_Filter"] = src_Cell_Config_Row.Field<string>("UD4_Filter") ?? string.Empty;
+                    existing_DataRow["UD5_Filter"] = src_Cell_Config_Row.Field<string>("UD5_Filter") ?? string.Empty;
+                    existing_DataRow["UD6_Filter"] = src_Cell_Config_Row.Field<string>("UD6_Filter") ?? string.Empty;
+                    existing_DataRow["UD7_Filter"] = src_Cell_Config_Row.Field<string>("UD7_Filter") ?? string.Empty;
+                    existing_DataRow["UD8_Filter"] = src_Cell_Config_Row.Field<string>("UD8_Filter") ?? string.Empty;
+                    existing_DataRow["Conditional_Filter"] = src_Cell_Config_Row.Field<string>("Conditional_Filter") ?? string.Empty;
+                    existing_DataRow["Curr_Cube_Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Curr_Cube_Buffer_Filter") ?? string.Empty;
+                    existing_DataRow["Buffer_Filter"] = src_Cell_Config_Row.Field<string>("Buffer_Filter") ?? string.Empty;
+                    existing_DataRow["Dest_Cell_Logic"] = src_Cell_Config_Row.Field<string>("Dest_Cell_Logic") ?? string.Empty;
+                    existing_DataRow["SQL_Logic"] = src_Cell_Config_Row.Field<string>("SQL_Logic") ?? string.Empty;
                 }
             }
         }
         private void Copy_Src_Cell(DataRow src_Src_Cell_Config_Row, ref DataTable tgt_Src_Cell_Config_DT, int targetCubeID, ref XFSelectionChangedTaskResult XFCopyTaskResult)
         {
-            GBL_FMM_Src_Cell_ID += 1;
-            GBL_Curr_FMM_Src_Cell_ID = GBL_FMM_Src_Cell_ID;
+           gbl_FMM_Src_Cell_ID += 1;
+           gbl_Curr_FMM_Src_Cell_ID =gbl_FMM_Src_Cell_ID;
             // Check the target Cube_ID source cell config for duplicate Src_Item and Src_Type
             bool isDuplicate = tgt_Src_Cell_Config_DT.AsEnumerable()
-                .Any(row => row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                            row["Model_ID"].ToString() == GBL_Curr_FMM_Models_ID.ToString() &&
-                            row["Calc_ID"].ToString() == GBL_Curr_FMM_Calc_ID.ToString() &&
-                            row["Cell_ID"].ToString() == GBL_Curr_FMM_Src_Cell_ID.ToString());
+                .Any(row => row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                            row["Model_ID"].ToString() == gbl_Curr_FMM_Models_ID.ToString() &&
+                            row["Calc_ID"].ToString() ==gbl_Curr_FMM_Calc_ID.ToString() &&
+                            row["Cell_ID"].ToString() ==gbl_Curr_FMM_Src_Cell_ID.ToString());
 
             // If not duplicate, add the new Source Cell Config to the target DataTable
             if (!isDuplicate)
             {
-                DataRow newTargetRow = tgt_Src_Cell_Config_DT.NewRow();
+                DataRow new_DestDataRow = tgt_Src_Cell_Config_DT.NewRow();
 
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = GBL_Curr_FMM_Act_ID;
-                newTargetRow["Model_ID"] = GBL_Curr_FMM_Models_ID;
-                newTargetRow["Calc_ID"] = GBL_Curr_FMM_Calc_ID;
-                newTargetRow["Cell_ID"] = GBL_FMM_Src_Cell_ID;
-                newTargetRow["Src_Order"] = src_Src_Cell_Config_Row.Field<int?>("Src_Order") ?? 0;
-                newTargetRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
-                newTargetRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
-                newTargetRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
-                newTargetRow["Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Math_Operator") ?? string.Empty;
-                newTargetRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
-                newTargetRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
-                newTargetRow["Scenario"] = src_Src_Cell_Config_Row.Field<string>("Scenario") ?? string.Empty;
-                newTargetRow["Time"] = src_Src_Cell_Config_Row.Field<string>("Time") ?? string.Empty;
-                newTargetRow["Origin"] = src_Src_Cell_Config_Row.Field<string>("Origin") ?? string.Empty;
-                newTargetRow["IC"] = src_Src_Cell_Config_Row.Field<string>("IC") ?? string.Empty;
-                newTargetRow["View"] = src_Src_Cell_Config_Row.Field<string>("View") ?? string.Empty;
-                newTargetRow["Src_Plan_Units"] = src_Src_Cell_Config_Row.Field<string>("Src_Plan_Units") ?? string.Empty;
-                newTargetRow["Acct"] = src_Src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
-                newTargetRow["Flow"] = src_Src_Cell_Config_Row.Field<string>("Flow") ?? string.Empty;
-                newTargetRow["UD1"] = src_Src_Cell_Config_Row.Field<string>("UD1") ?? string.Empty;
-                newTargetRow["UD2"] = src_Src_Cell_Config_Row.Field<string>("UD2") ?? string.Empty;
-                newTargetRow["UD3"] = src_Src_Cell_Config_Row.Field<string>("UD3") ?? string.Empty;
-                newTargetRow["UD4"] = src_Src_Cell_Config_Row.Field<string>("UD4") ?? string.Empty;
-                newTargetRow["UD5"] = src_Src_Cell_Config_Row.Field<string>("UD5") ?? string.Empty;
-                newTargetRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
-                newTargetRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
-                newTargetRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                newTargetRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
-                newTargetRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
-                newTargetRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
-                newTargetRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
-                newTargetRow["Unbal_Acct_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Acct_Override") ?? string.Empty;
-                newTargetRow["Unbal_Flow_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Flow_Override") ?? string.Empty;
-                newTargetRow["Unbal_UD1_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD1_Override") ?? string.Empty;
-                newTargetRow["Unbal_UD2_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD2_Override") ?? string.Empty;
-                newTargetRow["Unbal_UD3_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD3_Override") ?? string.Empty;
-                newTargetRow["Unbal_UD4_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD4_Override") ?? string.Empty;
-                newTargetRow["Unbal_UD5_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD5_Override") ?? string.Empty;
-                newTargetRow["Unbal_UD6_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD6_Override") ?? string.Empty;
-                newTargetRow["Unbal_UD7_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD7_Override") ?? string.Empty;
-                newTargetRow["Unbal_UD8_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD8_Override") ?? string.Empty;
-                newTargetRow["Unbal_Src_Cell_Buffer_Filter"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer_Filter") ?? string.Empty;
-                newTargetRow["Dyn_Calc_Script"] = src_Src_Cell_Config_Row.Field<string>("Dyn_Calc_Script") ?? string.Empty;
-                newTargetRow["Override_Value"] = src_Src_Cell_Config_Row.Field<string>("Override_Value") ?? string.Empty;
-                newTargetRow["Table_Calc_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Calc_Expression") ?? string.Empty;
-                newTargetRow["Table_Join_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Join_Expression") ?? string.Empty;
-                newTargetRow["Table_Filter_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Filter_Expression") ?? string.Empty;
-                newTargetRow["Map_Type"] = src_Src_Cell_Config_Row.Field<string>("Map_Type") ?? string.Empty;
-                newTargetRow["Map_Source"] = src_Src_Cell_Config_Row.Field<string>("Map_Source") ?? string.Empty;
-                newTargetRow["Map_Logic"] = src_Src_Cell_Config_Row.Field<string>("Map_Logic") ?? string.Empty;
-                newTargetRow["Src_SQL_Stmt"] = src_Src_Cell_Config_Row.Field<string>("Src_SQL_Stmt") ?? string.Empty;
-                newTargetRow["Use_Temp_Table"] = src_Src_Cell_Config_Row.Field<bool>("Use_Temp_Table");
-                newTargetRow["Temp_Table_Name"] = src_Src_Cell_Config_Row.Field<string>("Temp_Table_Name") ?? string.Empty;
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // Set appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // Set appropriate user context
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = gbl_Curr_FMM_Act_ID;
+                new_DestDataRow["Model_ID"] = gbl_Curr_FMM_Models_ID;
+                new_DestDataRow["Calc_ID"] =gbl_Curr_FMM_Calc_ID;
+                new_DestDataRow["Cell_ID"] =gbl_FMM_Src_Cell_ID;
+                new_DestDataRow["Src_Order"] = src_Src_Cell_Config_Row.Field<int?>("Src_Order") ?? 0;
+                new_DestDataRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
+                new_DestDataRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
+                new_DestDataRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
+                new_DestDataRow["Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Math_Operator") ?? string.Empty;
+                new_DestDataRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
+                new_DestDataRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
+                new_DestDataRow["Scenario"] = src_Src_Cell_Config_Row.Field<string>("Scenario") ?? string.Empty;
+                new_DestDataRow["Time"] = src_Src_Cell_Config_Row.Field<string>("Time") ?? string.Empty;
+                new_DestDataRow["Origin"] = src_Src_Cell_Config_Row.Field<string>("Origin") ?? string.Empty;
+                new_DestDataRow["IC"] = src_Src_Cell_Config_Row.Field<string>("IC") ?? string.Empty;
+                new_DestDataRow["View"] = src_Src_Cell_Config_Row.Field<string>("View") ?? string.Empty;
+                new_DestDataRow["Src_Plan_Units"] = src_Src_Cell_Config_Row.Field<string>("Src_Plan_Units") ?? string.Empty;
+                new_DestDataRow["Acct"] = src_Src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
+                new_DestDataRow["Flow"] = src_Src_Cell_Config_Row.Field<string>("Flow") ?? string.Empty;
+                new_DestDataRow["UD1"] = src_Src_Cell_Config_Row.Field<string>("UD1") ?? string.Empty;
+                new_DestDataRow["UD2"] = src_Src_Cell_Config_Row.Field<string>("UD2") ?? string.Empty;
+                new_DestDataRow["UD3"] = src_Src_Cell_Config_Row.Field<string>("UD3") ?? string.Empty;
+                new_DestDataRow["UD4"] = src_Src_Cell_Config_Row.Field<string>("UD4") ?? string.Empty;
+                new_DestDataRow["UD5"] = src_Src_Cell_Config_Row.Field<string>("UD5") ?? string.Empty;
+                new_DestDataRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
+                new_DestDataRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
+                new_DestDataRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
+                new_DestDataRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
+                new_DestDataRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
+                new_DestDataRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_Acct_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Acct_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_Flow_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Flow_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_UD1_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD1_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_UD2_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD2_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_UD3_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD3_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_UD4_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD4_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_UD5_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD5_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_UD6_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD6_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_UD7_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD7_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_UD8_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD8_Override") ?? string.Empty;
+                new_DestDataRow["Unbal_Src_Cell_Buffer_Filter"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer_Filter") ?? string.Empty;
+                new_DestDataRow["Dyn_Calc_Script"] = src_Src_Cell_Config_Row.Field<string>("Dyn_Calc_Script") ?? string.Empty;
+                new_DestDataRow["Override_Value"] = src_Src_Cell_Config_Row.Field<string>("Override_Value") ?? string.Empty;
+                new_DestDataRow["Table_Calc_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Calc_Expression") ?? string.Empty;
+                new_DestDataRow["Table_Join_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Join_Expression") ?? string.Empty;
+                new_DestDataRow["Table_Filter_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Filter_Expression") ?? string.Empty;
+                new_DestDataRow["Map_Type"] = src_Src_Cell_Config_Row.Field<string>("Map_Type") ?? string.Empty;
+                new_DestDataRow["Map_Source"] = src_Src_Cell_Config_Row.Field<string>("Map_Source") ?? string.Empty;
+                new_DestDataRow["Map_Logic"] = src_Src_Cell_Config_Row.Field<string>("Map_Logic") ?? string.Empty;
+                new_DestDataRow["Src_SQL_Stmt"] = src_Src_Cell_Config_Row.Field<string>("Src_SQL_Stmt") ?? string.Empty;
+                new_DestDataRow["Use_Temp_Table"] = src_Src_Cell_Config_Row.Field<bool>("Use_Temp_Table");
+                new_DestDataRow["Temp_Table_Name"] = src_Src_Cell_Config_Row.Field<string>("Temp_Table_Name") ?? string.Empty;
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // Set appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // Set appropriate user context
 
-                tgt_Src_Cell_Config_DT.Rows.Add(newTargetRow);
+                tgt_Src_Cell_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Src_Cell_Config_DT.AsEnumerable()
-                    .FirstOrDefault(row => row["Act_ID"].ToString() == GBL_Curr_FMM_Act_ID.ToString() &&
-                                           row["Model_ID"].ToString() == GBL_Curr_FMM_Models_ID.ToString() &&
-                                           row["Calc_ID"].ToString() == GBL_Curr_FMM_Calc_ID.ToString() &&
-                                           row["Cell_ID"].ToString() == GBL_Curr_FMM_Src_Cell_ID.ToString());
+                DataRow existing_DataRow = tgt_Src_Cell_Config_DT.AsEnumerable()
+                    .FirstOrDefault(row => row["Act_ID"].ToString() == gbl_Curr_FMM_Act_ID.ToString() &&
+                                           row["Model_ID"].ToString() == gbl_Curr_FMM_Models_ID.ToString() &&
+                                           row["Calc_ID"].ToString() ==gbl_Curr_FMM_Calc_ID.ToString() &&
+                                           row["Cell_ID"].ToString() ==gbl_Curr_FMM_Src_Cell_ID.ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Src_Cell_ID = Convert.ToInt32(existingRow["Cell_ID"].ToString());
+                   gbl_Curr_FMM_Src_Cell_ID = Convert.ToInt32(existing_DataRow["Cell_ID"].ToString());
                     // Update fields as necessary
-                    existingRow["Src_Order"] = src_Src_Cell_Config_Row.Field<int?>("Src_Order") ?? 0;
-                    existingRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
-                    existingRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
-                    existingRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
-                    existingRow["Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Math_Operator") ?? string.Empty;
-                    existingRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
-                    existingRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
-                    existingRow["Scenario"] = src_Src_Cell_Config_Row.Field<string>("Scenario") ?? string.Empty;
-                    existingRow["Time"] = src_Src_Cell_Config_Row.Field<string>("Time") ?? string.Empty;
-                    existingRow["Origin"] = src_Src_Cell_Config_Row.Field<string>("Origin") ?? string.Empty;
-                    existingRow["IC"] = src_Src_Cell_Config_Row.Field<string>("IC") ?? string.Empty;
-                    existingRow["View"] = src_Src_Cell_Config_Row.Field<string>("View") ?? string.Empty;
-                    existingRow["Src_Plan_Units"] = src_Src_Cell_Config_Row.Field<string>("Src_Plan_Units") ?? string.Empty;
-                    existingRow["Acct"] = src_Src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
-                    existingRow["Flow"] = src_Src_Cell_Config_Row.Field<string>("Flow") ?? string.Empty;
-                    existingRow["UD1"] = src_Src_Cell_Config_Row.Field<string>("UD1") ?? string.Empty;
-                    existingRow["UD2"] = src_Src_Cell_Config_Row.Field<string>("UD2") ?? string.Empty;
-                    existingRow["UD3"] = src_Src_Cell_Config_Row.Field<string>("UD3") ?? string.Empty;
-                    existingRow["UD4"] = src_Src_Cell_Config_Row.Field<string>("UD4") ?? string.Empty;
-                    existingRow["UD5"] = src_Src_Cell_Config_Row.Field<string>("UD5") ?? string.Empty;
-                    existingRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
-                    existingRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
-                    existingRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
-                    existingRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
-                    existingRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
-                    existingRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
-                    existingRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
-                    existingRow["Unbal_Acct_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Acct_Override") ?? string.Empty;
-                    existingRow["Unbal_Flow_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Flow_Override") ?? string.Empty;
-                    existingRow["Unbal_UD1_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD1_Override") ?? string.Empty;
-                    existingRow["Unbal_UD2_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD2_Override") ?? string.Empty;
-                    existingRow["Unbal_UD3_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD3_Override") ?? string.Empty;
-                    existingRow["Unbal_UD4_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD4_Override") ?? string.Empty;
-                    existingRow["Unbal_UD5_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD5_Override") ?? string.Empty;
-                    existingRow["Unbal_UD6_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD6_Override") ?? string.Empty;
-                    existingRow["Unbal_UD7_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD7_Override") ?? string.Empty;
-                    existingRow["Unbal_UD8_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD8_Override") ?? string.Empty;
-                    existingRow["Unbal_Src_Cell_Buffer_Filter"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer_Filter") ?? string.Empty;
-                    existingRow["Dyn_Calc_Script"] = src_Src_Cell_Config_Row.Field<string>("Dyn_Calc_Script") ?? string.Empty;
-                    existingRow["Override_Value"] = src_Src_Cell_Config_Row.Field<string>("Override_Value") ?? string.Empty;
-                    existingRow["Table_Calc_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Calc_Expression") ?? string.Empty;
-                    existingRow["Table_Join_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Join_Expression") ?? string.Empty;
-                    existingRow["Table_Filter_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Filter_Expression") ?? string.Empty;
-                    existingRow["Map_Type"] = src_Src_Cell_Config_Row.Field<string>("Map_Type") ?? string.Empty;
-                    existingRow["Map_Source"] = src_Src_Cell_Config_Row.Field<string>("Map_Source") ?? string.Empty;
-                    existingRow["Map_Logic"] = src_Src_Cell_Config_Row.Field<string>("Map_Logic") ?? string.Empty;
-                    existingRow["Src_SQL_Stmt"] = src_Src_Cell_Config_Row.Field<string>("Src_SQL_Stmt") ?? string.Empty;
-                    existingRow["Use_Temp_Table"] = src_Src_Cell_Config_Row.Field<bool>("Use_Temp_Table");
-                    existingRow["Temp_Table_Name"] = src_Src_Cell_Config_Row.Field<string>("Temp_Table_Name") ?? string.Empty;
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // Set appropriate user context
+                    existing_DataRow["Src_Order"] = src_Src_Cell_Config_Row.Field<int?>("Src_Order") ?? 0;
+                    existing_DataRow["Src_Type"] = src_Src_Cell_Config_Row.Field<string>("Src_Type") ?? string.Empty;
+                    existing_DataRow["Src_Item"] = src_Src_Cell_Config_Row.Field<string>("Src_Item") ?? string.Empty;
+                    existing_DataRow["Open_Parens"] = src_Src_Cell_Config_Row.Field<string>("Open_Parens") ?? string.Empty;
+                    existing_DataRow["Math_Operator"] = src_Src_Cell_Config_Row.Field<string>("Math_Operator") ?? string.Empty;
+                    existing_DataRow["Entity"] = src_Src_Cell_Config_Row.Field<string>("Entity") ?? string.Empty;
+                    existing_DataRow["Cons"] = src_Src_Cell_Config_Row.Field<string>("Cons") ?? string.Empty;
+                    existing_DataRow["Scenario"] = src_Src_Cell_Config_Row.Field<string>("Scenario") ?? string.Empty;
+                    existing_DataRow["Time"] = src_Src_Cell_Config_Row.Field<string>("Time") ?? string.Empty;
+                    existing_DataRow["Origin"] = src_Src_Cell_Config_Row.Field<string>("Origin") ?? string.Empty;
+                    existing_DataRow["IC"] = src_Src_Cell_Config_Row.Field<string>("IC") ?? string.Empty;
+                    existing_DataRow["View"] = src_Src_Cell_Config_Row.Field<string>("View") ?? string.Empty;
+                    existing_DataRow["Src_Plan_Units"] = src_Src_Cell_Config_Row.Field<string>("Src_Plan_Units") ?? string.Empty;
+                    existing_DataRow["Acct"] = src_Src_Cell_Config_Row.Field<string>("Acct") ?? string.Empty;
+                    existing_DataRow["Flow"] = src_Src_Cell_Config_Row.Field<string>("Flow") ?? string.Empty;
+                    existing_DataRow["UD1"] = src_Src_Cell_Config_Row.Field<string>("UD1") ?? string.Empty;
+                    existing_DataRow["UD2"] = src_Src_Cell_Config_Row.Field<string>("UD2") ?? string.Empty;
+                    existing_DataRow["UD3"] = src_Src_Cell_Config_Row.Field<string>("UD3") ?? string.Empty;
+                    existing_DataRow["UD4"] = src_Src_Cell_Config_Row.Field<string>("UD4") ?? string.Empty;
+                    existing_DataRow["UD5"] = src_Src_Cell_Config_Row.Field<string>("UD5") ?? string.Empty;
+                    existing_DataRow["UD6"] = src_Src_Cell_Config_Row.Field<string>("UD6") ?? string.Empty;
+                    existing_DataRow["UD7"] = src_Src_Cell_Config_Row.Field<string>("UD7") ?? string.Empty;
+                    existing_DataRow["UD8"] = src_Src_Cell_Config_Row.Field<string>("UD8") ?? string.Empty;
+                    existing_DataRow["Close_Parens"] = src_Src_Cell_Config_Row.Field<string>("Close_Parens") ?? string.Empty;
+                    existing_DataRow["Unbal_Src_Cell_Buffer"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer") ?? string.Empty;
+                    existing_DataRow["Unbal_Origin_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Origin_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_IC_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_IC_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_Acct_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Acct_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_Flow_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Flow_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_UD1_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD1_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_UD2_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD2_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_UD3_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD3_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_UD4_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD4_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_UD5_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD5_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_UD6_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD6_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_UD7_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD7_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_UD8_Override"] = src_Src_Cell_Config_Row.Field<string>("Unbal_UD8_Override") ?? string.Empty;
+                    existing_DataRow["Unbal_Src_Cell_Buffer_Filter"] = src_Src_Cell_Config_Row.Field<string>("Unbal_Src_Cell_Buffer_Filter") ?? string.Empty;
+                    existing_DataRow["Dyn_Calc_Script"] = src_Src_Cell_Config_Row.Field<string>("Dyn_Calc_Script") ?? string.Empty;
+                    existing_DataRow["Override_Value"] = src_Src_Cell_Config_Row.Field<string>("Override_Value") ?? string.Empty;
+                    existing_DataRow["Table_Calc_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Calc_Expression") ?? string.Empty;
+                    existing_DataRow["Table_Join_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Join_Expression") ?? string.Empty;
+                    existing_DataRow["Table_Filter_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Filter_Expression") ?? string.Empty;
+                    existing_DataRow["Map_Type"] = src_Src_Cell_Config_Row.Field<string>("Map_Type") ?? string.Empty;
+                    existing_DataRow["Map_Source"] = src_Src_Cell_Config_Row.Field<string>("Map_Source") ?? string.Empty;
+                    existing_DataRow["Map_Logic"] = src_Src_Cell_Config_Row.Field<string>("Map_Logic") ?? string.Empty;
+                    existing_DataRow["Src_SQL_Stmt"] = src_Src_Cell_Config_Row.Field<string>("Src_SQL_Stmt") ?? string.Empty;
+                    existing_DataRow["Use_Temp_Table"] = src_Src_Cell_Config_Row.Field<bool>("Use_Temp_Table");
+                    existing_DataRow["Temp_Table_Name"] = src_Src_Cell_Config_Row.Field<string>("Temp_Table_Name") ?? string.Empty;
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // Set appropriate user context
                 }
             }
         }
@@ -6431,37 +6419,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // If not duplicate, add the new Model Group Config to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Model_Grps_ID += 1;
-                GBL_Curr_FMM_Model_Grps_ID = GBL_FMM_Model_Grps_ID;
-                DataRow newTargetRow = tgt_Model_Grp_Config_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = targetCubeID;
-                newTargetRow["Model_Grp_Config_ID"] = GBL_FMM_Model_Grps_ID;
-                newTargetRow["Group_Name"] = src_Model_Grp_Config_Row["Group_Name"].ToString();
-                newTargetRow["Group_Type"] = src_Model_Grp_Config_Row["Group_Type"].ToString();
-                newTargetRow["Description"] = src_Model_Grp_Config_Row["Description"].ToString();
-                newTargetRow["Status"] = "Build"; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+               gbl_FMM_Model_Grps_ID += 1;
+               gbl_Curr_FMM_Model_Grps_ID =gbl_FMM_Model_Grps_ID;
+                DataRow new_DestDataRow = tgt_Model_Grp_Config_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = targetCubeID;
+                new_DestDataRow["Model_Grp_Config_ID"] =gbl_FMM_Model_Grps_ID;
+                new_DestDataRow["Group_Name"] = src_Model_Grp_Config_Row["Group_Name"].ToString();
+                new_DestDataRow["Group_Type"] = src_Model_Grp_Config_Row["Group_Type"].ToString();
+                new_DestDataRow["Description"] = src_Model_Grp_Config_Row["Description"].ToString();
+                new_DestDataRow["Status"] = "Build"; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_Model_Grp_Config_DT.Rows.Add(newTargetRow);
+                tgt_Model_Grp_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Model_Grp_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_Model_Grp_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Group_Name"].ToString() == src_Model_Grp_Config_Row["Group_Name"].ToString() &&
                                            row["Group_Type"].ToString() == src_Model_Grp_Config_Row["Group_Type"].ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Model_Grps_ID = Convert.ToInt32(existingRow["Model_Grp_Config_ID"].ToString());
-                    existingRow["Description"] = src_Model_Grp_Config_Row["Description"].ToString(); // Update description or other fields as needed
-                    existingRow["Status"] = src_Model_Grp_Config_Row["Status"].ToString(); // Update status or other fields as needed
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                   gbl_Curr_FMM_Model_Grps_ID = Convert.ToInt32(existing_DataRow["Model_Grp_Config_ID"].ToString());
+                    existing_DataRow["Description"] = src_Model_Grp_Config_Row["Description"].ToString(); // Update description or other fields as needed
+                    existing_DataRow["Status"] = src_Model_Grp_Config_Row["Status"].ToString(); // Update status or other fields as needed
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -6475,37 +6463,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // If not duplicate, add the new Model Group Assign Model Config to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Model_Grp_Assign_ID += 1;
-                GBL_Curr_FMM_Model_Grp_Assign_ID = GBL_FMM_Model_Grp_Assign_ID;
-                DataRow newTargetRow = tgt_Model_Grp_Assign_Model_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = targetCubeID;
-                newTargetRow["Model_Grp_Assign_ID"] = GBL_FMM_Model_Grp_Assign_ID;
-                newTargetRow["Group_Name"] = src_Model_Grp_Assign_Model_Row["Group_Name"].ToString();
-                newTargetRow["Model_Name"] = src_Model_Grp_Assign_Model_Row["Model_Name"].ToString();
-                newTargetRow["Description"] = src_Model_Grp_Assign_Model_Row["Description"].ToString();
-                newTargetRow["Status"] = "Build"; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+               gbl_FMM_Model_Grp_Assign_ID += 1;
+               gbl_Curr_FMM_Model_Grp_Assign_ID =gbl_FMM_Model_Grp_Assign_ID;
+                DataRow new_DestDataRow = tgt_Model_Grp_Assign_Model_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = targetCubeID;
+                new_DestDataRow["Model_Grp_Assign_ID"] =gbl_FMM_Model_Grp_Assign_ID;
+                new_DestDataRow["Group_Name"] = src_Model_Grp_Assign_Model_Row["Group_Name"].ToString();
+                new_DestDataRow["Model_Name"] = src_Model_Grp_Assign_Model_Row["Model_Name"].ToString();
+                new_DestDataRow["Description"] = src_Model_Grp_Assign_Model_Row["Description"].ToString();
+                new_DestDataRow["Status"] = "Build"; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_Model_Grp_Assign_Model_DT.Rows.Add(newTargetRow);
+                tgt_Model_Grp_Assign_Model_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Model_Grp_Assign_Model_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_Model_Grp_Assign_Model_DT.AsEnumerable()
                     .FirstOrDefault(row => row["Group_Name"].ToString() == src_Model_Grp_Assign_Model_Row["Group_Name"].ToString() &&
                                            row["Model_Name"].ToString() == src_Model_Grp_Assign_Model_Row["Model_Name"].ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Model_Grp_Assign_ID = Convert.ToInt32(existingRow["Model_Grp_Assign_ID"].ToString());
-                    existingRow["Description"] = src_Model_Grp_Assign_Model_Row["Description"].ToString(); // Update description or other fields as needed
-                    existingRow["Status"] = src_Model_Grp_Assign_Model_Row["Status"].ToString(); // Update status or other fields as needed
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                   gbl_Curr_FMM_Model_Grp_Assign_ID = Convert.ToInt32(existing_DataRow["Model_Grp_Assign_ID"].ToString());
+                    existing_DataRow["Description"] = src_Model_Grp_Assign_Model_Row["Description"].ToString(); // Update description or other fields as needed
+                    existing_DataRow["Status"] = src_Model_Grp_Assign_Model_Row["Status"].ToString(); // Update status or other fields as needed
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -6519,37 +6507,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // If not duplicate, add the new Workflow DU Config to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Calc_Unit_ID += 1;
-                GBL_Curr_FMM_Calc_Unit_ID = GBL_FMM_Calc_Unit_ID;
-                DataRow newTargetRow = tgt_Calc_Unit_Config_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = targetCubeID;
-                newTargetRow["Calc_Unit_ID"] = GBL_FMM_Calc_Unit_ID;
-                newTargetRow["DU_Name"] = src_Calc_Unit_Config_Row["DU_Name"].ToString();
-                newTargetRow["DU_Type"] = src_Calc_Unit_Config_Row["DU_Type"].ToString();
-                newTargetRow["Description"] = src_Calc_Unit_Config_Row["Description"].ToString();
-                newTargetRow["Status"] = "Build"; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+               gbl_FMM_Calc_Unit_ID += 1;
+               gbl_Curr_FMM_Calc_Unit_ID =gbl_FMM_Calc_Unit_ID;
+                DataRow new_DestDataRow = tgt_Calc_Unit_Config_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = targetCubeID;
+                new_DestDataRow["Calc_Unit_ID"] =gbl_FMM_Calc_Unit_ID;
+                new_DestDataRow["DU_Name"] = src_Calc_Unit_Config_Row["DU_Name"].ToString();
+                new_DestDataRow["DU_Type"] = src_Calc_Unit_Config_Row["DU_Type"].ToString();
+                new_DestDataRow["Description"] = src_Calc_Unit_Config_Row["Description"].ToString();
+                new_DestDataRow["Status"] = "Build"; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_Calc_Unit_Config_DT.Rows.Add(newTargetRow);
+                tgt_Calc_Unit_Config_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Calc_Unit_Config_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_Calc_Unit_Config_DT.AsEnumerable()
                     .FirstOrDefault(row => row["DU_Name"].ToString() == src_Calc_Unit_Config_Row["DU_Name"].ToString() &&
                                            row["DU_Type"].ToString() == src_Calc_Unit_Config_Row["DU_Type"].ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Calc_Unit_ID = Convert.ToInt32(existingRow["Calc_Unit_ID"].ToString());
-                    existingRow["Description"] = src_Calc_Unit_Config_Row["Description"].ToString(); // Update description or other fields as needed
-                    existingRow["Status"] = src_Calc_Unit_Config_Row["Status"].ToString(); // Update status or other fields as needed
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                   gbl_Curr_FMM_Calc_Unit_ID = Convert.ToInt32(existing_DataRow["Calc_Unit_ID"].ToString());
+                    existing_DataRow["Description"] = src_Calc_Unit_Config_Row["Description"].ToString(); // Update description or other fields as needed
+                    existing_DataRow["Status"] = src_Calc_Unit_Config_Row["Status"].ToString(); // Update status or other fields as needed
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -6563,37 +6551,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             // If not duplicate, add the new Workflow DU Assign Model Group Config to the target DataTable
             if (!isDuplicate)
             {
-                GBL_FMM_Calc_Unit_Assign_ID += 1;
-                GBL_Curr_FMM_Calc_Unit_Assign_ID = GBL_FMM_Calc_Unit_Assign_ID;
-                DataRow newTargetRow = tgt_Calc_Unit_Assign_DT.NewRow();
-                newTargetRow["Cube_ID"] = targetCubeID;
-                newTargetRow["Act_ID"] = targetCubeID;
-                newTargetRow["Calc_Unit_Assign_ID"] = GBL_FMM_Calc_Unit_Assign_ID;
-                newTargetRow["DU_Name"] = src_Calc_Unit_Assign_Row["DU_Name"].ToString();
-                newTargetRow["Model_Grp_Name"] = src_Calc_Unit_Assign_Row["Model_Grp_Name"].ToString();
-                newTargetRow["Description"] = src_Calc_Unit_Assign_Row["Description"].ToString();
-                newTargetRow["Status"] = "Build"; // Set initial status as appropriate
-                newTargetRow["Create_Date"] = DateTime.Now;
-                newTargetRow["Create_User"] = si.UserName; // or appropriate user context
-                newTargetRow["Update_Date"] = DateTime.Now;
-                newTargetRow["Update_User"] = si.UserName; // or appropriate user context
+               gbl_FMM_Calc_Unit_Assign_ID += 1;
+               gbl_Curr_FMM_Calc_Unit_Assign_ID =gbl_FMM_Calc_Unit_Assign_ID;
+                DataRow new_DestDataRow = tgt_Calc_Unit_Assign_DT.NewRow();
+                new_DestDataRow["Cube_ID"] = targetCubeID;
+                new_DestDataRow["Act_ID"] = targetCubeID;
+                new_DestDataRow["Calc_Unit_Assign_ID"] =gbl_FMM_Calc_Unit_Assign_ID;
+                new_DestDataRow["DU_Name"] = src_Calc_Unit_Assign_Row["DU_Name"].ToString();
+                new_DestDataRow["Model_Grp_Name"] = src_Calc_Unit_Assign_Row["Model_Grp_Name"].ToString();
+                new_DestDataRow["Description"] = src_Calc_Unit_Assign_Row["Description"].ToString();
+                new_DestDataRow["Status"] = "Build"; // Set initial status as appropriate
+                new_DestDataRow["Create_Date"] = DateTime.Now;
+                new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
+                new_DestDataRow["Update_Date"] = DateTime.Now;
+                new_DestDataRow["Update_User"] = si.UserName; // or appropriate user context
 
-                tgt_Calc_Unit_Assign_DT.Rows.Add(newTargetRow);
+                tgt_Calc_Unit_Assign_DT.Rows.Add(new_DestDataRow);
             }
             else
             {
                 // Find the matching row and update it
-                DataRow existingRow = tgt_Calc_Unit_Assign_DT.AsEnumerable()
+                DataRow existing_DataRow = tgt_Calc_Unit_Assign_DT.AsEnumerable()
                     .FirstOrDefault(row => row["DU_Name"].ToString() == src_Calc_Unit_Assign_Row["DU_Name"].ToString() &&
                                            row["Model_Grp_Name"].ToString() == src_Calc_Unit_Assign_Row["Model_Grp_Name"].ToString());
 
-                if (existingRow != null)
+                if (existing_DataRow != null)
                 {
-                    GBL_Curr_FMM_Calc_Unit_Assign_ID = Convert.ToInt32(existingRow["Calc_Unit_Assign_ID"].ToString());
-                    existingRow["Description"] = src_Calc_Unit_Assign_Row["Description"].ToString(); // Update description or other fields as needed
-                    existingRow["Status"] = src_Calc_Unit_Assign_Row["Status"].ToString(); // Update status or other fields as needed
-                    existingRow["Update_Date"] = DateTime.Now;
-                    existingRow["Update_User"] = si.UserName; // or appropriate user context
+                   gbl_Curr_FMM_Calc_Unit_Assign_ID = Convert.ToInt32(existing_DataRow["Calc_Unit_Assign_ID"].ToString());
+                    existing_DataRow["Description"] = src_Calc_Unit_Assign_Row["Description"].ToString(); // Update description or other fields as needed
+                    existing_DataRow["Status"] = src_Calc_Unit_Assign_Row["Status"].ToString(); // Update status or other fields as needed
+                    existing_DataRow["Update_Date"] = DateTime.Now;
+                    existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
             }
         }
@@ -6698,7 +6686,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             foreach (DataRow cube_Model_Row in FMM_Models_DT.Rows)
                             {
                                 string ModelKey = cube_ID + "|" + act_ID + "|" + (int)cube_Model_Row["Model_ID"];
-                                GBL_Models_Dict.Add(ModelKey, (string)cube_Model_Row["Name"]);
+                               gbl_Models_Dict.Add(ModelKey, (string)cube_Model_Row["Name"]);
                             }
                         }
                         break;
@@ -6757,7 +6745,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             foreach (DataRow FMM_Model_Grp_Row in FMM_Model_Grps_DT.Rows)
                             {
                                 var model_GroupKey = cube_ID + "|" + (int)FMM_Model_Grp_Row["Model_Grp_ID"];
-                                GBL_Model_Grps_Dict.Add(model_GroupKey, (string)FMM_Model_Grp_Row["Name"]);
+                                gbl_Model_Grps_Dict.Add(model_GroupKey, (string)FMM_Model_Grp_Row["Name"]);
                             }
                         }
                         break;
