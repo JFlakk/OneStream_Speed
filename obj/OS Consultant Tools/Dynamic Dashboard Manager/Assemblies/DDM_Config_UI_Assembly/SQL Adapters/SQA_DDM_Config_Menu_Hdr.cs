@@ -42,8 +42,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
-				command.Parameters.Clear();
-				sqa.SelectCommand = null;
+                command.Parameters.Clear();
+                sqa.SelectCommand = null;
             }
         }
 
@@ -54,11 +54,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert query and selectqueryparams
                 string insertQuery = @"
                     INSERT INTO DDM_Config_Menu_Hdr
-                           (DDM_Profile_ID
+                           (DDM_Config_ID
                            ,DDM_Menu_ID
                            ,DDM_Menu_Hdr_ID
+                           ,DDM_Type
+                           ,Scen_Type
+                           ,Profile_Key
+                           ,Workspace_ID
+                           ,MaintUnit_ID
                            ,Sort_Order
                            ,Option_Type
+                           ,Dependency_Tier
                            ,Fltr_Dim_Type
                            ,Fltr_Dim_Name
                            ,Fltr_MFB
@@ -86,11 +92,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                            ,Update_Date
                            ,Update_User)
                      VALUES
-                           (@DDM_Profile_ID
+                           (@DDM_Config_ID
                            ,@DDM_Menu_ID
                            ,@DDM_Menu_Hdr_ID
+                           ,@DDM_Type
+                           ,@Scen_Type
+                           ,@Profile_Key
+                           ,@Workspace_ID
+                           ,@MaintUnit_ID
                            ,@Sort_Order
                            ,@Option_Type
+                           ,@Dependency_Tier
                            ,@Fltr_Dim_Type
                            ,@Fltr_Dim_Name
                            ,@Fltr_MFB
@@ -119,42 +131,55 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                            ,@Update_User)";
                 
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
+                sqa.InsertCommand.Parameters.Add("@DDM_Config_ID", SqlDbType.Int).SourceColumn = "DDM_Config_ID";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_ID";
                 sqa.InsertCommand.Parameters.Add("@DDM_Menu_Hdr_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_Hdr_ID";
+                sqa.InsertCommand.Parameters.Add("@DDM_Type", SqlDbType.Int).SourceColumn = "DDM_Type";
+                sqa.InsertCommand.Parameters.Add("@Scen_Type", SqlDbType.NVarChar, 20).SourceColumn = "Scen_Type";
+                sqa.InsertCommand.Parameters.Add("@Profile_Key", SqlDbType.UniqueIdentifier).SourceColumn = "Profile_Key";
+                sqa.InsertCommand.Parameters.Add("@Workspace_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Workspace_ID";
+                sqa.InsertCommand.Parameters.Add("@MaintUnit_ID", SqlDbType.UniqueIdentifier).SourceColumn = "MaintUnit_ID";
                 sqa.InsertCommand.Parameters.Add("@Sort_Order", SqlDbType.Int).SourceColumn = "Sort_Order";
-                sqa.InsertCommand.Parameters.Add("@Option_Type", SqlDbType.NVarChar).SourceColumn = "Option_Type";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Dim_Type", SqlDbType.NVarChar).SourceColumn = "Fltr_Dim_Type";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Dim_Name", SqlDbType.NVarChar).SourceColumn = "Fltr_Dim_Name";
-                sqa.InsertCommand.Parameters.Add("@Fltr_MFB", SqlDbType.NVarChar).SourceColumn = "Fltr_MFB";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Default", SqlDbType.NVarChar).SourceColumn = "Fltr_Default";
+                sqa.InsertCommand.Parameters.Add("@Option_Type", SqlDbType.NVarChar, 50).SourceColumn = "Option_Type";
+                sqa.InsertCommand.Parameters.Add("@Dependency_Tier", SqlDbType.Int).SourceColumn = "Dependency_Tier";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Dim_Type", SqlDbType.NVarChar, 50).SourceColumn = "Fltr_Dim_Type";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Dim_Name", SqlDbType.NVarChar, 255).SourceColumn = "Fltr_Dim_Name";
+                sqa.InsertCommand.Parameters.Add("@Fltr_MFB", SqlDbType.NVarChar, -1).SourceColumn = "Fltr_MFB";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Default", SqlDbType.NVarChar, -1).SourceColumn = "Fltr_Default";
                 sqa.InsertCommand.Parameters.Add("@Fltr_Btn", SqlDbType.Bit).SourceColumn = "Fltr_Btn";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Btn_Lbl", SqlDbType.NVarChar).SourceColumn = "Fltr_Btn_Lbl";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Btn_ToolTip", SqlDbType.NVarChar).SourceColumn = "Fltr_Btn_ToolTip";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Btn_Lbl", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_Btn_Lbl";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Btn_ToolTip", SqlDbType.NVarChar, 255).SourceColumn = "Fltr_Btn_ToolTip";
                 sqa.InsertCommand.Parameters.Add("@Fltr_Cbx", SqlDbType.Bit).SourceColumn = "Fltr_Cbx";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Cbx_Lbl", SqlDbType.NVarChar).SourceColumn = "Fltr_Cbx_Lbl";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Cbx_ToolTip", SqlDbType.NVarChar).SourceColumn = "Fltr_Cbx_ToolTip";
-                sqa.InsertCommand.Parameters.Add("@Fltr_BtnCbx_BoundParam", SqlDbType.NVarChar).SourceColumn = "Fltr_BtnCbx_BoundParam";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Cbx_Lbl", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_Cbx_Lbl";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Cbx_ToolTip", SqlDbType.NVarChar, 255).SourceColumn = "Fltr_Cbx_ToolTip";
+                sqa.InsertCommand.Parameters.Add("@Fltr_BtnCbx_BoundParam", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_BtnCbx_BoundParam";
                 sqa.InsertCommand.Parameters.Add("@Fltr_Txt", SqlDbType.Bit).SourceColumn = "Fltr_Txt";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Txt_Lbl", SqlDbType.NVarChar).SourceColumn = "Fltr_Txt_Lbl";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Txt_ToolTip", SqlDbType.NVarChar).SourceColumn = "Fltr_Txt_ToolTip";
-                sqa.InsertCommand.Parameters.Add("@Fltr_Txt_BoundParam", SqlDbType.NVarChar).SourceColumn = "Fltr_Txt_BoundParam";
-                sqa.InsertCommand.Parameters.Add("@Btn_Type", SqlDbType.NVarChar).SourceColumn = "Btn_Type";
-                sqa.InsertCommand.Parameters.Add("@Btn_Lbl", SqlDbType.NVarChar).SourceColumn = "Btn_Lbl";
-                sqa.InsertCommand.Parameters.Add("@Btn_ToolTip", SqlDbType.NVarChar).SourceColumn = "Btn_ToolTip";
-                sqa.InsertCommand.Parameters.Add("@Btn_Image_URL", SqlDbType.NVarChar).SourceColumn = "Btn_Image_URL";
-                sqa.InsertCommand.Parameters.Add("@Btn_ServerTask", SqlDbType.NVarChar).SourceColumn = "Btn_ServerTask";
-                sqa.InsertCommand.Parameters.Add("@Btn_DBOpen", SqlDbType.NVarChar).SourceColumn = "Btn_DBOpen";
-                sqa.InsertCommand.Parameters.Add("@Btn_DBRefresh", SqlDbType.NVarChar).SourceColumn = "Btn_DBRefresh";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Txt_Lbl", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_Txt_Lbl";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Txt_ToolTip", SqlDbType.NVarChar, 255).SourceColumn = "Fltr_Txt_ToolTip";
+                sqa.InsertCommand.Parameters.Add("@Fltr_Txt_BoundParam", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_Txt_BoundParam";
+                sqa.InsertCommand.Parameters.Add("@Btn_Type", SqlDbType.NVarChar, 50).SourceColumn = "Btn_Type";
+                sqa.InsertCommand.Parameters.Add("@Btn_Lbl", SqlDbType.NVarChar, 100).SourceColumn = "Btn_Lbl";
+                sqa.InsertCommand.Parameters.Add("@Btn_ToolTip", SqlDbType.NVarChar, 255).SourceColumn = "Btn_ToolTip";
+                sqa.InsertCommand.Parameters.Add("@Btn_Image_URL", SqlDbType.NVarChar, 2048).SourceColumn = "Btn_Image_URL";
+                sqa.InsertCommand.Parameters.Add("@Btn_ServerTask", SqlDbType.NVarChar, 255).SourceColumn = "Btn_ServerTask";
+                sqa.InsertCommand.Parameters.Add("@Btn_DBOpen", SqlDbType.NVarChar, 255).SourceColumn = "Btn_DBOpen";
+                sqa.InsertCommand.Parameters.Add("@Btn_DBRefresh", SqlDbType.NVarChar, 255).SourceColumn = "Btn_DBRefresh";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
-                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar).SourceColumn = "Create_User";
+                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
                 sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar).SourceColumn = "Update_User";
+                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
 
                 string updateQuery = @"
                     UPDATE DDM_Config_Menu_Hdr
-                       SET Sort_Order = @Sort_Order
+                       SET DDM_Config_ID = @DDM_Config_ID
+                          ,DDM_Type = @DDM_Type
+                          ,Scen_Type = @Scen_Type
+                          ,Profile_Key = @Profile_Key
+                          ,Workspace_ID = @Workspace_ID
+                          ,MaintUnit_ID = @MaintUnit_ID
+                          ,Sort_Order = @Sort_Order
                           ,Option_Type = @Option_Type
+                          ,Dependency_Tier = @Dependency_Tier
                           ,Fltr_Dim_Type = @Fltr_Dim_Type
                           ,Fltr_Dim_Name = @Fltr_Dim_Name
                           ,Fltr_MFB = @Fltr_MFB
@@ -183,37 +208,44 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Menu_Hdr_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_Hdr_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add("@DDM_Config_ID", SqlDbType.Int).SourceColumn = "DDM_Config_ID";
+                sqa.UpdateCommand.Parameters.Add("@DDM_Type", SqlDbType.Int).SourceColumn = "DDM_Type";
+                sqa.UpdateCommand.Parameters.Add("@Scen_Type", SqlDbType.NVarChar, 20).SourceColumn = "Scen_Type";
+                sqa.UpdateCommand.Parameters.Add("@Profile_Key", SqlDbType.UniqueIdentifier).SourceColumn = "Profile_Key";
+                sqa.UpdateCommand.Parameters.Add("@Workspace_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Workspace_ID";
+                sqa.UpdateCommand.Parameters.Add("@MaintUnit_ID", SqlDbType.UniqueIdentifier).SourceColumn = "MaintUnit_ID";
                 sqa.UpdateCommand.Parameters.Add("@Sort_Order", SqlDbType.Int).SourceColumn = "Sort_Order";
-                sqa.UpdateCommand.Parameters.Add("@Option_Type", SqlDbType.NVarChar).SourceColumn = "Option_Type";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Dim_Type", SqlDbType.NVarChar).SourceColumn = "Fltr_Dim_Type";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Dim_Name", SqlDbType.NVarChar).SourceColumn = "Fltr_Dim_Name";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_MFB", SqlDbType.NVarChar).SourceColumn = "Fltr_MFB";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Default", SqlDbType.NVarChar).SourceColumn = "Fltr_Default";
+                sqa.UpdateCommand.Parameters.Add("@Option_Type", SqlDbType.NVarChar, 50).SourceColumn = "Option_Type";
+                sqa.UpdateCommand.Parameters.Add("@Dependency_Tier", SqlDbType.Int).SourceColumn = "Dependency_Tier";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Dim_Type", SqlDbType.NVarChar, 50).SourceColumn = "Fltr_Dim_Type";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Dim_Name", SqlDbType.NVarChar, 255).SourceColumn = "Fltr_Dim_Name";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_MFB", SqlDbType.NVarChar, -1).SourceColumn = "Fltr_MFB";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Default", SqlDbType.NVarChar, -1).SourceColumn = "Fltr_Default";
                 sqa.UpdateCommand.Parameters.Add("@Fltr_Btn", SqlDbType.Bit).SourceColumn = "Fltr_Btn";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Btn_Lbl", SqlDbType.NVarChar).SourceColumn = "Fltr_Btn_Lbl";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Btn_ToolTip", SqlDbType.NVarChar).SourceColumn = "Fltr_Btn_ToolTip";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Btn_Lbl", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_Btn_Lbl";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Btn_ToolTip", SqlDbType.NVarChar, 255).SourceColumn = "Fltr_Btn_ToolTip";
                 sqa.UpdateCommand.Parameters.Add("@Fltr_Cbx", SqlDbType.Bit).SourceColumn = "Fltr_Cbx";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Cbx_Lbl", SqlDbType.NVarChar).SourceColumn = "Fltr_Cbx_Lbl";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Cbx_ToolTip", SqlDbType.NVarChar).SourceColumn = "Fltr_Cbx_ToolTip";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_BtnCbx_BoundParam", SqlDbType.NVarChar).SourceColumn = "Fltr_BtnCbx_BoundParam";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Cbx_Lbl", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_Cbx_Lbl";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Cbx_ToolTip", SqlDbType.NVarChar, 255).SourceColumn = "Fltr_Cbx_ToolTip";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_BtnCbx_BoundParam", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_BtnCbx_BoundParam";
                 sqa.UpdateCommand.Parameters.Add("@Fltr_Txt", SqlDbType.Bit).SourceColumn = "Fltr_Txt";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Txt_Lbl", SqlDbType.NVarChar).SourceColumn = "Fltr_Txt_Lbl";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Txt_ToolTip", SqlDbType.NVarChar).SourceColumn = "Fltr_Txt_ToolTip";
-                sqa.UpdateCommand.Parameters.Add("@Fltr_Txt_BoundParam", SqlDbType.NVarChar).SourceColumn = "Fltr_Txt_BoundParam";
-                sqa.UpdateCommand.Parameters.Add("@Btn_Type", SqlDbType.NVarChar).SourceColumn = "Btn_Type";
-                sqa.UpdateCommand.Parameters.Add("@Btn_Lbl", SqlDbType.NVarChar).SourceColumn = "Btn_Lbl";
-                sqa.UpdateCommand.Parameters.Add("@Btn_ToolTip", SqlDbType.NVarChar).SourceColumn = "Btn_ToolTip";
-                sqa.UpdateCommand.Parameters.Add("@Btn_Image_URL", SqlDbType.NVarChar).SourceColumn = "Btn_Image_URL";
-                sqa.UpdateCommand.Parameters.Add("@Btn_ServerTask", SqlDbType.NVarChar).SourceColumn = "Btn_ServerTask";
-                sqa.UpdateCommand.Parameters.Add("@Btn_DBOpen", SqlDbType.NVarChar).SourceColumn = "Btn_DBOpen";
-                sqa.UpdateCommand.Parameters.Add("@Btn_DBRefresh", SqlDbType.NVarChar).SourceColumn = "Btn_DBRefresh";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Txt_Lbl", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_Txt_Lbl";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Txt_ToolTip", SqlDbType.NVarChar, 255).SourceColumn = "Fltr_Txt_ToolTip";
+                sqa.UpdateCommand.Parameters.Add("@Fltr_Txt_BoundParam", SqlDbType.NVarChar, 100).SourceColumn = "Fltr_Txt_BoundParam";
+                sqa.UpdateCommand.Parameters.Add("@Btn_Type", SqlDbType.NVarChar, 50).SourceColumn = "Btn_Type";
+                sqa.UpdateCommand.Parameters.Add("@Btn_Lbl", SqlDbType.NVarChar, 100).SourceColumn = "Btn_Lbl";
+                sqa.UpdateCommand.Parameters.Add("@Btn_ToolTip", SqlDbType.NVarChar, 255).SourceColumn = "Btn_ToolTip";
+                sqa.UpdateCommand.Parameters.Add("@Btn_Image_URL", SqlDbType.NVarChar, 2048).SourceColumn = "Btn_Image_URL";
+                sqa.UpdateCommand.Parameters.Add("@Btn_ServerTask", SqlDbType.NVarChar, 255).SourceColumn = "Btn_ServerTask";
+                sqa.UpdateCommand.Parameters.Add("@Btn_DBOpen", SqlDbType.NVarChar, 255).SourceColumn = "Btn_DBOpen";
+                sqa.UpdateCommand.Parameters.Add("@Btn_DBRefresh", SqlDbType.NVarChar, 255).SourceColumn = "Btn_DBRefresh";
                 sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar).SourceColumn = "Update_User";
+                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
 
                 // Define the delete query and selectqueryparams
                 string deleteQuery = @"
-					             DELETE FROM DDM_Config_Menu_Hdr
-					             WHERE DDM_Menu_Hdr_ID = @DDM_Menu_Hdr_ID";
+                                 DELETE FROM DDM_Config_Menu_Hdr
+                                 WHERE DDM_Menu_Hdr_ID = @DDM_Menu_Hdr_ID";
 
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Menu_Hdr_ID", SqlDbType.Int) { SourceColumn = "DDM_Menu_Hdr_ID", SourceVersion = DataRowVersion.Original });
@@ -222,9 +254,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

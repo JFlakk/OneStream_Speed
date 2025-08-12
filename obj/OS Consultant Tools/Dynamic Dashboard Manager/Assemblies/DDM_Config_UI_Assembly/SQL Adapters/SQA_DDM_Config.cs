@@ -41,8 +41,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 sqa.SelectCommand = command;
                 sqa.Fill(dt);
-				command.Parameters.Clear();
-				sqa.SelectCommand = null;
+                command.Parameters.Clear();
+                sqa.SelectCommand = null;
             }
         }
 
@@ -53,17 +53,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the insert command and sqlparams
                 string insertQuery = @"
                     INSERT INTO DDM_Config (
-                         DDM_Profile_ID, ProfileKey, Profile_Step_Type, 
-                         Status, Create_Date, Create_User, Update_Date, Update_User
+                         DDM_Config_ID, DDM_Type, Scen_Type, Profile_Key, Profile_Step_Type, Workspace_ID, MaintUnit_ID, Status, Create_Date, Create_User, Update_Date, Update_User
                     ) VALUES (
-                        @DDM_Profile_ID, @ProfileKey, @Profile_Step_Type, 
-                        @Status, @Create_Date, @Create_User, @Update_Date, @Update_User
+                        @DDM_Config_ID, @DDM_Type, @Scen_Type, @Profile_Key, @Profile_Step_Type, @Workspace_ID, @MaintUnit_ID, @Status, @Create_Date, @Create_User, @Update_Date, @Update_User
                     );";
 
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                sqa.InsertCommand.Parameters.Add("@DDM_Profile_ID", SqlDbType.Int).SourceColumn = "DDM_Profile_ID";
-                sqa.InsertCommand.Parameters.Add("@ProfileKey", SqlDbType.UniqueIdentifier).SourceColumn = "ProfileKey";
+                sqa.InsertCommand.Parameters.Add("@DDM_Config_ID", SqlDbType.Int).SourceColumn = "DDM_Config_ID";
+                sqa.InsertCommand.Parameters.Add("@DDM_Type", SqlDbType.Int).SourceColumn = "DDM_Type";
+                sqa.InsertCommand.Parameters.Add("@Scen_Type", SqlDbType.NVarChar, 20).SourceColumn = "Scen_Type";
+                sqa.InsertCommand.Parameters.Add("@Profile_Key", SqlDbType.UniqueIdentifier).SourceColumn = "Profile_Key";
                 sqa.InsertCommand.Parameters.Add("@Profile_Step_Type", SqlDbType.NVarChar, 20).SourceColumn = "Profile_Step_Type";
+                sqa.InsertCommand.Parameters.Add("@Workspace_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Workspace_ID";
+                sqa.InsertCommand.Parameters.Add("@MaintUnit_ID", SqlDbType.UniqueIdentifier).SourceColumn = "MaintUnit_ID";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -73,19 +75,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the update command and sqlparams
                 string updateQuery = @"
                     UPDATE dbo.DDM_Config SET
-                         ProfileKey = @ProfileKey, 
-                         Profile_Step_Type = @Profile_Step_Type, 
-                         Status = @Status, 
-                         Create_Date = @Create_Date, 
-                         Create_User = @Create_User, 
-                         Update_Date = @Update_Date, 
+                         DDM_Type = @DDM_Type,
+                         Scen_Type = @Scen_Type,
+                         Profile_Key = @Profile_Key,
+                         Profile_Step_Type = @Profile_Step_Type,
+                         Workspace_ID = @Workspace_ID,
+                         MaintUnit_ID = @MaintUnit_ID,
+                         Status = @Status,
+                         Create_Date = @Create_Date,
+                         Create_User = @Create_User,
+                         Update_Date = @Update_Date,
                          Update_User = @Update_User
-                    WHERE DDM_Profile_ID = @DDM_Profile_ID;";
+                    WHERE DDM_Config_ID = @DDM_Config_ID;";
 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add("@ProfileKey", SqlDbType.UniqueIdentifier).SourceColumn = "ProfileKey";
+                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { SourceColumn = "DDM_Config_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add("@DDM_Type", SqlDbType.Int).SourceColumn = "DDM_Type";
+                sqa.UpdateCommand.Parameters.Add("@Scen_Type", SqlDbType.NVarChar, 20).SourceColumn = "Scen_Type";
+                sqa.UpdateCommand.Parameters.Add("@Profile_Key", SqlDbType.UniqueIdentifier).SourceColumn = "Profile_Key";
                 sqa.UpdateCommand.Parameters.Add("@Profile_Step_Type", SqlDbType.NVarChar, 20).SourceColumn = "Profile_Step_Type";
+                sqa.UpdateCommand.Parameters.Add("@Workspace_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Workspace_ID";
+                sqa.UpdateCommand.Parameters.Add("@MaintUnit_ID", SqlDbType.UniqueIdentifier).SourceColumn = "MaintUnit_ID";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.UpdateCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -95,18 +105,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Define the delete command and sqlparams
                 string deleteQuery = @"
                     DELETE FROM dbo.DDM_Config 
-                    WHERE DDM_Profile_ID = @DDM_Profile_ID;";
+                    WHERE DDM_Config_ID = @DDM_Config_ID;";
 
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { SourceColumn = "DDM_Profile_ID", SourceVersion = DataRowVersion.Original });
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { SourceColumn = "DDM_Config_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {
