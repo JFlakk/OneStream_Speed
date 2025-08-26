@@ -49,21 +49,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 string insertQuery = @"
-                    INSERT INTO RegPlan_Details (
-                        RegPlan_ID, WFScenario_Name, WF_Profile_Name, Act_ID, Model_ID, Entity, Approval_Level_ID, 
+                    INSERT INTO Register_Plan_Details (
+                        Register_Plan_ID, WF_Scenario_Name, WF_Profile_Name, WF_Time_Name, Act_ID, Model_ID, Entity, Approval_Level_ID, 
                         Plan_Units, Account, Flow, UD1, UD2, UD3, UD4, UD5, UD6, UD7, UD8, Year, 
                         Month1, Month2, Month3, Month4, Month5, Month6, Month7, Month8, Month9, Month10, 
                         Month11, Month12, Quarter1, Quarter2, Quarter3, Quarter4, Yearly, AllowUpdate, Create_Date, Create_User, Update_Date, Update_User
                     ) VALUES (
-                        @RegPlan_ID, @WFScenario_Name, @WF_Profile_Name, @Act_ID, @Model_ID, @Entity, @Approval_Level_ID, 
+                        @Register_Plan_ID, @WF_Scenario_Name, @WF_Profile_Name, @WF_Time_Name, @Act_ID, @Model_ID, @Entity, @Approval_Level_ID, 
                         @Plan_Units, @Account, @Flow, @UD1, @UD2, @UD3, @UD4, @UD5, @UD6, @UD7, @UD8, @Year, 
                         @Month1, @Month2, @Month3, @Month4, @Month5, @Month6, @Month7, @Month8, @Month9, @Month10, 
                         @Month11, @Month12, @Quarter1, @Quarter2, @Quarter3, @Quarter4, @Yearly, @AllowUpdate, @Create_Date, @Create_User, @Update_Date, @Update_User
                     )";
 
                 adapter.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                adapter.InsertCommand.Parameters.Add("@RegPlan_ID", SqlDbType.UniqueIdentifier).SourceColumn = "RegPlan_ID";
-                adapter.InsertCommand.Parameters.Add("@WFScenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFScenario_Name";
+                adapter.InsertCommand.Parameters.Add("@Register_Plan_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Register_Plan_ID";
+                adapter.InsertCommand.Parameters.Add("@WF_Scenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Scenario_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Profile_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Profile_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Time_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Time_Name";
                 adapter.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
@@ -88,12 +88,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 }
                 adapter.InsertCommand.Parameters.Add(new SqlParameter("@Yearly", SqlDbType.Decimal) { SourceColumn = "Yearly" });
                 adapter.InsertCommand.Parameters.Add(new SqlParameter("@AllowUpdate", SqlDbType.Bit) { SourceColumn = "AllowUpdate" });
-                adapter.InsertCommand.Parameters.Add(new SqlParameter("@Create_User", SqlDbType.NVarChar, 50) { Value = si.UserName });
-                adapter.InsertCommand.Parameters.Add(new SqlParameter("@Update_User", SqlDbType.NVarChar, 50) { Value = si.UserName });
+                adapter.InsertCommand.Parameters.Add(new SqlParameter("@Create_Date", SqlDbType.DateTime) { SourceColumn = "Create_Date" });
+                adapter.InsertCommand.Parameters.Add(new SqlParameter("@Create_User", SqlDbType.NVarChar, 50) { SourceColumn = "Create_User" });
+                adapter.InsertCommand.Parameters.Add(new SqlParameter("@Update_Date", SqlDbType.DateTime) { SourceColumn = "Update_Date" });
+                adapter.InsertCommand.Parameters.Add(new SqlParameter("@Update_User", SqlDbType.NVarChar, 50) { SourceColumn = "Update_User" });
 
                 string updateQuery = @"
-                    UPDATE RegPlan_Details SET
-                        WFScenario_Name = @WFScenario_Name, WF_Profile_Name = @WF_Profile_Name, Act_ID = @Act_ID, 
+                    UPDATE Register_Plan_Details SET
+                        WF_Scenario_Name = @WF_Scenario_Name, WF_Profile_Name = @WF_Profile_Name, WF_Time_Name = @WF_Time_Name, Act_ID = @Act_ID, 
                         Model_ID = @Model_ID, Entity = @Entity, Approval_Level_ID = @Approval_Level_ID, Plan_Units = @Plan_Units, 
                         Account = @Account, Flow = @Flow, UD1 = @UD1, UD2 = @UD2, UD3 = @UD3, UD4 = @UD4, UD5 = @UD5, 
                         UD6 = @UD6, UD7 = @UD7, UD8 = @UD8, Year = @Year, Month1 = @Month1, Month2 = @Month2, 
@@ -101,14 +103,41 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Month9 = @Month9, Month10 = @Month10, Month11 = @Month11, Month12 = @Month12, Quarter1 = @Quarter1, 
                         Quarter2 = @Quarter2, Quarter3 = @Quarter3, Quarter4 = @Quarter4, Yearly = @Yearly, AllowUpdate = @AllowUpdate, 
                         Update_Date = @Update_Date, Update_User = @Update_User
-                    WHERE RegPlan_ID = @RegPlan_ID AND Year = @Year AND Plan_Units = @Plan_Units AND Account = @Account";
+                    WHERE Register_Plan_ID = @Register_Plan_ID AND Year = @Year AND Plan_Units = @Plan_Units AND Account = @Account";
 
                 adapter.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                //AddUpdateParameters(adapter.UpdateCommand);
+                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@Register_Plan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "Register_Plan_ID", SourceVersion = DataRowVersion.Original });
+                adapter.UpdateCommand.Parameters.Add("@WF_Scenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Scenario_Name";
+                adapter.UpdateCommand.Parameters.Add("@WF_Profile_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Profile_Name";
+                adapter.UpdateCommand.Parameters.Add("@WF_Time_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Time_Name";
+                adapter.UpdateCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
+                adapter.UpdateCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
+                adapter.UpdateCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
+                adapter.UpdateCommand.Parameters.Add("@Approval_Level_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Approval_Level_ID";
+                adapter.UpdateCommand.Parameters.Add("@Plan_Units", SqlDbType.NVarChar, 20).SourceColumn = "Plan_Units";
+                adapter.UpdateCommand.Parameters.Add("@Account", SqlDbType.NVarChar, 20).SourceColumn = "Account";
+                adapter.UpdateCommand.Parameters.Add("@Flow", SqlDbType.NVarChar, 100).SourceColumn = "Flow";
+                for (int i = 1; i <= 8; i++)
+                {
+                    adapter.UpdateCommand.Parameters.Add($"@UD{i}", SqlDbType.NVarChar, 100).SourceColumn = $"UD{i}";
+                }
+                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@Year", SqlDbType.NVarChar, 4) { SourceColumn = "Year" });
+                for (int i = 1; i <= 12; i++)
+                {
+                    adapter.UpdateCommand.Parameters.Add(new SqlParameter($"@Month{i}", SqlDbType.Decimal) { SourceColumn = $"Month{i}" });
+                }
+                for (int i = 1; i <= 4; i++)
+                {
+                    adapter.UpdateCommand.Parameters.Add(new SqlParameter($"@Quarter{i}", SqlDbType.Decimal) { SourceColumn = $"Quarter{i}" });
+                }
+                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@Yearly", SqlDbType.Decimal) { SourceColumn = "Yearly" });
+                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@AllowUpdate", SqlDbType.Bit) { SourceColumn = "AllowUpdate" });
+                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@Update_Date", SqlDbType.DateTime) { SourceColumn = "Update_Date" });
+                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@Update_User", SqlDbType.NVarChar, 50) { SourceColumn = "Update_User" });
 
-                string deleteQuery = "DELETE FROM RegPlan_Details WHERE RegPlan_ID = @RegPlan_ID AND Year = @Year AND Plan_Units = @Plan_Units AND Account = @Account";
+                string deleteQuery = "DELETE FROM Register_Plan_Details WHERE Register_Plan_ID = @Register_Plan_ID AND Year = @Year AND Plan_Units = @Plan_Units AND Account = @Account";
                 adapter.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                adapter.DeleteCommand.Parameters.Add(new SqlParameter("@RegPlan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "RegPlan_ID", SourceVersion = DataRowVersion.Original });
+                adapter.DeleteCommand.Parameters.Add(new SqlParameter("@Register_Plan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "Register_Plan_ID", SourceVersion = DataRowVersion.Original });
                 adapter.DeleteCommand.Parameters.Add(new SqlParameter("@Year", SqlDbType.NVarChar, 4) { SourceColumn = "Year", SourceVersion = DataRowVersion.Original });
                 adapter.DeleteCommand.Parameters.Add(new SqlParameter("@Plan_Units", SqlDbType.NVarChar, 20) { SourceColumn = "Plan_Units", SourceVersion = DataRowVersion.Original });
                 adapter.DeleteCommand.Parameters.Add(new SqlParameter("@Account", SqlDbType.NVarChar, 20) { SourceColumn = "Account", SourceVersion = DataRowVersion.Original });

@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "OneStream_Speed/1.0.0": {
+        "runtime": {
+          "OneStream_Speed.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "OneStream_Speed/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

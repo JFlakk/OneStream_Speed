@@ -48,8 +48,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 string insertQuery = @"
-                    INSERT INTO RegPlan (
-                        RegPlan_ID, WF_Scenario_Name, WF_Profile_Name, WF_Time_Name, Act_ID, Entity, Approval_Level_ID, 
+                    INSERT INTO Register_Plan (
+                        Register_Plan_ID, WF_Scenario_Name, WF_Profile_Name, WF_Time_Name, Act_ID, Entity, Approval_Level_ID, 
                         Register_ID_1, Register_ID_2, Register_ID, Attribute_1, Attribute_2, Attribute_3, Attribute_4, Attribute_5, 
                         Attribute_6, Attribute_7, Attribute_8, Attribute_9, Attribute_10, Attribute_11, Attribute_12, Attribute_13, Attribute_14, 
                         Attribute_15, Attribute_16, Attribute_17, Attribute_18, Attribute_19, Attribute_20, Attribute_Value_1, Attribute_Value_2, 
@@ -57,7 +57,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Attribute_Value_10, Attribute_Value_11, Attribute_Value_12, Date_Value_1, Date_Value_2, Date_Value_3, Date_Value_4, Date_Value_5, 
                         Spread_Amount, Spread_Curve, Status, Create_Date, Create_User, Update_Date, Update_User, Invalid
                     ) VALUES (
-                        @RegPlan_ID, @WF_Scenario_Name, @WF_Profile_Name, @WF_Time_Name, @Act_ID,@Entity, @Approval_Level_ID, 
+                        @Register_Plan_ID, @WF_Scenario_Name, @WF_Profile_Name, @WF_Time_Name, @Act_ID,@Entity, @Approval_Level_ID, 
                         @Register_ID_1, @Register_ID_2, @Register_ID, @Attribute_1, @Attribute_2, @Attribute_3, @Attribute_4, @Attribute_5, 
                         @Attribute_6, @Attribute_7, @Attribute_8, @Attribute_9, @Attribute_10, @Attribute_11, @Attribute_12, @Attribute_13, @Attribute_14, 
                         @Attribute_15, @Attribute_16, @Attribute_17, @Attribute_18, @Attribute_19, @Attribute_20, @Attribute_Value_1, @Attribute_Value_2, 
@@ -67,7 +67,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     )";
 
                 adapter.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                adapter.InsertCommand.Parameters.Add("@RegPlan_ID", SqlDbType.UniqueIdentifier).SourceColumn = "RegPlan_ID";
+                adapter.InsertCommand.Parameters.Add("@Register_Plan_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Register_Plan_ID";
                 adapter.InsertCommand.Parameters.Add("@WF_Scenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Scenario_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Profile_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Profile_Name";
                 adapter.InsertCommand.Parameters.Add("@WF_Time_Name", SqlDbType.NVarChar, 100).SourceColumn = "WF_Time_Name";
@@ -114,7 +114,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 
                 string updateQuery = @"
-                    UPDATE RegPlan SET
+                    UPDATE Register_Plan SET
                         Entity = @Entity, Approval_Level_ID = @Approval_Level_ID, 
                         Register_ID_1 = @Register_ID_1, Register_ID_2 = @Register_ID_2, Register_ID = @Register_ID, Attribute_1 = @Attribute_1, 
                         Attribute_2 = @Attribute_2, Attribute_3 = @Attribute_3, Attribute_4 = @Attribute_4, Attribute_5 = @Attribute_5, 
@@ -129,10 +129,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     					Date_Value_2 = @Date_Value_2,Date_Value_3 = @Date_Value_3,Date_Value_4 = @Date_Value_4,Date_Value_5 = @Date_Value_5,
     					Spread_Amount = @Spread_Amount,Spread_Curve = @Spread_Curve,Status = @Status,Invalid = @Invalid,
                         Update_Date = @Update_Date, Update_User = @Update_User
-                    WHERE RegPlan_ID = @RegPlan_ID";
+                    WHERE Register_Plan_ID = @Register_Plan_ID";
 
                 adapter.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@RegPlan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "RegPlan_ID", SourceVersion = DataRowVersion.Original });
+                adapter.UpdateCommand.Parameters.Add(new SqlParameter("@Register_Plan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "Register_Plan_ID", SourceVersion = DataRowVersion.Original });
                 adapter.UpdateCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
                 adapter.UpdateCommand.Parameters.Add("@Approval_Level_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Approval_Level_ID";
                 adapter.UpdateCommand.Parameters.Add("@Register_ID_1", SqlDbType.Int).SourceColumn = "Register_ID_1";
@@ -172,9 +172,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 adapter.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
                 adapter.UpdateCommand.Parameters.Add("@Invalid", SqlDbType.Bit).SourceColumn = "Invalid";
 
-                string deleteQuery = "DELETE FROM RegPlan WHERE RegPlan_ID = @RegPlan_ID";
+                string deleteQuery = "DELETE FROM Register_Plan WHERE Register_Plan_ID = @Register_Plan_ID";
                 adapter.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                adapter.DeleteCommand.Parameters.Add(new SqlParameter("@RegPlan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "RegPlan_ID", SourceVersion = DataRowVersion.Original });
+                adapter.DeleteCommand.Parameters.Add(new SqlParameter("@Register_Plan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "Register_Plan_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {

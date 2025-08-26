@@ -230,7 +230,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 connection.Open();
                 #region "Setup SQL Adapter"				
                 var regPlanAdapter = new SqlDataAdapter();
-                var regPlanHelpers = new SQL_Adapter_Register_Plan(si, connection);
+                var regPlanHelpers = new SQA_RegPlan(si, connection);
                 var regPlan_Sql = @"
 				    SELECT *
 				    FROM Register_Plan
@@ -259,10 +259,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 }
                 var Register_Plan_DT = new DataTable();
 
-                regPlanHelpers.Fill_Register_Plan_DataTable(si, regPlanAdapter, Register_Plan_DT, regPlan_Sql, regPlan_parameters);
+                regPlanHelpers.Fill_RegPlan_DataTable(si, regPlanAdapter, Register_Plan_DT, regPlan_Sql, regPlan_parameters);
 
                 var regPlanDetailsAdapter = new SqlDataAdapter();
-                var regPlanDetailsHelpers = new SQL_Adapter_Register_Plan_Details(si, connection);
+                var regPlanDetailsHelpers = new SQA_RegPlan_Details(si, connection);
                 var regPlanDetails_Sql = @"
 								SELECT *
 								FROM Register_Plan_Details
@@ -278,7 +278,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 };
                 var Register_Plan_Details_DT = new DataTable();
 
-                regPlanDetailsHelpers.Fill_Register_Plan_Details_DataTable(si, regPlanDetailsAdapter, Register_Plan_Details_DT, regPlanDetails_Sql, regPlanDetails_parameters);
+                regPlanDetailsHelpers.Fill_RegPlan_Details_DT(si, regPlanDetailsAdapter, Register_Plan_Details_DT, regPlanDetails_Sql, regPlanDetails_parameters);
                 #endregion
                 foreach (var tvr in tableView.Rows)
                 {
@@ -616,8 +616,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                     }
                     #endregion
                 }
-                regPlanHelpers.Update_Register_Plan(si, Register_Plan_DT, regPlanAdapter);
-                regPlanDetailsHelpers.Update_Register_Plan_Details(si, Register_Plan_Details_DT, regPlanDetailsAdapter);
+                regPlanHelpers.Update_RegPlan(si, Register_Plan_DT, regPlanAdapter);
+                regPlanDetailsHelpers.Update_RegPlan_Details(si, Register_Plan_Details_DT, regPlanDetailsAdapter);
             }
             #endregion
             try
