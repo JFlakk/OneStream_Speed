@@ -114,9 +114,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-		#endregion
-		
-		#region "Get WFProfile TreeView"
+        #endregion
+
+        #region "Get WFProfile TreeView"
 
         /// <summary>
         /// Retrieves the workflow profile hierarchy as a tree view for the selected root profile.
@@ -166,13 +166,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         parentProf.ProfileName as ParentProfileName, 
                         rcte.HierarchyLevel,
                         rcte.HierarchyIndex,
-                        DDM.DDM_Profile_ID
+                        DDM.DDM_Config_ID
                     FROM 
                         RecursiveCTE rcte
                     LEFT JOIN 
                         WorkflowProfileHierarchy parentProf ON rcte.ParentProfileKey = parentProf.ProfileKey
                     LEFT JOIN
-                        DDM_Config DDM ON DDM.ProfileKey = rcte.ProfileKey
+                        DDM_Config DDM ON DDM.Profile_Key = rcte.ProfileKey
                     ORDER BY 
                         rcte.HierarchyLevel DESC, 
                         rcte.HierarchyIndex";
@@ -201,7 +201,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     string parentprofileName = row["ParentProfileName"].ToString();
                     string parentprofileKey = row["ParentProfileKey"].ToString();
                     var Bold_WFProfile = true;
-                    if (row["DDM_Profile_ID"] == DBNull.Value)
+                    if (row["DDM_Config_ID"] == DBNull.Value)
                     {
                         Bold_WFProfile = false;
                     }
@@ -236,9 +236,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-		#endregion
+        #endregion
 
-		#region "Get WFProfile Menus"
+        #region "Get WFProfile Menus"
         /// <summary>
         /// Retrieves the menu options for a given workflow profile.
         /// </summary>
@@ -253,7 +253,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     Select Menu.DDM_Menu_ID, Menu.Name
                     FROM DDM_Config Cnfg
                     JOIN DDM_Config_Menu Menu
-                    ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
+                    ON Cnfg.DDM_Config_ID = Menu.DDM_Config_ID
                     WHERE Cnfg.ProfileKey = @ProfileKey
                     ORDER BY DDM_Menu_Order";
 
@@ -279,7 +279,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-		#endregion
+        #endregion
 
         /// <summary>
         /// Retrieves a list of workflow profile names and IDs (not templates).
@@ -308,7 +308,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-		#region "Get WF Profile Headers"
+        #region "Get WF Profile Headers"
         /// <summary>
         /// Retrieves header configuration options for a given workflow profile and menu option.
         /// </summary>
@@ -324,7 +324,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var sql = @"
                     SELECT *
                     FROM DDM_Config_Menu_Hdr
-                    WHERE DDM_Profile_ID = @ProfileKey
+                    WHERE DDM_Config_ID = @ProfileKey
                     AND DDM_Menu_ID = @OptionID";
 
                 // Return the DataTable
@@ -344,6 +344,44 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, WFProfile_Header_Config_DT, sql, sqlparams);
                 }
                 return WFProfile_Header_Config_DT;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        #endregion
+
+		#region "Get Workspaces"
+        /// <summary>
+        /// Retrieves workspace configuration options for a given workflow profile and menu option.
+        /// </summary>
+        private DataTable Get_Workspaces()
+        {
+            try
+            {
+                var dt = new DataTable("Workspaces");
+
+                // Define the SQL Statement
+                var sql = @"SELECT Name, UniqueID
+                            FROM DashboardWorkspace
+                            WHERE Name NOT IN ('Genesis','OS Consultant Tools')";
+
+                // Return the DataTable
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+
+                    // Add the parameter for ProfileKey and selected menu option 
+                    var sqlparams = new SqlParameter[]
+                    {
+                    };
+
+                    sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+                return dt;
             }
             catch (Exception ex)
             {

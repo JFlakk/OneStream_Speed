@@ -74,16 +74,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         {
             try
             {
+				//args.CustomSubstVars.
                 var wfUserPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
                 var dt = new DataTable("DDM_Config_Menu");
                 // Define the SQL Statement
-                var sql = @"
-                    Select Menu.DDM_Menu_ID, Menu.Name
-                    FROM DDM_Config Cnfg
-                    JOIN DDM_Config_Menu Menu
-                    ON Cnfg.DDM_Profile_ID = Menu.DDM_Profile_ID
-                    WHERE Cnfg.ProfileKey = @ProfileKey
-                    ORDER BY Sort_Order";
+                var sql = @"Select Menu.DDM_Menu_ID, Menu.Name
+		                    FROM DDM_Config Cnfg
+		                    JOIN DDM_Config_Menu Menu
+		                    ON Cnfg.DDM_Config_ID = Menu.DDM_Config_ID
+		                    WHERE Cnfg.Profile_Key = @ProfileKey
+		                    ORDER BY Sort_Order";
 
                 // Return the DataTable
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);

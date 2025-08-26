@@ -28,6 +28,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
+					var SA_DB = customSubstVarsAlreadyResolved.XFGetValue("StandAlone_DB","NA");
+					foreach (KeyValuePair<string, string> substvar in customSubstVarsAlreadyResolved)
+        			{
+						BRApi.ErrorLog.LogMessage(si,$"Hit {substvar.Key} - {substvar.Value}");
+					}
+					BRApi.ErrorLog.LogMessage(si,$"Hit Dyn DB Svc - {SA_DB} - {parentDynamicComponentEx.AncestorNameSuffix} - {customSubstVarsAlreadyResolved.Count}");
 		            return storedDashboard.Name switch
 		            {
 						// configurable header items
@@ -57,8 +63,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
 		            return dynamicDashboardEx.DynamicDashboard.BasedOnName switch
 		            {
-		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.get_DynamicHdrRepeatedComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		                "0b2_DDM_App_Header_Config_Btn" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),		                
+		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+		                //"0b2_DDM_App_Header_Config_Btn" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),		                
 						// Dynamic Content
 		                "1a_DDM_App_Content_DB" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
 		                "1a_DDM_App_Content_CV" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),

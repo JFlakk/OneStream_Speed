@@ -136,7 +136,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var save_Data_Task_Result = new XFSqlTableEditorSaveDataTaskResult();
                 var saveDataTaskInfo = args.SqlTableEditorSaveDataTaskInfo;
                 int os_DDM_Menu_ID = 0;
-                int wfProfile_ID = Convert.ToInt32(args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Profile_ID", "0"));
+                int wfProfile_ID = Convert.ToInt32(args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Config_ID", "0"));
 
                 // Check for duplicates before processing rows.
                 Duplicate_Menu_Check(wfProfile_ID, "Initiate");
@@ -347,14 +347,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var sqa = new SqlDataAdapter();
                             var DDM_Config_Menu_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql = @"
-						        					SELECT *
-						       						FROM DDM_Config_Menu
-						       						WHERE DDM_Profile_ID = @DDM_Profile_ID";
+                            var sql = @"SELECT *
+						       			FROM DDM_Config_Menu
+						       			WHERE DDM_Config_ID = @DDM_Config_ID";
                             // Create an array of SqlParameter objects
                             var sqlparams = new SqlParameter[]
                             {
-                                new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { Value = wfProfile_ID}
+                                new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { Value = wfProfile_ID}
                             };
 
                             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, DDM_Config_Menu_DT, sql, sqlparams);
@@ -362,7 +361,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             foreach (DataRow menu_Row in DDM_Config_Menu_DT.Rows)
                             {
                                 int menu_ID = (int)menu_Row["DDM_Menu_ID"];
-                                int sortOrder = (int)menu_Row["Order"];
+                                int sortOrder = (int)menu_Row["Sort_Order"];
                                 string menu_Name = (string)menu_Row["Name"];
 
                                 GBL_Menu_Order_Dict.Add(menu_ID, sortOrder);
@@ -376,7 +375,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     if (DDL_Process == "Insert")
                     {
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
-                        int sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["Order"];
+                        int sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["Sort_Order"];
                         string menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
                         GBL_Menu_Order_Dict.Add(menuOptionID, sortOrder);
@@ -386,8 +385,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     else if (DDL_Process == "Update")
                     {
                         int menuOptionID = (int)Config_Menu_DataRow.OriginalDataRow["DDM_Menu_ID"];
-                        int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["Order"];
-                        int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["Order"];
+                        int orig_sortOrder = (int)Config_Menu_DataRow.OriginalDataRow["Sort_Order"];
+                        int new_sortOrder = (int)Config_Menu_DataRow.ModifiedDataRow["Sort_Order"];
                         string orig_menu_Name = (string)Config_Menu_DataRow.OriginalDataRow["Name"];
                         string new_menu_Name = (string)Config_Menu_DataRow.ModifiedDataRow["Name"];
 
@@ -459,14 +458,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var sqa = new SqlDataAdapter();
                             var DDM_Config_Menu_DT = new DataTable();
                             // Define the select query and parameters
-                            string sql = @"
-						        					SELECT *
-						       						FROM DDM_Config_Menu
-						       						WHERE DDM_Profile_ID = @DDM_Profile_ID";
+                            var sql = @"SELECT *
+						       			FROM DDM_Config_Menu
+						       			WHERE DDM_Config_ID = @DDM_Config_ID";
                             // Create an array of SqlParameter objects
                             var sqlparams = new SqlParameter[]
                             {
-                                new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { Value = wfProfile_ID}
+                                new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { Value = wfProfile_ID}
                             };
 
                             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, DDM_Config_Menu_DT, sql, sqlparams);
@@ -576,10 +574,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var sqa = new SqlDataAdapter();
                         var DDM_Config_Count_DT = new DataTable();
                         // Define the select query and parameters
-                        var sql = @"
-                                            SELECT Count(*) as Count
-                                            FROM DDM_Config
-                                            WHERE ProfileKey = @wf_ProfileKey";
+                        var sql = @"SELECT Count(*) as Count
+                                    FROM DDM_Config
+                                    WHERE Profile_Key = @wf_ProfileKey";
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
@@ -593,21 +590,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						{
 
 	                        // Example: Get the max ID for the "MCM_Calc_Config" table
-	                        new_Profile_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config", "DDM_Profile_ID");
+	                        new_Profile_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config", "DDM_Config_ID");
 							BRApi.ErrorLog.LogMessage(si,$"Hit {new_Profile_Config_ID}");
 	                        var sqa_ddm_config = new SQA_DDM_Config(si, connection);
 	                        var DDM_Config_DT = new DataTable();
 	
 	                        // Fill the DataTable with the current data from MCM_Dest_Cell
-	                        sql = @"
-										SELECT * 
-										FROM DDM_Config 
-										WHERE DDM_Profile_ID = @DDM_Profile_ID";
+	                        sql = @"SELECT * 
+									FROM DDM_Config 
+									WHERE DDM_Config_ID = @DDM_Config_ID";
 	
 	                        // Update the value of the existing sqlparams array
 							sqlparams = new SqlParameter[]
 	                        {
-	                        new SqlParameter("@DDM_Profile_ID", SqlDbType.Int) { Value = new_Profile_Config_ID }
+	                        new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { Value = new_Profile_Config_ID }
 	                        };
 							
 	                        sqa_ddm_config.Fill_DDM_Config_DT(si, sqa, DDM_Config_DT, sql, sqlparams);
@@ -616,10 +612,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	
 	                        // Query WorkflowProfileHierarchy for the given wf_ProfileKey
 	                        var wfProfile_Step_Type_DT = new DataTable();
-	                        sql = @"
-	                            SELECT *
-	                            FROM WorkflowProfileHierarchy
-	                            WHERE ProfileKey = @ProfileKey";
+	                        sql = @"SELECT *
+		                            FROM WorkflowProfileHierarchy
+		                            WHERE ProfileKey = @ProfileKey";
 	                        sqlparams = new SqlParameter[]
 	                        {
 	                            new SqlParameter("@ProfileKey", SqlDbType.UniqueIdentifier) { Value = wf_ProfileKey }
@@ -627,8 +622,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, wfProfile_Step_Type_DT, sql, sqlparams);
 	
 	                        DataRow newRow = DDM_Config_DT.NewRow();
-	                        newRow["DDM_Profile_ID"] = new_Profile_Config_ID;
-	                        newRow["ProfileKey"] = wf_ProfileKey;
+	                        newRow["DDM_Config_ID"] = new_Profile_Config_ID;
+							newRow["DDM_Type"] = 1;
+	                        newRow["Profile_Key"] = wf_ProfileKey;
 	                        // Determine Profile_Step_Type based on wfProfile_Step_Type_DT
 	                        if (wfProfile_Step_Type_DT.Rows.Count > 0)
 	                        {

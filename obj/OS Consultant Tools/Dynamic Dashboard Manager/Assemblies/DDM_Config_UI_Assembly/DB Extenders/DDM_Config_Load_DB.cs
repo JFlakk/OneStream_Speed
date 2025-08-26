@@ -71,29 +71,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 if (setup_Options == String.Empty)
                 {
                     BRApi.ErrorLog.LogMessage(si, "Hit Setup Options DDM: " + setup_Options);
-                    setup_Options = "0_DDM_Profile_Config";
+                    setup_Options = "0_DDM_WFProfile_Config";
                 }
 
                 Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("DL_DDM_Setup_Options", setup_Options);
                 Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_Menu_Width", "Auto");
+                var ddm_Type = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("DL_DDM_Type", "1").XFConvertToInt();
 
-                var default_root_Profile = get_Default_Root_Profile(si, globals, api, db_args); //Get Default root profile
-                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("BL_DDM_Root_WF_Profiles", default_root_Profile);
-                var prior_root_Profile = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("BL_DDM_Root_WF_Profiles", "NA");
-                var new_root_Profile = true;
-                if (default_root_Profile == prior_root_Profile)
-                {
-                    new_root_Profile = false;
-                }
-                var default_WF_Profile = get_Default_WF_Profile(si, globals, api, db_args, new_root_Profile, default_root_Profile);
-                BRApi.ErrorLog.LogMessage(si, "Hit: " + default_WF_Profile);
-                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_trv_WF_Profile", default_WF_Profile);
-                var prior_WF_Profile = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("IV_DDM_trv_WF_Profile", "NA");
-                var new_WF_Profile = true;
-                if ((default_WF_Profile == prior_WF_Profile) && (default_WF_Profile != "NA"))
-                {
-                    new_WF_Profile = false;
-                }
+				if (setup_Options == "0_DDM_WFProfile_Config")
+				{
+	                var default_root_Profile = get_Default_Root_Profile(si, globals, api, db_args); //Get Default root profile
+	                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("BL_DDM_Root_WFProfiles", default_root_Profile);
+	                var prior_root_Profile = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("BL_DDM_Root_WFProfiles", "NA");
+	                var new_root_Profile = true;
+	                if (default_root_Profile == prior_root_Profile)
+	                {
+	                    new_root_Profile = false;
+	                }
+	                var default_WF_Profile = get_Default_WF_Profile(si, globals, api, db_args, new_root_Profile, default_root_Profile);
+	                BRApi.ErrorLog.LogMessage(si, "Hit: " + default_WF_Profile);
+	                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_DDM_trv_WF_Profile", default_WF_Profile);
+	                var prior_WF_Profile = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue("IV_DDM_trv_WF_Profile", "NA");
+	                var new_WF_Profile = true;
+	                if ((default_WF_Profile == prior_WF_Profile) && (default_WF_Profile != "NA"))
+	                {
+	                    new_WF_Profile = false;
+	                }
+				}
+				else
+				{
+						
+				}
                 //				//Get Default Scenario Type
                 //				//Get Default Ent Mbr Filter
                 //				//Get Default Agg vs Consol
@@ -169,8 +177,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         var sqa = new SqlDataAdapter();
                         // Define the select query and sqlparams
-                        var sql = @"
-		       						SELECT ProfileName 
+                        var sql = @"SELECT ProfileName 
         							FROM WorkflowProfileHierarchy
         							WHERE HierarchyLevel = 1
 									AND IsTemplate = 0 ";
@@ -225,12 +232,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         var sqa = new SqlDataAdapter();
                         // Define the select query and sqlparams
-                        string sql = @"
-										SELECT prof.ProfileKey,prof.ProfileName
-										FROM WorkflowProfileHierarchy prof
-										WHERE prof.HierarchyLevel = 1
-									    AND prof.IsTemplate = 0
-										AND prof.ProfileName = @root_ProfileName";
+                        var sql = @"SELECT prof.ProfileKey,prof.ProfileName
+									FROM WorkflowProfileHierarchy prof
+									WHERE prof.HierarchyLevel = 1
+								    AND prof.IsTemplate = 0
+									AND prof.ProfileName = @root_ProfileName";
 
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]

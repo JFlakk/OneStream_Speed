@@ -137,9 +137,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 var sqa = new SqlDataAdapter();
 
-                var sql = @"Select DDM_Profile_ID
+                var sql = @"Select DDM_Config_ID
                             From DDM_Config
-                            Where ProfileKey = @OS_ProfileKey";
+                            Where Profile_Key = @OS_ProfileKey";
 
                 var sqlparams = new SqlParameter[] {
                     new SqlParameter("@OS_ProfileKey", SqlDbType.UniqueIdentifier) { Value = profileKey }
@@ -153,7 +153,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             if (dt.Rows.Count > 0)
             {
-                profileID = Convert.ToInt32(dt.Rows[0]["DDM_Profile_ID"]);
+                profileID = Convert.ToInt32(dt.Rows[0]["DDM_Config_ID"]);
             }
 
             return profileID;
