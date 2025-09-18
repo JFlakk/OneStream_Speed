@@ -501,7 +501,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 		Public Function GetCascadingMbrFilter() As String
 			Try
 				' Read incoming args
-				Dim fundsCenter As String = args.NameValuePairs.XFGetValue("fundsCenter", "NA")
+				Dim entity As String = args.NameValuePairs.XFGetValue("entity", "NA")
 				Dim appn As String = args.NameValuePairs.XFGetValue("appn", "NA")
 				Dim mdep As String = args.NameValuePairs.XFGetValue("mdep", "NA")
 				Dim sag As String = args.NameValuePairs.XFGetValue("sag", "NA")
@@ -510,31 +510,143 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				Dim status As String = args.NameValuePairs.XFGetValue("status", "NA")
 				Dim returnType As String = args.NameValuePairs.XFGetValue("returnType", "NA")
 
-				' Build a deterministic signature of the inputs
-				Dim currentSignature As String = String.Concat(fundsCenter, "|", appn, "|", mdep, "|", sag, "|", ape, "|", dollarType, "|", status, "|", returnType)
+				' Build a compact signature for Entity + Appn only
+				Dim currRebuildparams As String = String.Concat(entity, "|", appn, "|", status, "|", returnType)
+				' Build a deterministic signature of the inputs (full)
+				Dim currFilterDTparams As String = String.Concat(entity, "|", appn, "|", status, "|", returnType, "|", mdep, "|", sag, "|", ape, "|", dollarType)
 
-				' Use workspace session settings to persist last seen signature per user/workspace
-				Dim cacheCategory As String = "CascadingFilterCache"
-				Dim signatureKey As String = "SignatureKey"
-				Dim prevSignature As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCategory, signatureKey, "")
+				' Use workspace session settings to persist last seen signatures per user/workspace
+				Dim cacheCat As String = "CascadingFilterCache"
+				Dim filterDTparams As String = "FilterDTparams"
+				Dim rebuildparams As String = "rebuildparams"
 
-				Dim needsRebuild As Boolean = Not String.Equals(prevSignature, currentSignature, StringComparison.Ordinal)
+				Dim prevRebuildParams As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, "")
+				Dim needsRebuild As Boolean = Not String.Equals(prevRebuildParams, currRebuildparams, StringComparison.Ordinal)
 
+				Dim dt As New DataTable 
 				If needsRebuild Then
-					' mark new signature in the session so subsequent calls know inputs haven't changed
-					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, cacheCategory, signatureKey, currentSignature)
-					' Caller can decide to rebuild the datatable when this function returns "True"
+					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, currRebuildparams)
+
+				Else
+					dt = BRApi.Utilities.GetSessionDataTable(si, si.UserName, "CascadingFilter")
 				End If
 
-				' Optionally fetch the stored datatable (if one already exists) - caller can choose to use or rebuild it
-				Dim dt As DataTable = BRApi.Utilities.GetSessionDataTable(si, si.UserName, "CascadingFilter")
+				Dim prevFullSignature As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, filterDTparams, "")
+				Dim prevEntityAppnSignature As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, "")
 
-				' Return a simple string flag indicating whether a rebuild is required.
-				' If you need to return the actual member-filter string, replace this return with your original serialization logic using 'dt'.
-				Return needsRebuild.ToString()
+				' Helper to find actual column name (case-insensitive)
+				Dim FindColName = Function(table As DataTable, colCandidate As String) As String
+										If table Is Nothing Then Return Nothing
+										For Each c As DataColumn In table.Columns
+											If String.Equals(c.ColumnName, colCandidate, StringComparison.OrdinalIgnoreCase) Then
+												Return c.ColumnName
+											End If
+										Next
+										Return Nothing
+									End Function
+
+				Dim filterParts As New List(Of String)
+
+				' Only add filters when parameter is provided and not "NA"
+				If Not String.IsNullOrWhiteSpace(mdep) AndAlso Not mdep.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+					Dim col = FindColName(dt, "mdep")
+					If Not String.IsNullOrEmpty(col) Then filterParts.Add("[" & col & "] = '" & mdep.Replace("'", "''") & "'")
+				End If
+
+				If Not String.IsNullOrWhiteSpace(sag) AndAlso Not sag.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+					Dim col = FindColName(dt, "sag")
+					If Not String.IsNullOrEmpty(col) Then filterParts.Add("[" & col & "] = '" & sag.Replace("'", "''") & "'")
+				End If
+
+				If Not String.IsNullOrWhiteSpace(ape) AndAlso Not ape.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+					Dim col = FindColName(dt, "ape")
+					If Not String.IsNullOrEmpty(col) Then filterParts.Add("[" & col & "] = '" & ape.Replace("'", "''") & "'")
+				End If
+
+				If Not String.IsNullOrWhiteSpace(dollarType) AndAlso Not dollarType.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+					Dim col = FindColName(dt, "dollartype")
+					If Not String.IsNullOrEmpty(col) Then filterParts.Add("[" & col & "] = '" & dollarType.Replace("'", "''") & "'")
+				End If
+
+				If Not String.IsNullOrWhiteSpace(status) AndAlso Not status.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+					Dim col = FindColName(dt, "status")
+					If Not String.IsNullOrEmpty(col) Then filterParts.Add("[" & col & "] = '" & status.Replace("'", "''") & "'")
+				End If
+
+				If Not String.IsNullOrWhiteSpace(entity) AndAlso Not entity.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+					Dim col = FindColName(dt, "entity")
+					If Not String.IsNullOrEmpty(col) Then filterParts.Add("[" & col & "] = '" & entity.Replace("'", "''") & "'")
+				End If
+
+				If Not String.IsNullOrWhiteSpace(appn) AndAlso Not appn.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+					Dim col = FindColName(dt, "appn")
+					If Not String.IsNullOrEmpty(col) Then filterParts.Add("[" & col & "] = '" & appn.Replace("'", "''") & "'")
+				End If
+
+				If Not String.IsNullOrWhiteSpace(returnType) AndAlso Not returnType.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+					Dim col = FindColName(dt, "returntype")
+					If Not String.IsNullOrEmpty(col) Then filterParts.Add("[" & col & "] = '" & returnType.Replace("'", "''") & "'")
+				End If
+
+				Dim filterExpr As String = If(filterParts.Count > 0, String.Join(" AND ", filterParts), String.Empty)
+				Dim rows() As DataRow = If(String.IsNullOrEmpty(filterExpr), dt.Select(), dt.Select(filterExpr))
+
+				' Prepare a compact return: count plus a small sample of identifying values.
+				Dim resultCount As Integer = rows.Length
+
+				' Determine an identifying column to surface in samples (prefer MemberScript, then Entity, then first column)
+				Dim idCol As String = FindColName(dt, "memberscript")
+				If String.IsNullOrEmpty(idCol) Then idCol = FindColName(dt, "entity")
+				If String.IsNullOrEmpty(idCol) AndAlso dt.Columns.Count > 0 Then idCol = dt.Columns(0).ColumnName
+
+				Dim samples As New List(Of String)
+				Dim maxSamples As Integer = 50
+				For i As Integer = 0 To Math.Min(resultCount - 1, maxSamples - 1)
+					Dim v = If(rows(i).IsNull(idCol), String.Empty, rows(i)(idCol).ToString())
+					If v IsNot Nothing Then samples.Add(v)
+				Next
+
+				' Return format: Count=<n>;Samples=<v1>,<v2>,...
+				Return "Count=" & resultCount.ToString() & ";Samples=" & String.Join(",", samples)
+
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
+		End Function
+		
+		Public Function GetFDXFilteredRows() As String
+			Dim cmd As String = args.NameValuePairs.XFGetValue("cmd", "NA")
+			Dim scen As String = args.NameValuePairs.XFGetValue("scen", "NA")
+			Dim time As String = args.NameValuePairs.XFGetValue("time", "NA")
+			Dim appn As String = args.NameValuePairs.XFGetValue("appn", "NA")
+			Dim FilterString As String
+
+			FilterString = $"Cb#ARMY:C#Aggregated:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#[{appn}]"
+
+			globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({FilterString}))")
+	
+			GetDataBuffer(si,globals,api,args)
+	
+			If Not globals.GetObject("Results") Is Nothing
+				Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
+	
+				For Each msb In results.Keys
+				    msb.Scenario = vbNullString
+				    msb.Entity =  sEntity
+				    msb.Account = vbNullString
+				    msb.Origin = vbNullString
+				    msb.IC = vbNullString
+				    msb.Flow = vbNullString		
+				    msb.UD2 = vbNullString
+				    msb.UD4 = vbNullString
+				    msb.UD5 = vbNullString
+				    msb.UD7 = vbNullString   
+					If Not toSort.ContainsKey(msb.GetMemberScript)
+						toSort.Add(msb.GetMemberScript, $"E#{msb.Entity}")
+					End If
+				Next
+			End If	
+			
 		End Function
 		
 #Region "ExportReportMDEPFilterList"
@@ -1840,42 +1952,21 @@ End if"
 		
 	End Function
 	
-	Public Function GetFDXFilteredRows() As String
-		Dim FilterString As String
-		If String.IsNullOrWhiteSpace(FilterString) Then
-			FilterString = $"Cb#ARMY:C#Local:S#{s}:T#{Time}:E#[{e}]:A#{Account}:V#{View}:O#Top:I#Top:F#Top:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#Top"
-		Else
-			FilterString = $"{FilterString} + Cb#ARMY:C#Aggregated:S#{s}:T#{Time}:E#[{e}]:A#{Account}:V#{View}:O#Top:I#Top:F#Top:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#Top"		
-		End If
+
+#End Region
+
+#Region "Utilities: Get DataBuffer"
+	
+	Public Sub GetDataBuffer(ByRef si As SessionInfo, ByRef globals As BRGlobals, ByRef api As Object,ByRef args As DashboardStringFunctionArgs)
 		
-		globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({FilterString}),[U1#{U1}.Base.Options(Cube=ARMY,ScenarioType=Forecast,MergeMembersFromReferencedCubes=False)],[U3#{U3}.Base.Options(Cube=ARMY,ScenarioType=Forecast,MergeMembersFromReferencedCubes=False)],[U6#None,U6#Pay_Benefits.Children,U6#Non_Pay.Children,U6#Obj_Class.Children])")
-
-		GetDataBuffer(si,globals,api,args)
-
-		If Not globals.GetObject("Results") Is Nothing
-			Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
-
-			'Add Total row
-			toSort.Add($"E#{sEntity}:U1#{U1}:U3#{U3}:U6#Top:Name(Total)",$"E#{sEntity}:U6#Top")
-
-			For Each msb In results.Keys
-			   msb.Scenario = vbNullString
-			   msb.Entity =  sEntity
-			   msb.Account = vbNullString
-			   msb.Origin = vbNullString
-			   msb.IC = vbNullString
-			   msb.Flow = vbNullString		
-			   msb.UD2 = vbNullString
-			   msb.UD4 = vbNullString
-			   msb.UD5 = vbNullString
-			   msb.UD7 = vbNullString   
-				If Not toSort.ContainsKey(msb.GetMemberScript)
-					toSort.Add(msb.GetMemberScript, $"E#{msb.Entity}")
-				End If
-			Next
-		End If	
+		Dim workspaceID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "00 GBL")				
+		Dim Dictionary As Dictionary(Of String, String)
 		
-	End Function
+		'BRApi.Finance.Calculate.ExecuteCustomCalculateBusinessRule(si,workspaceID, "workspace.GBL.GBL Objects.WSMU","Global_Buffers",Dictionary,customcalculatetimetype.CurrentPeriod)
+		BRApi.Finance.Calculate.ExecuteCustomCalculateBusinessRule(si,"Global_Buffers","GetCVDataBuffer",Dictionary,customcalculatetimetype.CurrentPeriod)
+
+
+	End Sub
 
 #End Region
 
