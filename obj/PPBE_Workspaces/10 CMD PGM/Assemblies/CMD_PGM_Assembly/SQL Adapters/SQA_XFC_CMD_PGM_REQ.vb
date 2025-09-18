@@ -1,6 +1,21 @@
 Imports System
+Imports System.Collections.Generic
 Imports System.Data
-Imports System.Data.SqlClient
+Imports System.Data.Common
+Imports System.Globalization
+Imports System.IO
+Imports System.Linq
+Imports Microsoft.VisualBasic
+Imports OneStream.Finance.Database
+Imports OneStream.Finance.Engine
+Imports OneStream.Shared.Common
+Imports OneStream.Shared.Database
+Imports OneStream.Shared.Engine
+Imports OneStream.Shared.Wcf
+Imports OneStream.Stage.Database
+Imports OneStream.Stage.Engine
+Imports OneStreamWorkspacesApi
+Imports OneStreamWorkspacesApi.V800
 
 Public Class SQA_XFC_CMD_PGM_REQ
     Private ReadOnly _connection As SqlConnection
