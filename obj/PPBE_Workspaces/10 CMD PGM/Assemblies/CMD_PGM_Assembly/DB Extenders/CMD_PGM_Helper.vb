@@ -17,33 +17,31 @@ Imports OneStream.Finance.Engine
 Imports OneStream.Finance.Database
 Imports System.Text.RegularExpressions
 Imports OneStreamWorkspacesApi.V800
+Imports Workspace.GBL.GBL_Assembly
 
 
 Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.CMD_PGM_Helper
 	Public Class MainClass
+		Private si As SessionInfo
+        Private globals As BRGlobals
+        Private api As Object
+        Private args As DashboardExtenderArgs
 		Public Function Main(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
 			Try
-'If si.UserName.XFEqualsIgnoreCase("rdavies") Then BRapi.ErrorLog.LogMessage(si,"START Dashboard Extender: "& Date.Now().ToString("hh:mm:ss:fff") )						
-	
-				'========== debug vars ============================================================================================================ 
-				Dim sDebugRuleName As String = "REQ_SolutionHelper"
-				Dim sDebugFuncName As String = args.FunctionName	
-
+				Me.si = si
+				Me.globals = globals
+				Me.api = api
+				Me.args = args
 				Select Case args.FunctionType
 					Case Is = DashboardExtenderFunctionType.ComponentSelectionChanged
 
-#Region "Check_WF_Complete_Lock"
-						If args.FunctionName.XFEqualsIgnoreCase("Check_WF_Complete_Lock") Then
-							Me.Check_WF_Complete_Lock(si, globals, api, args)
-						End If
-#End Region
-
-#Region "CreateREQMain"
-						If args.FunctionName.XFEqualsIgnoreCase("CreateREQMain") Then
-							Me.Check_WF_Complete_Lock(si, globals, api, args)
-							Me.DbCache(si,args)
-						End If
-#End Region
+						Select Case args.FunctionName
+							Case args.FunctionName.XFEqualsIgnoreCase("Check_WF_Complete_Lock")
+								Me.Check_WF_Complete_Lock(si, globals, api, args)
+							Case args.FunctionName.XFEqualsIgnoreCase("CreateREQMain")
+								Me.Check_WF_Complete_Lock(si, globals, api, args)
+								Me.DbCache(si,args)
+						End Select
 
 #Region "Updated Status"
 'Updated by Fronz 09/24/2024 - Added the Check_WF_Complete_Lock function
@@ -89,28 +87,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 '							Next
 					End If
 				End If
-'				Else If REQFlow.xfContainsignorecase("REQ") And wfProfileName.XFContainsIgnoreCase("Review Financials") Then
-'					Try
-'						Me.ConfirmReview(si, globals, api, args)
-'						Catch ex As Exception
-'					End Try
-
-'				Else If REQFlow.xfContainsignorecase("REQ") And wfProfileName.XFContainsIgnoreCase("Approve Requirements") Then
-'					Try
-'						Me.ApproveUFR(si, globals, api, args)
-'						Dim paramsToClear As String = "prompt_cbx_UFRPRO_UFRAPR_0CaAa_ApproveUFRs__UpdateFundingStatus," & _
-'														"prompt_cbx_UFRPRO_AAAAAA_ApproverWFStatus__Shared,"
-'							Return Me.ReplaceSelections(si, globals, api, args, paramsToClear)
-'						Dim ModifiedCustomSubstVars As XFSelectionChangedTaskResult = Nothing						
-'						Dim paramsToClear As String = "prompt_cbx_UFRPRO_UFRAPR_0CaAa_ApproveUFRs__UpdateFundingStatus," & _
-'													"prompt_cbx_UFRPRO_AAAAAA_ApproverWFStatus__Shared,"
-								
-'							ModifiedCustomSubstVars = Me.ShowAndHideDashboards(si,globals,api,args)
-'							Return Me.ReplaceSelections(si, globals, api, args, paramsToClear, ModifiedCustomSubstVars)
-'						Catch ex As Exception
-'							Throw ErrorHandler.LogWrite(si, New XFException(si,ex))
-'					End Try
-'					Me.SubmitForApproval(si, globals, api, args)
 #End Region						
 						
 #Region "Create New REQ"
@@ -166,9 +142,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 														"prompt_tbx_REQPRO_AAAAAA_0CaAa_ReqAmt__Shared," & _
 														"prompt_cbx_REQPRO_AAAAAA_0CaAa_APPN__Shared," & _
 														"prompt_cbx_REQPRO_AAAAAA_0CaAa_APPNFund__Shared," & _
-														"prompt_cbx_REQPRO_AAAAAA_0CaAa_MDEP__Shared," & _
-														"prompt_cbx_REQPRO_AAAAAA_0CaAa_SAG__Shared," & _
-														"prompt_cbx_REQPRO_AAAAAA_0CaAa_SAGAPE__Shared," & _
+														"ML_REQPRO_MDEP," & _
+														"ML_REQPRO_SAG," & _
+														"ML_REQPRO_SAGAPE," & _
 														"prompt_cbx_REQPRO_AAAAAA_0CaAa_DollarType__Shared," & _
 														"prompt_cbx_REQPRO_AAAAAA_0CaAa_CommitmentItem__Shared," & _
 														"prompt_cbx_REQPRO_AAAAAA_0CaAa_RecurringCost__Shared"
@@ -438,23 +414,23 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							If wfProfileName.XFContainsIgnoreCase("Approve") Then
 								Dim paramsToClear As String = "prompt_cbx_UFRPRO_UFRAPR_0CaAa_ApproveUFRs__UpdateFundingStatus," & _
 													"prompt_cbx_UFRPRO_AAAAAA_ApproverWFStatus__Shared," & _
-													"prompt_cbx_REQPRO_AAAAAA_0CaAa_FundCenterFilterByStatus__Shared," & _
-												    "prompt_cbx_REQPRO_AAAAAA_0CaAa_U1APPNFilterByStatus__Shared," & _ 
-												    "prompt_cbx_REQPRO_AAAAAA_0CaAa_U2FilterByStatus__Shared," & _
-												    "prompt_cbx_REQPRO_AAAAAA_0CaAa_U3FilterByStatus__Shared," & _
-												    "prompt_cbx_REQPRO_AAAAAA_0CaAa_U3SAGFilterByStatus__Shared," & _
-												    "prompt_cbx_REQPRO_AAAAAA_0CaAa_U4FilterByStatus__Shared," & _ 
+													"ML_REQPRO_FundCenter_Status," & _
+												    "ML_REQPRO_APPN," & _ 
+												    "ML_REQPRO_MDEP," & _
+												    "ML_REQPRO_APE9," & _
+												    "ML_REQPRO_SAG," & _
+												    "ML_REQPRO_DollarType," & _ 
 													"prompt_tbx_REQPRO_AAAAAA_0CaAa_SearchReq__Shared"
 						
 								ModifiedCustomSubstVars = Me.ShowAndHideDashboards(si,globals,api,args)
 								Return Me.ReplaceSelections(si, globals, api, args, paramsToClear, ModifiedCustomSubstVars)
 							Else
-							Dim paramsToClear As String = "prompt_cbx_REQPRO_AAAAAA_0CaAa_FundCenterFilterByStatus__Shared," & _
-														  "prompt_cbx_REQPRO_AAAAAA_0CaAa_U1APPNFilterByStatus__Shared," & _ 
-														  "prompt_cbx_REQPRO_AAAAAA_0CaAa_U2FilterByStatus__Shared," & _
-														  "prompt_cbx_REQPRO_AAAAAA_0CaAa_U3FilterByStatus__Shared," & _
-														  "prompt_cbx_REQPRO_AAAAAA_0CaAa_U3SAGFilterByStatus__Shared," & _
-														  "prompt_cbx_REQPRO_AAAAAA_0CaAa_U4FilterByStatus__Shared," & _ 
+							Dim paramsToClear As String = "ML_REQPRO_FundCenter_Status," & _
+														  "ML_REQPRO_APPN," & _ 
+														  "ML_REQPRO_MDEP," & _
+														  "ML_REQPRO_APE9," & _
+														  "ML_REQPRO_SAG," & _
+														  "ML_REQPRO_DollarType," & _ 
 														  "prompt_tbx_REQPRO_AAAAAA_0CaAa_SearchReq__Shared"
 								
 							ModifiedCustomSubstVars = Me.ShowAndHideDashboards(si,globals,api,args)
@@ -1073,10 +1049,10 @@ Dim tStart As DateTime =  Date.Now()
 'END MAIN =================================================================================================
 
 #Region "Constants"
-	Public UFR_String_Helper As New OneStream.BusinessRule.DashboardStringFunction.UFR_String_Helper.MainClass	
-	Private BR_REQDataSet As New OneStream.BusinessRule.DashboardDataSet.REQ_DataSet.MainClass
-	Public GEN_General_String_Helper As New OneStream.BusinessRule.DashboardStringFunction.GEN_General_String_Helper.MainClass	
-	Public aaaUIX_SolutionHelper As New OneStream.BusinessRule.DashboardExtender.aaaUIX_SolutionHelper.MainClass
+	'Public UFR_String_Helper As New OneStream.BusinessRule.DashboardStringFunction.UFR_String_Helper.MainClass	
+	Private BR_REQDataSet As New Workspace.CMD_PGM.CMD_PGM_Assembly.BusinessRule.DashboardDataSet.CMD_PGM_DataSet.MainClass()
+	Public GEN_General_String_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardStringFunction.GBL_General_String_Helper.MainClass	
+	'Public aaaUIX_SolutionHelper As New Workspace.CMD_PGM.CMD_PGM_Assembly.BusinessRule.DashboardExtender.aaaUIX_SolutionHelper.MainClass
 	
 	
 	

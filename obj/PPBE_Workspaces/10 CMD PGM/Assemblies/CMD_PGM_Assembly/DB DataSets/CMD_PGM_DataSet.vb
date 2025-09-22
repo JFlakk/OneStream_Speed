@@ -16,41 +16,24 @@ Imports OneStream.Stage.Database
 Imports OneStream.Finance.Engine
 Imports OneStream.Finance.Database
 
-Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
+Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.CMD_PGM_DataSet
 	Public Class MainClass
+		Private si As SessionInfo
+        Private globals As BRGlobals
+        Private api As Object
+        Private args As DashboardDataSetArgs
 		Public Function Main(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardDataSetArgs) As Object
 			Try
-'If si.UserName.XFEqualsIgnoreCase("rdavies") Then BRapi.ErrorLog.LogMessage(si,"START Dataset: "& args.DataSetName & " " & Date.Now().ToString("hh:mm:ss:fff") )						
-				
+				Me.si = si
+				Me.globals = globals
+				Me.api = api
+				Me.args = args
 				Select Case args.FunctionType
 					
-					Case Is = DashboardDataSetFunctionType.GetDataSetNames
-						Dim names As New List(Of String)()
-						names.Add("StatusList")
-						Return names
-					
 					Case Is = DashboardDataSetFunctionType.GetDataSet
-						If args.DataSetName.XFEqualsIgnoreCase("StatusList") Then
-							
-							'Check the filter type in order to retrieve the proper stored list
-							Dim listType As String = args.NameValuePairs.XFGetValue("Type","All")
-							'Dim cppHelper As New OneStream.BusinessRule.DashboardExtender.CPP_SolutionHelper.MainClass
-							Dim statusValues As String = "Test1, Test2" 							
-							
-							'Get the stored status list and turn it into a data table (Removes Square Brackets)
-							Dim statusItems As List(Of String) = StringHelper.SplitString(statusValues,",")
-						
-							'Create and fill it from the list of status Values
-							Dim dt As DataTable = Me.CreateNameValuePairTable(si, "StatusList")
-							For Each statusItem As String In statusItems
-								Me.WriteNameValuePairRow(si, dt, statusItem.Trim, statusItem.Trim)
-							Next				
-							Return dt 	
-							
-						End If
-#Region "Related REQs By Selected Entity"
-						If args.DataSetName.XFEqualsIgnoreCase("REQListByEntity") Then
-							Return Me.REQListByEntity(si,globals,api,args)						
+#Region "REQ Title List"
+						If args.DataSetName.XFEqualsIgnoreCase("REQTitleList") Then
+							Return Me.REQTitleList()						
 						End If
 #End Region  'Updated
 
@@ -634,7 +617,7 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 			'Call dataset BR to return a datatable that has been filtered by ufr status
 			args.NameValuePairs.XFSetValue("Entity", sFundCenter)
 			args.NameValuePairs.XFSetValue("Mode", "Re-Prioritize") 
-			Dim dt = REQListByEntity(si, globals, api, args)
+			Dim dt = REQTitleList()
 			Dim sSelectAllVal As String = ""
 			For Each row As DataRow In dt.Rows
 				sSelectAllVal = $"{sSelectAllVal},{CStr(row("Value"))}"
@@ -959,16 +942,13 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 			  
 #End Region  'Updated
 	
-#Region "REQListByEntity"
-'Updated: KL, MF, CM - 07/19/2024 - Ticket 1484
-		'Updated: AK RMW-1565 8/29/24 Updated SQL to get Title from REQ_Shared, 1999 for PGM_C20XX
-		'Updated: EH 9/18/2024 - RMW-1732 Reverting REQ_Shared changes
-		Public Function REQListByEntity(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardDataSetArgs) As Object
+#Region "REQTitleList"
+		Public Function REQTitleList() As DataTable
 			Try	
 'Dim tStart As DateTime =  Date.Now()				
 'brapi.ErrorLog.LogMessage(si,"START: "	& System.DateTime.Now)
-				Dim dt As DataTable = Me.CreateNameValuePairTable(si, "REQListByEntity")				
-
+				Dim dt As DataTable = Me.CreateNameValuePairTable(si, "REQTitleList")				
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_XFTV_Helpers.GetWFInfoDetails(si)
 				Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
 				Dim x As Integer = InStr(wfProfileName, ".")
 				Dim sProfileName As String = wfProfileName.Substring(x + 0)
@@ -978,7 +958,7 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 		        Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
 		        Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
 				Dim sFundCenter As String = args.NameValuePairs.XFGetValue("Entity")
-'brapi.ErrorLog.LogMessage(si, sFundCenter)
+
 
 				'If no fund center is passed then stop
 				If String.IsNullOrWhiteSpace(sFundCenter) Then 
@@ -1001,11 +981,11 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 				Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#"& sFundCenter,True)
 'brapi.ErrorLog.LogMessage(si, "FCs Count line = " & LFundCenters.Count)				
 			
-				Dim sCubeView As String = args.NameValuePairs.XFGetValue("CubeView")
+					
 
 				'Set up where clauses for getting the annotation from the table
 				'This approach was more performant that getDataCell method call
-				Dim allREQs As String = ""
+				
 				Dim allFCs As String = ""
 				If LFundCenters.Count = 0 Then
 					Return dt
@@ -1017,53 +997,25 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 				allFCs = allFCs.Substring(0,allFCs.Length-1)
 				
 				Dim SQL As New Text.StringBuilder
-'				SQL.Append($"WITH Status AS (
-'						SELECT A.CUBE AS CUBE, A.ENTITY AS ENTITY, A.SCENARIO AS SCENARIO, A.TIME AS TIME, A.FLOW AS FLOW, A.TEXT AS STATUS
-'						       FROM DATAATTACHMENT A 
-'						        WHERE A.ACCOUNT = 'REQ_RQMT_STATUS'
-'						        AND A.CUBE = '{sCube}'
-'						        AND A.ENTITY IN ({allFCs})
-'						        AND A.SCENARIO = '{sScenario}'
-'						)
-'						SELECT Status.ENTITY, Status.FLOW, Status.STATUS AS STATUS, B.Text AS TITLE FROM Status
-'						JOIN DATAATTACHMENT B ON 
-'						         Status.CUBE = B.CUBE 
-'						         AND Status.ENTITY = B.ENTITY 
-'						         AND Status.SCENARIO = B.SCENARIO 
-'						         AND Status.TIME = B.TIME 
-'						         AND Status.FLOW = B.FLOW 
-'						WHERE B.ACCOUNT = 'REQ_TITLE'")
+
 				
-				SQL.Append($"WITH Status AS (
-						SELECT A.CUBE AS CUBE, A.ENTITY AS ENTITY, A.SCENARIO AS SCENARIO, A.TIME AS TIME, A.FLOW AS FLOW, A.TEXT AS STATUS
-						       FROM DATAATTACHMENT A 
-						        WHERE A.ACCOUNT = 'REQ_RQMT_STATUS'
-						        AND A.CUBE = '{sCube}'
-						        AND A.ENTITY IN ({allFCs})
-						        AND A.SCENARIO = '{sScenario}'
-						),
-						Title AS (
-						SELECT A.CUBE AS CUBE, A.ENTITY AS ENTITY, A.SCENARIO AS SCENARIO, A.TIME AS TIME, A.FLOW AS FLOW, A.TEXT AS Text
-						       FROM DATAATTACHMENT A 
-						        WHERE A.ACCOUNT = 'REQ_TITLE'
-						        AND A.CUBE = '{sCube}'
-						        AND A.ENTITY IN ({allFCs})
-						        AND A.SCENARIO = '{sScenario}'
-						)
-						SELECT Status.ENTITY, Status.FLOW, Status.STATUS AS STATUS, B.Text AS TITLE 
-						FROM Status  
-						join Title B ON 
-						         Status.CUBE = B.CUBE 
-						         AND Status.ENTITY = B.ENTITY 
-						         AND Status.SCENARIO = B.SCENARIO 
-						         AND Status.TIME = B.TIME 
-						         AND Status.FLOW = B.FLOW ")
+				SQL.Append($"Select 
+								  	Req.Title,
+								  	Req.Entity,
+									Req.REQ_ID,
+									Req.Status
+								FROM XFC_CMD_PGM_REQ AS Req
+								
+								WHERE Req.WFScenario_Name = '{wfInfoDetails("ScenarioName")}'
+								AND Req.WFCMD_Name = '{wfInfoDetails("CMDName")}'
+								AND Req.WFTime_Name = '{wfInfoDetails("TimeName")}'	
+								Order By Req.Entity,Req.REQ_ID")
 				
 'BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
 'Return Nothing
 
 				'Dim dtFetch As New DataTable
-				Dim dtAll As DataTable = Me.CreateNameValuePairTable(si, "REQListByEntity")
+				Dim dtAll As DataTable = Me.CreateNameValuePairTable(si, "REQTitleList")
 				Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
 					 dtAll = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
 				End Using
@@ -1072,16 +1024,16 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 				'Build dt to return 
 				For Each dataRow As DataRow In dtAll.Rows					
 					
-					Dim FundCenter As String = dataRow.Item("ENTITY")
-					Dim ExistingREQ As String =  dataRow.Item("FLOW")
-					Dim TitleValue As String = ""'dataRow.Item("TITLE")
-					If dbnull.Value.Equals(dataRow.Item("TITLE")) Then
+					Dim FundCenter As String = dataRow.Item("Entity")
+					Dim ExistingREQ As String =  dataRow.Item("REQ_ID")
+					Dim TitleValue As String = ""
+					If dbnull.Value.Equals(dataRow.Item("Title")) Then
 						TitleValue = "!!! REPLACE WITH REQUIREMENT TITLE !!!"
 					Else
-						 TitleValue  =  dataRow.Item("TITLE")
+						 TitleValue  =  dataRow.Item("Title")
 					End If 
 
-					Dim REQStatus As String =  ""'dataRow.Item("STATUS")
+					Dim REQStatus As String = dataRow.Item("Status")
 					
 					'--------- get Entity Text3 --------- 
 					Dim sFC As String = sFundCenter.Replace(".Base","")
@@ -1099,22 +1051,7 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 					Dim newText3Num As String = icurrText3Num - 1
 					Dim newWFLevel As String = "L" & newText3Num
 					
-					'This is to account for instances where Status is set to blank by the manager.
-					'Not a valid business process. But OS exposes 'No Data' option				
-					If dataRow.IsNull(("STATUS")) Then	
-						'RMW-1028 - To address the blank status issue, REQ history will be parsed to find the previous FC level the REQ was on. A new status will be set to that FC level and an additional error status will be appended after.
-						'Member scripts may also be encapsulated in the method calls, but is currently done here to reduce duplicate code.
-						Dim REQStatusHistoryScript As String = "Cb#" & sCube & ":E#" & FundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Status_History:F#" & ExistingREQ & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-						Dim REQStatusScript As String = "Cb#" & sCube & ":E#" & FundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Rqmt_Status:F#" & ExistingREQ & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-						'Parses REQ history to get the previous FC level
-						Dim lastFcLevel As String = GetLastFundCenterLevel(si, sCube, REQStatusHistoryScript)
-						'REQStatus will be what is set in the db and also how the WF filter below will determine which CV's can see the REQ
-						REQStatus = lastFcLevel & " NoStatus"
-						'Since the current status in the db is null, set it to the desired text
-						SetREQStatusFromNull(si, sCube, REQStatusScript, REQStatus)							
-					Else
-						REQStatus = dataRow.Item("STATUS")									
-					End If
+				
 					'--------- get REQ workflow status level --------- 
 					Dim reqWFStatusLevel As String = REQStatus.Substring(0,2)	
 'BRApi.ErrorLog.LogMessage(si, "wfstatus " & reqWFStatusLevel)					
@@ -1122,39 +1059,39 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 'BRApi.ErrorLog.LogMessage(si, "Fund Center " & FundCenter)	
 					'================================Non-CMD level Manage WF======================		
 					If (sProfileName = "Manage Requirements") Or (sProfileName = "Manage Requirements" And REQStatus.XFEqualsIgnoreCase("BlankStatus")) Then	
-						If sCubeView.XFEqualsIgnoreCase("REQ_Manage_Demote") Then
+						
 							If REQStatus.XFEqualsIgnoreCase("Returned From " & newWFLevel) Or  REQStatus.XFEqualsIgnoreCase("Returned From " & reqWFStatusLevel) Then 						
 								Me.WriteNameValuePairRow(si, dt, FundCenter & " - " &  ExistingREQ & " - " & TitleValue, FundCenter & " " & ExistingREQ)	
 							End If
-						Else 
+						
 							If Not REQStatus.XFEqualsIgnoreCase("Returned From CMD") And Not REQStatus.XFEqualsIgnoreCase("Ready for CMD Prioritization") And Not REQStatus.XFEqualsIgnoreCase("CMD Prioritized") And Not REQStatus.XFEqualsIgnoreCase("CMD Approved") And Not REQStatus.XFEqualsIgnoreCase("Returned From L2")  And Not REQStatus.XFEqualsIgnoreCase("L2 Working") And Not REQStatus.XFEqualsIgnoreCase("L2 Copied")Then
 								If reqWFStatusLevel = entityText3 Or (REQStatus.XFEqualsIgnoreCase(newWFLevel & " Ready for Validation")) Then			
 									Me.WriteNameValuePairRow(si, dt, FundCenter & " - " &  ExistingREQ & " - " & TitleValue, FundCenter & " " & ExistingREQ)
 								End If
 							End If
-						End If
+						
 					'================================Command Manage WF======================	
 					'*** not necessary?
 					ElseIf ( sProfileName = "Manage Requirements CMD") Or ( sProfileName = "Manage Requirements CMD") And REQStatus.XFEqualsIgnoreCase("BlankStatus") Then
-						If sCubeView.XFEqualsIgnoreCase("REQ_Manage_Demote") Then
+						
 							If REQStatus.XFEqualsIgnoreCase("Returned From CMD") Or REQStatus.XFEqualsIgnoreCase("Returned From L2") Then 						
 								Me.WriteNameValuePairRow(si, dt, FundCenter & " - " &  ExistingREQ & " - " & TitleValue, FundCenter & " " & ExistingREQ)	
 							End If
-						Else 
+						
 					'***
 							If REQStatus.XFEqualsIgnoreCase("L2 Ready for Prioritization") Or REQStatus.XFEqualsIgnoreCase("L2 Prioritized") Or REQStatus.XFEqualsIgnoreCase("L2 Ready for Validation" ) Or REQStatus.XFEqualsIgnoreCase("L2 Ready for Approval" ) Or REQStatus.XFEqualsIgnoreCase("L2 Approved" ) Or REQStatus.XFEqualsIgnoreCase("L2 Working") And Not ExistingREQ.XFContainsIgnoreCase("REQ_00") Then 			
 								Me.WriteNameValuePairRow(si, dt, FundCenter & " - " &  ExistingREQ & " - " & TitleValue, FundCenter & " " & ExistingREQ)
 							End If
-						End If							
+											
 					'================================Formulate WF======================	
-					Else If sProfileName = "Formulate Requirements" And Not sCubeView.XFContainsIgnoreCase("REQ") Then
+					Else If sProfileName = "Formulate Requirements" 
 							If (REQStatus.XFContainsIgnoreCase("Working") Or REQStatus.XFContainsIgnoreCase("Copied") Or REQStatus.XFContainsIgnoreCase("Imported")) And Not REQStatus.XFContainsIgnoreCase("L2")  Then  'updated
 								Me.WriteNameValuePairRow(si, dt, FundCenter & " - " &  ExistingREQ & " - " & TitleValue, FundCenter & " " & ExistingREQ)
 							End If		
 
 					'================================Formulate CMD WF======================	
-					Else If sProfileName = "Formulate Requirements CMD" And Not sCubeView.XFContainsIgnoreCase("REQ") Then
-							If (REQStatus = "L2 Working" Or REQStatus = "L2 Copied" Or REQStatus = "L2 Imported") And Not ExistingREQ.XFContainsIgnoreCase("REQ_00") And Not args.NameValuePairs.XFGetValue("Dashboard").XFContainsIgnoreCase("Manpower") Then 
+					Else If sProfileName = "Formulate Requirements CMD" 
+							If (REQStatus = "L2 Working" Or REQStatus = "L2 Copied" Or REQStatus = "L2 Imported")  And Not args.NameValuePairs.XFGetValue("Dashboard").XFContainsIgnoreCase("Manpower") Then 
 									Me.WriteNameValuePairRow(si, dt, FundCenter & " - " &  ExistingREQ & " - " & TitleValue, FundCenter & " " & ExistingREQ)
 							End If
 							If (REQStatus = "L2 Working" Or REQStatus = "L2 Approved") 
@@ -1208,64 +1145,73 @@ Namespace OneStream.BusinessRule.DashboardDataSet.REQ_DataSet
 		End Function
 #End Region  'Updated
 
+
 #Region "REQListByEntityAndStatus"
-'Updated: EH 9/18/2024 - RMW-1732 Reverting REQ_Shared changes
-		Public Function REQListByEntityAndStatus(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardDataSetArgs) As Object
+Public Function REQListByEntityAndStatus(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardDataSetArgs) As Object
 			Try		
-Dim sCaller As String = args.NameValuePairs.XFGetValue("Caller")
-				
-'BRApi.ErrorLog.LogMessage(si, "Debug REQListByEntityAndStatus")	
-				Dim dt As DataTable = Me.CreateNameValuePairTable(si, "REQListByEntityAndStatus")				
-				'Dim sTitleScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-				'Dim sTitleYear As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+'Brapi.ErrorLog.LogMessage(si, "In DataSet 2")
+				Dim dt As New Datatable()			
+
 				Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
 
-'Brapi.ErrorLog.LogMessage(si,wfProfileName & "Debug WFProfile DS")				
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_XFTV_Helpers.GetWFInfoDetails(si)
 				Dim x As Integer = InStr(wfProfileName, ".")
 				Dim sProfileName As String = wfProfileName.Substring(x + 0)
 				Dim sProfileSubString As String = wfProfileName.Substring(x + ".".Length-1,8)
-'brapi.ErrorLog.LogMessage(si,"sProfileSubString: " & sProfileSubString)							
+						
 				Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
 		        Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
 		        Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
 				Dim sFundCenter As String = args.NameValuePairs.XFGetValue("Entity")
-				Dim sTitleSearch As String = args.NameValuePairs.XFGetValue("TitleSearch", "")
-				Dim sCPA As String = args.NameValuePairs.XFGetValue("CPAFilter", "")
-				Dim sMode As String = args.NameValuePairs.XFGetValue("mode")
-'				Dim oEFList As New List(Of String)
-'brapi.ErrorLog.LogMessage(si, sREQTime)
 				
-'BRApi.ErrorLog.LogMessage(si, "Debug A1")
-				'If no fund center is passed then stop
-
-'If (si.UserName.XFEqualsIgnoreCase("yhussien") Or si.UserName.XFEqualsIgnoreCase("akalwa")) Then BRApi.ErrorLog.LogMessage(si, "REQ_DataSet.REQListByEntityAndStatus - " & sCaller & ":   sFundCenter=" & sFundCenter)				
 				If String.IsNullOrWhiteSpace(sFundCenter) Then 
 					Return dt
 				End If
+			
+				Dim FCArray() As String = sFundCenter.Split(","c)
+	
+       		 ' Convert the array to a list
+        		Dim FCList As List (Of String) = FCArray.ToList
+			
+				Dim FCMulti As New Text.StringBuilder()
+				Dim uniqueStatuses As New HashSet(Of String)() ' Using a HashSet automatically handles duplicates
+
+        ' Loop through Each FC in multiselect
+       			 For Each FC As String In FCList
 				
 				'If the fund center passed is not a descendent of the WF then stop
-				sFundCenter = sFundCenter.Replace("_General","")
-				Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " &  sFundCenter & ")"
+				FC = FC.Replace("_General","").Trim
+				Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " &  FC & ")"
 				Dim cbMembers As List (Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_" & sCube, mbrScrpt, True  )
-
-'If (si.UserName.XFEqualsIgnoreCase("yhussien") Or si.UserName.XFEqualsIgnoreCase("akalwa")) Then BRApi.ErrorLog.LogMessage(si, "REQ_DataSet.REQListByEntityAndStatus - " & sCaller & ":   sCube=" & sCube & "    mbrScrpt=" & mbrScrpt)				
+				'Brapi.ErrorLog.LogMessage(si, "FC:" & FC)
+'
 				If Not cbMembers.Count > 0 Then
 					Return dt
 				End If
 				
-								
+							
 				'---Checking if Base------
 
 				Dim entityPk = BRApi.Finance.Dim.GetDimPk(si, "E_" & sCube)
-         		Dim nAncestorID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sCube)			
-				Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sFundCenter.Replace("_General",""))						
+					
+         		Dim nAncestorID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sCube)
+					
+				Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, FC.Replace("_General",""))	
+				
 				Dim isBase As Boolean = BRApi.Finance.Members.IsBase(si,entityPk, nAncestorID, nBaseID)
-				If Not isBase Then sFundCenter = sFundCenter & ".Base"
+				'Brapi.ErrorLog.LogMessage(si,"Here 2.4")	
+				If Not isBase Then FC = FC & ".Base"
 	
-				Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#"& sFundCenter,True)
-			
+				Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#" & FC,True)
+					For Each FundCenter As MemberInfo In LFundCenters
+						If FCMulti.Length > 0 Then
+							FCMulti.Append(",")
+						End If
+						FCMulti.Append($"'{FundCenter.Member.Name}'")
+					Next
+					'Brapi.ErrorLog.LogMessage(si,"Here 2.6")
 				'--------- get Entity Text3 --------- 
-				Dim sFC As String = sFundCenter.Replace(".Base","")
+				Dim sFC As String = FC.Replace(".Base","")
 				Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sFC).Member
 				Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
 '							Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
@@ -1281,276 +1227,125 @@ Dim sCaller As String = args.NameValuePairs.XFGetValue("Caller")
 				Dim newWFLevel As String = "L" & newText3Num
 				Dim prevWFLevel As String = "L" & (icurrText3Num + 1)
 				Dim curWFLevel As String = entityText3
-				Dim sCubeView As String = args.NameValuePairs.XFGetValue("CubeView")				
-'			Brapi.ErrorLog.LogMessage(si,"NextWFL" & newWFLevel)
-'			Brapi.ErrorLog.LogMessage(si,"CurrWFL" & curWFLevel)
-'			Brapi.ErrorLog.LogMessage(si,"PrevWFL" & prevWFLevel)
+								
+			'Brapi.ErrorLog.LogMessage(si,"Here 3")
+			
 				'========================================================================== Define Targeted Status based on WF and Dashboard's FC selection ==========================================================================
-				Dim sTgtStatus As String = ""
+				
 				Select Case True
-				Case sProfileName = "Manage Requirements"				
-					If sCubeView.XFEqualsIgnoreCase("REQ_Manage_Demote") Then					
-						sTgtStatus = $"'{curWFLevel} Returned From {newWFLevel}','Returned From {curWFLevel}'"
-					Else 
-						sTgtStatus = $"'{curWFLevel} Working','{curWFLevel} NoStatus','{curWFLevel} Ready For Validation','{curWFLevel} Ready For Prioritization','{curWFLevel} Prioritized','{curWFLevel} Ready For Approval','{newWFLevel} Ready For Validation','{curWFLevel} Copied','{curWFLevel} Imported'"
-						'If isBase = True Then sTgtStatus = $"{sTgtStatus},'{curWFLevel} Working'"
-					End If
-					
-				Case sProfileName = "Manage Requirements CMD"
-					If sCubeView.XFEqualsIgnoreCase("REQ_Manage_Demote") Then					
-						sTgtStatus = $"'Returned From CMD','Returned From L2'" 
-						Else
-						sTgtStatus = $"'{curWFLevel} Ready For Prioritization','{curWFLevel} NoStatus','{curWFLevel} Prioritized','{curWFLevel} Ready For Approval','{curWFLevel} Approved','{curWFLevel} Ready For Validation','{curWFLevel} Copied','{curWFLevel} Imported','{curWFLevel} Working'"
-					End If
+					Case wfProfileName.XFContainsIgnoreCase("Manage")		
+
+					uniqueStatuses.Add($"'% Working'")
+					uniqueStatuses.Add($"'% Copied'")
+					uniqueStatuses.Add($"'% Imported'")
+					uniqueStatuses.Add($"'% Ready For Validation'")
+					uniqueStatuses.Add($"'% Ready For Prioritization'")
+					uniqueStatuses.Add($"'% Prioritized'")
+					uniqueStatuses.Add($"'% Ready For Approval'")	
 					
 				Case sProfileName.XFContainsIgnoreCase("Formulate")
-'					If sCubeView.XFContainsIgnoreCase("REQ") And Not sCubeView.XFContainsIgnoreCase("REQ_List_Import") Then
-					If Not sCubeView.XFContainsIgnoreCase("REQ")
-						sTgtStatus = $"'{curWFLevel} Working','{curWFLevel} Copied','{curWFLevel} Imported'"
-					Else If sCubeView.XFContainsIgnoreCase("REQ_List_Import") Then 
-						sTgtStatus = $"'{curWFLevel} Imported'"						
-					Else 
-						Return Nothing
-					End If
+					uniqueStatuses.Add($"'{curWFLevel} Working'")
+					uniqueStatuses.Add($"'{curWFLevel} Copied'")
+					uniqueStatuses.Add($"'{curWFLevel} Imported'")
+		
 				
 				Case wfProfileName.XFContainsIgnoreCase("Rollover")
 					sREQTime = (Convert.ToInt32(sREQTime) - 1).ToString
-					sScenario = $"PGM_C{sREQTime}"
-'BRApi.ErrorLog.LogMessage(si, "scenario from dataset" & sScenario)						
-				Case sProfileName = "Validate Requirements"
-					sTgtStatus = $"'{curWFLevel} Ready For Validation'"
+					sScenario = $"CMD_PGM_C{sREQTime}"
 				
-				Case sProfileName = "Validate Requirements CMD"
-					sTgtStatus = $"'{curWFLevel} Ready For Validation'"
+			Case wfProfileName.XFContainsIgnoreCase("Validate")
+					uniqueStatuses.Add($"'{curWFLevel} Ready For Validation'")
 				
 				Case wfProfileName.XFContainsIgnoreCase("Prioritize")
-					sTgtStatus = $"'{curWFLevel} Ready For Prioritization','{curWFLevel} Prioritized'"
+					uniqueStatuses.Add($"'{curWFLevel} Ready For Prioritization'")
+					uniqueStatuses.Add($"'{curWFLevel} Prioritized'")
 				
 				Case wfProfileName.XFContainsIgnoreCase("Approve")
-					sTgtStatus = $"'{curWFLevel} Ready For Approval'"
+					uniqueStatuses.Add($"'{curWFLevel} Ready For Approval'")
 				
-				'Case wfProfileName.XFContainsIgnoreCase("CMD (PGM)")
-					'sTgtStatus = $"'{curWFLevel} Approved'"	
 				
-				Case wfProfileName.XFContainsIgnoreCase("Review")
-					sTgtStatus = $"'% Ready For Prioritization','% Prioritized','% Ready For Approval','% Approved','% Ready For Validation','% Working','% Returned From %','%Copied','%Imported','Returned From %'"
+			Case wfProfileName.XFContainsIgnoreCase("Review")
+					uniqueStatuses.Add($"'% Working'")
+					uniqueStatuses.Add($"'% Copied'")
+					uniqueStatuses.Add($"'% Imported'")
+					uniqueStatuses.Add($"'% Ready For Validation'")
+					uniqueStatuses.Add($"'% Ready For Prioritization'")
+					uniqueStatuses.Add($"'% Prioritized'")
+					uniqueStatuses.Add($"'% Ready For Approval'")				
 				
 				Case wfProfileName.XFContainsIgnoreCase("CMD (PGM)")
-					sTgtStatus = $"'{curWFLevel} Approved'"	
+					uniqueStatuses.Add($"'{curWFLevel} Approved'")
 					
-'BRApi.ErrorLog.LogMessage(si, "stat declared for review")	
+
 				End Select
-'BRApi.ErrorLog.LogMessage(si, "statuses: " & sTgtStatus)	
-'BRApi.ErrorLog.LogMessage(si, "profile name: " & wfProfileName)
-				
-'				========= Manage
-'-{curWFLevel} Ready For Validation,{curWFLevel} Ready For Prioritization,{curWFLevel} Prioritized,{curWFLevel} Ready For Approval,{newWFLevel} Ready For Validation
-'- need a check For non-parent To include  {curWFLevel} Working
-
-'========= CMD Manage
-'- "Return From CMD" IIf cv = Demote
-'-{curWFLevel} Ready For Prioritization,{curWFLevel} Prioritized,{curWFLevel} Ready For Approval,{curWFLevel} Approved,{curWFLevel} Ready For Validation
-
-'========= Formulate
-'- need a check For non-parent {curWFLevel} working
-
-'========= Validate
-'-{curWFLevel} Ready For Validation
-
-
-'========= CMD Validate
-'-{curWFLevel} Ready For Validation
-
-
-'========= Prioritize
-'-{curWFLevel} Ready For Prioritization,{curWFLevel} Prioritized
-
-
-'========= Approve
-'-{curWFLevel} Ready For Approval
+Next
 
 				'Set up where clauses for getting the annotation from the table
 				'This approach was more performant that getDataCell method call
 				Dim allREQs As String = ""
 				Dim allFCs As String = ""
 				
-'If (si.UserName.XFEqualsIgnoreCase("yhussien") Or si.UserName.XFEqualsIgnoreCase("akalwa")) Then BRApi.ErrorLog.LogMessage(si, "REQ_DataSet.REQListByEntityAndStatus - " & sCaller & ":   LFundCenters.Count=" & LFundCenters.Count)								
-				If LFundCenters.Count = 0 Then
+					
+				allFCs = FCMulti.ToString()
+				Dim sTgtStatus As String = String.Join(",", uniqueStatuses)
+
+				'If after looping, we have no valid entities or statuses, return an empty table.
+				If String.IsNullOrWhiteSpace(allFCs) Or String.IsNullOrWhiteSpace(sTgtStatus) Then
 					Return dt
 				End If
-				For Each FundCenter As MemberInfo In LFundCenters'LFundCenters 'added
-					allFcs = allFcs  & "'" & FundCenter.Member.Name & "'," 
-				Next
-
-				allFCs = allFCs.Substring(0,allFCs.Length-1)
+			
+				
+				
 			
 				Dim SQL As New Text.StringBuilder
-'				SQL.Append($"SELECT A.ENTITY AS ENTITY, A.FLOW AS FLOW, A.TEXT AS STATUS, B.TEXT AS TITLE ") 
-'				SQL.Append("FROM DATAATTACHMENT A LEFT JOIN DATAATTACHMENT B ")
-'				SQL.Append($" ON B.CUBE = A.CUBE 
-'							 AND B.ENTITY = A.ENTITY 
-'							 AND B.SCENARIO = A.SCENARIO
-'							 AND B.TIME = A.TIME
-'							 AND B.FLOW = A.FLOW ") 
-'				SQL.Append($" LEFT JOIN (SELECT ENTITY, SCENARIO, TIME, FLOW, TEXT AS CPA FROM DATAATTACHMENT WHERE ACCOUNT = 'REQ_CPA_IND' ) AS C
-'							 ON C.ENTITY = A.ENTITY
-'							 AND C.SCENARIO = A.SCENARIO
-'							 AND C.TIME = A.TIME
-'							 AND C.FLOW = A.FLOW
-'							 WHERE A.ACCOUNT = 'REQ_RQMT_STATUS'
-'							 AND A.CUBE = '{sCube}'
-'							 AND A.ENTITY IN ({allFCs}) 
-'							 AND A.SCENARIO = '{sScenario}'
-'							 AND A.TIME = '{sREQTime}'				 
-'							 AND B.ACCOUNT = 'REQ_TITLE'")
+
 '----------------------------------------
 
-SQL.Append($"
-With B as (
-	SELECT B.cube as CUBE, B.scenario as SCENARIO, B.time as TIME, B.ENTITY AS ENTITY, B.FLOW AS FLOW,  B.TEXT AS TITLE 
-	FROM DATAATTACHMENT B 
-	Where B.ACCOUNT = 'REQ_TITLE'
-	 AND B.CUBE = '{sCube}'
-	 AND B.ENTITY IN ({allFCs}) 
-	 AND B.SCENARIO = '{sScenario}'
-	 AND B.TIME = '{sREQTime}'	
-	
-),
-A as (
-	SELECT  A.cube as CUBE, A.scenario as SCENARIO, A.time as TIME, A.ENTITY AS ENTITY, A.FLOW AS FLOW,  A.TEXT AS TEXT 
-	from DATAATTACHMENT A
-	WHERE		
-	A.ACCOUNT = 'REQ_RQMT_STATUS'
- 	 AND A.CUBE = '{sCube}'
-	 AND A.ENTITY IN ({allFCs}) 
-	 AND A.SCENARIO = '{sScenario}'
-	 AND A.TIME = '{sREQTime}'	
-
- ),
- C AS(
-	SELECT  CPA.cube as CUBE, CPA.scenario as SCENARIO, CPA.time as TIME, CPA.ENTITY AS ENTITY, CPA.FLOW AS FLOW,  CPA.TEXT AS CPA 
-	from DATAATTACHMENT CPA
-	WHERE		
-	 CPA.ACCOUNT = 'REQ_CPA_INDa'
-	 AND CPA.CUBE = '{sCube}'
-	 AND CPA.ENTITY IN ({allFCs}) 
-	 AND CPA.SCENARIO = '{sScenario}'
-	 AND CPA.TIME = '{sREQTime}'	
- )
- SELECT B.ENTITY AS ENTITY, B.FLOW AS FLOW, A.TEXT AS STATUS, B.Title AS TITLE 
- from B 
- Left outer join A  ON B.CUBE = A.CUBE 
-					 AND B.ENTITY = A.ENTITY 
-					 AND B.SCENARIO = A.SCENARIO
-					 AND B.TIME = A.TIME
-					 AND B.FLOW = A.FLOW  
- Left outer join C  ON B.CUBE = A.CUBE 
-							 AND B.ENTITY = C.ENTITY 
-							 AND B.SCENARIO = C.SCENARIO
-							 AND B.TIME = C.TIME
-							 AND B.FLOW = C.FLOW  
-where 1=1
+SQL.Append($"SELECT 
+          Req.Title As [Title],
+          Req.REQ_ID,
+          Req.Entity As [Funds Center],
+          Req.Status,
+          Dtl.Account,
+          Dtl.Flow,
+          Dtl.UD1 as [APPN],
+          Dtl.UD2 As [MDEP],
+          Dtl.UD3 as [APE],
+          Dtl.UD4 as [DollarType],
+          Dtl.UD5 As [cType],
+          Dtl.UD6 As [Object Class],
+          Dtl.FY_1,
+          Dtl.FY_2,
+          Dtl.FY_3,
+          Dtl.FY_4,
+          Dtl.FY_5
+								FROM XFC_CMD_PGM_REQ AS Req
+								LEFT JOIN XFC_CMD_PGM_REQ_Details AS Dtl
+								ON Req.CMD_PGM_REQ_ID = Dtl.CMD_PGM_REQ_ID
+								AND Req.WFScenario_Name = Dtl.WFScenario_Name
+								AND Req.WFCMD_Name = Dtl.WFCMD_Name
+								AND Req.WFTime_Name = Dtl.WFTime_Name
+								AND Req.Entity = Dtl.Entity
+								WHERE Req.WFScenario_Name = '{wfInfoDetails("ScenarioName")}'
+								AND Req.WFCMD_Name = '{wfInfoDetails("CMDName")}'
+								AND Req.WFTime_Name = '{wfInfoDetails("TimeName")}'
+								AND  Dtl.Account = 'REQ_Requested_Amt'
+								AND Req.Status IN ({sTgtStatus})
+								AND Req.Entity IN ({allFCs})
+								Order By Req.Entity,Req.REQ_ID
 ")
 
 
-'--------------------------------------------
-'BRApi.ErrorLog.LogMessage(si, "CPA " & sCPA)
-				If sProfileName.XFContainsIgnoreCase("Manage") Then
-					SQL.Append($"
-								 AND (A.TEXT IN ({sTgtStatus}) OR A.TEXT IS NULL)")
-				Else If sProfileName.XFContainsIgnoreCase("Review") Then
-'BRApi.ErrorLog.LogMessage(si, "CPA" & sCPA)
-					Dim oStatus As List(Of String) = sTgtStatus.Split(",").ToList()
-					SQL.Append($"
-								AND (A.TEXT IS NULL ")
-						For Each status As String In oStatus 
-							SQL.Append($"OR A.TEXT LIKE {status} ")
-'BRApi.ErrorLog.LogMessage(si, "SQL CPA: " & sCPA)
-						Next
-							SQL.Append(")")
-				Else If sProfileName.XFContainsIgnoreCase("Rollover") Then
-				Else
-					SQL.Append($"
-								 AND A.TEXT IN ({sTgtStatus})")
-				End If
-				If Not String.IsNullOrWhiteSpace(sTitleSearch) Then
-					SQL.Append($"
-								 AND B.Title LIKE '%{sTitleSearch}%'")
-				End If
-'Brapi.ErrorLog.LogMessage(si, "CPA - " & sCPA)			
-				If Not String.IsNullOrWhiteSpace(sCPA)
-					If (Not sCPA.XFContainsIgnoreCase(",")) Then 
-					
-						'Filter Yes
-						If sCPA.XFEqualsIgnoreCase("Yes") Then
-						
-						SQL.Append($"
-									AND CPA LIKE '%{sCPA}%'")	
-						
-	'					ElseIf sCPA.XFContainsIgnoreCase("%Yes, No%")						
-	'						SQL.Append($"
-	'								 AND CPA in('Yes','No') or CPA is Null")
-							
-						'Filters No
-						Else
-							SQL.Append($"
-									 AND (CPA LIKE '%{sCPA}%' or CPA is Null)")
-						End If
-					End If
-				End If
-
-				SQL.Append($"
-							 ORDER BY A.ENTITY")
-'If (si.UserName.XFEqualsIgnoreCase("yhussien") Or si.UserName.XFEqualsIgnoreCase("akalwa")) Then BRApi.ErrorLog.LogMessage(si, "REQ_DataSet.REQListByEntityAndStatus - " & sCaller & ":   SQL: " & SQL.ToString)
-'If si.UserName.XFEqualsIgnoreCase("rdavies") Then BRapi.ErrorLog.LogMessage(si,"START SQL: " & " " & Date.Now().ToString("hh:mm:ss:fff") )						
 
 				'Dim dtFetch As New DataTable
 				Dim dtAll As DataTable = Me.CreateNameValuePairTable(si, "REQListByEntityAll")
 				Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-'If si.UserName.XFEqualsIgnoreCase("rdavies") Then BRapi.ErrorLog.LogMessage(si,"START dbConn: " & " " & Date.Now().ToString("hh:mm:ss:fff") )						
+
 					 dtAll = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
-'If si.UserName.XFEqualsIgnoreCase("rdavies") Then BRapi.ErrorLog.LogMessage(si,"END dbConn: " & " " & Date.Now().ToString("hh:mm:ss:fff") )						
+						
 				End Using
-				 
-'If si.UserName.XFEqualsIgnoreCase("rdavies") Then BRapi.ErrorLog.LogMessage(si,"END SQL: " & " " & Date.Now().ToString("hh:mm:ss:fff") )						
 
-'If (si.UserName.XFEqualsIgnoreCase("yhussien") Or si.UserName.XFEqualsIgnoreCase("akalwa")) Then BRApi.ErrorLog.LogMessage(si, "REQ_DataSet.REQListByEntityAndStatus - " & sCaller & ":   dt all rows " & dtAll.Rows.Count)
-				'Build dt to return 
-
-				For Each dataRow As DataRow In dtAll.Rows					
-					
-					Dim FundCenter As String = dataRow.Item("ENTITY")
-					Dim ExistingREQ As String =  dataRow.Item("FLOW")
-					Dim TitleValue As String = dataRow.Item("TITLE")
-					
-
-'BRApi.ErrorLog.LogMessage(si, $"E = {FundCenter} || F = {ExistingREQ} ")
-					Dim REQStatus As String =  ""'dataRow.Item("STATUS")
-		
-					'This is to account for instances where Status is set to blank by the manager.
-					'Not a valid business process. But OS exposes 'No Data' option				
-					If dataRow.IsNull(("STATUS")) Then	
-						'RMW-1028 - To address the blank status issue, REQ history will be parsed to find the previous FC level the REQ was on. A new status will be set to that FC level and an additional error status will be appended after.
-						'Member scripts may also be encapsulated in the method calls, but is currently done here to reduce duplicate code.
-						Dim REQStatusHistoryScript As String = "Cb#" & sCube & ":E#" & FundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Status_History:F#" & ExistingREQ & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-						Dim REQStatusScript As String = "Cb#" & sCube & ":E#" & FundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Rqmt_Status:F#" & ExistingREQ & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-						'Parses REQ history to get the previous FC level
-						Dim lastFcLevel As String = GetLastFundCenterLevel(si, sCube, REQStatusHistoryScript)
-						'REQStatus will be what is set in the db and also how the WF filter below will determine which CV's can see the REQ
-						REQStatus = lastFcLevel & " NoStatus"
-						'Since the current status in the db is null, set it to the desired text
-						SetREQStatusFromNull(si, sCube, REQStatusScript, REQStatus)							
-					Else
-						REQStatus = dataRow.Item("STATUS")									
-					End If	
-					
-'					oEFList.Add($"E#{FundCenter}:F#{ExistingREQ}")
-					Me.WriteNameValuePairRow(si, dt, FundCenter & " - " &  ExistingREQ & " - " & TitleValue, FundCenter & " " & ExistingREQ)
-
-				Next
-
-'BRApi.ErrorLog.LogMessage(si, $"dt Count = {dt.Rows.Count}")
-				Return dt 	
+				Return dtAll 	
 				
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
