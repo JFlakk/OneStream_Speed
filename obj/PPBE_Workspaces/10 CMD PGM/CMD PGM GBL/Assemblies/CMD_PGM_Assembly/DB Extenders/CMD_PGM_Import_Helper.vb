@@ -33,7 +33,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             Me.globals = globals
             Me.api = api
             Me.args = args
-			
+	
 			Try
 				Select Case args.FunctionType
 					
@@ -61,6 +61,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 								Me.Check_WF_Complete_Lock(si)
 								If Not runningImport.XFEqualsIgnoreCase("running")
 									BRApi.Dashboards.Parameters.SetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import","running")
+									
 									Me.ImportREQ(si,globals,api,args)
 								Else
 									Throw New System.Exception("There is an import running currently." & vbCrLf & " Please try in a few minutes.")
@@ -73,46 +74,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							End Try
 						End If
 #End Region 
-
-						
-						If args.FunctionName.XFEqualsIgnoreCase("TestFunction") Then
-							
-							'Implement Dashboard Component Selection Changed logic here.
-							
-							Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
-							selectionChangedTaskResult.IsOK = True
-							selectionChangedTaskResult.ShowMessageBox = False
-							selectionChangedTaskResult.Message = ""
-							selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = False
-							selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = Nothing
-							selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
-							selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
-							selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = False
-							selectionChangedTaskResult.ModifiedCustomSubstVars = Nothing
-							selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = False
-							selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = Nothing
-							Return selectionChangedTaskResult
-						End If
-					
-					Case Is = DashboardExtenderFunctionType.SqlTableEditorSaveData
-						If args.FunctionName.XFEqualsIgnoreCase("TestFunction") Then
-							
-							'Implement SQL Table Editor Save Data logic here.
-							'Save the data rows.
-							'Dim saveDataTaskInfo As XFSqlTableEditorSaveDataTaskInfo = args.SqlTableEditorSaveDataTaskInfo
-							'Using dbConn As DbConnInfo = BRApi.Database.CreateDbConnInfo(si, saveDataTaskInfo.SqlTableEditorDefinition.DbLocation, saveDataTaskInfo.SqlTableEditorDefinition.ExternalDBConnName)
-								'dbConn.BeginTrans()
-								'BRApi.Database.SaveDataTableRows(dbConn, saveDataTaskInfo.SqlTableEditorDefinition.TableName, saveDataTaskInfo.Columns, saveDataTaskInfo.HasPrimaryKeyColumns, saveDataTaskInfo.EditedDataRows, True, False, False)
-								'dbConn.CommitTrans()
-							'End Using
-							
-							Dim saveDataTaskResult As New XFSqlTableEditorSaveDataTaskResult()
-							saveDataTaskResult.IsOK = True
-							saveDataTaskResult.ShowMessageBox = False
-							saveDataTaskResult.Message = ""
-							saveDataTaskResult.CancelDefaultSave = False 'Note: Use True if we already saved the data rows in this Business Rule.
-							Return saveDataTaskResult
-						End If
 				End Select
 
 				Return Nothing
@@ -156,7 +117,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	        Dim fullDataTable As New DataTable("CMD_PGM_Import")
 			Dim REQDataTable As New DataTable("XFC_CMD_PGM_REQ")
 			Dim REQDetailDataTable As New DataTable("XFC_CMD_PGM_REQ_Details")
-						
+BRApi.ErrorLog.LogMessage(SI, "Main Import 1")								
 			Try
 	            Using reader As New TextFieldParser(fullFile)
 	                reader.TextFieldType = FieldType.Delimited
@@ -204,6 +165,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	                Else
 	                    Throw New InvalidDataException("The CSV file is empty.")
 	                End If
+BRApi.ErrorLog.LogMessage(SI, "Main Import 2")													
 	                Dim validLine As New StringBuilder()
 	                ' Read the file line by line
 	                While Not reader.EndOfData
@@ -222,20 +184,23 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	                        validLine.Append(" " & line)
 	                    End If
 	                End While
-	
+BRApi.ErrorLog.LogMessage(SI, "Main Import 3 ")									
 	                ' Process the last valid line
 	                If validLine.Length > 0 Then
 	                    ProcessLine(validLine.ToString(), fullDataTable, validFile)
 	                End If
 				End Using
+BRApi.ErrorLog.LogMessage(SI, "Main Import 4")												
 				'Write to session
 				BRApi.Utilities.SetSessionDataTable(si,si.UserName,"CMD_PGM_Import",fullDataTable)
                 ' Write the fullDataTable to the session if there are validation errors
                 If validFile Then
 					'Split fullDataTable and insert into the two tables
+BRApi.ErrorLog.LogMessage(SI, "Main Import 5")													
 					Me.SplitAndInsertIntoREQTables(fullDataTable, REQDataTable,REQDetailDataTable)
 					
                 End If
+BRApi.ErrorLog.LogMessage(SI, "Main Import 6")					
 	        Catch ex As Exception
 	            Throw New Exception("An error occurred: " & ex.Message)
 	        End Try
@@ -287,23 +252,27 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 #Region "Process Line"
     Sub ProcessLine(line As String, ByRef dataTable As DataTable, ByRef validFile As Boolean)
-
+BRApi.ErrorLog.LogMessage(si, "Process Line 1")
         Dim cleanedLine As String = CleanUpSpecialCharacters(line)
 		Dim values = ParseCsvLine(cleanedLine)
 		Dim currREQ As New CMD_PGM_Requirement
+BRApi.ErrorLog.LogMessage(si, "Process Line 2")		
 		currREQ = Me.ParseREQ(si,values, dataTable)
 		'If the FC is a parent, add _General
 		currREQ.Entity = CMD_PGM_Utilities.CheckFor_General(si, currREQ.Entity)' & "_General"
-
+BRApi.ErrorLog.LogMessage(si, "Process Line 3")
 		' Get APPN_FUND And PARENT APPN_L2 
 		currREQ.APE9 = CMD_PGM_Utilities.GetUD3(si, currREQ.FundCode, currREQ.APE9)
+BRApi.ErrorLog.LogMessage(si, "Process Line 4")		
 'BRApi.ErrorLog.LogMessage(si, "entity: " & currREQ.Entity & ", APE: " & currREQ.APE9 & ", full line: " & line)		
         Dim newRow = dataTable.NewRow()
 
         ' Run validation (you can customize this part)
         If Me.ValidateMembers(si, currREQ) Then
+BRApi.ErrorLog.LogMessage(si, "Process Line 5")			
             newRow("ValidationError") = ""
 			Dim REQ_ID As String = Me.GetNextREQID(currREQ.Entity)' GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,currREQ.Entity)
+BRApi.ErrorLog.LogMessage(si, "Process Line 6")			
 			If Not String.IsNullOrWhiteSpace(REQ_ID) Then
 				newRow("REQ_ID") = REQ_ID
 				'Update Status
@@ -317,6 +286,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             validFile = False
             newRow("ValidationError") = "Validation error: " & currREQ.validationError
         End If
+BRApi.ErrorLog.LogMessage(si, "Process Line 7")		
         For i As Integer = 0 To values.Length - 1
             newRow(i + 4) = values(i)
         Next
