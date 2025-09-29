@@ -37,20 +37,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			Try
 				Select Case args.FunctionType
 					
-					Case Is = DashboardExtenderFunctionType.LoadDashboard
-						If args.FunctionName.XFEqualsIgnoreCase("TestFunction") Then
-							
-							'Implement Load Dashboard logic here.
-							
-							If args.LoadDashboardTaskInfo.Reason = LoadDashboardReasonType.Initialize And args.LoadDashboardTaskInfo.Action = LoadDashboardActionType.BeforeFirstGetParameters Then
-								Dim loadDashboardTaskResult As New XFLoadDashboardTaskResult()
-								loadDashboardTaskResult.ChangeCustomSubstVarsInDashboard = False
-								loadDashboardTaskResult.ModifiedCustomSubstVars = Nothing
-								Return loadDashboardTaskResult
-								End If
-						End If
-					
 					Case Is = DashboardExtenderFunctionType.ComponentSelectionChanged
+						Dim dbExt_ChangedResult As New XFSelectionChangedTaskResult()
 						#Region                 "Import REQ"
 						'This makes sure there is only one import running at a time to make sure data is not overidden.
 						'DEV NOTE: This may not be necessary with the new approach of adding the user into the loading tables
@@ -58,7 +46,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							Try
 								'BRApi.Dashboards.Parameters.SetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import","completed")
 								Dim runningImport As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import")
-								Me.Check_WF_Complete_Lock(si)
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
 								If Not runningImport.XFEqualsIgnoreCase("running")
 									BRApi.Dashboards.Parameters.SetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import","running")
 									
@@ -82,7 +70,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			End Try
 		End Function
 		
-
 #Region "REQ Mass Import"
 		'This rule reads the imported file chcks if it is readable then parses into the REQ class
 		'*****FILL OUT MORE
@@ -91,7 +78,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 		Public Function	ImportREQ(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object							
 			Dim REQ As New CMD_PGM_Requirement()
-			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_XFTV_Helpers.GetWFInfoDetails(si)
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			
 			Dim timeStart As DateTime = System.DateTime.Now
 			Dim sScenario As String = "" 'Scenario will be determined from the Cycle.
@@ -277,7 +264,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 6")
 				newRow("REQ_ID") = REQ_ID
 				'Update Status
 				Dim entityLevel As String = Me.GetEntityLevel(currREQ.Entity)
-				Dim sREQWFStatus As String = entityLevel & " Working"
+				Dim sREQWFStatus As String = entityLevel & "_Formulate_PGM"
 				newRow("Status") = sREQWFStatus
 			Else 'Failed to get REQ_ID. File will be marked failed
 				validFile = False
@@ -303,7 +290,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 		newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
 		newRow("IC") = "None"
 		newRow("Account") = "REQ_Requested_Amt"
-		newRow("Flow") = "None"
+		newRow("Flow") = GetEntityLevel(currREQ.Entity) &"_Formulate_PGM"
 		newRow("UD7") = "None"
 		newRow("UD8") = "None"
 		'newRow("FY_Total") = "None"
@@ -375,7 +362,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 	Function SplitAndInsertIntoREQTables(ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable )
 
 		Dim sqa As New SqlDataAdapter()
-		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_XFTV_Helpers.GetWFInfoDetails(si)
+		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 		Dim scName As String = wfInfoDetails("ScenarioName")
 		Dim cmd As String = wfInfoDetails("CMDName")
 		Dim tm As String = wfInfoDetails("TimeName")
@@ -898,8 +885,8 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				currREQ.ValidationError = "Error: Invalid Entity: " & currREQ.Entity & " does not exist in command " & currREQ.command
 				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid Fund Code value: " & fundCode))
 			End If
-			
-			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_FUND")
+'BRApi.ErrorLog.LogMessage(si, "u1: " & currREQ.fundCode)			
+			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U1_FundCode")
 			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U1#" & currREQ.fundCode & ".member.base", True)
 			If (membList.Count <> 1 ) Then 
 				isFileValid = False
@@ -908,7 +895,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid Fund Code value: " & fundCode))
 			End If
 			
-			
+'BRApi.ErrorLog.LogMessage(si, "u2: " & currREQ.MDEP)			
 			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP")
 			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U2#" & currREQ.MDEP & ".member.base", True)
 			If (membList.Count <> 1 ) Then 
@@ -918,7 +905,8 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid MDEP value: " & MDEP))
 			End If
 			
-			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U3_APE_PT")
+'BRApi.ErrorLog.LogMessage(si, "u3: " & currREQ.APE9.Trim)			
+			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U3_ALL_APE")
 			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U3#" & currREQ.APE9.Trim & ".member.base", True)
 			If (membList.Count <> 1 ) Then 
 				isFileValid = False
@@ -927,6 +915,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid APE value: " & SAG_APE))
 			End If
 			
+'BRApi.ErrorLog.LogMessage(si, "u4: " & currREQ.DollarType)				
 			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U4_DollarType")
 			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U4#" &currREQ. DollarType & ".member.base", True)
 			If (membList.Count <> 1 ) Then 
@@ -936,7 +925,8 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid Dollar Type value: " & DollarType))
 			End If
 			
-			If Not String.IsNullOrWhiteSpace(currREQ.sCType) Or currREQ.sCType.XFEqualsIgnoreCase("None") Then
+'BRApi.ErrorLog.LogMessage(si, "u5: " & currREQ.sCType)				
+			If (Not String.IsNullOrWhiteSpace(currREQ.sCType)) And (Not currREQ.sCType.XFEqualsIgnoreCase("None")) Then
 				objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U5_CTYPE")
 				membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U5#" &currREQ. sCType & ".member.base", True)
 				If (membList.Count <> 1 ) Then 
@@ -945,9 +935,10 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 					currREQ.ValidationError = "Error: Invalid CType value: " & currREQ.sCType
 					
 				End If
-	
 			End If 
-			If Not String.IsNullOrWhiteSpace(currREQ.CommitmentItem) Or currREQ.CommitmentItem.XFEqualsIgnoreCase("None")Then
+			
+'BRApi.ErrorLog.LogMessage(si, "u6: " & currREQ.CommitmentItem)				
+			If (Not String.IsNullOrWhiteSpace(currREQ.CommitmentItem)) And (Not currREQ.CommitmentItem.XFEqualsIgnoreCase("None")) Then
 				objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U6_CommitmentItem")
 				membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U6#" &currREQ. CommitmentItem & ".member.base", True)
 				If (membList.Count <> 1 ) Then 
@@ -958,6 +949,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				End If
 			End If 
 			
+'BRApi.ErrorLog.LogMessage(si, "validtae numeric: ")					
 			'Validate Numeric
 			If((Not String.IsNullOrWhiteSpace(currREQ.FY1)) And (Not IsNumeric(currREQ.FY1))) Then 
 				isFileValid = False
@@ -1085,8 +1077,10 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				isFileValid = False
 				currREQ.valid = False
 				currREQ.ValidationError = "Error: ContractorManYearEquiv_CME should be Numeric: " & currREQ.ContractorManYearEquiv_CME
-				
+								
 			End If
+			
+'BRApi.ErrorLog.LogMessage(si, "validtae date: ")			
 			Dim validDate As DateTime
 			If((Not String.IsNullOrWhiteSpace(currREQ.AwardTargetDate)) And ( Not DateTime.TryParse(currREQ.AwardTargetDate, validDate))) Then 
 				isFileValid = False
@@ -1103,8 +1097,9 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 			
 			'We determine the scenario from the cycle
 			'Dim wfScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim sScenario = "PGM_C" & currREQ.Cycle
-			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "S_Main")
+			Dim sScenario = "CMD_PGM_C" & currREQ.Cycle
+'BRApi.ErrorLog.LogMessage(si, "scenario: " & sScenario)								
+			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "S_RMW")
 			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "S#" & sScenario & ".member.base", True)
 			If (membList.Count <> 1) Then 
 				isFileValid = False
@@ -1115,6 +1110,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				currREQ.scenario = sScenario
 			End If
 			
+BRApi.ErrorLog.LogMessage(si, "isFileValid: " & isFileValid & ", ValidationError: " & currREQ.ValidationError)			
 			Return isFileValid
 			
 		End Function
@@ -1132,7 +1128,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 		End Function
 		
 #End Region		
-		
+	
 #End Region		
 
 	End Class

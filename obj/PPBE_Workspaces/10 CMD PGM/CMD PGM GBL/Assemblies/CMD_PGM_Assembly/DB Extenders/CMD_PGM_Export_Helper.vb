@@ -1,3361 +1,1319 @@
 Imports System
-Imports System.Collections.Generic
 Imports System.Data
 Imports System.Data.Common
-Imports System.Globalization
 Imports System.IO
+Imports System.Collections.Generic
+Imports System.Globalization
 Imports System.Linq
 Imports Microsoft.VisualBasic
-Imports OneStream.Finance.Database
-Imports OneStream.Finance.Engine
+Imports Microsoft.Data.SqlClient
+Imports System.Windows.Forms
 Imports OneStream.Shared.Common
-Imports OneStream.Shared.Database
-Imports OneStream.Shared.Engine
 Imports OneStream.Shared.Wcf
-Imports OneStream.Stage.Database
+Imports OneStream.Shared.Engine
+Imports OneStream.Shared.Database
 Imports OneStream.Stage.Engine
+Imports OneStream.Stage.Database
+Imports OneStream.Finance.Engine
+Imports OneStream.Finance.Database
+Imports System.Text.RegularExpressions
+Imports OneStreamWorkspacesApi.V800
+Imports Workspace.GBL.GBL_Assembly
 
-Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.CMD_PGM_Export_Helper
+
+Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.CMD_PGM_Helper
 	Public Class MainClass
 		Private si As SessionInfo
         Private globals As BRGlobals
         Private api As Object
         Private args As DashboardExtenderArgs
-		Private sFilePath As String = String.Empty
 		Public Function Main(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
-			Me.si = si
-            Me.globals = globals
-            Me.api = api
-            Me.args = args
 			Try
+				Me.si = si
+				Me.globals = globals
+				Me.api = api
+				Me.args = args
 				Select Case args.FunctionType
-
 					Case Is = DashboardExtenderFunctionType.ComponentSelectionChanged
-						If args.FunctionName.XFEqualsIgnoreCase("TestFunction") Then
-							
-							'Implement Dashboard Component Selection Changed logic here.
-							
-							Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
-							selectionChangedTaskResult.IsOK = True
-							selectionChangedTaskResult.ShowMessageBox = False
-							selectionChangedTaskResult.Message = ""
-							selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = False
-							selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = Nothing
-							selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
-							selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
-							selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = False
-							selectionChangedTaskResult.ModifiedCustomSubstVars = Nothing
-							selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = False
-							selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = Nothing
-							Return selectionChangedTaskResult
+						Dim dbExt_ChangedResult As New XFSelectionChangedTaskResult()
+						Select Case args.FunctionName.ToLower()
+							Case "check_wf_complete_lock"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								Return dbExt_ChangedResult
+							Case args.FunctionName.XFEqualsIgnoreCase("CreateREQMain")
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								Me.DbCache(si,args)
+							Case "copy_req"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+								dbExt_ChangedResult = Me.Copy_REQ()
+								Return dbExt_ChangedResult
+							Case "delete_req"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+								dbExt_ChangedResult = Me.Delete_REQ()
+								Return dbExt_ChangedResult
+							Case "set_related_reqs"
+								dbExt_ChangedResult = Me.Set_Related_REQs()
+								Return dbExt_ChangedResult
+							Case "send_status_change_email"
+								'dbExt_ChangedResult = Me.Send_Status_Change_Email()
+								Return dbExt_ChangedResult
+							Case "attach_doc"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+								dbExt_ChangedResult = Me.Attach_Doc()
+								Return dbExt_ChangedResult
+							Case "submit_reqs"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+								dbExt_ChangedResult = Me.Update_Status()
+								Return dbExt_ChangedResult
+							Case "validate_reqs"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+								dbExt_ChangedResult = Me.Update_Status()
+								Return dbExt_ChangedResult
+							Case "prioritize_reqs"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+								dbExt_ChangedResult = Me.Update_Status()
+								Return dbExt_ChangedResult
+							Case "approve_reqs"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+								dbExt_ChangedResult = Me.Update_Status()
+								Return dbExt_ChangedResult
+						End Select					
+
+#Region "Cache Prompts"
+						If args.FunctionName.XFEqualsIgnoreCase("CachePrompts") Then
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+							 Me.CachePrompts(si,globals,api,args)
 						End If
-#Region "Export All Updated Requirements"
-						'Export PGM Requirements to Excel
-						If args.FunctionName.XFEqualsIgnoreCase("ExportAllUpdatedREQs") Then
-							Try								
-								Return Me.ExportAllUpdatedREQs(si,globals,api,args)
+#End Region
+
+
+#Region "Set Notification List"
+						If args.FunctionName.XFEqualsIgnoreCase("SetNotificationList") Then	
+							 Me.SetNotificationList()
+						End If
+#End Region
+
+#Region "Show And Hide Dashboards"
+						If args.FunctionName.XFEqualsIgnoreCase("ShowAndHideDashboards") Then
+							Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+							Dim ModifiedCustomSubstVars As XFSelectionChangedTaskResult = Nothing
+							If wfProfileName.XFContainsIgnoreCase("Approve") Then
+								Dim paramsToClear As String = "prompt_cbx_UFRPRO_UFRAPR_0CaAa_ApproveUFRs__UpdateFundingStatus," & _
+													"prompt_cbx_UFRPRO_AAAAAA_ApproverWFStatus__Shared," & _
+													"ML_REQPRO_FundCenter_Status," & _
+												    "ML_REQPRO_APPN," & _ 
+												    "ML_REQPRO_MDEP," & _
+												    "ML_REQPRO_APE9," & _
+												    "ML_REQPRO_SAG," & _
+												    "ML_REQPRO_DollarType," & _ 
+													"prompt_tbx_REQPRO_AAAAAA_0CaAa_SearchReq__Shared"
+						
+								ModifiedCustomSubstVars = Me.ShowAndHideDashboards(si,globals,api,args)
+								Return Me.ReplaceSelections(si, globals, api, args, paramsToClear, ModifiedCustomSubstVars)
+							Else
+							Dim paramsToClear As String = "ML_REQPRO_FundCenter_Status," & _
+														  "ML_REQPRO_APPN," & _ 
+														  "ML_REQPRO_MDEP," & _
+														  "ML_REQPRO_APE9," & _
+														  "ML_REQPRO_SAG," & _
+														  "ML_REQPRO_DollarType," & _ 
+														  "prompt_tbx_REQPRO_AAAAAA_0CaAa_SearchReq__Shared"
+								
+							ModifiedCustomSubstVars = Me.ShowAndHideDashboards(si,globals,api,args)
+							Return Me.ReplaceSelections(si, globals, api, args, paramsToClear, ModifiedCustomSubstVars)
+								
+							'Return Me.ShowAndHideDashboards(si,globals,api,args)
+							End If 
+						End If
+#End Region
+
+#Region "Demote REQ"
+						If args.FunctionName.XFEqualsIgnoreCase("DemoteREQ") Then	
+							 'Me.DemoteREQ(si,globals,api,args)
+						End If
+#End Region
+
+#Region "Clear Prompts"
+						If args.FunctionName.XFEqualsIgnoreCase("ClearPrompts") Then
+							Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+BRApi.ErrorLog.LogMessage(si,"test KN")
+'							 Me.ClearPrompts(si,globals,api,args)
+
+						End If
+
+#End Region
+
+#Region "Roll Fwd Req"
+						If args.FunctionName.XFEqualsIgnoreCase("RollFwdReq") Then	
+
+							'---------------------------------------------------------------------------------------------------
+							' PURPOSE: invoke data management to copy requirements from source S#T# to target S#T#
+							'
+							' LOGIC OVERVIEW:
+							'		- if Roll Forward flag = No then exit
+							'		- data management sequence = RollFwdReq 
+							'
+							' USAGE:
+							'		- From button:
+							'			Sever Task = Execute Dashbaord Extender Business Rule (General Server)
+							'			Task Arguments = {REQ_SolutionHelper}{RollFwdReq}{}
+							'			
+							' MODIFIED: 
+							' <date> 		<user id> 	<JIRA ticket> 	<change description>
+							' 2024-04-02 	AK 			RMW-1171		created	
+							'---------------------------------------------------------------------------------------------------
+							
+'Brapi.ErrorLog.LogMessage(si,"Sequence should have started")
+
+							Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
+					        Dim sCurrScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+							Dim sCurrTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+
+							
+							'---------- get Entity from WF title ----------
+							Dim StringArgs As DashboardStringFunctionArgs = New DashboardStringFunctionArgs
+							StringArgs.FunctionName = "GetPrimaryFundCenter"
+							StringArgs.NameValuePairs.XFSetValue("Cube", sCube)
+							Dim sEntity As String = GEN_General_String_Helper.Main(si, globals, api, StringArgs)
+
+
+							'---------- if roll over flag is set to NO then exit ----------
+							Dim sRllFwdFlag As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, "E#" & sEntity & "_General:P#" & sEntity & ":C#Local:S#" & sCurrScenario & ":T#" & sCurrTime & "M12:V#Annotation:A#REQ_Allow_Rollover:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None").DataCellEx.DataCellAnnotation
+'Brapi.ErrorLog.LogMessage(si,"RollFwdReq: E#" & sEntity & "_General:P#" & sEntity & ":C#Local:S#" & sCurrScenario & ":T#" & sCurrTime & "M12:V#Annotation:A#REQ_Allow_Rollover:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None")
+'Brapi.ErrorLog.LogMessage(si,"RollFwdReq: sRllFwdFlag=" & sRllFwdFlag)
+
+							If sRllFwdFlag.XFEqualsIgnoreCase("no") Then
+								Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+									selectionChangedTaskResult.IsOK = True
+									selectionChangedTaskResult.ShowMessageBox = True
+									selectionChangedTaskResult.Message = "Roll Forward has been disallowed by requirements manager."
+								Return selectionChangedTaskResult									
+								
+							End If	
+								
+							'---------- run data mgmt sequence ----------
+							Dim dataMgmtSeq As String = "RollFwdReq"     
+							Dim params As New Dictionary(Of String, String) 
+							'params.Add("Scenario", sScenario)
+							'params.Add("Time", "T#" & sTime & ".Base")
+							'params.Add("Entity", "E#" & sEntity)
+'brapi.ErrorLog.LogMessage(si,"here1")					
+							BRApi.Utilities.ExecuteDataMgmtSequence(si, dataMgmtSeq, params)
+
+							
+							'---------- display done message ----------
+							Dim selectionChangedTaskResult2 As New XFSelectionChangedTaskResult()
+								selectionChangedTaskResult2.IsOK = True
+								selectionChangedTaskResult2.ShowMessageBox = True
+								selectionChangedTaskResult2.Message = "Check Task Activity to confirm when Roll Forward is done"
+							Return selectionChangedTaskResult2									
+						End If
+#End Region
+
+#Region "CreateManpowerREQ"
+						If args.FunctionName.XFEqualsIgnoreCase("CreateManpowerREQ") Then
+							Try
+								Me.CreateManpowerREQ(si, globals, api, args)
 								Catch ex As Exception
 								Throw ErrorHandler.LogWrite(si, New XFException(si,ex))
 							End Try
 						End If
 #End Region
 
-#Region "Export All Requirements"
-						'Export PGM Requirements to Excel
-						If args.FunctionName.XFEqualsIgnoreCase("ExportAllREQs") Then
-							Try								
-								Return Me.ExportAllREQs(si,globals,api,args)
+#Region "UpdateManpowerREQStatus"
+						If args.FunctionName.XFEqualsIgnoreCase("UpdateManpowerREQStatus") Then
+							Try
+								Me.UpdateManpowerREQStatus(si, globals, api, args)
 								Catch ex As Exception
 								Throw ErrorHandler.LogWrite(si, New XFException(si,ex))
 							End Try
 						End If
 #End Region
-#Region "Export"
-						'Export PGM Requirement Data to be used as import
-						If args.FunctionName.XFEqualsIgnoreCase("ExportReport") Then
-							Try								
-								Return Me.ExportReport(si,globals,api,args)
-								Catch ex As Exception
-								Throw ErrorHandler.LogWrite(si, New XFException(si,ex))
-							End Try
-						End If
-#End Region
-				End Select
 
+#Region "REQ_UpdateFilterLists Rollover"
+						If args.FunctionName.XFEqualsIgnoreCase("REQ_UpdateFilterListsRollOver") Then
+							
+Dim tStart As DateTime =  Date.Now()							
+
+							'----- get req list -----
+							Dim origcbxEntity As String = args.NameValuePairs.XFGetValue("cbxEntity")
+							Dim sFundCenter As String = args.NameValuePairs.XFGetValue("Fundcenter")
+							'---------- get Entity in proper format ----------
+							Dim StringArgs As DashboardStringFunctionArgs = New DashboardStringFunctionArgs
+							StringArgs.FunctionName = "Remove_General"
+							StringArgs.NameValuePairs.XFSetValue("Entity", origcbxEntity)
+							Dim scbxEntity As String = GEN_General_String_Helper.Main(si, globals, api, StringArgs)					
+							Dim ListOfREQs As List(Of MemberInfo) =  BRApi.Finance.Metadata.GetMembersUsingFilter(si,"E_ARMY", "E#Root.CustomMemberList(BRName=REQ_Member_Lists, MemberListName=GetAllReqListRolloverCBX, TimeOffset=Prior, Caller=REQ_SolutionHelperRollOver, test=testing,FlowMbr=Top, mode=CVResult, ReturnDim=E#F#U1#U2#U3#U4#, cbxEntity = " & scbxEntity & ".Base, Page= , EntityFilter=[" & sFundCenter & "] )"  , False)
+
+							If ListOfREQs.Count = 0 Then
+								Return Nothing
+							End If
+
+						End If
+#End Region
+
+			End Select
 				Return Nothing
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
 		End Function
 
-#Region "ExportReport"	
-		'Export PGM Requirement Data to be used as import 
-		Public Function ExportReport(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs)		
-			
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Select Case sTemplate.ToUpper
-			Case "CWORK KEY5"
-				Return Me.ExportReport_cWorkKey5(si,globals,api,args)
-			Case "CWORK KEY15 OOC"
-				Return Me.ExportReport_cWorkKey15(si,globals,api,args)
-			Case "CSUSTAIN NO LINS"
-				Return Me.ExportReport_cSustain(si,globals,api,args)
-			Case "CDIGITAL"
-				Return Me.ExportReport_cDIGITAL(si,globals,api,args)
-				Case "CSUSTAIN DMOPS"
-				Return Me.ExportReport_DMOPS(si,globals,api,args)
-			Case "ALL REQUIREMENTS"
-				Return Me.ExportReport_General(si,globals,api,args)
-			End Select
-			Return Nothing
+'END MAIN =================================================================================================
+
+#Region "Constants"
+	Private BR_REQDataSet As New Workspace.CMD_PGM.CMD_PGM_Assembly.BusinessRule.DashboardDataSet.CMD_PGM_DataSet.MainClass()
+	Public GEN_General_String_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardStringFunction.GBL_General_String_Helper.MainClass	
 	
-		End Function
 	
 #End Region
 
-#Region "ExportReport_cWork Key5"	
-		'Export PGM Requirement Data to be used as import using cWork template 
-		Public Function ExportReport_cWorkKey5(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
-'BRapi.ErrorLog.LogMessage(si,$"Debug A")		
-			Dim sCube As String = args.NameValuePairs.XFGetValue("CMD","")			
-			Dim iMemberId As Integer = BRApi.Finance.Members.GetMemberId(si,dimtypeid.Entity,sCube)
-			Dim sEntity As String = BRApi.Finance.Entity.Text(si, iMemberId, 1, -1, -1)
-			Dim sROC As String = BRApi.Finance.Entity.Text(si, iMemberId, 2, -1, -1)
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Dim sScenario As String = args.NameValuePairs.XFGetValue("Scenario","")	
-			Dim iScenarioID As Integer = brapi.Finance.Members.GetMemberId(si, DimType.Scenario.Id, sScenario)
-			Dim iTime As Integer = BRApi.Finance.Time.GetYearFromId(si,BRApi.Finance.Scenario.GetWorkflowTime(si, iScenarioID))	
-			Dim iScenariofstyr As Integer = iTime -4
-			Dim sAccount As String = "REQ_CMD_App_Req_Amt_ADM"
-			Dim sPEG As String = args.NameValuePairs.XFGetValue("PEGFilter","")
-			Dim sMDEP As String = args.NameValuePairs.XFGetValue("MDEPFilter","")
-			Dim sFvParam As String = args.NameValuePairs.XFGetValue("FvParam","")
-			sFilePath = ""
-			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
-			
-			If String.IsNullOrWhiteSpace(sEntity) 
-				Throw New Exception("Please select a Command to export")
-			End If	
-			
-			Dim iTime0 As Integer = iScenariofstyr + 0
-			Dim iTime1 As Integer = iScenariofstyr + 1
-			Dim iTime2 As Integer = iScenariofstyr + 2
-			Dim iTime3 As Integer = iScenariofstyr + 3
-			Dim iTime4 As Integer = iScenariofstyr + 4
-			Dim iTime_1 As Integer = iScenariofstyr + 5
-			Dim iTime_2 As Integer = iScenariofstyr + 6
-			Dim iTime_3 As Integer = iScenariofstyr + 7 
-			Dim iTime_4 As Integer = iScenariofstyr + 8 
-			sEntity = sEntity.Replace("""","")		
+#Region "Status Updates"
+		Public Function Update_Status() As xfselectionchangedTaskResult
+			Dim dbExt_ChangedResult As New XFSelectionChangedTaskResult()
+			Dim req_IDs As String = args.NameValuePairs.XFGetValue("req_IDs","NA")
+			Dim new_Status As String = args.NameValuePairs.XFGetValue("new_Status")
+			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			Dim wfStepAllowed As Boolean = True
 
-			'Declare variables to fetch data
-			Dim columns As New List(Of String)
-			Dim processColumns As New List(Of String)
-			Dim sFileHeader As String = ""
-			
-			columns.AddRange(New String(){"SCENARIO","ENTITY","U1","U2","U3","U4","U5","TIME","AMOUNT"})
-			processColumns.AddRange(New String(){"SCENARIO","NAME","REMARKS","JUSTIFICATION","ISSUE","MDEP","APPN","APE","ROC","DOLLAR_TYPE","BO","RC","CTYPE","UIC","REIMS","REIMC","FSC",$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}",$"FY{iTime_1}",$"FY{iTime_2}",$"FY{iTime_3}",$"FY{iTime_4}"})
-			sFileHeader = $"SCENARIO,NAME,REMARKS,JUSTIFICATION,ISSUE,MDEP,APPN,APE,ROC,DOLLAR_TYPE,BO,RC,CTYPE,UIC,REIMS,REIMC,FSC,FY{iTime0},FY{iTime1},FY{iTime2},FY{iTime3},FY{iTime4},FY{iTime_1},FY{iTime_2},FY{iTime_3},FY{iTime_4}"
-				
-			Dim FetchDt As DataTable = Me.CreateReportDataTable(si,sTemplate,columns)
-
-	For i As Integer = 0 To 8
-				Dim myDataUnitPk As New DataUnitPk( _
-				BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-				BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, sEntity ), _
-				BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-				DimConstants.Local, _
-				BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-				BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iScenariofstyr + i).ToString))
-
-				' Buffer coordinates.
-				' Default to #All for everything, then set IDs where we need it.
-				Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-				myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-				myDbCellPk.FlowId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Flow, "Top")
-				myDbCellPk.OriginId = DimConstants.BeforeAdj
-				myDbCellPk.ICId = DimConstants.Top
-				myDbCellPk.UD6Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD6, "Top")		
-				myDbCellPk.UD7Id = DimConstants.None
-				myDbCellPk.UD8Id = DimConstants.None					
-				' Get & Loop through different U1 APPN members and write
-				'No Selected PEG & MDEP = Get all MDEPs
-				If String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then
-					Dim oU1List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_L2"), "U1#Appropriation.Base", True,,)
-					For Each oU1 As MemberInfo In oU1List
-						myDbCellPk.UD1Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD1, oU1.Member.Name)
-						' parameters: si, DataUnitPK, viewID, CommonMembersCellPk, includeUDAttributes, suppressNoData
-						Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-						If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,sEntity,sScenario,(iScenariofstyr + i).ToString,myCells)
-					Next			
-				
-				'No Selected PEG & Select MDEP = Get selected MDEPs
-				'Selected PEG & Selected MDEP = Get selected MDEPs
-				Else If Not String.IsNullOrWhiteSpace(sMDEP) Then			
-					Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#PEG.Base.Keep({sMDEP})", True,,)
-					For Each oU2 As MemberInfo In oU2List
-						myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-						Dim oU1List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_L2"), "U1#Appropriation.Base", True,,)
-						For Each oU1 As MemberInfo In oU1List
-							myDbCellPk.UD1Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD1, oU1.Member.Name)
-							Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-							If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,sEntity,sScenario,(iScenariofstyr + i).ToString,myCells)
-						Next						
-					Next				
-				
-				'Selected PEG & No Selected MDEP = Get all MDEPs under selected PEG
-				Else If Not String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then	
-					Dim arrPEG As String() = sPEG.Split(",")
-					For Each PEG As String In arrPEG
-						Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#{PEG.Trim}.Base", True,,)		
-						For Each oU2 As MemberInfo In oU2List
-							myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-							Dim oU1List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_L2"), "U1#Appropriation.Base", True,,)
-							For Each oU1 As MemberInfo In oU1List
-								myDbCellPk.UD1Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD1, oU1.Member.Name)
-								Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-								If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,sEntity,sScenario,(iScenariofstyr + i).ToString,myCells)
-							Next	
-						Next	
-					Next
+			Try
+				If req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Formulate") Then
+					Me.Update_REQ_Status("Formulate")
+				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Validate") Then
+					Me.Update_REQ_Status("Validate")
+				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Prioritize") Then
+					Me.Update_REQ_Status("Prioritize")
+				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Approve CMD Requirements") Then
+					Me.Update_REQ_Status("Approve CMD")
+				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Approve Requirements") Then
+					Me.Update_REQ_Status("Approve")
+				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Manage") Then
+					Me.ManageREQStatusUpdated(si, globals, api, args, "")
 				End If
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+
+			Return dbExt_ChangedResult
+
+		End Function
+
+		''' <summary>
+		''' Centralized helper to set a REQ workflow status, update history, send emails, and set last updated.
+		''' </summary>
+		Private Function Update_REQ_Status(ByVal curr_Status As String) As xfselectionchangedTaskResult
+			Try
+				Dim Status_manager As Dictionary(Of String, String)
+				Status_manager.Add("L4_Formulate_PGM|Validate","L3_Validate_PGM")
+				Status_manager.Add("L2_Formulate_PGM|Validate","L2_Validate_PGM")
+				Dim dbExt_ChangedResult As New XFSelectionChangedTaskResult()
+				Dim req_IDs As String = args.NameValuePairs.XFGetValue("req_IDs", "NA")
+				Dim num_Reqs As Integer
+				Dim new_Status As String = args.NameValuePairs.XFGetValue("new_Status","NA")
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+				BRApi.errorlog.logmessage(si,$"Hit {req_IDs}")
+				If String.IsNullOrWhiteSpace(new_Status) Then 
+
+					Return dbExt_ChangedResult
+				Else
+					Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+					Using connection As New SqlConnection(dbConnApp.ConnectionString)
+						connection.Open()
+						Dim sqa_xfc_cmd_pgm_req = New SQA_XFC_CMD_PGM_REQ(connection)
+						Dim SQA_XFC_CMD_PGM_REQ_DT = New DataTable()
+						Dim sqa = New SqlDataAdapter()
+
+					   'Fill the DataTable With the current data From FMM_Dest_Cell
+						Dim sql As String = $"SELECT * 
+											FROM XFC_CMD_PGM_REQ 
+											WHERE WFScenario_Name = @WFScenario_Name
+											AND WFCMD_Name = @WFCMD_Name
+											AND WFTime_Name = @WFTime_Name"
+						If num_Reqs > 1
+							sql &= " AND REQ_ID In (@REQ_ID)"
+						Else
+							sql &= " AND REQ_ID = @REQ_ID"
+						End If
+
+						Dim sqlparams As SqlParameter() = {
+							New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+							New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+							New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
+							New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = req_IDs}
+						}
+						sqa_xfc_cmd_pgm_req.Fill_XFC_CMD_PGM_REQ_DT(sqa, SQA_XFC_CMD_PGM_REQ_DT, sql, sqlparams)
+
+						' Update all returned rows
+						For Each row As DataRow In SQA_XFC_CMD_PGM_REQ_DT.Rows
+							Dim wfStepAllowed = Workspace.GBL.GBL_Assembly.GBL_Helpers.Is_Step_Allowed(si, args, curr_Status, row("Entity"))
+							If wfStepAllowed = False Then
+								dbExt_ChangedResult.ShowMessageBox = True
+								dbExt_ChangedResult.Message &= $"Cannot change status of REQ_ID '{row("REQ_ID")}' at this time. Contact requirements manager."
+							Else
+								row("Status") = new_Status
+								row("Update_User") = si.UserName
+								row("Update_Date") = DateTime.Now
+								'Me.UpdateStatusHistory(si, globals, api, args, newREQStatus, reqFlow, reqEntity)
+								'Me.Send_Status_Change_Email(reqFlow, reqEntity)
+							End If
+						Next
+
+						' Persist all changes back to the database
+						sqa_xfc_cmd_pgm_req.Update_XFC_CMD_PGM_REQ(SQA_XFC_CMD_PGM_REQ_DT, sqa)
+					End Using
+				End If
+
+
+				Return dbExt_ChangedResult
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+		End Function
+
+
+		Public Function ManageREQStatusUpdated(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs, Optional ByVal UFR As String =  "") As Boolean
+			Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+					
+			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			'Dim wfLevel As String = wfProfileName.Substring(0,2)
+			Dim sUFR As String = args.NameValuePairs.XFGetValue("UFR", UFR)
+			Dim sFundCenter As String = args.NameValuePairs.XFGetValue("FundCenter")
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			
+			'Args To pass Into dataset BR
+			Dim dsArgs As New DashboardDataSetArgs 
+				dsargs.FunctionType = DashboardDataSetFunctionType.GetDataSet
+				dsArgs.DataSetName = "REQListByEntity"
+				dsArgs.NameValuePairs.XFSetValue("Entity", sFundCenter)
+				dsargs.NameValuePairs.XFSetValue("CubeView", "")
+							
+			'Call dataset BR to return a datatable that has been filtered by ufr status
+			Dim dt As DataTable = BR_REQDataset.Main(si, globals, api, dsArgs)
+			
+			For Each row As DataRow In dt.Rows
+				Dim sEntity As String = row.Item("Value").Split(" ")(0)
+				sUFR = row.Item("Value").Split(" ")(1)				
+									
+				Dim REQStatusHistoryMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Status_History:F#" & sUFR & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQCurrentStatusMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Rqmt_Status:F#" & sUFR & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+			
+				Dim StatusHistory As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQStatusHistoryMemberScript).DataCellEx.DataCellAnnotation
+				Dim CurrentStatus As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQCurrentStatusMemberScript).DataCellEx.DataCellAnnotation
+' BRApi.ErrorLog.LogMessage(si, $"REQCurrentStatusMemberScript= {REQCurrentStatusMemberScript} || CurrentStatus = {CurrentStatus}" )	
+				'Dim LastHistoricalStatus As String = StatusHistory.Substring(StatusHistory.LastIndexOf(",") + 1)
+				Dim LastHistoricalEntry As String = StatusHistory.Substring(StatusHistory.LastIndexOf(",") + 1)
+				Dim LastHistoricalStatus As String = LastHistoricalEntry.Substring(LastHistoricalEntry.LastIndexOf(":") + 1)
+				'If Not String.compare(sFundCenter & " " & CurrentStatus, LastHistoricalStatus) = 0 Then
+				If Not String.compare(CurrentStatus, LastHistoricalStatus) = 0 Then
+					'update Status History
+					Try
+						'Me.UpdateStatusHistory(si, globals, api, args, CurrentStatus, sUFR, sEntity, sFundCenter)
+					Catch ex As Exception
+					End Try
+					
+					'Send email
+					Try
+	'BRApi.ErrorLog.LogMessage(si,"Here Manage UFR Statuses Updated ")					
+						'Me.Send_Status_Change_Email(sUFR, sFundCenter)
+					Catch ex As Exception
+					End Try
+					
+				
+				End If 
+			Next
+			Return Nothing				
+			
+		End Function 
+
+		
+#End Region
+
+#Region "Manage Requirements"
+		
+		Public Function Copy_REQ() As xfselectionchangedTaskResult
+			Try
+				Dim cube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+				
+				'Get source scenrio and time from the passed in value
+				Dim srcEntity = args.NameValuePairs.XFGetValue("sourceEntity")
+				Dim srcFlow As String = args.NameValuePairs.XFGetValue("SourceREQ")
+				Dim srcSenario As String = args.NameValuePairs.XFGetValue("sourceScenario")
+				Dim srcScenarioMbrId As Integer = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, srcSenario)
+				Dim srcTime As String = BRApi.Finance.Scenario.GetWorkflowTime(si, srcScenarioMbrId)
+				srcTime  =  srcTime.Substring(0,4)
+				
+				'target REQ
+				Dim trgtScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+				Dim trgtREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+				Dim trgtFlow = "Test" 'newREQFlow
+				Dim trgtEntity As String = GetEntity(si, args)
+			
+				Dim params As New Dictionary(Of String, String) 
+				'params.Add("Scenario", sScenario)
+				'params.Add("Time", "T#" & sTime & ".Base")
+				params.Add("Entity", srcEntity)
+				params.Add("srcEntity", srcEntity)
+				params.Add("srcFlow", srcFlow)
+				params.Add("srcSenario", srcSenario)
+				params.Add("srcTime", srcTime)
+				params.Add("trgtFlow", trgtFlow)
+		
+'BRApi.ErrorLog.LogMessage(si, "srcEntity = " & srcEntity & ", srcFlowREQ = " & srcFlow & ", srcSenario = " & srcSenario & ", trgtFlow = " & trgtFlow & ", trgtEntity = " & trgtEntity)
+				
+				BRApi.Utilities.ExecuteDataMgmtSequence(si, "PGM_Copy_Amount", params)
+
+				Return Nothing
+			
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+			 
+		End Function
+
+		Public Function Delete_REQ() As xfselectionchangedTaskResult
+									
+			'obtains the Fund, Name and Entityfrom the Create UFR Dashboard
+			Dim sEntity As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity","")
+			Dim sREQToDelete As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ","")	
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			'Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey) & "M12"
+			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim iREQAmount As Integer = Nothing
+			Dim sREQFlow As String = args.NameValuePairs.XFGetValue("reqFlow", sREQToDelete)
+
+			'Add entity and REQ flow to args
+			args.NameValuePairs.Add("REQEntity", sEntity)
+			args.NameValuePairs.Add("REQ", sREQToDelete)
+			'Call method to clear Requirement Funding Request Amount values
+				
+			'Delete annotation from data Attachement table
+			Dim deleteDataAttchSQL As String = "Delete from DataAttachment WHERE Cube = '" &  sCube & "' And Entity = '" & sEntity & "' And Scenario = '" & sScenario & "' And Flow = '" & sREQToDelete & "'"
+'brapi.ErrorLog.LogMessage(si, "deleteDataAttchSQL = " & deleteDataAttchSQL)				
+			Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
+				 BRApi.Database.ExecuteSql(dbConn, deleteDataAttchSQL, True)
+			End Using
+				
+			'Addresses annotation accounts
+			Dim DeleteAnnotationAccounts As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "A_REQ_Main"), "A#REQ_Requirement_Info.Base", True)
+			'Addresses periodic accounts not included in the Data Management sequence
+			Dim DeletePeriodicAccounts As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "A_REQ_Main"), "A#REQ_Funding_Required_Date", True)
+			Dim DeletePOCMbrs As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U5_Main"), "U5#REQ_POCs.Base", True)
+			Dim ResetValue As String = ""
+			
+			'Loops through accounts in an annotation member script
+			For Each REQAccount As MemberInfo In DeleteAnnotationAccounts
+				Dim DeleteMbrScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#" & REQAccount.Member.Name & ":F#" & sREQToDelete & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"						
+
+				'Sets member script and assigns the ResetValue
+				Dim objListofScriptsAccount As New List(Of MemberScriptandValue)
+		    	Dim objScriptValAccount As New MemberScriptAndValue
+				objScriptValAccount.CubeName = sCube
+				objScriptValAccount.Script = DeleteMbrScript
+				objScriptValAccount.TextValue = ResetValue
+				objScriptValAccount.IsNoData = False
+				objListofScriptsAccount.Add(objScriptValAccount)
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsAccount)					
+			Next
+			
+			'Loops through POC members in an annotation member script
+			For Each POCMbr As MemberInfo In DeletePOCMbrs
+				Dim DeleteMbrScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_POC_Name:F#" & sREQToDelete & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#" & POCMbr.Member.Name & ":U6#None:U7#None:U8#None"										
+				
+				'Sets member script and assigns the ResetValue
+				Dim objListofScriptsAccount As New List(Of MemberScriptandValue)
+		    	Dim objScriptValAccount As New MemberScriptAndValue
+				objScriptValAccount.CubeName = sCube
+				objScriptValAccount.Script = DeleteMbrScript
+				objScriptValAccount.TextValue = ResetValue
+				objScriptValAccount.IsNoData = False
+				objListofScriptsAccount.Add(objScriptValAccount)
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsAccount)					
+			Next
+			
+			'Loops through accounts in a periodic member script
+			For Each REQAccount As MemberInfo In DeletePeriodicAccounts
+				Dim DeleteMbrScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Periodic:A#" & REQAccount.Member.Name & ":F#" & sREQToDelete & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+									
+				'Sets member script and assigns the ResetValue
+				Dim objListofScriptsAccount As New List(Of MemberScriptandValue)
+		    	Dim objScriptValAccount As New MemberScriptAndValue
+				objScriptValAccount.CubeName = sCube
+				objScriptValAccount.Script = DeleteMbrScript
+				objScriptValAccount.TextValue = ResetValue
+				objScriptValAccount.IsNoData = True
+				objListofScriptsAccount.Add(objScriptValAccount)
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsAccount)					
 			Next	
-			
-			'Process the fetched data into a format usable for report		
-			Dim processDT As DataTable = Me.CreateReportDataTable(si,"processTable",processColumns)	
-			Dim dArgs As New Dictionary(Of String, String)
-			dArgs.Add("firstYr",iScenariofstyr.ToString)
-			dArgs.Add("startYr",iTime.ToString)
-			dArgs.Add("ROC",sROC)
-			dArgs.Add("Scenario",sScenario)
-			dArgs.Add("Cube",sCube)
-			
-			Me.ProcessTableForReport(si, FetchDt, processDT, dArgs)
-			
-			'Generate & write File and update FvParam for filepath needed for file viewer
-			Return Me.GenerateReportFile(si, processDT, sFileHeader, sCube, iTime, sTemplate, sFvParam)
-
+					 			
+			Return Nothing
 		End Function
-	
-#End Region
-
-#Region "ExportReport_cWorkKey15/OOC"	
-		'Export PGM Requirement Data to be used as import using General template 
-		Public Function ExportReport_cWorkKey15(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
-'BRapi.ErrorLog.LogMessage(si,$"Debug A")		
-			Dim sCube As String = args.NameValuePairs.XFGetValue("CMD","")			
-			Dim iMemberId As Integer = BRApi.Finance.Members.GetMemberId(si,dimtypeid.Entity,sCube)
-			Dim sEntity As String = BRApi.Finance.Entity.Text(si, iMemberId, 1, -1, -1)
-			Dim sROC As String = BRApi.Finance.Entity.Text(si, iMemberId, 2, -1, -1)
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Dim sScenario As String = args.NameValuePairs.XFGetValue("Scenario","")	
-			Dim iScenarioID As Integer = brapi.Finance.Members.GetMemberId(si, DimType.Scenario.Id, sScenario)
-			Dim iTime As Integer = BRApi.Finance.Time.GetYearFromId(si,BRApi.Finance.Scenario.GetWorkflowTime(si, iScenarioID))
-			Dim sReportType As String = args.NameValuePairs.XFGetValue("ReportType","")			
-			Dim sPEG As String = args.NameValuePairs.XFGetValue("PEGFilter","")
-			Dim sMDEP As String = args.NameValuePairs.XFGetValue("MDEPFilter","")	
-			Dim sAccount As String = "REQ_CMD_App_Req_Amt_ADM"
-			Dim sFvParam As String = args.NameValuePairs.XFGetValue("FvParam","")
-			
-			sFilePath = ""
-			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
-			
-			If String.IsNullOrWhiteSpace(sEntity) 
-				Throw New Exception("Please select a Command to export")
-			End If	
-'BRapi.ErrorLog.LogMessage(si,$"sTemplate: {sTemplate} || sReportType = {sReportType} || sPEG = {sPEG} || sMDEP = {sMDEP}")			
-			'Declare all Time values
-			Dim iTime0 As Integer = iTime + 0
-			Dim iTime1 As Integer = iTime + 1
-			Dim iTime2 As Integer = iTime + 2
-			Dim iTime3 As Integer = iTime + 3
-			Dim iTime4 As Integer = iTime + 4
-		
-			sEntity = sEntity.Replace("""","")		
-			
-			'Declare variables to fetch data
-			Dim columns As New List(Of String)
-			Dim processColumns As New List(Of String)
-			Dim sFileHeader As String = ""
-			
-			columns.AddRange(New String(){"SCENARIO","ENTITY","FLOW","U1","U2","U3","U4","U5","TIME","AMOUNT"})
-			
-			Dim FetchDt As DataTable = Me.CreateReportDataTable(si,sTemplate,columns)
-
-				Dim dimPK As DimPk = BRApi.Finance.Dim.GetDimPk(si, $"E_{sCube}")
-				Dim lsEntity As List(Of Member) = BRApi.Finance.Members.GetBaseMembers(si, dimPK, iMemberId,)	
-				processColumns.AddRange(New String(){"SCENARIO","ISSUECODE","BO","RQMT TITLE","RQMT DESCRIPTION","REMARKS","MDEP","APPN","APE","ROC","DOLLAR TYPE","JUON","ISR FLAG","COST MODEL","COMBAT LOSS","COST LOCATION","CATEGORY A CODE","CBS CODE","MIP PROJ CODE",$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}"})
-				sFileHeader = $"SCENARIO,ISSUECODE,BO,REQUIREMENT_TITLE,REQUIREMENT_DESCRIPTION,REMARKS,MDEP,APPN,APE,ROC,DOLLAR_TYPE,JUON,ISR_FLAG,COST_MODEL,COMBAT_LOSS,COST_LOCATION,CATEGORY_A_CODE,CBS_CODE,MIP_PROJ_CODE,FY{iTime0},FY{iTime1},FY{iTime2},FY{iTime3},FY{iTime4}"
-							
-				For Each Entity As Member In lsEntity
-					'For i As Integer = 0 To 4 Step 1 
-					'DD PEG Template does not need to iterate through 4 years (11/06/2025 - Fronz)
-					For i As Integer =  0 To 4 Step 1 
-						Dim myDataUnitPk As New DataUnitPk( _
-						BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, Entity.Name ), _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-						DimConstants.Local, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
-
-						' Buffer coordinates.
-						' Default to #All for everything, then set IDs where we need it.
-						Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-						myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-						myDbCellPk.OriginId = DimConstants.BeforeAdj
-						myDbCellPk.UD7Id = DimConstants.None
-						myDbCellPk.UD8Id = DimConstants.None
-						Dim oU4List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U4_DollarType"), $"U4#Dollar_Type.Base.Where(Name DoesNotContain 'BASE')", True,,)		
-								
-						For Each oU4 As MemberInfo In oU4List
-									myDbCellPk.UD4Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD4, oU4.Member.Name)
-						
-						
-						'No Selected PEG & MDEP = Get all MDEPs
-						If String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then
-							Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-							If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-
-						'No Selected PEG & Select MDEP = Get selected MDEPs
-						'Selected PEG & Selected MDEP = Get selected MDEPs
-						Else If Not String.IsNullOrWhiteSpace(sMDEP) Then
-							Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#PEG.Base.Keep({sMDEP})", True,,)
-							For Each oU2 As MemberInfo In oU2List
-								myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-								Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-								If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-'BRApi.ErrorLog.LogMessage(si, "myCells.Count: " & myCells.Count)
-							Next				
-						
-						'Selected PEG & No Selected MDEP = Get all MDEPs under selected PEG
-						Else If Not String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then					
-							Dim arrPEG As String() = sPEG.Split(",")
-							For Each PEG As String In arrPEG
-								Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#{PEG.Trim}.Base", True,,)		
-								For Each oU2 As MemberInfo In oU2List
-									myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-									Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-									If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-								Next	
-							Next
-						
-						End If	
-						Next
-					Next
-				Next
-			
-			
-			'Process the fetched data into a format usable for report		
-			Dim processDT As DataTable = Me.CreateReportDataTable(si,"processTable",processColumns,True)	
-			Dim dArgs As New Dictionary(Of String, String)
-			dArgs.Add("startYr",iTime.ToString)
-			dArgs.Add("ROC",sROC)
-			dArgs.Add("ReportType",sReportType)
-			dArgs.Add("Cube",sCube)
-			dArgs.Add("Entity",sEntity)
-			dArgs.Add("Scenario",sScenario)
-			Me.ProcessTableForReport(si, FetchDt, processDT, dArgs)
-'			Return Nothing
-			
-			'Generate & write File and update FvParam for filepath needed for file viewer
-			Return Me.GenerateReportFile(si, processDT, sFileHeader, sCube, iTime, sTemplate, sFvParam)
-
+			  
+		Public Function Attach_Doc() As xfselectionchangedTaskResult
 		End Function
-	
-#End Region
-
-#Region "ExportReport_cSustain NO LINS"	
-		'Export PGM Requirement Data to be used as import using General template 
-		Public Function ExportReport_cSustain(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
-'BRapi.ErrorLog.LogMessage(si,$"Debug A")		
-			Dim sCube As String = args.NameValuePairs.XFGetValue("CMD","")			
-			Dim iMemberId As Integer = BRApi.Finance.Members.GetMemberId(si,dimtypeid.Entity,sCube)
-			Dim sEntity As String = BRApi.Finance.Entity.Text(si, iMemberId, 1, -1, -1)
-			Dim sROC As String = BRApi.Finance.Entity.Text(si, iMemberId, 2, -1, -1)
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Dim sScenario As String = args.NameValuePairs.XFGetValue("Scenario","")	
-			Dim iScenarioID As Integer = brapi.Finance.Members.GetMemberId(si, DimType.Scenario.Id, sScenario)
-			Dim iTime As Integer = BRApi.Finance.Time.GetYearFromId(si,BRApi.Finance.Scenario.GetWorkflowTime(si, iScenarioID))
-			Dim sReportType As String = args.NameValuePairs.XFGetValue("ReportType","")			
-			Dim sPEG As String = args.NameValuePairs.XFGetValue("PEGFilter","")
-			Dim sMDEP As String = args.NameValuePairs.XFGetValue("MDEPFilter","")	
-			Dim sAccount As String = "REQ_CMD_App_Req_Amt_ADM"
-			Dim sFvParam As String = args.NameValuePairs.XFGetValue("FvParam","")
-			sFilePath = ""
-			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
 			
-			If String.IsNullOrWhiteSpace(sEntity) 
-				Throw New Exception("Please select a Command to export")
-			End If	
-			
-			If Not sPEG.XFEqualsIgnoreCase("SS")
-				Throw New Exception("Please select SS PEG for cSustain No LINS Export")
-			End If	
-'BRapi.ErrorLog.LogMessage(si,$"sTemplate: {sTemplate} || sReportType = {sReportType} || sPEG = {sPEG} || sMDEP = {sMDEP}")			
-			'Declare all Time values
-			Dim iTime0 As Integer = iTime + 0
-			Dim iTime1 As Integer = iTime + 1
-			Dim iTime2 As Integer = iTime + 2
-			Dim iTime3 As Integer = iTime + 3
-			Dim iTime4 As Integer = iTime + 4
-		
-			sEntity = sEntity.Replace("""","")		
-			
-			'Declare variables to fetch data
-			Dim columns As New List(Of String)
-			Dim processColumns As New List(Of String)
-			Dim sFileHeader As String = ""
-			
-			columns.AddRange(New String(){"SCENARIO","ENTITY","FLOW","U1","U2","U3","U4","U6","TIME","AMOUNT"})
-			
-			Dim FetchDt As DataTable = Me.CreateReportDataTable(si,sTemplate,columns)
-
-			If sReportType.XFContainsIgnoreCase("Summary") Then	
-				processColumns.AddRange(New String(){"SCENARIO","BO","NAME","REMARKS","JUSTIFICATION","FUNCTIONAL PRIORITY","MDEP","APPN","APE","ROC","DOLLAR TYPE","COMMITMENT GROUP","CAPABILITY","STRATEGIC BIN",$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}"})
-				sFileHeader = $"SCENARIO,BO,NAME,REMARKS,JUSTIFICATION,FUNCTIONAL PRIORITY,MDEP,APPN,APE,ROC,DOLLAR TYPE,COMMITMENT GROUP,CAPABILITY,STRATEGIC BIN,FY{iTime0},FY{iTime1},FY{iTime2},FY{iTime3},FY{iTime4}"
-				
-				For i As Integer = 0 To 4 Step 1 
-					Dim myDataUnitPk As New DataUnitPk( _
-					BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, sEntity ), _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-					DimConstants.Local, _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
-
-					' Buffer coordinates.
-					' Default to #All for everything, then set IDs where we need it.
-					Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-					myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-					myDbCellPk.FlowId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Flow, "Top")
-					myDbCellPk.OriginId = DimConstants.BeforeAdj
-					myDbCellPk.ICId = DimConstants.Top
-					myDbCellPk.UD5Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD5, "Top")		
-					myDbCellPk.UD7Id = DimConstants.None
-					myDbCellPk.UD8Id = DimConstants.None
-					
-					
-					'No Selected PEG & Select MDEP = Get selected MDEPs
-					'Selected PEG & Selected MDEP = Get selected MDEPs
-					 If Not String.IsNullOrWhiteSpace(sMDEP) Then
-						Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#PEG.Base.Keep({sMDEP})", True,,)
-						For Each oU2 As MemberInfo In oU2List
-							myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-							Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-'BRApi.ErrorLog.LogMessage(si, "myCells.Count: " & myCells.Count)
-							If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,sEntity,sScenario,(iTime + i).ToString,myCells)
-						Next				
-					
-					'Selected PEG & No Selected MDEP = Get all MDEPs under selected PEG
-					Else If Not String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then					
-						Dim arrPEG As String = "SS"
-						
-							Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#{arrPEG}.Base", True,,)		
-							For Each oU2 As MemberInfo In oU2List
-								myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-								Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-								If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,sEntity,sScenario,(iTime + i).ToString,myCells)
-							Next	
-						
-					End If			
-				Next
-				
-			'For Detail Report, need to loop through all Base Entities and 5 years per Entity
-			Else If sReportType.XFContainsIgnoreCase("Detail") Then
-				Dim dimPK As DimPk = BRApi.Finance.Dim.GetDimPk(si, $"E_{sCube}")
-				Dim lsEntity As List(Of Member) = BRApi.Finance.Members.GetBaseMembers(si, dimPK, iMemberId,)
-				processColumns.AddRange(New String(){"SCENARIO","BO","NAME","REMARKS","JUSTIFICATION","FUNCTIONAL PRIORITY","MDEP","APPN","APE","ROC","DOLLAR TYPE","COMMITMENT GROUP","CAPABILITY","STRATEGIC BIN",$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}"})
-				sFileHeader = $"SCENARIO,BO,NAME,REMARKS,JUSTIFICATION,FUNCTIONAL PRIORITY,MDEP,APPN,APE,ROC,DOLLAR TYPE,COMMITMENT GROUP,CAPABILITY,STRATEGIC BIN,FY{iTime0},FY{iTime1},FY{iTime2},FY{iTime3},FY{iTime4}"
-				
-				For Each Entity As Member In lsEntity
-					For i As Integer = 0 To 4 Step 1 
-						Dim myDataUnitPk As New DataUnitPk( _
-						BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, Entity.Name ), _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-						DimConstants.Local, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
-
-						' Buffer coordinates.
-						' Default to #All for everything, then set IDs where we need it.
-						Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-						myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-						myDbCellPk.OriginId = DimConstants.BeforeAdj
-						myDbCellPk.UD7Id = DimConstants.None
-						myDbCellPk.UD8Id = DimConstants.None
-						
-						
-						
-						'
-						'Selected PEG & Selected MDEP = Get selected MDEPs
-						 If Not String.IsNullOrWhiteSpace(sMDEP) Then
-							Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#PEG.Base.Keep({sMDEP})", True,,)
-							For Each oU2 As MemberInfo In oU2List
-								myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-								Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-								If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-							Next				
-						
-						'Selected PEG & No Selected MDEP = Get all MDEPs under selected PEG
-						Else If Not String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then					
-							Dim arrPEG As String = "SS"
-							
-								Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#{arrPEG}.Base", True,,)		
-								For Each oU2 As MemberInfo In oU2List
-									myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-									Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-									If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-								Next	
-							
-						End If			
-					Next
-				Next
+		Public Function Set_Related_REQs() As xfselectionchangedTaskResult
+			Dim sEntity As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity","") 'args.NameValuePairs.XFGetValue("UFREntity")
+			Dim sUFR As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ","")	
+			Dim sCube As String = args.NameValuePairs.XFGetValue("Cube")		
+			Dim sScenario As String = args.NameValuePairs.XFGetValue("REQScenario")
+			Dim sUFRTime As String = args.NameValuePairs.XFGetValue("REQTime")
+'			Dim sScenario As String = "REQ_Shared"
+'			Dim sUFRTime As String = "1999"
+			Dim sRelatedUFRs As String = args.NameValuePairs.XFGetValue("RelatedREQs")
+			Dim RelatedUFRLength As Integer = sRelatedUFRs.Length
+			Dim UFRList As String() = sRelatedUFRs.Split(","c).Select(Function(UFR) UFR.Trim()).ToArray()
+'brapi.ErrorLog.LogMessage(si,"UfrList = " & RelatedUFRLength)
+			If RelatedUFRLength = 0 Then 
+				Return Nothing
+			End If
+'brapi.ErrorLog.LogMessage(si,"UFR = " & sUFR)			
+			Dim UFRtitleMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sUFRTime & ":V#Annotation:A#REQ_Title:F#" & sUFR & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+			Dim TitleValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, UFRtitleMemberScript).DataCellEx.DataCellAnnotation
+			Dim mainUFR As String = ""
+			If sEntity.XFContainsIgnoreCase("_General") Then 
+				mainUFR = $"{sEntity.Replace("_General","")} - {sUFR} - {TitleValue}"		
+			Else
+				mainUFR = $"{sEntity} - {sUFR} - {TitleValue}"
 			End If
 			
+			Dim RelatedUFRMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sUFRTime & ":V#Annotation:A#REQ_Related_Request:F#" & sUFR & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+'brapi.ErrorLog.LogMessage(si,"RelatedUFRMemberScript = " & RelatedUFRMemberScript)			
+			Dim currentUFRs As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, RelatedUFRMemberScript).DataCellEx.DataCellAnnotation
 
-			'Process the fetched data into a format usable for report		
-			Dim processDT As DataTable = Me.CreateReportDataTable(si,"processTable",processColumns,True)	
-			Dim dArgs As New Dictionary(Of String, String)
-			dArgs.Add("startYr",iTime.ToString)
-			dArgs.Add("ROC",sROC)
-			dArgs.Add("ReportType",sReportType)
-			dArgs.Add("Cube",sCube)
-			dArgs.Add("Entity",sEntity)
-			dArgs.Add("Scenario",sScenario)
-			Me.ProcessTableForReport(si, FetchDt, processDT, dArgs)
-'			Return Nothing
-			
-			'Generate & write File and update FvParam for filepath needed for file viewer
-			Return Me.GenerateReportFile(si, processDT, sFileHeader, sCube, iTime, sTemplate, sFvParam)
-
-		End Function
-	
-#End Region
-
-#Region "ExportReport_DMOPS"	
-		'Export PGM Requirement Data to be used as import using General template 
-		Public Function ExportReport_DMOPS(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
-'BRapi.ErrorLog.LogMessage(si,$"Debug A")		
-			Dim sCube As String = args.NameValuePairs.XFGetValue("CMD","")			
-			Dim iMemberId As Integer = BRApi.Finance.Members.GetMemberId(si,dimtypeid.Entity,sCube)
-			Dim sEntity As String = BRApi.Finance.Entity.Text(si, iMemberId, 1, -1, -1)
-			Dim sROC As String = BRApi.Finance.Entity.Text(si, iMemberId, 2, -1, -1)
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Dim sScenario As String = args.NameValuePairs.XFGetValue("Scenario","")	
-			Dim iScenarioID As Integer = brapi.Finance.Members.GetMemberId(si, DimType.Scenario.Id, sScenario)
-			Dim iTime As Integer = BRApi.Finance.Time.GetYearFromId(si,BRApi.Finance.Scenario.GetWorkflowTime(si, iScenarioID))
-			Dim sReportType As String = args.NameValuePairs.XFGetValue("ReportType","")			
-			Dim sPEG As String = args.NameValuePairs.XFGetValue("PEGFilter","")
-			Dim sMDEP As String = args.NameValuePairs.XFGetValue("MDEPFilter","")	
-			Dim sAccount As String = "REQ_CMD_App_Req_Amt_ADM"
-			Dim sFvParam As String = args.NameValuePairs.XFGetValue("FvParam","")
-			sFilePath = ""
-			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
-			
-			If String.IsNullOrWhiteSpace(sEntity) 
-				Throw New Exception("Please select a Command to export")
-			End If	
-			
-				If Not sPEG.XFEqualsIgnoreCase("SS")
-				Throw New Exception("Please select SS PEG for cSustain DMOPS Export")
-			End If	
-'BRapi.ErrorLog.LogMessage(si,$"sTemplate: {sTemplate} || sReportType = {sReportType} || sPEG = {sPEG} || sMDEP = {sMDEP}")			
-			'Declare all Time values
-			Dim iTime0 As Integer = iTime + 0
-			Dim iTime1 As Integer = iTime + 1
-			Dim iTime2 As Integer = iTime + 2
-			Dim iTime3 As Integer = iTime + 3
-			Dim iTime4 As Integer = iTime + 4
-		
-			sEntity = sEntity.Replace("""","")		
-			
-			'Declare variables to fetch data
-			Dim columns As New List(Of String)
-			Dim processColumns As New List(Of String)
-			Dim sFileHeader As String = ""
-			
-			columns.AddRange(New String(){"SCENARIO","ENTITY","FLOW","U1","U2","U3","U4","U6","TIME","AMOUNT"})
-			
-			Dim FetchDt As DataTable = Me.CreateReportDataTable(si,sTemplate,columns)
-
-				
-			'For Detail Report, need to loop through all Base Entities and 5 years per Entity
-			
-				Dim dimPK As DimPk = BRApi.Finance.Dim.GetDimPk(si, $"E_{sCube}")
-				Dim lsEntity As List(Of Member) = BRApi.Finance.Members.GetBaseMembers(si, dimPK, iMemberId,)
-				processColumns.AddRange(New String(){"SCENARIO","BO","NAME","REMARKS","JUSTIFICATION","FUNCTIONAL PRIORITY","MDEP","APPN","APE","ROC","DOLLAR TYPE","COMMITMENT GROUP","CAPABILITY","STRATEGIC BIN","LIN",$"FY{iTime0}",$"FY1_QTY",$"FY{iTime1}",$"FY2_QTY",$"FY{iTime2}",$"FY3_QTY",$"FY{iTime3}",$"FY4_QTY",$"FY{iTime4}",$"FY5_QTY"})
-				sFileHeader = $"SCENARIO,BO,NAME,REMARKS,JUSTIFICATION,FUNCTIONAL PRIORITY,MDEP,APPN,APE,ROC,DOLLAR TYPE,COMMITMENT GROUP,CAPABILITY,STRATEGIC BIN,LIN,FY{iTime0}(D),FY{iTime0}(Q),FY{iTime1}(D),FY{iTime1}(Q),FY{iTime2}(D),FY{iTime2}(Q),FY{iTime3}(D),FY{iTime3}(Q),FY{iTime4}(D),FY{iTime4}(Q)"
-				
-				For Each Entity As Member In lsEntity
-					For i As Integer = 0 To 4 Step 1 
-						Dim myDataUnitPk As New DataUnitPk( _
-						BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, Entity.Name ), _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-						DimConstants.Local, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
-
-						' Buffer coordinates.
-						' Default to #All for everything, then set IDs where we need it.
-						Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-						myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-						myDbCellPk.OriginId = DimConstants.BeforeAdj
-						myDbCellPk.UD7Id = DimConstants.None
-						myDbCellPk.UD8Id = DimConstants.None
-						
-						
-						'No Selected PEG & Select MDEP = Get selected MDEPs
-						'Selected PEG & Selected MDEP = Get selected MDEPs
-						 If Not String.IsNullOrWhiteSpace(sMDEP) Then
-							Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#PEG.Base.Keep({sMDEP})", True,,)
-							For Each oU2 As MemberInfo In oU2List
-								myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-								Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-								If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-							Next				
-						
-						'Selected PEG & No Selected MDEP = Get all MDEPs under selected PEG
-						Else If Not String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then					
-							Dim arrPEG As String = "SS"
-							
-								Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#{arrPEG}.Base", True,,)		
-								For Each oU2 As MemberInfo In oU2List
-									myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-									Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-									If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-								Next	
-							
-						End If			
-					Next
-				Next
-			
-			
-
-			'Process the fetched data into a format usable for report		
-			Dim processDT As DataTable = Me.CreateReportDataTable(si,"processTable",processColumns,True)	
-			Dim dArgs As New Dictionary(Of String, String)
-			dArgs.Add("startYr",iTime.ToString)
-			dArgs.Add("ROC",sROC)
-			dArgs.Add("ReportType",sReportType)
-			dArgs.Add("Cube",sCube)
-			dArgs.Add("Entity",sEntity)
-			dArgs.Add("Scenario",sScenario)
-			Me.ProcessTableForReport(si, FetchDt, processDT, dArgs)
-'			Return Nothing
-			
-			'Generate & write File and update FvParam for filepath needed for file viewer
-			Return Me.GenerateReportFile(si, processDT, sFileHeader, sCube, iTime, sTemplate, sFvParam)
-
-		End Function
-	
-#End Region
-
-#Region "ExportReport_cDIGITAL"	
-		'Export PGM Requirement Data to be used as import using General template 
-		Public Function ExportReport_cDIGITAL(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
-'BRapi.ErrorLog.LogMessage(si,$"Debug A")		
-			Dim sCube As String = args.NameValuePairs.XFGetValue("CMD","")			
-			Dim iMemberId As Integer = BRApi.Finance.Members.GetMemberId(si,dimtypeid.Entity,sCube)
-			Dim sEntity As String = BRApi.Finance.Entity.Text(si, iMemberId, 1, -1, -1)
-			Dim sROC As String = BRApi.Finance.Entity.Text(si, iMemberId, 2, -1, -1)
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Dim sScenario As String = args.NameValuePairs.XFGetValue("Scenario","")	
-			Dim iScenarioID As Integer = brapi.Finance.Members.GetMemberId(si, DimType.Scenario.Id, sScenario)
-			Dim iTime As Integer = BRApi.Finance.Time.GetYearFromId(si,BRApi.Finance.Scenario.GetWorkflowTime(si, iScenarioID))
-			Dim sReportType As String = args.NameValuePairs.XFGetValue("ReportType","")			
-			Dim sPEG As String = args.NameValuePairs.XFGetValue("PEGFilter","")
-			Dim sMDEP As String = args.NameValuePairs.XFGetValue("MDEPFilter","")	
-			Dim sAccount As String = "REQ_CMD_App_Req_Amt_ADM"
-			Dim sFvParam As String = args.NameValuePairs.XFGetValue("FvParam","")
-			sFilePath = ""
-			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
-			
-			If String.IsNullOrWhiteSpace(sEntity) 
-				Throw New Exception("Please select a Command to export")
-			End If	
-			
-			If Not sPEG.XFEqualsIgnoreCase("DD")
-				Throw New Exception("Please select DD PEG for cDigital Export")
-			End If	
-			
-			
-'BRapi.ErrorLog.LogMessage(si,$"sTemplate: {sTemplate} || sReportType = {sReportType} || sPEG = {sPEG} || sMDEP = {sMDEP}")			
-			'Declare all Time values
-			Dim iTime0 As Integer = iTime + 0
-			Dim iTime1 As Integer = iTime + 1
-			Dim iTime2 As Integer = iTime + 2
-			Dim iTime3 As Integer = iTime + 3
-			Dim iTime4 As Integer = iTime + 4
-		
-			sEntity = sEntity.Replace("""","")		
-			
-			'Declare variables to fetch data
-			Dim columns As New List(Of String)
-			Dim processColumns As New List(Of String)
-			Dim sFileHeader As String = ""
-			
-			columns.AddRange(New String(){"SCENARIO","ENTITY","FLOW","U1","U2","U3","U4","U5","TIME","AMOUNT"})
-			
-			Dim FetchDt As DataTable = Me.CreateReportDataTable(si,sTemplate,columns)
-#Region "CDIGITAL Summary"
-			If sReportType.XFContainsIgnoreCase("Summary") Then	
-				processColumns.AddRange(New String(){"SCENARIO","RQMT TYPE","RQMT SHORT TITLE","RQMT DESCRIPTION","BO","MDEP","APPN","APE","ROC","SUBCMD","DOLLAR TYPE","CTYPE","EMERGING RQMT?","APMS AITR #","PRIORITY","PORTFOLIO","CAPABILITY","JNT CAP AREA,","TBM COST POOL","TBM TOWER","ZERO TRUST CAPABILITY","ASSOCIATED DIRECTIVES","CLOUD INDICATOR","STRAT CYBERSEC PGRM","NOTES","BOR ID","BO7 ID","BO1 ID","UNIT OF MEASURE",$"FY{iTime0} # ITEMS",$"FY{iTime0} # UNIT COST",$"FY{iTime1} # ITEMS",$"FY{iTime1} # UNIT COST",$"FY{iTime2} # ITEMS",$"FY{iTime2} # UNIT COST",$"FY{iTime3} # ITEMS",$"FY{iTime3} # UNIT COST",$"FY{iTime4} # ITEMS",$"FY{iTime4} # UNIT COST"})
-				sFileHeader = $"SCENARIO,RQMT TYPE,RQMT SHORT TITLE,RQMT DESCRIPTION,BO,MDEP,APPN,APE,ROC,SUBCMD,DOLLAR TYPE,CTYPE,EMERGING RQMT?,APMS AITR #,PRIORITY,PORTFOLIO,CAPABILITY,JNT CAP AREA,,TBM COST POOL,TBM TOWER,ZERO TRUST CAPABILITY,ASSOCIATED DIRECTIVES,CLOUD INDICATOR,STRAT CYBERSEC PGRM,NOTES,BOR ID,BO7 ID,BO1 ID,UNIT OF MEASURE,FY{iTime0} # ITEMS,FY{iTime0} # UNIT COST,FY{iTime1} # ITEMS,FY{iTime1} # UNIT COST,FY{iTime2} # ITEMS,FY{iTime2} # UNIT COST,FY{iTime3} # ITEMS,FY{iTime3} # UNIT COST,FY{iTime4} # ITEMS,FY{iTime4} # UNIT COST"
-				'For i As Integer = 0 To 4 Step 1 
-				'DD PEG Template does not need to iterate through 4 years (11/06/2025 - Fronz)
-				For  i As Integer = 0 To 0 
-					Dim myDataUnitPk As New DataUnitPk( _
-					BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, sEntity ), _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-					DimConstants.Local, _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
-
-					' Buffer coordinates.
-					' Default to #All for everything, then set IDs where we need it.
-					Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-					myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-					myDbCellPk.FlowId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Flow, "Top")
-					myDbCellPk.OriginId = DimConstants.BeforeAdj
-					myDbCellPk.ICId = DimConstants.Top
-					'myDbCellPk.UD5Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD5, "Top")		
-					myDbCellPk.UD7Id = DimConstants.None
-					myDbCellPk.UD8Id = DimConstants.None
-					
-				
-					'No selected PEG & selected MDEP = Get selected MDEPs
-					'Selected PEG & selected MDEP = Get selected MDEPs
-					 If Not String.IsNullOrWhiteSpace(sMDEP) Then
-						Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#PEG.Base.Keep({sMDEP})", True,,)
-						For Each oU2 As MemberInfo In oU2List
-							myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-							Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-'BRApi.ErrorLog.LogMessage(si, "myCells.Count: " & myCells.Count)
-							If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,sEntity,sScenario,(iTime + i).ToString,myCells)
-						Next				
-					
-					'Selected PEG & No selected MDEP = Get all MDEPs under selected PEG
-					Else If Not String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then					
-						Dim arrPEG As String = "DD"
-							Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#{arrPEG}.Base", True,,)		
-							For Each oU2 As MemberInfo In oU2List
-								myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-								Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-								If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,sEntity,sScenario,(iTime + i).ToString,myCells)
-							Next	
-						
-					End If			
-				Next
-#End Region				
-			'For Detail Report, need to loop through all Base Entities and 5 years per Entity
-			Else If sReportType.XFContainsIgnoreCase("Detail") Then
-				Dim dimPK As DimPk = BRApi.Finance.Dim.GetDimPk(si, $"E_{sCube}")
-				Dim lsEntity As List(Of Member) = BRApi.Finance.Members.GetBaseMembers(si, dimPK, iMemberId,)	
-				processColumns.AddRange(New String(){"SCENARIO","RQMT TYPE","RQMT SHORT TITLE","RQMT DESCRIPTION","BO","MDEP","APPN","APE","ROC","SUBCMD","DOLLAR TYPE","CTYPE","EMERGING RQMT?","APMS AITR #","PRIORITY","PORTFOLIO","CAPABILITY","JNT CAP AREA","TBM COST POOL","TBM TOWER","ZERO TRUST CAPABILITY","ASSOCIATED DIRECTIVES","CLOUD INDICATOR","STRAT CYBERSEC PGRM","NOTES","UNIT OF MEASURE",$"FY1 # ITEMS",$"FY1 # UNIT COST",$"FY2 # ITEMS",$"FY2 # UNIT COST",$"FY3 # ITEMS",$"FY3 # UNIT COST",$"FY4 # ITEMS",$"FY4 # UNIT COST",$"FY5 # ITEMS",$"FY5 # UNIT COST"})
-				sFileHeader = $"SCENARIO,RQMT TYPE,RQMT SHORT TITLE,RQMT DESCRIPTION,BO,MDEP,APPN,APE,ROC,SUBCMD,DOLLAR TYPE,CTYPE,EMERGING RQMT?,APMS AITR #,PRIORITY,PORTFOLIO,CAPABILITY,JNT CAP AREA,TBM COST POOL,TBM TOWER,ZERO TRUST CAPABILITY,ASSOCIATED DIRECTIVES,CLOUD INDICATOR,STRAT CYBERSEC PGRM,NOTES,UNIT OF MEASURE,FY{iTime0} # ITEMS,FY{iTime0} # UNIT COST,FY{iTime1} # ITEMS,FY{iTime1} # UNIT COST,FY{iTime2} # ITEMS,FY{iTime2} # UNIT COST,FY{iTime3} # ITEMS,FY{iTime3} # UNIT COST,FY{iTime4} # ITEMS,FY{iTime4} # UNIT COST"
-							
-				For Each Entity As Member In lsEntity
-					'For i As Integer = 0 To 4 Step 1 
-					'DD PEG Template does not need to iterate through 4 years (11/06/2025 - Fronz)
-					For i As Integer = 0 To 0 
-						Dim myDataUnitPk As New DataUnitPk( _
-						BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, Entity.Name ), _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-						DimConstants.Local, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
-
-						' Buffer coordinates.
-						' Default to #All for everything, then set IDs where we need it.
-						Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-						myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-						myDbCellPk.OriginId = DimConstants.BeforeAdj
-						myDbCellPk.UD7Id = DimConstants.None
-						myDbCellPk.UD8Id = DimConstants.None
-						
-						
-						'Selected PEG & Selected MDEP = Get selected MDEPs
-						 If Not String.IsNullOrWhiteSpace(sMDEP) Then
-							Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#PEG.Base.Keep({sMDEP})", True,,)
-							For Each oU2 As MemberInfo In oU2List
-								myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-								Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-								If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-'BRApi.ErrorLog.LogMessage(si, "myCells.Count: " & myCells.Count)
-							Next				
-						
-						'Selected PEG & No Selected MDEP = Get all MDEPs under selected PEG
-						Else If Not String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then					
-							Dim arrPEG As String ="DD"
-								Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#{arrPEG}.Base", True,,)		
-								For Each oU2 As MemberInfo In oU2List
-									myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-									Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-									If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-								Next	
-						
-						End If			
-					Next
-				Next
-			End If
-			
-			'Process the fetched data into a format usable for report		
-			Dim processDT As DataTable = Me.CreateReportDataTable(si,"processTable",processColumns,True)	
-			Dim dArgs As New Dictionary(Of String, String)
-			dArgs.Add("startYr",iTime.ToString)
-			dArgs.Add("ROC",sROC)
-			dArgs.Add("ReportType",sReportType)
-			dArgs.Add("Cube",sCube)
-			dArgs.Add("Entity",sEntity)
-			dArgs.Add("Scenario",sScenario)
-			Me.ProcessTableForReport(si, FetchDt, processDT, dArgs)
-'			Return Nothing
-			
-			'Generate & write File and update FvParam for filepath needed for file viewer
-			Return Me.GenerateReportFile(si, processDT, sFileHeader, sCube, iTime, sTemplate, sFvParam)
-
-		End Function
-	
-#End Region
-
-#Region "ExportReport_General(All Requirements PEG export dashboard) "	
-		'Export PGM Requirement Data for all fields 
-		Public Function ExportReport_General(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
-'BRapi.ErrorLog.LogMessage(si,$"Debug A")		
-			Dim sCube As String = args.NameValuePairs.XFGetValue("CMD","")			
-			Dim iMemberId As Integer = BRApi.Finance.Members.GetMemberId(si,dimtypeid.Entity,sCube)
-			Dim sEntity As String = BRApi.Finance.Entity.Text(si, iMemberId, 1, -1, -1)
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Dim sScenario As String = args.NameValuePairs.XFGetValue("Scenario","")	
-			Dim iScenarioID As Integer = brapi.Finance.Members.GetMemberId(si, DimType.Scenario.Id, sScenario)
-			Dim iTime As Integer = BRApi.Finance.Time.GetYearFromId(si,BRApi.Finance.Scenario.GetWorkflowTime(si, iScenarioID))	
-			Dim sPEG As String = args.NameValuePairs.XFGetValue("PEGFilter","")
-			Dim sMDEP As String = args.NameValuePairs.XFGetValue("MDEPFilter","")	
-			Dim sAccount As String = "REQ_Requested_Amt"
-
-			Dim sFvParam As String = args.NameValuePairs.XFGetValue("FvParam","")
-			sFilePath = ""
-			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
-			
-			If String.IsNullOrWhiteSpace(sEntity) 
-				Throw New Exception("Please select a Command to export")
-			End If	
-			
-			'Declare all Time values
-			Dim iTime0 As Integer = iTime + 0
-			Dim iTime1 As Integer = iTime + 1
-			Dim iTime2 As Integer = iTime + 2
-			Dim iTime3 As Integer = iTime + 3
-			Dim iTime4 As Integer = iTime + 4
-		
-			sEntity = sEntity.Replace("""","")		
-			
-			'Declare variables to fetch data
-			Dim columns As New List(Of String)
-			Dim processColumns As New List(Of String)
-			Dim sFileHeader As String = ""
-			
-			columns.AddRange(New String(){"SCENARIO","ENTITY","FLOW","U1","U2","U3","U4","U5","U6","TIME","AMOUNT"})
-			
-			Dim FetchDt As DataTable = Me.CreateReportDataTable(si,sTemplate,columns)
-'Dim tStart2 As DateTime =  Date.Now()
-			
-			
-				Dim dimPK As DimPk = BRApi.Finance.Dim.GetDimPk(si, $"E_{sCube}")
-				Dim lsEntity As List(Of Member) = BRApi.Finance.Members.GetBaseMembers(si, dimPK, iMemberId,)
-				processColumns.AddRange(New String(){"SCENARIO","Entity","FLOW","REQUIREMENT STATUS","APPN","MDEP","APE","DOLLAR TYPE","COST CATEGORY","CTYPE",
-			$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}",
-			"Title",
-"Description",
-"Justification",
-"Cost_Methodology",
-"Impact_If_Not_Funded",
-"Risk_If_Not_Funded",
-"Cost_Growth_Justification",
-"Must_Fund",
-"Funding_Source",
-"Army_Initiative_Directive",
-"Command_Initiative_Directive",
-"Activity_Exercise",
-"IT_Cyber_Requirement",
-"UIC",
-"Flex_Field_1",
-"Flex_Field_2",
-"Flex_Field_3",
-"Flex_Field_4",
-"Flex_Field_5",
-"Emerging_Requirement",
-"CPA_Topic",
-"PBR_Submission",
-"UPL_Submission",
-"Contract_Number",
-"Task_Order_Number",
-"Target_Date_Of_Award",
-"POP_Expiration_Date",
-"ContractorManYearEquiv_CME",
-"COR_Email",
-"POC_Email",
-"Directorate",
-"Division",
-"Branch",
-"Rev_POC_Email",
-"MDEP_Functional_Email",
-"Notification_Email_List",
-"Comments",
-"REQ_Return_Cmt",
-"JUON",
-"ISR_Flag",
-"Cost_Model",
-"Combat_Loss",
-"Cost_Location",
-"Category_A_Code",
-"CBS_Code",
-"MIP_Proj_Code",
-"SS_Priority",
-"Commitment_Group",
-"SS_Capability",
-"Strategic_BIN",
-"LIN",
-"FY1_QTY",
-"FY2_QTY",
-"FY3_QTY",
-"FY4_QTY",
-"FY5_QTY",
-"RequirementType",
-"DD_Priority",
-"Portfolio",
-"DD_Capability",
-"JNT_CAP_AREA",
-"TBM_COST_POOL",
-"TBM_TOWER",
-"APMS_AITR_Num",
-"ZERO_TRUST_CAPABILITY",
-"Associated_Directives",
-"CLOUD_INDICATOR",
-"STRAT_CYBERSEC_PGRM",
-"Notes",
-"UNIT_OF_MEASURE",
-"FY1_ITEMS",
-"FY1_UNIT_COST",
-"FY2_ITEMS",
-"FY2_UNIT_COST",
-"FY3_ITEMS",
-"FY3_UNIT_COST",
-"FY4_ITEMS",
-"FY4_UNIT_COST",
-"FY5_ITEMS",
-"FY5_UNIT_COST"})
-
-
-			
-sFileHeader = $"SCENARIO,Entity,FLOW,REQUIREMENT STATUS,APPN,MDEP,APE,DOLLAR TYPE,OBJECTCLASS,CTYPE,FY{iTime0},FY{iTime1},FY{iTime2},FY{iTime3},FY{iTime4},Title,Description,Justification,Cost_Methodology,Impact_If_Not_Funded,Risk_If_Not_Funded,Cost_Growth_Justification,Must_Fund,Funding_Source,Army_Initiative_Directive,Command_Initiative_Directive,Activity_Exercise,IT_Cyber_Requirement,UIC,Flex_Field_1,Flex_Field_2,Flex_Field_3,Flex_Field_4,Flex_Field_5,Emerging_Requirement,CPA_Topic,PBR_Submission,UPL_Submission,Contract_Number,Task_Order_Number,Target_Date_Of_Award,POP_Expiration_Date,ContractorManYearEquiv_CME,COR_Email,POC_Email,Directorate,Division,Branch,Rev_POC_Email,MDEP_Functional_Email,Notification_Email_List,Comments,Requirement_Return_Comment,JUON,ISR_Flag,Cost_Model,Combat_Loss,Cost_Location,Category_A_Code,CBS_Code,MIP_Proj_Code,SS_Priority,Commitment_Group,SS_Capability,Strategic_BIN,LIN,FY1_QTY,FY2_QTY,FY3_QTY,FY4_QTY,FY5_QTY,RequirementType,DD_Priority,Portfolio,DD_Capability,JNT_CAP_AREA,TBM_COST_POOL,TBM_TOWER,APMS_AITR_Num,ZERO_TRUST_CAPABILITY,Associated_Directives,CLOUD_INDICATOR,STRAT_CYBERSEC_PGRM,Notes,UNIT_OF_MEASURE,FY1_ITEMS,FY1_UNIT_COST,FY2_ITEMS,FY2_UNIT_COST,FY3_ITEMS,FY3_UNIT_COST,FY4_ITEMS,FY4_UNIT_COST,FY5_ITEMS,FY5_UNIT_COST"
-			
-			
-				For Each Entity As Member In lsEntity
-					For i As Integer = 0 To 4 Step 1 
-						Dim myDataUnitPk As New DataUnitPk( _
-						BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, Entity.Name ), _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-						DimConstants.Local, _
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-						BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
-
-						' Buffer coordinates.
-						' Default to #All for everything, then set IDs where we need it.
-						Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-						myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-						myDbCellPk.OriginId = DimConstants.BeforeAdj
-						myDbCellPk.UD7Id = DimConstants.None
-						myDbCellPk.UD8Id = DimConstants.None
-						
-						'No Selected PEG & MDEP = Get all MDEPs
-						If String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then
-							Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-							If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-'BRApi.ErrorLog.LogMessage(si, "myCells.Count: " & myCells.Count)
-						'No Selected PEG & Select MDEP = Get selected MDEPs
-						'Selected PEG & Selected MDEP = Get selected MDEPs
-						Else If Not String.IsNullOrWhiteSpace(sMDEP) Then
-							Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#PEG.Base.Keep({sMDEP})", True,,)
-							For Each oU2 As MemberInfo In oU2List
-								myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-								Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-								If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-							Next				
-						
-						'Selected PEG & No Selected MDEP = Get all MDEPs under selected PEG
-						Else If Not String.IsNullOrWhiteSpace(sPEG) And String.IsNullOrWhiteSpace(sMDEP) Then					
-							Dim arrPEG As String() = sPEG.Split(",")
-							For Each PEG As String In arrPEG
-								Dim oU2List As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), $"U2#{PEG.Trim}.Base", True,,)		
-								For Each oU2 As MemberInfo In oU2List
-									myDbCellPk.UD2Id = BRApi.Finance.Members.GetMemberId(si, dimTypeId.UD2, oU2.Member.Name)
-									Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-									If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-								Next	
-							Next
-						End If			
-					Next
-				Next
-			
-'Dim tStop2 As DateTime =  Date.Now()
-'Dim tDuration2 As TimeSpan = tStop2.Subtract(tStart2)
-'BRapi.ErrorLog.LogMessage(si, "Time to read & write DataBuffer" & tDuration2.TotalSeconds.ToString("0.0000"))
-				
-			'Process the fetched data into a format usable for report		
-			Dim processDT As DataTable = Me.CreateReportDataTable(si,"processTable",processColumns,True)	
-			Dim dArgs As New Dictionary(Of String, String)
-			dArgs.Add("startYr",iTime.ToString)
-			dArgs.Add("Cube",sCube)
-			dArgs.Add("Entity",sEntity)
-			dArgs.Add("Scenario",sScenario)
-			Me.ProcessTableForReport(si, FetchDt, processDT, dArgs)
-			
-			'Generate & write File and update FvParam for filepath needed for file viewer
-			Return Me.GenerateReportFile(si, processDT, sFileHeader, sCube, iTime, sTemplate, sFvParam)
-
-		End Function
-	
-#End Region
-
-#Region "ExportReport Helper"
-
-		'----------------------------------------------------------------------------------
-		'     Create data tables to be used for fetching and processing fetched data
-		'----------------------------------------------------------------------------------
-		Private Function CreateReportDataTable(ByVal si As SessionInfo, ByVal dataTableName As String, ByVal columns As List(Of String), Optional ByVal bAllowDBNull As Boolean = False) As DataTable
-			Try
-				'Create the data table to return
-				Dim dt As New DataTable(dataTableName)
-				For Each column As String In columns	
-					Dim objCol = New DataColumn
-		            objCol.ColumnName = column
-					If column.XFContainsIgnoreCase("amount") Then
-						objCol.DataType = GetType(Long)
-						objCol.DefaultValue = 0
+			For Each UFR As String In UFRList
+				If UFR.XFContainsIgnoreCase(mainUFR) Then Continue For
+				Dim isGeneral As Boolean = UFR.Split("-")(0).Trim().XFContainsIgnoreCase("_General")
+				If isGeneral Then UFR = UFR.Replace(UFR.Split("-")(0).Trim(),UFR.Split("-")(0).Trim().Replace("_General",""))
+				If (Not currentUFRs.XFContainsIgnoreCase(UFR)) Then
+					If (String.IsNullOrWhiteSpace(currentUFRs)) Then				
+						currentUFRs = UFR
 					Else
-		           		objCol.DataType = GetType(String)
-						objCol.DefaultValue = ""
+						currentUFRs = currentUFRs & ", " & UFR	
 					End If
-		            
-		            objCol.AllowDBNull = bAllowDBNull
-		            dt.Columns.Add(objCol)
-				Next
-								
-				Return dt
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try
+				End If
+			
+			Next
+'brapi.ErrorLog.LogMessage(si,"currentUFRs = " & currentUFRs)						
+           'Update related UFR List
+			Dim objListofScripts As New List(Of MemberScriptandValue)
+		    Dim objScriptVal As New MemberScriptAndValue
+			
+			objScriptVal.CubeName = sCube
+			objScriptVal.Script = RelatedUFRMemberScript
+			objScriptVal.TextValue = currentUFRs
+			objScriptVal.IsNoData = False
+			objListofScripts.Add(objScriptVal)
+			
+			BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScripts)
+			
+			'Update the other side - set the relate UFRs
+			
+			For Each relatedUFR As String In UFRList
+				If relatedUFR.XFContainsIgnoreCase(mainUFR) Then Continue For
+				Dim UFR = relatedUFR.Split("-")(1).Trim()
+				sEntity = relatedUFR.Split("-")(0).Trim()
+				RelatedUFRMemberScript = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sUFRTime & ":V#Annotation:A#REQ_Related_Request:F#" & UFR & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				currentUFRs = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, RelatedUFRMemberScript).DataCellEx.DataCellAnnotation
+				If (Not currentUFRs.XFContainsIgnoreCase(mainUFR)) Then
+					If (String.IsNullOrWhiteSpace(currentUFRs)) Then
+						currentUFRs = mainUFR
+					Else
+						currentUFRs = currentUFRs & ", " & mainUFR	
+					End If
+				End If
+
+				objScriptVal.CubeName = sCube
+				objScriptVal.Script = RelatedUFRMemberScript
+				objScriptVal.TextValue = currentUFRs
+				objScriptVal.IsNoData = False
+				objListofScripts.Add(objScriptVal)
+			
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScripts)
+
+			Next
+			Return Nothing
 		End Function
+
+#End Region
+
+#Region "Confirm Review"
 		
-		
-		'----------------------------------------------------------------------------------
-		'     Write data from databuffer's datacells into datatable
-		'----------------------------------------------------------------------------------
-		Private Sub WriteFetchTable(ByVal si As SessionInfo, ByVal dt As DataTable, ByVal Entity As String, ByVal Scenario As String, ByVal Time As String, ByVal oDataCells As List(Of Datacell))
+		Public Function ConfirmReview(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
 			Try
-				For Each oDataCell As DataCell In oDataCells
-	            'Create a new row and append it to the table
-					Dim row As DataRow = dt.NewRow()
-					Dim account As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.Account, oDataCell.DataCellPk.AccountId)
-					Dim flow As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.Flow, oDataCell.DataCellPk.FlowId)
-					Dim u1 As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.UD1, oDataCell.DataCellPk.UD1Id)
-					Dim u2 As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.UD2, oDataCell.DataCellPk.UD2Id)
-					Dim u3 As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.UD3, oDataCell.DataCellPk.UD3Id)
-					Dim u4 As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.UD4, oDataCell.DataCellPk.UD4Id)
-					Dim u5 As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.UD5, oDataCell.DataCellPk.UD5Id)
-					Dim u6 As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.UD6, oDataCell.DataCellPk.UD6Id)
-					Dim u7 As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.UD7, oDataCell.DataCellPk.UD7Id)
-					Dim u8 As String = BRApi.Finance.Members.GetMemberName(si, dimTypeId.UD7, oDataCell.DataCellPk.UD8Id)
-					
-					'Get List of Column Names
-					Dim columnNames As List(Of String) = dt.Columns.Cast(Of DataColumn)().Select(Function(col) col.ColumnName).ToList()
-					'Assign values to row by column names
-					If columnNames.Contains("ENTITY") Then row("ENTITY") = Entity
-					If columnNames.Contains("SCENARIO") Then row("SCENARIO") = Scenario
-					If columnNames.Contains("TIME") Then row("TIME") = Time
-					If columnNames.Contains("FLOW") Then row("FLOW") = flow
-					If columnNames.Contains("ACCOUNT") Then row("ACCOUNT") = account
-					If columnNames.Contains("U1") Then row("U1") = u1
-					If columnNames.Contains("U2") Then row("U2") = u2
-					If columnNames.Contains("U3") Then row("U3") = u3.Split("_")(1)
-					If columnNames.Contains("U4") Then row("U4") = u4
-					If columnNames.Contains("U5") Then row("U5") = u5
-					If columnNames.Contains("U6") Then row("U6") = u6
-					If columnNames.Contains("U7") Then row("U7") = u7
-					If columnNames.Contains("U8") Then row("U8") = u8
-					If columnNames.Contains("AMOUNT") Then row("AMOUNT") = oDataCell.CellAmount
-						
-'					row("ENTITY") = Entity
-'					row("U1") = u1
-'					row("U2") = u2
-'					row("U3") = u3
-'					row("U4") = u4				
-'					row("TIME") = Time
-'					row("AMOUNT") = oDataCell.CellAmount
-				
-'					Select Case True
-'					Case dt.TableName.XFContainsIgnoreCase("cWork") 					
-'						row("U5") = u5
-'						row("SCENARIO") = Scenario
-'					Case dt.TableName.XFContainsIgnoreCase("General") Or dt.TableName.XFContainsIgnoreCase("SS PEG")
-'						row("FLOW") = flow
-'						row("U6") = u6
-'					Case dt.TableName.XFContainsIgnoreCase("DD PEG")
-'						row("SCENARIO") = Scenario
-'						row("FLOW") = flow
-'						row("U5") = u5
-						
-'					End Select
-'Brapi.ErrorLog.LogMessage(si, $"Name = {Name} | Value = {Value}")	
+			
+				Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+				'Dim wfLevel As String = wfProfileName.Substring(0,2)
+				Dim wfCube = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
+				Dim wfScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+				Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
+				Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+				Dim WFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)	
+				Dim WFMonth As Integer = TimeDimHelper.GetMonthIdFromId(si.WorkflowClusterPk.TimeKey)
+				Dim reqTime As String = WFYear & "M12"
 
-                	dt.Rows.Add(row)
-				Next
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try
-		End Sub	
+				Dim reqEntity As String = args.NameValuePairs.XFGetValue("REQEntity")
+				Dim reqFlow As String = args.NameValuePairs.XFGetValue("REQFlow")
 		
-		'--------------------------------------------------------------------------------------------------------------------------
-		'     Process data from fetch datatable into another datatable with amount combined according to keys (E#F#U1#.....)
-		'--------------------------------------------------------------------------------------------------------------------------
-		
-		Private Sub ProcessTableForReport(ByVal si As SessionInfo, ByVal FetchDt As DataTable, processDT As DataTable, Optional ByVal dArgs As Dictionary(Of String, String) = Nothing) 
-			Try				
-				#Region "cWork Key5"
-				
-				If FetchDt.TableName.XFContainsIgnoreCase("cWork Key5") Then
-					Dim Cube As String = dArgs("Cube")
-					Dim firstYr As Integer = COnvert.ToInt32(dArgs("firstYr"))
-					Dim startYr As Integer = COnvert.ToInt32(dArgs("startYr"))
-					Dim Scenario As String = dArgs("Scenario")
-					Dim ROC As String = dArgs("ROC")
-					Dim groupedData As New Dictionary(Of Tuple(Of String, String, String, String),Long())
-					Dim exportScenario As String = "POM" & startYr.ToString.Substring(startYr.ToString.Length - 2) & "-BASE"
-				
-					
-					'Loop through the fetched datatable and group the monthly amounts into an array (value) of the same dim combination (key), write this into a dictionary						
-					For Each Row As DataRow In FetchDt.Rows
-						'Dim Entity As String = Row("ENTITY")
-						Dim U1 As String = Row("U1")
-						Dim U2 As String = Row("U2")
-						Dim U3 As String = Row("U3")
-						Dim U4 As String = Row("U4")							
-						Dim Time As String = Row("TIME")
-						Dim Amount As Long = Row("AMOUNT")
-'BRapi.ErrorLog.LogMessage(si,$" | U1 = {U1} | U2 = {U2} | U3 = {U3} | U4 = {U4} | ")							
-						'use Entity,U1,U2,U3,U4,U5 combination as Key
-						Dim key As Tuple(Of String, String, String, String) = Tuple.Create(U1,U2,U3,U4)
-					
-						If Not groupedData.ContainsKey(key) Then
-							groupedData(key) = New Long(8){}
-						End If
-						'group the amounts into an array of Long where Year 1 = array[0] and so on. The array is then used as the value of the tuple Key
-						Dim iPos As Integer = Convert.ToInt32(Time) - firstYr	
-						Brapi.ErrorLog.LogMessage(si, "iPOS" & iPos )
-						groupedData(key)(iPos) = groupedData(key)(iPos) + Amount						
-					Next
-					
-					
-					'Iterate through the dictionary and write to processed datatable
-					For Each kvp As KeyValuePair(Of Tuple(Of String, String, String, String),Long()) In groupedData
-'					For Each row As DataRow In oSortedDt.Rows
-						'Dim Entity As String = kvp.Key.Item1
-						Dim U1 As String = kvp.Key.Item1
-						Dim U2 As String = kvp.Key.Item2
-						Dim U3 As String = kvp.Key.Item3
-						Dim U4 As String = kvp.Key.Item4
-					
-					
-						Dim RC As String = ""
+				'Get current status of UFR
+				Dim REQMemberScript As String = "Cb#" & wfCube & ":E#" & reqEntity & ":C#Local:S#" & wfScenario & ":T#" & reqTime & ":V#Annotation:A#REQ_Rqmt_Status:F#" & REQFlow & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 
-						'Get amount-by-year array'
-						Dim Amount As Long() = kvp.Value
-						'Get Issuecode
-						Dim Issuecode As String = ROC.Substring(0,2) & "RS1000"
-						'Write to processed DataTable
-						
-						Dim newRow As DataRow = processDT.Rows.Add()
-						'"BUDGET CYCLE","BUDGET VERSION","MAIN ACCOUNT","SPENDING PLAN VERSION","FUNDS CENTER","FUND","FUNDED PROGRAM","COMMITMENT ITEM GROUP","COST COLLECTOR TYPE","COST COLLECTOR","FUNCTIONAL AREA","SOURCE SYSTEM","BUDGET CYCLE YEAR","AREA OF RESP","ATTRIBUTE 1","ATTRIBUTE 2","ATTRIBUTE 3","ATTRIBUTE 4","Period 1-AMT","Period 2-AMT","Period 3-AMT","Period 4-AMT","Period 5-AMT","Period 6-AMT","Period 7-AMT","Period 8-AMT","Period 9-AMT","Period 10-AMT","Period 11-AMT","Period 12-AMT","Period 1-QTY","Period 2-QTY","Period 3-QTY","Period 4-QTY","Period 5-QTY","Period 6-QTY","Period 7-QTY","Period 8-QTY","Period 9-QTY","Period 10-QTY","Period 11-QTY","Period 12-QTY"
-						newRow("SCENARIO")= exportScenario
-						newRow("APPN")= U1
-						newRow("MDEP")= U2
-						newRow("APE")= U3
-						newRow("ROC")= ROC
-						newRow("DOLLAR_TYPE")= U4
-						newRow("BO")= "R"
-						newRow("RC")= U1
-						newRow("Name")= "RMW_" & Issuecode
-						newRow("Justification")= "RMW snchronization"
-						newRow("Issue")= Issuecode
-						newRow("Remarks")= "Command input for BO R data call"
-						'Write 8-Up amounts
-'					Dim lowerbound As Integer = -4
-'					Dim arraylength As Integer = 9 
-'					Dim length As Integer() = {arraylength}
-'					Dim newlowerbound As Integer() = {lowerbound}
-				
-'				Dim newarray As System.Array = Array.CreateInstance(GetType(Double), length,newlowerbound)
-'						For i As Integer =	newarray.GetLowerBound(0) To newarray.GetUpperBound(0)
-
-				For i As Integer = 0 To 8
-					'Get cPROBE Data
-						Dim cProbePos As String =  "Cb#ARMY:E#GlobalVar:C#Local:S#" & Scenario & ":T#" & startYr & ":V#Annotation:A#Var_Selected_Position:F#None:O#Forms:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-						Dim cProbeScenario As String = 	 BRApi.Finance.Data.GetDataCellUsingMemberScript(si, Cube, cProbePos).DataCellEx.DataCellAnnotation
-						Dim U3Concat As String = U1 & "_" & U3
-					Dim sSrcMbrScript As String = "Cb#ARMY:S#" & cProbeScenario & ":T#" & firstYr + i & ":C#Local:E#" & ROC & ":V#YTD:A#BOR:F#Baseline:I#Top:O#BeforeAdj:U1#" & U1 & ":U2#" & U2 & ":U3#" & U3Concat & ":U4#" & U4 & ":U5#Top:U6#None:U7#Top:U8#Top"
-					Dim cProbeAMT As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, Cube, sSrcMbrScript).DataCellEx.DataCell.CellAmount
-						'Brapi.ErrorLog.LogMessage(si, "cPROBE script" & sSrcMbrScript)
-					'Brapi.ErrorLog.LogMessage(si, "REQAMT" & Amount(i))
-					Dim cWorkDelta As Decimal =Math.Round(((Amount(i) - cProbeAMT)/1000),0)
-					'Dim cWorkDeltaRound As Decimal  =  Math.Round((cWorkDelta/1000),0)
-							newRow($"FY{firstYr + i}")= cWorkDelta
-						Next
-						
-					Next			
+				Dim currentStatus As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, REQMemberScript).DataCellEx.DataCellAnnotation
+				If(String.IsNullOrWhiteSpace(currentStatus)) Then
+					Return Nothing
 				End If
-				#End Region
 				
-				#Region "cWork Key15"
+				Dim newStatus As String = "Ready for Validation"
+					
+                'Update UFR Status
+				Dim objListofScriptStatus As New List(Of MemberScriptandValue)
+			    Dim objScriptValStatus As New MemberScriptAndValue	
+				objScriptValStatus.CubeName = wfCube
+				objScriptValStatus.Script = REQMemberScript
+				objScriptValStatus.TextValue = newStatus
+				objScriptValStatus.IsNoData = False
+				objListofScriptStatus.Add(objScriptValStatus)
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptStatus)
 				
-				If FetchDt.TableName.XFContainsIgnoreCase("cWork Key15") Then
-					Dim Cube As String = dArgs("Cube")
-					Dim startYr As Integer = COnvert.ToInt32(dArgs("startYr"))
-					Dim ROC As String = dArgs("ROC")
-					Dim Scenario As String = dArgs("Scenario")
-					
-					Dim groupedData As New Dictionary(Of Tuple(Of String, String, String, String, String, String),Long())
-					Dim exportScenario As String = "POM" & startYr.ToString.Substring(startYr.ToString.Length - 2) & "-BASE"
-					
-					Dim dt As New DataTable
-					Dim detailColumns As New list(Of String)
-					detailColumns.AddRange(New String(){"SCENARIO","ISSUECODE","BO","RQMT TITLE","RQMT DESCRIPTION","REMARKS","MDEP","APPN","APE","ROC","DOLLAR TYPE","JUON","ISR FLAG","COST MODEL","COMBAT LOSS","COST LOCATION","CATEGORY A CODE","CBS CODE","MIP PROJ CODE"})
-					dt = Me.CreateReportDataTable(si,"CMDApprovedREQList",detailColumns,True)	
-					
-						
-						'Get Text accounts From DataAttachment Using SQL - Do it For the entire cube
-
-						Dim SQL As New Text.StringBuilder
-						SQL.Append($"SELECT * FROM ") 
-						SQL.Append($"	(SELECT ENTITY, FLOW, ACCOUNT, TEXT FROM DATAATTACHMENT WHERE  CUBE = '{Cube}' AND SCENARIO = '{Scenario}') AS SOURCETABLE ")
-						SQL.Append($"	PIVOT (") 
-						SQL.Append($"	MAX(TEXT) FOR ACCOUNT IN ([REQ_RQMT_STATUS],[REQ_TITLE],[REQ_DESCRIPTION],
-											[REQ_JUON],
-											[REQ_ISR_Flag],
-											[REQ_Cost_Model],
-											[REQ_Combat_Loss],
-											[REQ_Cost_Location],
-											[REQ_Category_A_Code],
-											[REQ_CBS_Code],
-											[REQ_MIP_Proj_Code])) AS PIVOTTABLE ") 
-						SQL.Append($"	WHERE [REQ_RQMT_STATUS] = 'L2 Approved'")
-						
-'BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
-						'Dim dtFetch As New DataTable
-						
-						Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-							 dt = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
-'BRApi.ErrorLog.LogMessage(si, $"dt num rows: {dt.Rows.Count}")
-						End Using
-					
-					'Loop through the fetched datatable and group the monthly amounts into an array (value) of the same dim combination (key), write this into a dictionary						
-					For Each Row As DataRow In FetchDt.Rows
-						Dim Entity As String = Row("ENTITY")
-						Dim Flow As String = Row("Flow")
-						Dim U1 As String = Row("U1")
-						Dim U2 As String = Row("U2")
-						Dim U3 As String = Row("U3")
-						Dim U4 As String = Row("U4")
-					    	
-						'Dim U6 As String = Row("U6")				
-						Dim Time As String = Row("TIME")
-						Dim Amount As Long = Row("AMOUNT")
-'BRapi.ErrorLog.LogMessage(si,$"Entity = {Entity} | Flow = {Flow} | U1 = {U1} | U2 = {U2} | U3 = {U3} | U4 = {U4} | U5 = {U5}")							
-						'use Entity,U1,U2,U3,U4,U5 combination as Key
-						Dim key As Tuple(Of String, String, String, String, String, String) = Tuple.Create(Entity,Flow,U1,U2,U3,U4)
-					
-						If Not groupedData.ContainsKey(key) Then
-							groupedData(key) = New Long(4){}
-						End If
-						'group the amounts into an array of Long where Year 1 = array[0] and so on. The array is then used as the value of the tuple Key
-						Dim iPos As Integer = Convert.ToInt32(Time) - startYr				
-						groupedData(key)(iPos) = groupedData(key)(iPos) + Amount						
-					Next
-						
-					'Iterate through the dictionary and write to processed datatable
-					For Each kvp As KeyValuePair(Of Tuple(Of String, String, String, String, String, String),Long()) In groupedData
-'					For Each row As DataRow In oSortedDt.Rows
-						Dim Entity As String = kvp.Key.Item1
-						Dim Flow As String = kvp.Key.Item2
-						Dim U1 As String = kvp.Key.Item3
-						Dim U2 As String = kvp.Key.Item4
-						Dim U3 As String = kvp.Key.Item5
-						Dim U4 As String = kvp.Key.Item6
-						
-					
-						Dim RC As String = ""
-'						Dim sFund As String = $"{U4} / {U1}"
-						
-						'Get amount-by-year array'
-						Dim Amount As Long() = kvp.Value
-						'Get Issuecode
-						Dim Issuecode As String = ROC.Substring(0,2) & "RS1000"
-						'Get Parent APPN
-							
-							Dim iU1MbrID As Integer = BRapi.Finance.Members.GetMemberId(si,dimtype.UD1.Id,U1)
-							Dim sParentAppn As String = BRApi.Finance.Members.GetParents(si, BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_FUND"), iU1MbrID, False)(0).Name
-							
-						'Write to processed DataTable
-						Dim newRow As DataRow = processDT.Rows.Add()
-						
-						newRow("SCENARIO")= exportScenario
-						newRow("APPN")= sParentAppn
-						newRow("MDEP")= U2
-						newRow("APE")= U3
-						newRow("DOLLAR TYPE")= U4 
-						newRow("BO")= "R"
-						newRow("ROC")= ROC
-						newRow("ISSUECODE")= Issuecode
-						newRow("Remarks")= "Command input for OOC key15 data call"
-						
-						'Write 5-Up amounts
-						For i As Integer = 0 To 4 Step 1
-							Dim updatedValue As Double = math.Round((Amount(i)/1000),0)
-							newRow($"FY{startYr + i}")= updatedValue
-						Next
-
-							'Using LINQ to get row with Entity and Flow as key from the DataTable fetched from DataAttachment above
-							Dim resultRow As DataRow = dt.AsEnumerable() _
-								.SingleOrDefault(Function(row) row.Field(Of String)("ENTITY") = Entity _
-														AndAlso row.Field(Of String)("FLOW") = Flow)
-							'Assign values
-							If resultRow IsNot Nothing Then
-								
-								newRow("RQMT TITLE")= """"&resultRow("REQ_TITLE") & """"
-								newRow("RQMT DESCRIPTION")= """"&resultRow("REQ_Description") & """"
-								newRow("JUON")= """"&resultRow("REQ_Juon") & """"
-								newRow("ISR FLAG")= """"&resultRow("REQ_ISR_Flag") & """"
-								newRow("COST MODEL")= """"&resultRow("REQ_Cost_Model") & """"
-								newRow("COMBAT LOSS")= """"&resultRow("REQ_Combat_Loss") & """"
-								newRow("COST LOCATION")= """"&resultRow("REQ_Cost_Location") & """"
-								newRow("CATEGORY A CODE")= """"&resultRow("REQ_Category_A_Code") & """"
-								newRow("CBS CODE")= """"&resultRow("REQ_CBS_Code") & """"
-								newRow("MIP PROJ CODE")= """"&resultRow("REQ_MIP_Proj_Code") & """"
-								
-								
-								
-							End If
-						
-					Next			
-				End If
-				#End Region
 				
-				#Region "cSustain"
+				'update Status History
+				Try
+					'Me.UpdateStatusHistory(si, globals, api, args, newStatus)
+				Catch ex As Exception
+				End Try
 				
-				If FetchDt.TableName.XFContainsIgnoreCase("cSustain No LINS") Then
-					
-					Dim Cube As String = dArgs("Cube")
-					Dim startYr As Integer = COnvert.ToInt32(dArgs("startYr"))
-					Dim ROC As String = dArgs("ROC")
-					Dim Scenario As String = dArgs("Scenario")
-					Dim ReportType As String = dArgs("ReportType")
-					Dim groupedData As New Dictionary(Of Tuple(Of String, String, String, String, String, String, String),Long())
-					Dim exportScenario As String = "POM" & startYr.ToString.Substring(startYr.ToString.Length - 2) & "-BASE"
-					
-					Dim dt As New DataTable
-					Dim detailColumns As New list(Of String)
-					detailColumns.AddRange(New String(){"SCENARIO","BO","REQ_RQMT_STATUS","REQ_TITLE","REQ_COMMENTS","REQ_RECURRING_JUSTIFICATION","REQ_SS_PRIORITY","REQ_COMMITMENT_GROUP","REQ_CAPABILITY_SS","REQ_STRATEGIC_BIN"})
-					dt = Me.CreateReportDataTable(si,"CMDApprovedREQList",detailColumns,True)	
-					If ReportType.XFContainsIgnoreCase("Detail") Then
-						
-						'Get NAME,REQ_ID,REQ_DESCRIPTION,REQ_APPROVAL_COMMENT,REMARKS,JUSTIFICATION,STRATEGIC BIN from DataAttachment using SQL - do it for the entire cube
-						Dim SQL As New Text.StringBuilder
-						SQL.Append($"SELECT * FROM ") 
-						SQL.Append($"	(SELECT ENTITY, FLOW, ACCOUNT, TEXT FROM DATAATTACHMENT WHERE  CUBE = '{Cube}' AND SCENARIO = '{Scenario}') AS SOURCETABLE ")
-						SQL.Append($"	PIVOT (") 
-						SQL.Append($"	MAX(TEXT) FOR ACCOUNT IN ([REQ_RQMT_STATUS],[REQ_TITLE],[REQ_COMMENTS],[REQ_RECURRING_JUSTIFICATION],[REQ_SS_PRIORITY],[REQ_COMMITMENT_GROUP],[REQ_CAPABILITY_SS],[REQ_STRATEGIC_BIN])) AS PIVOTTABLE ") 
-						SQL.Append($"	WHERE [REQ_RQMT_STATUS] = 'L2 Approved'")
-						
-'BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
-						'Dim dtFetch As New DataTable
-						Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-							 dt = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
-						End Using
-					End If	
-					'Loop through the fetched datatable and group the monthly amounts into an array (value) of the same dim combination (key), write this into a dictionary						
-					For Each Row As DataRow In FetchDt.Rows
-						Dim Entity As String = Row("ENTITY")
-						Dim Flow As String = Row("Flow")
-						Dim U1 As String = Row("U1")
-						Dim U2 As String = Row("U2")
-						Dim U3 As String = Row("U3")
-						Dim U4 As String = Row("U4")					
-						Dim U6 As String = Row("U6")				
-						Dim Time As String = Row("TIME")
-						Dim Amount As Long = Row("AMOUNT")
-'BRapi.ErrorLog.LogMessage(si,$"Entity = {Entity} | U1 = {U1} | U2 = {U2} | U3 = {U3} | U4 = {U4} | U5 = {U5}")							
-						'use Entity,U1,U2,U3,U4,U5 combination as Key
-						Dim key As Tuple(Of String, String, String, String, String, String, String) = Tuple.Create(Entity,Flow,U1,U2,U3,U4,U6)
-					
-						If Not groupedData.ContainsKey(key) Then
-							groupedData(key) = New Long(5){}
-						End If
-						'group the amounts into an array of Long where Year 1 = array[0] and so on. The array is then used as the value of the tuple Key
-						Dim iPos As Integer = Convert.ToInt32(Time) - startYr				
-						groupedData(key)(iPos) = groupedData(key)(iPos) + Amount						
-					Next
-						
-					'Iterate through the dictionary and write to processed datatable
-					For Each kvp As KeyValuePair(Of Tuple(Of String, String, String, String, String, String, String),Long()) In groupedData
-'					For Each row As DataRow In oSortedDt.Rows
-						Dim Entity As String = kvp.Key.Item1
-						Dim Flow As String = kvp.Key.Item2
-						Dim U1 As String = kvp.Key.Item3
-						Dim U2 As String = kvp.Key.Item4
-						Dim U3 As String = kvp.Key.Item5
-						Dim U4 As String = kvp.Key.Item6
-						Dim U6 As String = kvp.Key.Item7
-					
-						Dim RC As String = ""
-'						Dim sFund As String = $"{U4} / {U1}"
-						
-						'Get amount-by-year array'
-						Dim Amount As Long() = kvp.Value
-						
-						'Get Parent APPN
-							
-							Dim iU1MbrID As Integer = BRapi.Finance.Members.GetMemberId(si,dimtype.UD1.Id,U1)
-							Dim sParentAppn As String = BRApi.Finance.Members.GetParents(si, BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_FUND"), iU1MbrID, False)(0).Name
-							
-						'Write to processed DataTable
-						Dim newRow As DataRow = processDT.Rows.Add()
-						'"SCENARIO","BO","NAME","REQ_ID","REQ_DESCRIPTION","REQ_APPROVAL_COMMENT","REMARKS","JUSTIFICATION","MDEP","APPN","APE","ROC","DOLLAR_TYPE","COMMITMENT GROUP","CAPABILITY","STRATEGIC BIN",$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}"
-						newRow("SCENARIO")= exportScenario
-						newRow("APPN")= sParentAppn
-						newRow("MDEP")= U2
-						newRow("APE")= U3
-						newRow("DOLLAR TYPE")= U4
-						newRow("BO")= "R"
-						newRow("ROC")= ROC	
-						'Write 5-Up amounts
-						For i As Integer = 0 To 4 Step 1
-							Dim updatedValue As Double = math.Round((Amount(i)/1000),0)
-							newRow($"FY{startYr + i}")= updatedValue
-						Next
-
-							'Using LINQ to get row with Entity and Flow as key from the DataTable fetched from DataAttachment above
-							Dim resultRow As DataRow = dt.AsEnumerable() _
-								.SingleOrDefault(Function(row) row.Field(Of String)("ENTITY") = Entity _
-														AndAlso row.Field(Of String)("FLOW") = Flow)
-							'Assign values
-							If resultRow IsNot Nothing Then
-														
-								newRow("NAME")= """"&resultRow("REQ_TITLE") & """"
-								newRow("REMARKS")= """"&resultRow("REQ_COMMENTS") & """"
-								newRow("JUSTIFICATION")= """"&resultRow("REQ_RECURRING_JUSTIFICATION") & """"
-								newRow("FUNCTIONAL PRIORITY")= """"&resultRow("REQ_SS_PRIORITY") & """"
-								newRow("CAPABILITY")= """"&resultRow("REQ_CAPABILITY_SS") & """"
-								newRow("STRATEGIC BIN")= """"&resultRow("REQ_STRATEGIC_BIN") & """"
-								newRow("COMMITMENT GROUP")= """"&resultRow("REQ_COMMITMENT_GROUP") & """"
-							End If
-						
-					Next			
-				End If
-				#End Region
-				
-				#Region "cDIGITAL"
-				
-				If FetchDt.TableName.XFContainsIgnoreCase("cDigital") Then
-					Dim Cube As String = dArgs("Cube")
-					Dim startYr As Integer = COnvert.ToInt32(dArgs("startYr"))
-					Dim ROC As String = dArgs("ROC")
-					Dim Scenario As String = dArgs("Scenario")
-					Dim ReportType As String = dArgs("ReportType")
-					Dim groupedData As New Dictionary(Of Tuple(Of String, String, String, String, String, String, String),Long())
-					Dim exportScenario As String = "POM" & startYr.ToString.Substring(startYr.ToString.Length - 2) & "-BASE"
-					
-					Dim dt As New DataTable
-					Dim detailColumns As New list(Of String)
-					detailColumns.AddRange(New String(){"REQ_RQMT_STATUS","REQ_Type","REQ_TITLE","REQ_DESCRIPTION","REQ_New_Rqmt_Ind","REQ_APMS_AITR_Num","REQ_DD_Priority","REQ_Portfolio","REQ_Capability_DD","REQ_JNT_CAP_AREA","REQ_TBM_COST_POOL","REQ_TBM_TOWER","REQ_ZERO_TRUST_CAPABILITY","REQ_Assoc_Directorate","REQ_CLOUD_INDICATOR","REQ_STRAT_CYBERSEC_PGRM","REQ_Notes","REQ_UNIT_OF_MEASURE","REQ_FY1_ITEMS","REQ_FY1_UNIT_COST","REQ_FY2_ITEMS","REQ_FY2_UNIT_COST","REQ_FY3_ITEMS","REQ_FY3_UNIT_COST","REQ_FY4_ITEMS","REQ_FY4_UNIT_COST","REQ_FY5_ITEMS","REQ_FY5_UNIT_COST"})
-					dt = Me.CreateReportDataTable(si,"CMDApprovedREQList",detailColumns,True)	
-					If ReportType.XFContainsIgnoreCase("Detail") Then
-						
-						'Get Text accounts From DataAttachment Using SQL - Do it For the entire cube
-
-						Dim SQL As New Text.StringBuilder
-						SQL.Append($"SELECT * FROM ") 
-						SQL.Append($"	(SELECT ENTITY, FLOW, ACCOUNT, TEXT FROM DATAATTACHMENT WHERE  CUBE = '{Cube}' AND SCENARIO = '{Scenario}') AS SOURCETABLE ")
-						SQL.Append($"	PIVOT (") 
-						SQL.Append($"	MAX(TEXT) FOR ACCOUNT IN ([REQ_RQMT_STATUS],[REQ_Type],[REQ_TITLE],[REQ_DESCRIPTION],
-											[REQ_New_Rqmt_Ind],
-											[REQ_APMS_AITR_Num],
-											[REQ_DD_Priority],
-											[REQ_Portfolio],
-											[REQ_Capability_DD],
-											[REQ_JNT_CAP_AREA],
-											[REQ_TBM_COST_POOL],
-											[REQ_TBM_TOWER],
-											[REQ_ZERO_TRUST_CAPABILITY],
-											[REQ_Assoc_Directorate],
-											[REQ_CLOUD_INDICATOR],
-											[REQ_STRAT_CYBERSEC_PGRM],
-											[REQ_Notes],
-											[REQ_UNIT_OF_MEASURE],
-											[REQ_FY1_ITEMS],
-											[REQ_FY1_UNIT_COST],
-											[REQ_FY2_ITEMS],
-											[REQ_FY2_UNIT_COST],
-											[REQ_FY3_ITEMS],
-											[REQ_FY3_UNIT_COST],
-											[REQ_FY4_ITEMS],
-											[REQ_FY4_UNIT_COST],
-											[REQ_FY5_ITEMS],
-											[REQ_FY5_UNIT_COST])) AS PIVOTTABLE ") 
-						SQL.Append($"	WHERE [REQ_RQMT_STATUS] = 'L2 Approved'")
-						
-'BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
-						'Dim dtFetch As New DataTable
-						
-						Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-							 dt = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
-'BRApi.ErrorLog.LogMessage(si, $"dt num rows: {dt.Rows.Count}")
-						End Using
-					End If	
-					'Loop through the fetched datatable and group the monthly amounts into an array (value) of the same dim combination (key), write this into a dictionary						
-					For Each Row As DataRow In FetchDt.Rows
-						Dim Entity As String = Row("ENTITY")
-						Dim Flow As String = Row("Flow")
-						Dim U1 As String = Row("U1")
-						Dim U2 As String = Row("U2")
-						Dim U3 As String = Row("U3")
-						Dim U4 As String = Row("U4")
-					    Dim U5 As String = Row("U5")	
-						'Dim U6 As String = Row("U6")				
-						Dim Time As String = Row("TIME")
-						Dim Amount As Long = Row("AMOUNT")
-'BRapi.ErrorLog.LogMessage(si,$"Entity = {Entity} | Flow = {Flow} | U1 = {U1} | U2 = {U2} | U3 = {U3} | U4 = {U4} | U5 = {U5}")							
-						'use Entity,U1,U2,U3,U4,U5 combination as Key
-						Dim key As Tuple(Of String, String, String, String, String, String, String) = Tuple.Create(Entity,Flow,U1,U2,U3,U4,U5)
-					
-						If Not groupedData.ContainsKey(key) Then
-							groupedData(key) = New Long(5){}
-						End If
-						'group the amounts into an array of Long where Year 1 = array[0] and so on. The array is then used as the value of the tuple Key
-						Dim iPos As Integer = Convert.ToInt32(Time) - startYr				
-						groupedData(key)(iPos) = groupedData(key)(iPos) + Amount						
-					Next
-						
-					'Iterate through the dictionary and write to processed datatable
-					For Each kvp As KeyValuePair(Of Tuple(Of String, String, String, String, String, String, String),Long()) In groupedData
-'					For Each row As DataRow In oSortedDt.Rows
-						Dim Entity As String = kvp.Key.Item1
-						Dim Flow As String = kvp.Key.Item2
-						Dim U1 As String = kvp.Key.Item3
-						Dim U2 As String = kvp.Key.Item4
-						Dim U3 As String = kvp.Key.Item5
-						Dim U4 As String = kvp.Key.Item6
-						Dim U5 As String = kvp.Key.Item7
-					
-						Dim RC As String = ""
-'						Dim sFund As String = $"{U4} / {U1}"
-						
-						'Get amount-by-year array'
-						Dim Amount As Long() = kvp.Value
-						
-						'Get Parent APPN
-							
-							Dim iU1MbrID As Integer = BRapi.Finance.Members.GetMemberId(si,dimtype.UD1.Id,U1)
-							Dim sParentAppn As String = BRApi.Finance.Members.GetParents(si, BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_FUND"), iU1MbrID, False)(0).Name
-							
-						'Write to processed DataTable
-						Dim newRow As DataRow = processDT.Rows.Add()
-						
-						newRow("SCENARIO")= exportScenario
-						newRow("APPN")= sParentAppn
-						newRow("MDEP")= U2
-						newRow("APE")= U3
-						newRow("DOLLAR TYPE")= U4
-						newRow("BO")= "R"
-						newRow("CTYPE")= U5
-						newRow("ROC")= ROC
-						NewRow("SUBCMD")= Entity
-						'Write 5-Up amounts
-						'For i As Integer = 0 To 4 Step 1
-'						For i As Integer = 0 To 0 
-'							newRow($"FY{startYr + i}")= Amount(i)
-'						Next
-
-							
-							'Using LINQ to get row with Entity and Flow as key from the DataTable fetched from DataAttachment above
-							Dim resultRow As DataRow = dt.AsEnumerable() _
-								.SingleOrDefault(Function(row) row.Field(Of String)("ENTITY") = Entity _
-														AndAlso row.Field(Of String)("FLOW") = Flow)
-							'Assign values
-							If resultRow IsNot Nothing Then
-								newRow("RQMT TYPE")= """"&resultRow("REQ_TYPE") & """"
-								newRow("RQMT SHORT TITLE")= """"&resultRow("REQ_TITLE") & """"
-								newRow("RQMT DESCRIPTION")= """"&resultRow("REQ_Description") & """"
-								newRow("EMERGING RQMT?")= """"&resultRow("REQ_NEW_RQMT_IND") & """"
-								newRow("APMS AITR #")=  """"&resultRow("REQ_APMS_AITR_Num") & """"
-								newRow("Priority")=  """"&resultRow("REQ_DD_Priority") & """"
-								newRow("Portfolio")=  """"&resultRow("REQ_Portfolio") & """"
-								newRow("Capability")=  """"&resultRow("REQ_Capability_DD") & """"
-								newRow("JNT CAP AREA")=  """"&resultRow("REQ_JNT_CAP_AREA") & """"
-								newRow("TBM COST POOL")=  """"&resultRow("REQ_TBM_COST_POOL") & """"
-								newRow("TBM TOWER")=  """"&resultRow("REQ_TBM_TOWER") & """"
-								newRow("ZERO TRUST CAPABILITY")=  """"&resultRow("REQ_ZERO_TRUST_CAPABILITY") & """"
-								newRow("Associated Directives")=  """"&resultRow("REQ_Assoc_Directorate") & """"
-								newRow("CLOUD INDICATOR")=  """"&resultRow("REQ_CLOUD_INDICATOR") & """"
-								newRow("STRAT CYBERSEC PGRM")=  """"&resultRow("REQ_STRAT_CYBERSEC_PGRM") & """"
-								newRow("Notes")=  """"&resultRow("REQ_Notes") & """"
-								newRow("UNIT OF MEASURE")=  """"&resultRow("REQ_UNIT_OF_MEASURE") & """"
-								newRow("FY1 # ITEMS")=  """"&resultRow("REQ_FY1_ITEMS") & """"
-								newRow("FY1 # UNIT COST")=  """"&resultRow("REQ_FY1_UNIT_COST") & """"
-								newRow("FY2 # ITEMS")=  """"&resultRow("REQ_FY2_ITEMS") & """"
-								newRow("FY2 # UNIT COST")=  """"&resultRow("REQ_FY2_UNIT_COST") & """"
-								newRow("FY3 # ITEMS")=  """"&resultRow("REQ_FY3_ITEMS") & """"
-								newRow("FY3 # UNIT COST")=  """"&resultRow("REQ_FY3_UNIT_COST") & """"
-								newRow("FY4 # ITEMS")=  """"&resultRow("REQ_FY4_ITEMS") & """"
-								newRow("FY4 # UNIT COST")=  """"&resultRow("REQ_FY4_UNIT_COST") & """"
-								newRow("FY5 # ITEMS")=  """"&resultRow("REQ_FY5_ITEMS") & """"
-								newRow("FY5 # UNIT COST")=  """"&resultRow("REQ_FY5_UNIT_COST") & """"
-								
-							End If
-						
-					Next			
-				End If
-				#End Region
-				
-				#Region "General(All Reqs)"
-				
-				If FetchDt.TableName.XFContainsIgnoreCase("All Requirements") Then
-					Dim Cube As String = dArgs("Cube")
-					Dim startYr As Integer = COnvert.ToInt32(dArgs("startYr"))
-					
-					Dim Scenario As String = dArgs("Scenario")
-					
-					Dim groupedData As New Dictionary(Of Tuple(Of String, String, String, String, String, String, String, Tuple(Of String)),Long())
-					Dim exportScenario As String = "POM" & startYr.ToString.Substring(startYr.ToString.Length - 2) & " REQ"
-					
-					Dim dt As New DataTable
-					Dim detailColumns As New list(Of String)
-					detailColumns.AddRange(New String(){
-					"SCERARIO","ENTITY","FLOW","REQ_RQMT_STATUS","REQ_Title",
-																"REQ_Description",
-																"REQ_Cost_Methodology_Cmt",
-																"REQ_Recurring_Justification",
-																"REQ_Impact_If_Not_Funded",
-																"REQ_Risk_If_Not_Funded",
-																"REQ_Cost_Growth_Justification",
-																"REQ_Must_Fund",
-																"REQ_Requested_Fund_Source",
-																"REQ_Army_initiative_Directive",
-																"REQ_Command_Initiative_Directive",
-																"REQ_Activity_Exercise",
-																"REQ_IT_Cyber_Rqmt_Ind",
-																"REQ_UIC_Acct",
-																"REQ_Flex_Field_1",
-																"REQ_Flex_Field_2",
-																"REQ_Flex_Field_3",
-																"REQ_Flex_Field_4",
-																"REQ_Flex_Field_5",
-																"REQ_New_Rqmt_Ind",
-																"REQ_CPA_Topic",
-																"REQ_PBR_Submission",
-																"REQ_UPL_Submission",
-																"REQ_Contract_Number",
-																"REQ_Task_Order_Number",
-																"REQ_Target_Date_Of_Award",
-																"REQ_POP_Expiration_Date",
-																"REQ_FTE_CME",
-																"REQ_COR_Email",
-																"REQ_POC_Email",
-																"REQ_Directorate",
-																"REQ_Division",
-																"REQ_Branch",
-																"REQ_Rev_POC_Email",
-																"REQ_MDEP_Func_Email",
-																"REQ_Notification_Email_List",
-																"REQ_Comments",
-																"REQ_Return_Cmt",
-																"REQ_JUON",
-																"REQ_ISR_Flag",
-																"REQ_Cost_Model",
-																"REQ_Combat_Loss",
-																"REQ_Cost_Location",
-																"REQ_Category_A_Code",
-																"REQ_CBS_Code",
-																"REQ_MIP_Proj_Code",
-																"REQ_Type",
-																"REQ_DD_Priority",
-																"REQ_Portfolio",
-																"REQ_Capability_DD",
-																"REQ_JNT_CAP_AREA",
-																"REQ_TBM_COST_POOL",
-																"REQ_TBM_TOWER",
-																"REQ_APMS_AITR_Num",
-																"REQ_ZERO_TRUST_CAPABILITY",
-																"REQ_Assoc_Directorate",
-																"REQ_CLOUD_INDICATOR",
-																"REQ_STRAT_CYBERSEC_PGRM",
-																"REQ_Notes",
-																"REQ_UNIT_OF_MEASURE",
-																"REQ_FY1_ITEMS",
-																"REQ_FY1_UNIT_COST",
-																"REQ_FY2_ITEMS",
-																"REQ_FY2_UNIT_COST",
-																"REQ_FY3_ITEMS",
-																"REQ_FY3_UNIT_COST",
-																"REQ_FY4_ITEMS",
-																"REQ_FY4_UNIT_COST",
-																"REQ_FY5_ITEMS",
-																"REQ_FY5_UNIT_COST",
-																"REQ_SS_Priority",
-																"REQ_Commitment_Group",
-																"REQ_Capability_SS",
-																"REQ_Strategic_BIN",
-																"REQ_LIN",
-																"REQ_FY1_QTY",
-																"REQ_FY2_QTY",
-																"REQ_FY3_QTY",
-																"REQ_FY4_QTY",
-																"REQ_FY5_QTY"})
-					dt = Me.CreateReportDataTable(si,"CMDApprovedREQList",detailColumns,True)	
-					
-						
-						'Get NAME,REQ_ID,REQ_DESCRIPTION,REQ_APPROVAL_COMMENT,REMARKS,JUSTIFICATION,STRATEGIC BIN from DataAttachment using SQL - do it for the entire cube
-						Dim SQL As New Text.StringBuilder
-						SQL.Append($"SELECT * FROM ") 
-						SQL.Append($" (Select ENTITY, FLOW, TEXT,
-								Case
-									When ACCOUNT = 'REQ_POC_Name' AND UD5 = 'REQ_Owner'  then 'OwnerName'
-									When ACCOUNT = 'REQ_POC_Email' AND UD5 = 'REQ_Owner' then 'OwnerEmail'
-									When ACCOUNT = 'REQ_POC_Phone' AND UD5 = 'REQ_Owner' then 'OwnerPhone'
-									When ACCOUNT = 'REQ_POC_Cmt' AND UD5 = 'REQ_Owner' then 'OwnerCmt'
-					
-									When ACCOUNT = 'REQ_POC_Name' AND UD5 = 'REQ_Func_POC'  then 'MDEPFuncName'
-									When ACCOUNT = 'REQ_POC_Email' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncEmail'
-									When ACCOUNT = 'REQ_POC_Phone' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncPhone'
-									When ACCOUNT = 'REQ_POC_Cmt' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncCmt'
-
-								Else
-									ACCOUNT
-								End As AccountCAT
-					From DataAttachment Where  CUBE = '{Cube}' AND SCENARIO = '{Scenario}') AS src ")
-					SQL.Append($"	PIVOT (") 
-					SQL.Append($"	MAX(TEXT) FOR AccountCAT IN ([REQ_RQMT_STATUS],[REQ_Title],
-					[REQ_Description],
-[REQ_Recurring_Justification],
-[REQ_Cost_Methodology_Cmt],
-[REQ_Impact_If_Not_Funded],
-[REQ_Risk_If_Not_Funded],
-[REQ_Cost_Growth_Justification],
-[REQ_Must_Fund],
-[REQ_Requested_Fund_Source],
-[REQ_Army_initiative_Directive],
-[REQ_Command_Initiative_Directive],
-[REQ_Activity_Exercise],
-[REQ_IT_Cyber_Rqmt_Ind],
-[REQ_UIC_Acct],
-[REQ_Flex_Field_1],
-[REQ_Flex_Field_2],
-[REQ_Flex_Field_3],
-[REQ_Flex_Field_4],
-[REQ_Flex_Field_5],
-[REQ_New_Rqmt_Ind],
-[REQ_CPA_Topic],
-[REQ_PBR_Submission],
-[REQ_UPL_Submission],
-[REQ_Contract_Number],
-[REQ_Task_Order_Number],
-[REQ_Target_Date_Of_Award],
-[REQ_POP_Expiration_Date],
-[REQ_FTE_CME],
-[REQ_COR_Email],
-[REQ_POC_Email],
-[REQ_Directorate],
-[REQ_Division],
-[REQ_Branch],
-[REQ_Rev_POC_Email],
-[REQ_MDEP_Func_Email],
-[REQ_Notification_Email_List],
-[REQ_Comments],
-[REQ_Return_Cmt],
-[REQ_JUON],
-[REQ_ISR_Flag],
-[REQ_Cost_Model],
-[REQ_Combat_Loss],
-[REQ_Cost_Location],
-[REQ_Category_A_Code],
-[REQ_CBS_Code],
-[REQ_MIP_Proj_Code],
-[REQ_Type],
-[REQ_DD_Priority],
-[REQ_Portfolio],
-[REQ_Capability_DD],
-[REQ_JNT_CAP_AREA],
-[REQ_TBM_COST_POOL],
-[REQ_TBM_TOWER],
-[REQ_APMS_AITR_Num],
-[REQ_ZERO_TRUST_CAPABILITY],
-[REQ_Assoc_Directorate],
-[REQ_CLOUD_INDICATOR],
-[REQ_STRAT_CYBERSEC_PGRM],
-[REQ_Notes],
-[REQ_UNIT_OF_MEASURE],
-[REQ_FY1_ITEMS],
-[REQ_FY1_UNIT_COST],
-[REQ_FY2_ITEMS],
-[REQ_FY2_UNIT_COST],
-[REQ_FY3_ITEMS],
-[REQ_FY3_UNIT_COST],
-[REQ_FY4_ITEMS],
-[REQ_FY4_UNIT_COST],
-[REQ_FY5_ITEMS],
-[REQ_FY5_UNIT_COST],
-[REQ_SS_Priority],
-[REQ_Commitment_Group],
-[REQ_Capability_SS],
-[REQ_Strategic_BIN],
-[REQ_LIN],
-[REQ_FY1_QTY],
-[REQ_FY2_QTY],
-[REQ_FY3_QTY],
-[REQ_FY4_QTY],
-[REQ_FY5_QTY]
-					)) AS PIVOTTABLE ") 
-						 
-						
-						
-	'	BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
-						'Dim dtFetch As New DataTable
-						
-						Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-							 dt = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
-						End Using
-				
-					'Loop through the fetched datatable and group the monthly amounts into an array (value) of the same dim combination (key), write this into a dictionary						
-					For Each Row As DataRow In FetchDt.Rows
-						Dim Entity As String = Row("ENTITY")
-						Dim Flow As String = Row("Flow")
-						Dim U1 As String = Row("U1")
-						Dim U2 As String = Row("U2")
-						Dim U3 As String = Row("U3")
-						Dim U4 As String = Row("U4")
-						Dim U5 As String = Row("U5")
-						Dim U6 As String = Row("U6")				
-						Dim Time As String = Row("TIME")
-						Dim Amount As Long = Row("AMOUNT")
-'BRapi.ErrorLog.LogMessage(si,$"Entity = {Entity} | U1 = {U1} | U2 = {U2} | U3 = {U3} | U4 = {U4} | U5 = {U5}")							
-						'use Entity,U1,U2,U3,U4,U5 combination as Key
-					Dim key = Tuple.Create(Entity,Flow,U1,U2,U3,U4,U6,U5)
-						'Dim Key2 As Tuple(Of Key, String, String) = Tuple.Create(Key,U5,U6)
-						
-					'As Tuple(Of String, String, String, String, String, String, String, String)
-						If Not groupedData.ContainsKey(key) Then
-							groupedData(key) = New Long(5){}
-						End If
-						'group the amounts into an array of Long where Year 1 = array[0] and so on. The array is then used as the value of the tuple Key
-						Dim iPos As Integer = Convert.ToInt32(Time) - startYr				
-						groupedData(key)(iPos) = groupedData(key)(iPos) + Amount						
-					Next
-						
-					'Iterate through the dictionary and write to processed datatable
-					For Each kvp As KeyValuePair(Of Tuple(Of String, String, String, String, String, String,String, Tuple(Of String)),Long()) In groupedData
-'					For Each row As DataRow In oSortedDt.Rows
-						Dim Entity As String = kvp.Key.Item1
-						Dim Flow As String = kvp.Key.Item2
-						Dim U1 As String = kvp.Key.Item3
-						Dim U2 As String = kvp.Key.Item4
-						Dim U3 As String = kvp.Key.Item5
-						Dim U4 As String = kvp.Key.Item6
-						Dim U6 As String = kvp.Key.Item7
-						Dim U5 As String = kvp.Key.Rest.Item1
-						Dim RC As String = ""
-'						Dim sFund As String = $"{U4} / {U1}"
-						
-						'Get amount-by-year array'
-						Dim Amount As Long() = kvp.Value
-						
-						'Write to processed DataTable
-						Dim newRow As DataRow = processDT.Rows.Add()
-						'"SCENARIO","BO","NAME","REQ_ID","REQ_DESCRIPTION","REQ_APPROVAL_COMMENT","REMARKS","JUSTIFICATION","MDEP","APPN","APE","ROC","DOLLAR_TYPE","COST CATEGORY","CAPABILITY","STRATEGIC BIN",$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}"
-						newRow("SCENARIO")= exportScenario
-						newRow("ENTITY")= Entity
-						newRow("FLOW")= Flow
-						newRow("APPN")= U1
-						newRow("MDEP")= U2
-						newRow("APE")= U3
-						newRow("DOLLAR TYPE")= U4
-						
-						newRow("COST CATEGORY")= U6
-						newRow("CTYPE")= U5
-						'Write 5-Up amounts
-						For i As Integer = 0 To 4 Step 1
-							newRow($"FY{startYr + i}")= Amount(i)
-						Next
-
-						
-							'Get "REQ_ID","REQ_DESCRIPTION","REQ_APPROVAL_COMMENT"
-							'Using LINQ to get row with Entity and Flow as key from the DataTable fetched from DataAttachment above
-							Dim resultRow As DataRow = dt.AsEnumerable() _
-								.SingleOrDefault(Function(row) row.Field(Of String)("ENTITY") = Entity _
-														AndAlso row.Field(Of String)("FLOW") = Flow)
-							'Assign values
-							If resultRow IsNot Nothing Then
-								'NAME,REQ_ID,REQ_DESCRIPTION,REQ_APPROVAL_COMMENT,REMARKS,JUSTIFICATION,STRATEGIC BIN
-								'[REQ_Title],[REQ_ID],[REQ_DESCRIPTION],[REQ_APPROVAL_COMMENT],[REQ_COMMENTS],[REQ_RECURRING_JUSTIFICATION],[REQ_COMMITMENT_GROUP]
-							newRow("REQUIREMENT STATUS")= """" & resultRow("REQ_RQMT_STATUS") & """"
-							newRow("TITLE")=  """"&resultRow("REQ_TITLE") & """"
-							
-			
-newRow("Description")=  """"&resultRow("REQ_Description") & """"
-newRow("Justification")=  """"&resultRow("REQ_Recurring_Justification") & """"
-newRow("Cost_Methodology")=  """"&resultRow("REQ_Cost_Methodology_Cmt") & """"
-newRow("Impact_If_Not_Funded")=  """"&resultRow("REQ_Impact_If_Not_Funded") & """"
-newRow("Risk_If_Not_Funded")=  """"&resultRow("REQ_Risk_If_Not_Funded") & """"
-newRow("Cost_Growth_Justification")=  """"&resultRow("REQ_Cost_Growth_Justification") & """"
-newRow("Must_Fund")=  """"&resultRow("REQ_Must_Fund") & """"
-newRow("Funding_Source")=  """"&resultRow("REQ_Requested_Fund_Source") & """"
-newRow("Army_Initiative_Directive")=  """"&resultRow("REQ_Army_initiative_Directive") & """"
-newRow("Command_Initiative_Directive")=  """"&resultRow("REQ_Command_Initiative_Directive") & """"
-newRow("Activity_Exercise")=  """"&resultRow("REQ_Activity_Exercise") & """"
-newRow("IT_Cyber_Requirement")=  """"&resultRow("REQ_IT_Cyber_Rqmt_Ind") & """"
-newRow("UIC")=  """"&resultRow("REQ_UIC_Acct") & """"
-newRow("Flex_Field_1")=  """"&resultRow("REQ_Flex_Field_1") & """"
-newRow("Flex_Field_2")=  """"&resultRow("REQ_Flex_Field_2") & """"
-newRow("Flex_Field_3")=  """"&resultRow("REQ_Flex_Field_3") & """"
-newRow("Flex_Field_4")=  """"&resultRow("REQ_Flex_Field_4") & """"
-newRow("Flex_Field_5")=  """"&resultRow("REQ_Flex_Field_5") & """"
-newRow("Emerging_Requirement")=  """"&resultRow("REQ_New_Rqmt_Ind") & """"
-newRow("CPA_Topic")=  """"&resultRow("REQ_CPA_Topic") & """"
-newRow("PBR_Submission")=  """"&resultRow("REQ_PBR_Submission") & """"
-newRow("UPL_Submission")=  """"&resultRow("REQ_UPL_Submission") & """"
-newRow("Contract_Number")=  """"&resultRow("REQ_Contract_Number") & """"
-newRow("Task_Order_Number")=  """"&resultRow("REQ_Task_Order_Number") & """"
-newRow("Target_Date_Of_Award")=  """"&resultRow("REQ_Target_Date_Of_Award") & """"
-newRow("POP_Expiration_Date")=  """"&resultRow("REQ_POP_Expiration_Date") & """"
-newRow("ContractorManYearEquiv_CME")=  """"&resultRow("REQ_FTE_CME") & """"
-newRow("COR_Email")=  """"&resultRow("REQ_COR_Email") & """"
-newRow("POC_Email")=  """"&resultRow("REQ_POC_Email") & """"
-newRow("Directorate")=  """"&resultRow("REQ_Directorate") & """"
-newRow("Division")=  """"&resultRow("REQ_Division") & """"
-newRow("Branch")=  """"&resultRow("REQ_Branch") & """"
-newRow("Rev_POC_Email")=  """"&resultRow("REQ_Rev_POC_Email") & """"
-newRow("MDEP_Functional_Email")=  """"&resultRow("REQ_MDEP_Func_Email") & """"
-newRow("Notification_Email_List")=  """"&resultRow("REQ_Notification_Email_List") & """"
-newRow("Comments")=  """"&resultRow("REQ_Comments") & """"
-newRow("REQ_Return_Cmt")=  """"&resultRow("REQ_Return_Cmt") & """"
-newRow("JUON")=  """"&resultRow("REQ_JUON") & """"
-newRow("ISR_Flag")=  """"&resultRow("REQ_ISR_Flag") & """"
-newRow("Cost_Model")=  """"&resultRow("REQ_Cost_Model") & """"
-newRow("Combat_Loss")=  """"&resultRow("REQ_Combat_Loss") & """"
-newRow("Cost_Location")=  """"&resultRow("REQ_Cost_Location") & """"
-newRow("Category_A_Code")=  """"&resultRow("REQ_Category_A_Code") & """"
-newRow("CBS_Code")=  """"&resultRow("REQ_CBS_Code") & """"
-newRow("MIP_Proj_Code")=  """"&resultRow("REQ_MIP_Proj_Code") & """"
-newRow("RequirementType")=  """"&resultRow("REQ_Type") & """"
-newRow("DD_Priority")=  """"&resultRow("REQ_DD_Priority") & """"
-newRow("Portfolio")=  """"&resultRow("REQ_Portfolio") & """"
-newRow("DD_Capability")=  """"&resultRow("REQ_Capability_DD") & """"
-newRow("JNT_CAP_AREA")=  """"&resultRow("REQ_JNT_CAP_AREA") & """"
-newRow("TBM_COST_POOL")=  """"&resultRow("REQ_TBM_COST_POOL") & """"
-newRow("TBM_TOWER")=  """"&resultRow("REQ_TBM_TOWER") & """"
-newRow("APMS_AITR_Num")=  """"&resultRow("REQ_APMS_AITR_Num") & """"
-newRow("ZERO_TRUST_CAPABILITY")=  """"&resultRow("REQ_ZERO_TRUST_CAPABILITY") & """"
-newRow("Associated_Directives")=  """"&resultRow("REQ_Assoc_Directorate") & """"
-newRow("CLOUD_INDICATOR")=  """"&resultRow("REQ_CLOUD_INDICATOR") & """"
-newRow("STRAT_CYBERSEC_PGRM")=  """"&resultRow("REQ_STRAT_CYBERSEC_PGRM") & """"
-newRow("Notes")=  """"&resultRow("REQ_Notes") & """"
-newRow("UNIT_OF_MEASURE")=  """"&resultRow("REQ_UNIT_OF_MEASURE") & """"
-newRow("FY1_ITEMS")=  """"&resultRow("REQ_FY1_ITEMS") & """"
-newRow("FY1_UNIT_COST")=  """"&resultRow("REQ_FY1_UNIT_COST") & """"
-newRow("FY2_ITEMS")=  """"&resultRow("REQ_FY2_ITEMS") & """"
-newRow("FY2_UNIT_COST")=  """"&resultRow("REQ_FY2_UNIT_COST") & """"
-newRow("FY3_ITEMS")=  """"&resultRow("REQ_FY3_ITEMS") & """"
-newRow("FY3_UNIT_COST")=  """"&resultRow("REQ_FY3_UNIT_COST") & """"
-newRow("FY4_ITEMS")=  """"&resultRow("REQ_FY4_ITEMS") & """"
-newRow("FY4_UNIT_COST")=  """"&resultRow("REQ_FY4_UNIT_COST") & """"
-newRow("FY5_ITEMS")=  """"&resultRow("REQ_FY5_ITEMS") & """"
-newRow("FY5_UNIT_COST")=  """"&resultRow("REQ_FY5_UNIT_COST") & """"
-newRow("SS_Priority")=  """"&resultRow("REQ_SS_Priority") & """"
-newRow("Commitment_Group")=  """"&resultRow("REQ_Commitment_Group") & """"
-newRow("SS_Capability")=  """"&resultRow("REQ_Capability_SS") & """"
-newRow("Strategic_BIN")=  """"&resultRow("REQ_Strategic_BIN") & """"
-newRow("LIN")=  """"&resultRow("REQ_LIN") & """"
-newRow("FY1_QTY")=  """"&resultRow("REQ_FY1_QTY") & """"
-newRow("FY2_QTY")=  """"&resultRow("REQ_FY2_QTY") & """"
-newRow("FY3_QTY")=  """"&resultRow("REQ_FY3_QTY") & """"
-newRow("FY4_QTY")=  """"&resultRow("REQ_FY4_QTY") & """"
-newRow("FY5_QTY")=  """"&resultRow("REQ_FY5_QTY") & """"
-
-							End If 
-						
-					Next			
-				End If
-				#End Region	
-				
-				#Region "DMOPS"
-				
-				If FetchDt.TableName.XFContainsIgnoreCase("cSustain DMOPS") Then
-					
-					Dim Cube As String = dArgs("Cube")
-					Dim startYr As Integer = COnvert.ToInt32(dArgs("startYr"))
-					Dim ROC As String = dArgs("ROC")
-					Dim Scenario As String = dArgs("Scenario")
-					Dim ReportType As String = dArgs("ReportType")
-					Dim groupedData As New Dictionary(Of Tuple(Of String, String, String, String, String, String, String),Long())
-					Dim exportScenario As String = "POM" & startYr.ToString.Substring(startYr.ToString.Length - 2) & "-BASE"
-					
-					Dim dt As New DataTable
-					Dim detailColumns As New list(Of String)
-					detailColumns.AddRange(New String(){"SCENARIO","BO","REQ_RQMT_STATUS","REQ_TITLE","REQ_COMMENTS","REQ_RECURRING_JUSTIFICATION","REQ_SS_PRIORITY","REQ_COMMITMENT_GROUP","REQ_CAPABILITY_SS","REQ_STRATEGIC_BIN"})
-					dt = Me.CreateReportDataTable(si,"CMDApprovedREQList",detailColumns,True)	
-					
-						
-						'Get NAME,REQ_ID,REQ_DESCRIPTION,REQ_APPROVAL_COMMENT,REMARKS,JUSTIFICATION,STRATEGIC BIN from DataAttachment using SQL - do it for the entire cube
-						Dim SQL As New Text.StringBuilder
-						SQL.Append($"SELECT * FROM ") 
-						SQL.Append($"	(SELECT ENTITY, FLOW, ACCOUNT, TEXT FROM DATAATTACHMENT WHERE  CUBE = '{Cube}' AND SCENARIO = '{Scenario}') AS SOURCETABLE ")
-						SQL.Append($"	PIVOT (") 
-						SQL.Append($"	MAX(TEXT) FOR ACCOUNT IN ([REQ_RQMT_STATUS],[REQ_TITLE],[REQ_COMMENTS],[REQ_RECURRING_JUSTIFICATION],[REQ_SS_PRIORITY],[REQ_COMMITMENT_GROUP],[REQ_CAPABILITY_SS],[REQ_STRATEGIC_BIN],[REQ_LIN],[REQ_FY1_QTY],[REQ_FY2_QTY],[REQ_FY3_QTY],[REQ_FY4_QTY],[REQ_FY5_QTY])) AS PIVOTTABLE ") 
-						SQL.Append($"	WHERE [REQ_RQMT_STATUS] = 'L2 Approved'")
-						
-'BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
-						'Dim dtFetch As New DataTable
-						Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-							 dt = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
-						End Using
-					
-					'Loop through the fetched datatable and group the monthly amounts into an array (value) of the same dim combination (key), write this into a dictionary						
-					For Each Row As DataRow In FetchDt.Rows
-						Dim Entity As String = Row("ENTITY")
-						Dim Flow As String = Row("Flow")
-						Dim U1 As String = Row("U1")
-						Dim U2 As String = Row("U2")
-						Dim U3 As String = Row("U3")
-						Dim U4 As String = Row("U4")					
-						Dim U6 As String = Row("U6")				
-						Dim Time As String = Row("TIME")
-						Dim Amount As Long = Row("AMOUNT")
-'BRapi.ErrorLog.LogMessage(si,$"Entity = {Entity} | U1 = {U1} | U2 = {U2} | U3 = {U3} | U4 = {U4} | U5 = {U5}")							
-						'use Entity,U1,U2,U3,U4,U5 combination as Key
-						Dim key As Tuple(Of String, String, String, String, String, String, String) = Tuple.Create(Entity,Flow,U1,U2,U3,U4,U6)
-					
-						If Not groupedData.ContainsKey(key) Then
-							groupedData(key) = New Long(5){}
-						End If
-						'group the amounts into an array of Long where Year 1 = array[0] and so on. The array is then used as the value of the tuple Key
-						Dim iPos As Integer = Convert.ToInt32(Time) - startYr				
-						groupedData(key)(iPos) = groupedData(key)(iPos) + Amount						
-					Next
-						
-					'Iterate through the dictionary and write to processed datatable
-					For Each kvp As KeyValuePair(Of Tuple(Of String, String, String, String, String, String, String),Long()) In groupedData
-'					For Each row As DataRow In oSortedDt.Rows
-						Dim Entity As String = kvp.Key.Item1
-						Dim Flow As String = kvp.Key.Item2
-						Dim U1 As String = kvp.Key.Item3
-						Dim U2 As String = kvp.Key.Item4
-						Dim U3 As String = kvp.Key.Item5
-						Dim U4 As String = kvp.Key.Item6
-						Dim U6 As String = kvp.Key.Item7
-					
-						Dim RC As String = ""
-'						Dim sFund As String = $"{U4} / {U1}"
-						
-						'Get amount-by-year array'
-						Dim Amount As Long() = kvp.Value
-						
-						'Get Parent APPN
-							
-							Dim iU1MbrID As Integer = BRapi.Finance.Members.GetMemberId(si,dimtype.UD1.Id,U1)
-							Dim sParentAppn As String = BRApi.Finance.Members.GetParents(si, BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_FUND"), iU1MbrID, False)(0).Name
-							
-						
-						'Write to processed DataTable
-						Dim newRow As DataRow = processDT.Rows.Add()
-						'"SCENARIO","BO","NAME","REQ_ID","REQ_DESCRIPTION","REQ_APPROVAL_COMMENT","REMARKS","JUSTIFICATION","MDEP","APPN","APE","ROC","DOLLAR_TYPE","COMMITMENT GROUP","CAPABILITY","STRATEGIC BIN",$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}"
-						newRow("SCENARIO")= exportScenario
-						newRow("APPN")= sParentAppn
-						newRow("MDEP")= U2
-						newRow("APE")= U3
-						newRow("DOLLAR TYPE")= U4
-						newRow("BO")= "R"
-						newRow("ROC")= ROC	
-						'Write 5-Up amounts
-						For i As Integer = 0 To 4 Step 1
-							Dim updatedValue As Double = math.Round((Amount(i)/1000),0)
-							newRow($"FY{startYr + i}")= updatedValue
-							
-						Next
-
-							
-							'Using LINQ to get row with Entity and Flow as key from the DataTable fetched from DataAttachment above
-							Dim resultRow As DataRow = dt.AsEnumerable() _
-								.SingleOrDefault(Function(row) row.Field(Of String)("ENTITY") = Entity _
-														AndAlso row.Field(Of String)("FLOW") = Flow)
-							'Assign values
-							If resultRow IsNot Nothing Then
-														
-								newRow("NAME")= """"&resultRow("REQ_TITLE") & """"
-								newRow("REMARKS")= """"&resultRow("REQ_COMMENTS") & """"
-								newRow("JUSTIFICATION")= """"&resultRow("REQ_RECURRING_JUSTIFICATION") & """"
-								newRow("FUNCTIONAL PRIORITY")= """"&resultRow("REQ_SS_PRIORITY") & """"
-								newRow("CAPABILITY")= """"&resultRow("REQ_CAPABILITY_SS") & """"
-								newRow("STRATEGIC BIN")= """"&resultRow("REQ_STRATEGIC_BIN") & """"
-								newRow("COMMITMENT GROUP")= """"&resultRow("REQ_COMMITMENT_GROUP") & """"
-								newRow("LIN")= """"&resultRow("REQ_LIN") & """"
-								
-								If 	String.IsNullOrWhiteSpace(resultRow("REQ_FY1_QTY").ToString)
-									
-								newRow("FY1_QTY") = "0"
-							Else 
-								newRow("FY1_QTY") = """"&resultRow("REQ_FY1_QTY") & """"
-							End If
-							If 	String.IsNullOrWhiteSpace(resultRow("REQ_FY2_QTY").ToString)
-									
-								newRow("FY2_QTY") = "0"
-							Else 
-								newRow("FY2_QTY") = """"&resultRow("REQ_FY2_QTY") & """"
-							End If
-							If 	String.IsNullOrWhiteSpace(resultRow("REQ_FY3_QTY").ToString)
-									
-								newRow("FY3_QTY") = "0"
-							Else 
-								newRow("FY3_QTY") = """"&resultRow("REQ_FY3_QTY") & """"
-							End If
-							If 	String.IsNullOrWhiteSpace(resultRow("REQ_FY4_QTY").ToString)
-									
-								newRow("FY4_QTY") = "0"
-							Else 
-								newRow("FY4_QTY") = """"&resultRow("REQ_FY4_QTY") & """"
-							End If
-							If 	String.IsNullOrWhiteSpace(resultRow("REQ_FY5_QTY").ToString)
-									
-								newRow("FY5_QTY") = "0"
-							Else 
-								newRow("FY5_QTY") = """"&resultRow("REQ_FY5_QTY") & """"
-							End If
-								
-							End If
-						
-					Next			
-				End If
-				#End Region
-				
-				#Region "Export All REQs(Review dashboard)"
-				
-				If FetchDt.TableName.XFContainsIgnoreCase("ExportAllREQs") Then
-					Dim Cube As String = dArgs("Cube")
-					Dim startYr As Integer = COnvert.ToInt32(dArgs("startYr"))
-					Dim Scenario As String = dArgs("Scenario")
-					Dim groupedData As New Dictionary(Of Tuple(Of String, String, String, String, String, String, String, Tuple(Of String)),Long())
-					
-					Dim exportScenario As String = "POM" & startYr.ToString.Substring(startYr.ToString.Length - 2) & " REQ"
-					
-					Dim dt As New DataTable
-					Dim detailColumns As New list(Of String)({
-					"SCERARIO","ENTITY","FLOW","REQ_RQMT_STATUS","REQ_Title",
-																"REQ_Description",
-																"REQ_Cost_Methodology_Cmt",
-																"REQ_Recurring_Justification",
-																"REQ_Impact_If_Not_Funded",
-																"REQ_Risk_If_Not_Funded",
-																"REQ_Cost_Growth_Justification",
-																"REQ_Must_Fund",
-																"REQ_Requested_Fund_Source",
-																"REQ_Army_initiative_Directive",
-																"REQ_Command_Initiative_Directive",
-																"REQ_Activity_Exercise",
-																"REQ_IT_Cyber_Rqmt_Ind",
-																"REQ_UIC_Acct",
-																"REQ_Flex_Field_1",
-																"REQ_Flex_Field_2",
-																"REQ_Flex_Field_3",
-																"REQ_Flex_Field_4",
-																"REQ_Flex_Field_5",
-																"REQ_New_Rqmt_Ind",
-																"REQ_CPA_Topic",
-																"REQ_PBR_Submission",
-																"REQ_UPL_Submission",
-																"REQ_Contract_Number",
-																"REQ_Task_Order_Number",
-																"REQ_Target_Date_Of_Award",
-																"REQ_POP_Expiration_Date",
-																"REQ_FTE_CME",
-																"REQ_COR_Email",
-																"REQ_POC_Email",
-																"REQ_Directorate",
-																"REQ_Division",
-																"REQ_Branch",
-																"REQ_Rev_POC_Email",
-																"REQ_MDEP_Func_Email",
-																"REQ_Notification_Email_List",
-																"REQ_Comments",
-																"REQ_Return_Cmt",
-																"REQ_JUON",
-																"REQ_ISR_Flag",
-																"REQ_Cost_Model",
-																"REQ_Combat_Loss",
-																"REQ_Cost_Location",
-																"REQ_Category_A_Code",
-																"REQ_CBS_Code",
-																"REQ_MIP_Proj_Code",
-																"REQ_Type",
-																"REQ_DD_Priority",
-																"REQ_Portfolio",
-																"REQ_Capability_DD",
-																"REQ_JNT_CAP_AREA",
-																"REQ_TBM_COST_POOL",
-																"REQ_TBM_TOWER",
-																"REQ_APMS_AITR_Num",
-																"REQ_ZERO_TRUST_CAPABILITY",
-																"REQ_Assoc_Directorate",
-																"REQ_CLOUD_INDICATOR",
-																"REQ_STRAT_CYBERSEC_PGRM",
-																"REQ_Notes",
-																"REQ_UNIT_OF_MEASURE",
-																"REQ_FY1_ITEMS",
-																"REQ_FY1_UNIT_COST",
-																"REQ_FY2_ITEMS",
-																"REQ_FY2_UNIT_COST",
-																"REQ_FY3_ITEMS",
-																"REQ_FY3_UNIT_COST",
-																"REQ_FY4_ITEMS",
-																"REQ_FY4_UNIT_COST",
-																"REQ_FY5_ITEMS",
-																"REQ_FY5_UNIT_COST",
-																"REQ_SS_Priority",
-																"REQ_Commitment_Group",
-																"REQ_Capability_SS",
-																"REQ_Strategic_BIN",
-																"REQ_LIN",
-																"REQ_FY1_QTY",
-																"REQ_FY2_QTY",
-																"REQ_FY3_QTY",
-																"REQ_FY4_QTY",
-																"REQ_FY5_QTY", 
-																"Command"})
-					dt = Me.CreateReportDataTable(si,"ExportAllREQs",detailColumns,True)	
-				
-						
-						
-					Dim SQL As New Text.StringBuilder
-					SQL.Append($"SELECT * FROM ") 
-					SQL.Append($"	(SELECT ENTITY, FLOW, TEXT,
-								CASE
-									WHEN ACCOUNT = 'REQ_POC_Name' AND UD5 = 'REQ_Owner'  then 'OwnerName'
-									WHEN ACCOUNT = 'REQ_POC_Email' AND UD5 = 'REQ_Owner' then 'OwnerEmail'
-									WHEN ACCOUNT = 'REQ_POC_Phone' AND UD5 = 'REQ_Owner' then 'OwnerPhone'
-									WHEN ACCOUNT = 'REQ_POC_Cmt' AND UD5 = 'REQ_Owner' then 'OwnerCmt'
-					
-									WHEN ACCOUNT = 'REQ_POC_Name' AND UD5 = 'REQ_Func_POC'  then 'MDEPFuncName'
-									WHEN ACCOUNT = 'REQ_POC_Email' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncEmail'
-									WHEN ACCOUNT = 'REQ_POC_Phone' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncPhone'
-									WHEN ACCOUNT = 'REQ_POC_Cmt' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncCmt'
-
-								ELSE
-									ACCOUNT
-								End as AccountCAT
-					FROM DataAttachment WHERE  CUBE = '{Cube}' AND SCENARIO = '{Scenario}') AS src ")
-					SQL.Append($"	PIVOT (") 
-					SQL.Append($"	MAX(TEXT) FOR AccountCAT IN ([REQ_RQMT_STATUS],[REQ_Title],
-					[REQ_Description],
-[REQ_Recurring_Justification],
-[REQ_Cost_Methodology_Cmt],
-[REQ_Impact_If_Not_Funded],
-[REQ_Risk_If_Not_Funded],
-[REQ_Cost_Growth_Justification],
-[REQ_Must_Fund],
-[REQ_Requested_Fund_Source],
-[REQ_Army_initiative_Directive],
-[REQ_Command_Initiative_Directive],
-[REQ_Activity_Exercise],
-[REQ_IT_Cyber_Rqmt_Ind],
-[REQ_UIC_Acct],
-[REQ_Flex_Field_1],
-[REQ_Flex_Field_2],
-[REQ_Flex_Field_3],
-[REQ_Flex_Field_4],
-[REQ_Flex_Field_5],
-[REQ_New_Rqmt_Ind],
-[REQ_CPA_Topic],
-[REQ_PBR_Submission],
-[REQ_UPL_Submission],
-[REQ_Contract_Number],
-[REQ_Task_Order_Number],
-[REQ_Target_Date_Of_Award],
-[REQ_POP_Expiration_Date],
-[REQ_FTE_CME],
-[REQ_COR_Email],
-[REQ_POC_Email],
-[REQ_Directorate],
-[REQ_Division],
-[REQ_Branch],
-[REQ_Rev_POC_Email],
-[REQ_MDEP_Func_Email],
-[REQ_Notification_Email_List],
-[REQ_Comments],
-[REQ_Return_Cmt],
-[REQ_JUON],
-[REQ_ISR_Flag],
-[REQ_Cost_Model],
-[REQ_Combat_Loss],
-[REQ_Cost_Location],
-[REQ_Category_A_Code],
-[REQ_CBS_Code],
-[REQ_MIP_Proj_Code],
-[REQ_Type],
-[REQ_DD_Priority],
-[REQ_Portfolio],
-[REQ_Capability_DD],
-[REQ_JNT_CAP_AREA],
-[REQ_TBM_COST_POOL],
-[REQ_TBM_TOWER],
-[REQ_APMS_AITR_Num],
-[REQ_ZERO_TRUST_CAPABILITY],
-[REQ_Assoc_Directorate],
-[REQ_CLOUD_INDICATOR],
-[REQ_STRAT_CYBERSEC_PGRM],
-[REQ_Notes],
-[REQ_UNIT_OF_MEASURE],
-[REQ_FY1_ITEMS],
-[REQ_FY1_UNIT_COST],
-[REQ_FY2_ITEMS],
-[REQ_FY2_UNIT_COST],
-[REQ_FY3_ITEMS],
-[REQ_FY3_UNIT_COST],
-[REQ_FY4_ITEMS],
-[REQ_FY4_UNIT_COST],
-[REQ_FY5_ITEMS],
-[REQ_FY5_UNIT_COST],
-[REQ_SS_Priority],
-[REQ_Commitment_Group],
-[REQ_Capability_SS],
-[REQ_Strategic_BIN],
-[REQ_LIN],
-[REQ_FY1_QTY],
-[REQ_FY2_QTY],
-[REQ_FY3_QTY],
-[REQ_FY4_QTY],
-[REQ_FY5_QTY]
-					)) AS PIVOTTABLE ") 
-						
-						
-					
-						
-'BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
-					'Dim dtFetch As New DataTable
-						
-					Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-						 dt = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
-					End Using
-'BRApi.ErrorLog.LogMessage(si, "SQL is done")
-					'Loop through the fetched datatable and group the monthly amounts into an array (value) of the same dim combination (key), write this into a dictionary						
-					For Each Row As DataRow In FetchDt.Rows
-						Dim Entity As String = Row("ENTITY")
-						Dim Flow As String = Row("Flow")
-						Dim U1 As String = Row("U1")
-						Dim U2 As String = Row("U2")
-						Dim U3 As String = Row("U3")
-						Dim U4 As String = Row("U4")
-						Dim U6 As String = Row("U6")
-						Dim U5 As String = Row("U5")
-						Dim Time As String = Row("TIME")
-						Dim Amount As Long = Row("AMOUNT")
-'BRapi.ErrorLog.LogMessage(si,$"Entity = {Entity} | U1 = {U1} | U2 = {U2} | U3 = {U3} | U4 = {U4} | U5 = {U5}")							
-						'use Entity,U1,U2,U3,U4,U5 combination as Key
-						Dim key = Tuple.Create(Entity,Flow,U1,U2,U3,U4,U6,U5)
-						'Dim Key2 As Tuple(Of Key, String, String) = Tuple.Create(Key,U5,U6)
-						
-					'As Tuple(Of String, String, String, String, String, String, String, String)
-						If Not groupedData.ContainsKey(key) Then
-							groupedData(key) = New Long(5){}
-						End If
-						'group the amounts into an array of Long where Year 1 = array[0] and so on. The array is then used as the value of the tuple Key
-						Dim iPos As Integer = Convert.ToInt32(Time) - startYr				
-						groupedData(key)(iPos) = groupedData(key)(iPos) + Amount						
-					Next
-						
-					'Iterate through the dictionary and write to processed datatable
-					For Each kvp As KeyValuePair(Of Tuple(Of String, String, String, String, String, String,String, Tuple(Of String)),Long()) In groupedData
-'					For Each row As DataRow In oSortedDt.Rows
-						Dim Entity As String = kvp.Key.Item1
-						Dim Flow As String = kvp.Key.Item2
-						Dim U1 As String = kvp.Key.Item3
-						Dim U2 As String = kvp.Key.Item4
-						Dim U3 As String = kvp.Key.Item5
-						Dim U4 As String = kvp.Key.Item6
-					
-						Dim U6 As String = kvp.Key.Item7
-						Dim U5 As String = kvp.Key.Rest.Item1
-					
-'						Dim sFund As String = $"{U4} / {U1}"
-						
-						'Get amount-by-year array'
-						Dim Amount As Long() = kvp.Value
-						
-						'Write to processed DataTable
-						Dim newRow As DataRow = processDT.Rows.Add()
-					
-						newRow("SCENARIO")= exportScenario
-						newRow("Command")= Cube
-						newRow("ENTITY")= Entity
-						newRow("FLOW")= Flow
-						newRow("APPN")= U1
-						newRow("MDEP")= U2
-						newRow("APE")= U3
-						newRow("DOLLAR_TYPE")= U4	
-						newRow("COST_CATEGORY")= U6
-						newRow("CTYPE")= U5
-						'Write 5-Up amounts
-						For i As Integer = 0 To 4 Step 1
-							newRow($"FY{startYr + i}")= Amount(i)
-						Next
-						
-						
-							
-						'Using LINQ to get row with Entity and Flow as key from the DataTable fetched from DataAttachment above
-						Dim resultRow As DataRow = dt.AsEnumerable() _
-							.singleOrDefault(Function(row) row.Field(Of String)("ENTITY") = Entity _
-													AndAlso row.Field(Of String)("FLOW") = Flow)
-													
-						'Assign values
-						'Assign values
-						If resultRow IsNot Nothing Then
-							newRow("REQUIREMENT STATUS")= """" & resultRow("REQ_RQMT_STATUS") & """"
-							newRow("TITLE")=  """"&resultRow("REQ_TITLE") & """"
-							
-			
-newRow("Description")=  """"&resultRow("REQ_Description") & """"
-newRow("Justification")=  """"&resultRow("REQ_Recurring_Justification") & """"
-newRow("Cost_Methodology")=  """"&resultRow("REQ_Cost_Methodology_Cmt") & """"
-newRow("Impact_If_Not_Funded")=  """"&resultRow("REQ_Impact_If_Not_Funded") & """"
-newRow("Risk_If_Not_Funded")=  """"&resultRow("REQ_Risk_If_Not_Funded") & """"
-newRow("Cost_Growth_Justification")=  """"&resultRow("REQ_Cost_Growth_Justification") & """"
-newRow("Must_Fund")=  """"&resultRow("REQ_Must_Fund") & """"
-newRow("Funding_Source")=  """"&resultRow("REQ_Requested_Fund_Source") & """"
-newRow("Army_Initiative_Directive")=  """"&resultRow("REQ_Army_initiative_Directive") & """"
-newRow("Command_Initiative_Directive")=  """"&resultRow("REQ_Command_Initiative_Directive") & """"
-newRow("Activity_Exercise")=  """"&resultRow("REQ_Activity_Exercise") & """"
-newRow("IT_Cyber_Requirement")=  """"&resultRow("REQ_IT_Cyber_Rqmt_Ind") & """"
-newRow("UIC")=  """"&resultRow("REQ_UIC_Acct") & """"
-newRow("Flex_Field_1")=  """"&resultRow("REQ_Flex_Field_1") & """"
-newRow("Flex_Field_2")=  """"&resultRow("REQ_Flex_Field_2") & """"
-newRow("Flex_Field_3")=  """"&resultRow("REQ_Flex_Field_3") & """"
-newRow("Flex_Field_4")=  """"&resultRow("REQ_Flex_Field_4") & """"
-newRow("Flex_Field_5")=  """"&resultRow("REQ_Flex_Field_5") & """"
-newRow("Emerging_Requirement")=  """"&resultRow("REQ_New_Rqmt_Ind") & """"
-newRow("CPA_Topic")=  """"&resultRow("REQ_CPA_Topic") & """"
-newRow("PBR_Submission")=  """"&resultRow("REQ_PBR_Submission") & """"
-newRow("UPL_Submission")=  """"&resultRow("REQ_UPL_Submission") & """"
-newRow("Contract_Number")=  """"&resultRow("REQ_Contract_Number") & """"
-newRow("Task_Order_Number")=  """"&resultRow("REQ_Task_Order_Number") & """"
-newRow("Target_Date_Of_Award")=  """"&resultRow("REQ_Target_Date_Of_Award") & """"
-newRow("POP_Expiration_Date")=  """"&resultRow("REQ_POP_Expiration_Date") & """"
-newRow("ContractorManYearEquiv_CME")=  """"&resultRow("REQ_FTE_CME") & """"
-newRow("COR_Email")=  """"&resultRow("REQ_COR_Email") & """"
-newRow("POC_Email")=  """"&resultRow("REQ_POC_Email") & """"
-newRow("Directorate")=  """"&resultRow("REQ_Directorate") & """"
-newRow("Division")=  """"&resultRow("REQ_Division") & """"
-newRow("Branch")=  """"&resultRow("REQ_Branch") & """"
-newRow("Rev_POC_Email")=  """"&resultRow("REQ_Rev_POC_Email") & """"
-newRow("MDEP_Functional_Email")=  """"&resultRow("REQ_MDEP_Func_Email") & """"
-newRow("Notification_Email_List")=  """"&resultRow("REQ_Notification_Email_List") & """"
-newRow("Comments")=  """"&resultRow("REQ_Comments") & """"
-newRow("REQ_Return_Cmt")=  """"&resultRow("REQ_Return_Cmt") & """"
-newRow("JUON")=  """"&resultRow("REQ_JUON") & """"
-newRow("ISR_Flag")=  """"&resultRow("REQ_ISR_Flag") & """"
-newRow("Cost_Model")=  """"&resultRow("REQ_Cost_Model") & """"
-newRow("Combat_Loss")=  """"&resultRow("REQ_Combat_Loss") & """"
-newRow("Cost_Location")=  """"&resultRow("REQ_Cost_Location") & """"
-newRow("Category_A_Code")=  """"&resultRow("REQ_Category_A_Code") & """"
-newRow("CBS_Code")=  """"&resultRow("REQ_CBS_Code") & """"
-newRow("MIP_Proj_Code")=  """"&resultRow("REQ_MIP_Proj_Code") & """"
-newRow("RequirementType")=  """"&resultRow("REQ_Type") & """"
-newRow("DD_Priority")=  """"&resultRow("REQ_DD_Priority") & """"
-newRow("Portfolio")=  """"&resultRow("REQ_Portfolio") & """"
-newRow("DD_Capability")=  """"&resultRow("REQ_Capability_DD") & """"
-newRow("JNT_CAP_AREA")=  """"&resultRow("REQ_JNT_CAP_AREA") & """"
-newRow("TBM_COST_POOL")=  """"&resultRow("REQ_TBM_COST_POOL") & """"
-newRow("TBM_TOWER")=  """"&resultRow("REQ_TBM_TOWER") & """"
-newRow("APMS_AITR_Num")=  """"&resultRow("REQ_APMS_AITR_Num") & """"
-newRow("ZERO_TRUST_CAPABILITY")=  """"&resultRow("REQ_ZERO_TRUST_CAPABILITY") & """"
-newRow("Associated_Directives")=  """"&resultRow("REQ_Assoc_Directorate") & """"
-newRow("CLOUD_INDICATOR")=  """"&resultRow("REQ_CLOUD_INDICATOR") & """"
-newRow("STRAT_CYBERSEC_PGRM")=  """"&resultRow("REQ_STRAT_CYBERSEC_PGRM") & """"
-newRow("Notes")=  """"&resultRow("REQ_Notes") & """"
-newRow("UNIT_OF_MEASURE")=  """"&resultRow("REQ_UNIT_OF_MEASURE") & """"
-newRow("FY1_ITEMS")=  """"&resultRow("REQ_FY1_ITEMS") & """"
-newRow("FY1_UNIT_COST")=  """"&resultRow("REQ_FY1_UNIT_COST") & """"
-newRow("FY2_ITEMS")=  """"&resultRow("REQ_FY2_ITEMS") & """"
-newRow("FY2_UNIT_COST")=  """"&resultRow("REQ_FY2_UNIT_COST") & """"
-newRow("FY3_ITEMS")=  """"&resultRow("REQ_FY3_ITEMS") & """"
-newRow("FY3_UNIT_COST")=  """"&resultRow("REQ_FY3_UNIT_COST") & """"
-newRow("FY4_ITEMS")=  """"&resultRow("REQ_FY4_ITEMS") & """"
-newRow("FY4_UNIT_COST")=  """"&resultRow("REQ_FY4_UNIT_COST") & """"
-newRow("FY5_ITEMS")=  """"&resultRow("REQ_FY5_ITEMS") & """"
-newRow("FY5_UNIT_COST")=  """"&resultRow("REQ_FY5_UNIT_COST") & """"
-newRow("SS_Priority")=  """"&resultRow("REQ_SS_Priority") & """"
-newRow("Commitment_Group")=  """"&resultRow("REQ_Commitment_Group") & """"
-newRow("SS_Capability")=  """"&resultRow("REQ_Capability_SS") & """"
-newRow("Strategic_BIN")=  """"&resultRow("REQ_Strategic_BIN") & """"
-newRow("LIN")=  """"&resultRow("REQ_LIN") & """"
-newRow("FY1_QTY")=  """"&resultRow("REQ_FY1_QTY") & """"
-newRow("FY2_QTY")=  """"&resultRow("REQ_FY2_QTY") & """"
-newRow("FY3_QTY")=  """"&resultRow("REQ_FY3_QTY") & """"
-newRow("FY4_QTY")=  """"&resultRow("REQ_FY4_QTY") & """"
-newRow("FY5_QTY")=  """"&resultRow("REQ_FY5_QTY") & """"
-
-
-
-						End If
-					
-					Next			
-				End If
-				#End Region	
-				
-				#Region "Export All Updated REQs(Import Dashboard)"
-				
-				If FetchDt.TableName.XFContainsIgnoreCase("ExportAllUpdatedREQs") Then
-					Dim Cube As String = dArgs("Cube")
-					Dim startYr As Integer = Convert.ToInt32(dArgs("startYr"))
-					Dim Scenario As String = dArgs("Scenario")
-					Dim groupedData As New Dictionary(Of Tuple(Of String, String, String, String, String, String, String, Tuple(Of String)),Long())
-					Dim StatusAccount As String = "REQ_Rqmt_Status"
-					
-					Dim exportScenario As String = "PGM_C" & startYr.ToString.Substring(startYr.ToString.Length - 4) 
-					
-					Dim dt As New DataTable
-					Dim detailColumns As New list(Of String)
-					detailColumns.AddRange(New String(){"SCERARIO","ENTITY","FLOW","REQ_RQMT_STATUS","REQ_Title",
-																"REQ_Description",
-																"REQ_Recurring_Justification",
-																"REQ_Cost_Methodology_Cmt",
-																"REQ_Impact_If_Not_Funded",
-																"REQ_Risk_If_Not_Funded",
-																"REQ_Cost_Growth_Justification",
-																"REQ_Must_Fund",
-																"REQ_Requested_Fund_Source",
-																"REQ_Army_initiative_Directive",
-																"REQ_Command_Initiative_Directive",
-																"REQ_Activity_Exercise",
-																"REQ_IT_Cyber_Rqmt_Ind",
-																"REQ_UIC_Acct",
-																"REQ_Flex_Field_1",
-																"REQ_Flex_Field_2",
-																"REQ_Flex_Field_3",
-																"REQ_Flex_Field_4",
-																"REQ_Flex_Field_5",
-																"REQ_New_Rqmt_Ind",
-																"REQ_CPA_Topic",
-																"REQ_PBR_Submission",
-																"REQ_UPL_Submission",
-																"REQ_Contract_Number",
-																"REQ_Task_Order_Number",
-																"REQ_Target_Date_Of_Award",
-																"REQ_POP_Expiration_Date",
-																"REQ_FTE_CME",
-																"REQ_COR_Email",
-																"REQ_POC_Email",
-																"REQ_Directorate",
-																"REQ_Division",
-																"REQ_Branch",
-																"REQ_Rev_POC_Email",
-																"REQ_MDEP_Func_Email",
-																"REQ_Notification_Email_List",
-																"REQ_Comments",
-																"REQ_JUON",
-																"REQ_ISR_Flag",
-																"REQ_Cost_Model",
-																"REQ_Combat_Loss",
-																"REQ_Cost_Location",
-																"REQ_Category_A_Code",
-																"REQ_CBS_Code",
-																"REQ_MIP_Proj_Code",
-																"REQ_Type",
-																"REQ_DD_Priority",
-																"REQ_Portfolio",
-																"REQ_Capability_DD",
-																"REQ_JNT_CAP_AREA",
-																"REQ_TBM_COST_POOL",
-																"REQ_TBM_TOWER",
-																"REQ_APMS_AITR_Num",
-																"REQ_ZERO_TRUST_CAPABILITY",
-																"REQ_Assoc_Directorate",
-																"REQ_CLOUD_INDICATOR",
-																"REQ_STRAT_CYBERSEC_PGRM",
-																"REQ_Notes",
-																"REQ_UNIT_OF_MEASURE",
-																"REQ_FY1_ITEMS",
-																"REQ_FY1_UNIT_COST",
-																"REQ_FY2_ITEMS",
-																"REQ_FY2_UNIT_COST",
-																"REQ_FY3_ITEMS",
-																"REQ_FY3_UNIT_COST",
-																"REQ_FY4_ITEMS",
-																"REQ_FY4_UNIT_COST",
-																"REQ_FY5_ITEMS",
-																"REQ_FY5_UNIT_COST",
-																"REQ_SS_Priority",
-																"REQ_Commitment_Group",
-																"REQ_Capability_SS",
-																"REQ_Strategic_BIN",
-																"REQ_LIN",
-																"REQ_FY1_QTY",
-																"REQ_FY2_QTY",
-																"REQ_FY3_QTY",
-																"REQ_FY4_QTY",
-																"REQ_FY5_QTY", 
-																"Command"})
-					dt = Me.CreateReportDataTable(si,"ExportAllUpdatedREQs",detailColumns,True)	
-				
-						
-						
-					Dim SQL As New Text.StringBuilder
-					SQL.Append($"SELECT * FROM ") 
-					SQL.Append($"	(SELECT ENTITY, FLOW, TEXT,
-								CASE
-									WHEN ACCOUNT = 'REQ_POC_Name' AND UD5 = 'REQ_Owner'  then 'OwnerName'
-									WHEN ACCOUNT = 'REQ_POC_Email' AND UD5 = 'REQ_Owner' then 'OwnerEmail'
-									WHEN ACCOUNT = 'REQ_POC_Phone' AND UD5 = 'REQ_Owner' then 'OwnerPhone'
-									WHEN ACCOUNT = 'REQ_POC_Cmt' AND UD5 = 'REQ_Owner' then 'OwnerCmt'
-					
-									WHEN ACCOUNT = 'REQ_POC_Name' AND UD5 = 'REQ_Func_POC'  then 'MDEPFuncName'
-									WHEN ACCOUNT = 'REQ_POC_Email' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncEmail'
-									WHEN ACCOUNT = 'REQ_POC_Phone' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncPhone'
-									WHEN ACCOUNT = 'REQ_POC_Cmt' AND UD5 = 'REQ_Func_POC' then 'MDEPFuncCmt'
-
-								ELSE
-									ACCOUNT
-								End as AccountCAT
-					FROM DataAttachment WHERE CUBE = '{Cube}' AND SCENARIO = '{Scenario}' ) as src ")
-					'WHERE (ACCOUNT = '{StatusAccount}' and Text Not like '{ApprovedStatus}')
-					SQL.Append($"	PIVOT (") 
-					SQL.Append($"	MAX(TEXT) FOR AccountCAT IN ([REQ_RQMT_STATUS],[REQ_Title],
-[REQ_Description],
-[REQ_Recurring_Justification],
-[REQ_Cost_Methodology_Cmt],
-[REQ_Impact_If_Not_Funded],
-[REQ_Risk_If_Not_Funded],
-[REQ_Cost_Growth_Justification],
-[REQ_Must_Fund],
-[REQ_Requested_Fund_Source],
-[REQ_Army_initiative_Directive],
-[REQ_Command_Initiative_Directive],
-[REQ_Activity_Exercise],
-[REQ_IT_Cyber_Rqmt_Ind],
-[REQ_UIC_Acct],
-[REQ_Flex_Field_1],
-[REQ_Flex_Field_2],
-[REQ_Flex_Field_3],
-[REQ_Flex_Field_4],
-[REQ_Flex_Field_5],
-[REQ_New_Rqmt_Ind],
-[REQ_CPA_Topic],
-[REQ_PBR_Submission],
-[REQ_UPL_Submission],
-[REQ_Contract_Number],
-[REQ_Task_Order_Number],
-[REQ_Target_Date_Of_Award],
-[REQ_POP_Expiration_Date],
-[REQ_FTE_CME],
-[REQ_COR_Email],
-[REQ_POC_Email],
-[REQ_Directorate],
-[REQ_Division],
-[REQ_Branch],
-[REQ_Rev_POC_Email],
-[REQ_MDEP_Func_Email],
-[REQ_Notification_Email_List],
-[REQ_Comments],
-[REQ_JUON],
-[REQ_ISR_Flag],
-[REQ_Cost_Model],
-[REQ_Combat_Loss],
-[REQ_Cost_Location],
-[REQ_Category_A_Code],
-[REQ_CBS_Code],
-[REQ_MIP_Proj_Code],
-[REQ_Type],
-[REQ_DD_Priority],
-[REQ_Portfolio],
-[REQ_Capability_DD],
-[REQ_JNT_CAP_AREA],
-[REQ_TBM_COST_POOL],
-[REQ_TBM_TOWER],
-[REQ_APMS_AITR_Num],
-[REQ_ZERO_TRUST_CAPABILITY],
-[REQ_Assoc_Directorate],
-[REQ_CLOUD_INDICATOR],
-[REQ_STRAT_CYBERSEC_PGRM],
-[REQ_Notes],
-[REQ_UNIT_OF_MEASURE],
-[REQ_FY1_ITEMS],
-[REQ_FY1_UNIT_COST],
-[REQ_FY2_ITEMS],
-[REQ_FY2_UNIT_COST],
-[REQ_FY3_ITEMS],
-[REQ_FY3_UNIT_COST],
-[REQ_FY4_ITEMS],
-[REQ_FY4_UNIT_COST],
-[REQ_FY5_ITEMS],
-[REQ_FY5_UNIT_COST],
-[REQ_SS_Priority],
-[REQ_Commitment_Group],
-[REQ_Capability_SS],
-[REQ_Strategic_BIN],
-[REQ_LIN],
-[REQ_FY1_QTY],
-[REQ_FY2_QTY],
-[REQ_FY3_QTY],
-[REQ_FY4_QTY],
-[REQ_FY5_QTY]
-
-					)) AS PIVOTTABLE ") 
-						
-						
-					
-						
-'BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
-					'Dim dtFetch As New DataTable
-						
-					Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-						 dt = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
-					End Using
-'BRApi.ErrorLog.LogMessage(si, "SQL is done")
-					'Loop through the fetched datatable and group the monthly amounts into an array (value) of the same dim combination (key), write this into a dictionary						
-					For Each Row As DataRow In FetchDt.Rows
-						Dim Entity As String = Row("ENTITY")
-						Dim Flow As String = Row("Flow")
-						Dim U1 As String = Row("U1")
-						Dim U2 As String = Row("U2")
-						Dim U3 As String = Row("U3")
-						Dim U4 As String = Row("U4")
-						Dim U6 As String = Row("U6")
-						Dim U5 As String = Row("U5")
-						Dim Time As String = Row("TIME")
-						Dim Amount As Long = Row("AMOUNT")
-'BRapi.ErrorLog.LogMessage(si,$"Entity = {Entity} | U1 = {U1} | U2 = {U2} | U3 = {U3} | U4 = {U4} | U5 = {U5}")							
-						'use Entity,U1,U2,U3,U4,U5 combination as Key
-						Dim key = Tuple.Create(Entity,Flow,U1,U2,U3,U4,U6,U5)
-						'Dim Key2 As Tuple(Of Key, String, String) = Tuple.Create(Key,U5,U6)
-						
-					'As Tuple(Of String, String, String, String, String, String, String, String)
-						If Not groupedData.ContainsKey(key) Then
-							groupedData(key) = New Long(5){}
-						End If
-						'group the amounts into an array of Long where Year 1 = array[0] and so on. The array is then used as the value of the tuple Key
-						Dim iPos As Integer = Convert.ToInt32(Time) - startYr				
-						groupedData(key)(iPos) = groupedData(key)(iPos) + Amount						
-					Next
-						
-					'Iterate through the dictionary and write to processed datatable
-					For Each kvp As KeyValuePair(Of Tuple(Of String, String, String, String, String, String,String, Tuple(Of String)),Long()) In groupedData
-'					For Each row As DataRow In oSortedDt.Rows
-						Dim Entity As String = kvp.Key.Item1
-						Dim Flow As String = kvp.Key.Item2
-						Dim U1 As String = kvp.Key.Item3
-						Dim U2 As String = kvp.Key.Item4
-						Dim U3 As String = kvp.Key.Item5
-						Dim U4 As String = kvp.Key.Item6
-					
-						Dim U6 As String = kvp.Key.Item7
-						Dim U5 As String = kvp.Key.Rest.Item1
-					
-'						Dim sFund As String = $"{U4} / {U1}"
-						
-						'Get amount-by-year array'
-						Dim Amount As Long() = kvp.Value
-						
-						'Write to processed DataTable
-						Dim newRow As DataRow = processDT.Rows.Add()
-					
-						newRow("SCENARIO")= exportScenario
-						newRow("Command")= Cube
-						newRow("ENTITY")= Entity
-						newRow("FLOW")= Flow
-						newRow("APPN")= U1
-						newRow("MDEP")= U2
-						newRow("APE")= U3
-						newRow("DOLLAR_TYPE")= U4	
-						newRow("COST_CATEGORY")= U6
-						newRow("CTYPE")= U5
-						'Write 5-Up amounts
-						
-						For i As Integer = 0 To 4 Step 1
-							newRow($"FY{startYr + i}")= Amount(i)
-						Next
-						
-							
-						'Using LINQ to get row with Entity and Flow as key from the DataTable fetched from DataAttachment above
-						Dim resultRow As DataRow = dt.AsEnumerable() _
-							.singleOrDefault(Function(row) row.Field(Of String)("ENTITY") = Entity _
-													AndAlso row.Field(Of String)("FLOW") = Flow)
-													
-						'Assign values
-						If resultRow IsNot Nothing Then
-							newRow("REQUIREMENT STATUS")= """" & resultRow("REQ_RQMT_STATUS") & """"
-							newRow("TITLE")=  """"&resultRow("REQ_TITLE") & """"
-							
-			
-newRow("Description")=  """"&resultRow("REQ_Description") & """"
-newRow("Justification")=  """"&resultRow("REQ_Recurring_Justification") & """"
-newRow("Cost_Methodology")=  """"&resultRow("REQ_Cost_Methodology_Cmt") & """"
-newRow("Impact_If_Not_Funded")=  """"&resultRow("REQ_Impact_If_Not_Funded") & """"
-newRow("Risk_If_Not_Funded")=  """"&resultRow("REQ_Risk_If_Not_Funded") & """"
-newRow("Cost_Growth_Justification")=  """"&resultRow("REQ_Cost_Growth_Justification") & """"
-newRow("Must_Fund")=  """"&resultRow("REQ_Must_Fund") & """"
-newRow("Funding_Source")=  """"&resultRow("REQ_Requested_Fund_Source") & """"
-newRow("Army_Initiative_Directive")=  """"&resultRow("REQ_Army_initiative_Directive") & """"
-newRow("Command_Initiative_Directive")=  """"&resultRow("REQ_Command_Initiative_Directive") & """"
-newRow("Activity_Exercise")=  """"&resultRow("REQ_Activity_Exercise") & """"
-newRow("IT_Cyber_Requirement")=  """"&resultRow("REQ_IT_Cyber_Rqmt_Ind") & """"
-newRow("UIC")=  """"&resultRow("REQ_UIC_Acct") & """"
-newRow("Flex_Field_1")=  """"&resultRow("REQ_Flex_Field_1") & """"
-newRow("Flex_Field_2")=  """"&resultRow("REQ_Flex_Field_2") & """"
-newRow("Flex_Field_3")=  """"&resultRow("REQ_Flex_Field_3") & """"
-newRow("Flex_Field_4")=  """"&resultRow("REQ_Flex_Field_4") & """"
-newRow("Flex_Field_5")=  """"&resultRow("REQ_Flex_Field_5") & """"
-newRow("Emerging_Requirement")=  """"&resultRow("REQ_New_Rqmt_Ind") & """"
-newRow("CPA_Topic")=  """"&resultRow("REQ_CPA_Topic") & """"
-newRow("PBR_Submission")=  """"&resultRow("REQ_PBR_Submission") & """"
-newRow("UPL_Submission")=  """"&resultRow("REQ_UPL_Submission") & """"
-newRow("Contract_Number")=  """"&resultRow("REQ_Contract_Number") & """"
-newRow("Task_Order_Number")=  """"&resultRow("REQ_Task_Order_Number") & """"
-newRow("Target_Date_Of_Award")=  """"&resultRow("REQ_Target_Date_Of_Award") & """"
-newRow("POP_Expiration_Date")=  """"&resultRow("REQ_POP_Expiration_Date") & """"
-newRow("ContractorManYearEquiv_CME")=  """"&resultRow("REQ_FTE_CME") & """"
-newRow("COR_Email")=  """"&resultRow("REQ_COR_Email") & """"
-newRow("POC_Email")=  """"&resultRow("REQ_POC_Email") & """"
-newRow("Directorate")=  """"&resultRow("REQ_Directorate") & """"
-newRow("Division")=  """"&resultRow("REQ_Division") & """"
-newRow("Branch")=  """"&resultRow("REQ_Branch") & """"
-newRow("Rev_POC_Email")=  """"&resultRow("REQ_Rev_POC_Email") & """"
-newRow("MDEP_Functional_Email")=  """"&resultRow("REQ_MDEP_Func_Email") & """"
-newRow("Notification_Email_List")=  """"&resultRow("REQ_Notification_Email_List") & """"
-newRow("Comments")=  """"&resultRow("REQ_Comments") & """"
-newRow("JUON")=  """"&resultRow("REQ_JUON") & """"
-newRow("ISR_Flag")=  """"&resultRow("REQ_ISR_Flag") & """"
-newRow("Cost_Model")=  """"&resultRow("REQ_Cost_Model") & """"
-newRow("Combat_Loss")=  """"&resultRow("REQ_Combat_Loss") & """"
-newRow("Cost_Location")=  """"&resultRow("REQ_Cost_Location") & """"
-newRow("Category_A_Code")=  """"&resultRow("REQ_Category_A_Code") & """"
-newRow("CBS_Code")=  """"&resultRow("REQ_CBS_Code") & """"
-newRow("MIP_Proj_Code")=  """"&resultRow("REQ_MIP_Proj_Code") & """"
-newRow("RequirementType")=  """"&resultRow("REQ_Type") & """"
-newRow("DD_Priority")=  """"&resultRow("REQ_DD_Priority") & """"
-newRow("Portfolio")=  """"&resultRow("REQ_Portfolio") & """"
-newRow("DD_Capability")=  """"&resultRow("REQ_Capability_DD") & """"
-newRow("JNT_CAP_AREA")=  """"&resultRow("REQ_JNT_CAP_AREA") & """"
-newRow("TBM_COST_POOL")=  """"&resultRow("REQ_TBM_COST_POOL") & """"
-newRow("TBM_TOWER")=  """"&resultRow("REQ_TBM_TOWER") & """"
-newRow("APMS_AITR_Num")=  """"&resultRow("REQ_APMS_AITR_Num") & """"
-newRow("ZERO_TRUST_CAPABILITY")=  """"&resultRow("REQ_ZERO_TRUST_CAPABILITY") & """"
-newRow("Associated_Directives")=  """"&resultRow("REQ_Assoc_Directorate") & """"
-newRow("CLOUD_INDICATOR")=  """"&resultRow("REQ_CLOUD_INDICATOR") & """"
-newRow("STRAT_CYBERSEC_PGRM")=  """"&resultRow("REQ_STRAT_CYBERSEC_PGRM") & """"
-newRow("Notes")=  """"&resultRow("REQ_Notes") & """"
-newRow("UNIT_OF_MEASURE")=  """"&resultRow("REQ_UNIT_OF_MEASURE") & """"
-newRow("FY1_ITEMS")=  """"&resultRow("REQ_FY1_ITEMS") & """"
-newRow("FY1_UNIT_COST")=  """"&resultRow("REQ_FY1_UNIT_COST") & """"
-newRow("FY2_ITEMS")=  """"&resultRow("REQ_FY2_ITEMS") & """"
-newRow("FY2_UNIT_COST")=  """"&resultRow("REQ_FY2_UNIT_COST") & """"
-newRow("FY3_ITEMS")=  """"&resultRow("REQ_FY3_ITEMS") & """"
-newRow("FY3_UNIT_COST")=  """"&resultRow("REQ_FY3_UNIT_COST") & """"
-newRow("FY4_ITEMS")=  """"&resultRow("REQ_FY4_ITEMS") & """"
-newRow("FY4_UNIT_COST")=  """"&resultRow("REQ_FY4_UNIT_COST") & """"
-newRow("FY5_ITEMS")=  """"&resultRow("REQ_FY5_ITEMS") & """"
-newRow("FY5_UNIT_COST")=  """"&resultRow("REQ_FY5_UNIT_COST") & """"
-newRow("SS_Priority")=  """"&resultRow("REQ_SS_Priority") & """"
-newRow("Commitment_Group")=  """"&resultRow("REQ_Commitment_Group") & """"
-newRow("SS_Capability")=  """"&resultRow("REQ_Capability_SS") & """"
-newRow("Strategic_BIN")=  """"&resultRow("REQ_Strategic_BIN") & """"
-newRow("LIN")=  """"&resultRow("REQ_LIN") & """"
-newRow("FY1_QTY")=  """"&resultRow("REQ_FY1_QTY") & """"
-newRow("FY2_QTY")=  """"&resultRow("REQ_FY2_QTY") & """"
-newRow("FY3_QTY")=  """"&resultRow("REQ_FY3_QTY") & """"
-newRow("FY4_QTY")=  """"&resultRow("REQ_FY4_QTY") & """"
-newRow("FY5_QTY")=  """"&resultRow("REQ_FY5_QTY") & """"
-
-
-
-						End If
-					
-					Next			
-				End If
-				#End Region				
+				'Send email
+				Try
+					'Me.Send_Status_Change_Email()
+				Catch ex As Exception
+				End Try
 				
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
-		End Sub	
+			Return Nothing
+		End Function	
 
-		'----------------------------------------------------------------------------------
-		'     Create data tables to be used for fetching and processing fetched data
-		'----------------------------------------------------------------------------------
-		Private Function GenerateReportFile(ByVal si As SessionInfo, ByVal processDT As DataTable, ByVal sFileHeader As String, ByVal sCube As String, ByVal iTime As Integer, ByVal sTemplate As String, ByVal sFvParam As String)
-			Try
-				'Initialize file 
-				Dim file As New Text.StringBuilder
-				file.Append(sFileHeader)	
-
-				'Populate file
-				For Each row As DataRow In processDT.Rows
-					Dim rowInfo As String = ""
-					For Each column As DataColumn In processDT.Columns
-						rowInfo = rowInfo & "," & row(Column)				
-					Next
-					rowInfo = rowInfo.Remove(0,1)
-					rowInfo = rowInfo.Replace("None","")
-					file.Append(vbCrLf + rowInfo)
-				Next
-				Dim sUser As String = si.UserName
-				Dim sTimeStamp As String = datetime.Now.ToString.Replace("/","").Replace(":","")
-				If datetime.Now.Month < 10 Then sTimeStamp = "0" & sTimeStamp			
-			    Dim fileName As String = $"{sCube}_{iTime}_{sTemplate}_{sUser}_{sTimeStamp}.csv"
+#End Region ' New
+#Region "Cache Prompts"
+		Public Function CachePrompts(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs)
+			Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity")
+			Dim sREQ As String = args.NameValuePairs.XFGetValue("REQ")
+			Dim sMode As String = args.NameValuePairs.XFGetValue("mode","")
+			Dim sDashboard As String = args.NameValuePairs.XFGetValue("Dashboard")
 			
-				Me.BuildFile(si, file.ToString, fileName, sCube)
-				Dim dKeyVal As New Dictionary(Of String,String) From {{sFvParam,sFilePath}}
+			If sMode.XFContainsIgnoreCase("copyREQ") And String.IsNullOrWhiteSpace(sEntity) Then
+				Throw New Exception("Please select a Fund Center")
+				Return Nothing
+			End If
+			
+			If Not String.IsNullOrWhiteSpace(sEntity) Then
+					BRApi.Utilities.SetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity",sEntity)
+			End If
+			
+			BRApi.Utilities.SetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ",sREQ)
+			
+			If Not String.IsNullOrWhiteSpace(sDashboard) Then
+				BRApi.Utilities.SetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Dashboard",sDashboard)
+			End If
+
+			Return Nothing
+		End Function
+
+#End Region '(updated here)
+
+#Region "Set Notification List"
+
+	Public Function SetNotificationList()
+	'Added a section to show only validators on the list and seperated from all users - 5-30-24
+	
+		Try
+			Dim sEntity As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity","") 'args.NameValuePairs.XFGetValue("UFREntity")
+			Dim sREQ As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ","")			
+			Dim sCube As String = args.NameValuePairs.XFGetValue("Cube")		
+			Dim sScenario As String = args.NameValuePairs.XFGetValue("REQScenario")
+			Dim sREQTime As String = args.NameValuePairs.XFGetValue("REQTime")
+			Dim notificationEmails As String = args.NameValuePairs.XFGetValue("Emails")
+			Dim vNotificationEmails As String = args.NameValuePairs.XFGetValue("vEmails")
+				
+			If notificationEmails.Length = 0 And vNotificationEmails.Length = 0 Then 
+				Return Nothing
+			End If
+			
+			Dim emailList As String() = notificationEmails.split(",")
+			Dim vemailList As String() = vNotificationEmails.split(",")
+
+			Dim notificationEmailsScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Notification_Email_List:F#" & sREQ & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+			Dim notificationValidatorEmailsScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Validation_Email_List:F#" & sREQ & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+		
+			Dim currentEmails As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, notificationEmailsScript).DataCellEx.DataCellAnnotation
+			Dim validatorEmails As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, notificationValidatorEmailsScript).DataCellEx.DataCellAnnotation
+			
+			'loop through all users
+			For Each email As String In emailList
+				If (Not currentEmails.XFContainsIgnoreCase(email)) Then
+					If (String.IsNullOrWhiteSpace(currentEmails)) Then
+						currentEmails = email
+					Else
+						currentEmails = currentEmails & "," & email	
+					End If
+				End If
+				
+			Next
+			
+			'loop through validators
+			For Each vemail As String In vemailList
+				If (Not validatorEmails.XFContainsIgnoreCase(vemail)) Then
+					If (String.IsNullOrWhiteSpace(validatorEmails)) Then
+						validatorEmails = vemail
+					Else
+						validatorEmails = validatorEmails & "," & vemail	
+					End If
+				End If
+			Next
+			
+			'Update related REQ List
+			Dim objListofScripts As New List(Of MemberScriptandValue)
+		   
+			'for all user
+			Dim objScriptVal As New MemberScriptAndValue
+			
+			' for Validator
+			Dim objScriptVal2 As New MemberScriptAndValue
+			
+			'Setting for all users
+			objScriptVal.CubeName = sCube
+			objScriptVal.Script = notificationEmailsScript
+			objScriptVal.TextValue = currentEmails
+			objScriptVal.IsNoData = False
+			objListofScripts.Add(objScriptVal)
+			
+			'setting for validators
+			objScriptVal2.CubeName = sCube
+			objScriptVal2.Script = notificationValidatorEmailsScript
+			objScriptVal2.TextValue = validatorEmails
+			objScriptVal2.IsNoData = False
+			objListofScripts.Add(objScriptVal2)
+			
+			BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScripts)
+			
+				
+			Return Nothing
+
+		Catch ex As Exception
+			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+		End Try 
+	End Function
+
+#End Region
+
+#Region "Show and Hide"
+
+		Public Function ShowAndHideDashboards(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
+			Try
+				Dim checkForBlank As String = args.NameValuePairs.XFGetValue("checkForBlank")
+				'blank dashboard set to trueVale
+				Dim trueVale As String = args.NameValuePairs.XFGetValue("trueValue")
+				'dashboard content to show (eventually) set to falseValue
+				Dim falseValue As String = args.NameValuePairs.XFGetValue("falseValue")
+				Dim allTimeValue As String = args.NameValuePairs.XFGetValue("allTimeValue")
+				'cache prompts for Linked Report
+				Dim sDb As String = args.NameValuePairs.XFGetValue("Db","")
+				If Not String.IsNullOrWhiteSpace(sDb) Then BRApi.Utilities.SetWorkspaceSessionSetting(si,si.UserName,"LR_REQ_Prompts","Db",sDb)
+				Dim sFC As String = args.NameValuePairs.XFGetValue("FundCenter","")
+				If Not String.IsNullOrWhiteSpace(sFC) Then BRApi.Utilities.SetWorkspaceSessionSetting(si,si.UserName,"LR_REQ_Prompts","FC",sFC)
+'BRApi.ErrorLog.LogMessage(si, "sDb: " & sDb)				
+				Dim toShow As String = ""
+				Dim toHide As String = ""
+
+				If (String.IsNullOrWhiteSpace(allTimeValue)) Then
+					If (String.IsNullOrWhiteSpace(checkForBlank)) Then
+'BRApi.ErrorLog.LogMessage(si, "show blnkDB IF statement; no titlebox selection:")
+						toShow =  trueVale
+						toHide =  falseValue
+					Else
+'BRApi.ErrorLog.LogMessage(si, "show contentDB Else statement; does not contain IsNullOrWhiteSpace:")
+						toShow =  falseValue
+						toHide =  trueVale
+'BRApi.ErrorLog.LogMessage(si,"toShow: " & toShow & ", toHide: " & toHide )
+					End If
+				Else ' If all time is set, the check is bypassed
+'BRApi.ErrorLog.LogMessage(si, "Last Else statement - 1146")
+					toShow =  trueVale
+					toHide =  falseValue
+				End If
+'BRApi.ErrorLog.LogMessage(si, "allTimeValue: " & allTimeValue & " checkForBlank: " & checkForBlank & ", trueValue: " & trueVale & " , falseValue: " & falseValue)
+				
+'BRApi.ErrorLog.LogMessage(si,"toShow: " & toShow & ", toHide: " & toHide )
+
+				Dim objXFSelectionChangedUIActionInfo As XFSelectionChangedUIActionInfo = args.SelectionChangedTaskInfo.SelectionChangedUIActionInfo
+'BRApi.ErrorLog.LogMessage(si, $"objXFSelectionChangedUIActionInfo.DashboardsToHide: {objXFSelectionChangedUIActionInfo.DashboardsToHide}")				
+'BRApi.ErrorLog.LogMessage(si, $"objXFSelectionChangedUIActionInfo.DashboardsToShow: {objXFSelectionChangedUIActionInfo.DashboardsToShow}")								
+				If String.IsNullOrWhiteSpace(objXFSelectionChangedUIActionInfo.DashboardsToHide) Then
+					objXFSelectionChangedUIActionInfo.DashboardsToHide = toHide
+				Else
+					objXFSelectionChangedUIActionInfo.DashboardsToHide = objXFSelectionChangedUIActionInfo.DashboardsToHide & "," & toHide
+				End If
+				If String.IsNullOrWhiteSpace(objXFSelectionChangedUIActionInfo.DashboardsToShow) Then
+					objXFSelectionChangedUIActionInfo.DashboardsToShow = toShow
+				Else
+					objXFSelectionChangedUIActionInfo.DashboardsToShow = objXFSelectionChangedUIActionInfo.DashboardsToShow & "," & toShow
+				End If
+				
 				Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+								
 				selectionChangedTaskResult.IsOK = True
-				selectionChangedTaskResult.ShowMessageBox = True
-				BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)
-				selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = True
-				selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo.SelectionChangedNavigationType = XFSelectionChangedNavigationType.OpenFile
-				selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo.SelectionChangedNavigationArgs = $"FileSourceType=Application, UrlOrFullFileName=[{sFilePath}], OpenInXFPageIfPossible=False, PinNavPane=True, PinPOVPane=False"
+				selectionChangedTaskResult.ShowMessageBox = False
+				selectionChangedTaskResult.Message = ""
+				selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
+				selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = objXFSelectionChangedUIActionInfo
+				selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
+				selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
+				selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = False
+				selectionChangedTaskResult.ModifiedCustomSubstVars = Nothing
+				selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = False
+				selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = Nothing
 				
 				Return selectionChangedTaskResult
-					
+
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
 		End Function
-		
-		#Region "BuildFile"
-		
-		'----------------------------------------------------------------------------------
-		'    Build export file
-		'----------------------------------------------------------------------------------
-		Private Sub BuildFile(ByVal si As SessionInfo, ByVal sFileContent As String, ByVal sFileName As String, ByVal sCommandName As String)
-			Try
-				'Pass text to bytes
-				Dim fileBytes As Byte() = Encoding.UTF8.GetBytes(sFileContent)
-				
-				'Define folder to hold file
-				Dim sFolderPath As String = "Documents/Users/" & si.UserName
-				Dim objXFFolderEx As XFFolderEx = BRApi.FileSystem.GetFolder(si, FileSystemLocation.ApplicationDatabase, sFolderPath)
 
-				'Check if folder doesn't exist
-				'This should never happen because we created the folder manually
-				'If objXFFolderEx Is Nothing Then
-				'	Throw New XFUserMsgException(si, New Exception("Users/" & si.UserName.Replace(" ",String.Empty) & " folder does NOT exist"))
-				'End If
-				
-				Dim objXFFileInfo = New XFFileInfo(FileSystemLocation.ApplicationDatabase, String.Concat(sFolderPath, "/", sFileName))
-				Dim objXFFile As New XFFile(objXFFileInfo,String.Empty,fileBytes)
-
-				'Load file
-				BRApi.FileSystem.InsertOrUpdateFile(si, objXFFile)
-				sFilePath = $"{sFolderPath}/{sFileName}"
-				
-				'Delete file
-				'BRApi.FileSystem.DeleteFile(si, FileSystemLocation.ApplicationDatabase, String.Concat(sFolderPath, "/", sfileName))
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try
-		End Sub	
-		#End Region
-		
 #End Region
 
-#Region "ExportReport - Set Default PEG"
-			'Set Default PEG for Requirements Export
-			Public Function	SetDefaultPEG(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs)
-				Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template")
-				Dim sParam As String = args.NameValuePairs.XFGetValue("Param")
-				Dim sPEG As String = ""
-				If sTemplate.XFContainsIgnoreCase("cSustain") Or sTemplate.XFContainsIgnoreCase("DMOPS")
-					sPEG = "SS"
-				Else If sTemplate.XFContainsIgnoreCase("cDigital")
-					sPEG = "DD"
-				End If
-				Dim dKeyVal As New Dictionary(Of String, String)				
-				dKeyVal.Add(sParam,sPEG)		
-				Return Me.SetParameter(si, globals, api, dKeyVal)				
-		
-			End Function
-#End Region
+#Region "Manage Manpower REQs"
 
-#Region "ExportAllUpdatedREQs(Import Dashboard)"	
-		'Export PGM Requirement Data
-		Public Function ExportAllUpdatedREQs(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
-'BRapi.ErrorLog.LogMessage(si,$"Debug A")
-			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
-			Dim iMemberId As Integer = BRApi.Finance.Members.GetMemberId(si,dimtypeid.Entity,sCube)
-			Dim dimPK As DimPk = BRApi.Finance.Dim.GetDimPk(si, $"E_{sCube}")
-			Dim lsEntity As List(Of Member) = BRApi.Finance.Members.GetBaseMembers(si, dimPK, iMemberId,)
-			
-			
-			Dim SAccount As String = "REQ_Requested_Amt"
-			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim iScenarioID As Integer = brapi.Finance.Members.GetMemberId(si, DimType.Scenario.Id, sScenario)
-			Dim iTime As Integer = BRApi.Finance.Time.GetYearFromId(si,BRApi.Finance.Scenario.GetWorkflowTime(si, iScenarioID))
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Dim sFvParam As String = args.NameValuePairs.XFGetValue("FvParam","")
-			sFilePath = ""
-			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
-			
-			
-			
-			'Declare all Time values
-			Dim iTime0 As Integer = iTime + 0
-			Dim iTime1 As Integer = iTime + 1
-			Dim iTime2 As Integer = iTime + 2
-			Dim iTime3 As Integer = iTime + 3
-			Dim iTime4 As Integer = iTime + 4
-		
-			
-			
-			'Declare variables to fetch data
-			Dim columns As New List(Of String)
-			Dim processColumns As New List(Of String)
-			Dim sFileHeader As String = ""
-			
-			columns.AddRange(New String(){"SCENARIO","ENTITY","FLOW","REQUIREMENT STATUS","U1","U2","U3","U4","U5","U6","TIME","AMOUNT"})
-			Dim FetchDt As DataTable = Me.CreateReportDataTable(si,sTemplate,columns)
-
-	
-			
-			processColumns.AddRange(New String(){"SCENARIO","Entity","FLOW","REQUIREMENT STATUS","APPN","MDEP","APE","DOLLAR_TYPE","COST_CATEGORY","CTYPE",
-			$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}",
-			"Title",
-"Description",
-"Justification",
-"Cost_Methodology",
-"Impact_If_Not_Funded",
-"Risk_If_Not_Funded",
-"Cost_Growth_Justification",
-"Must_Fund",
-"Funding_Source",
-"Army_Initiative_Directive",
-"Command_Initiative_Directive",
-"Activity_Exercise",
-"IT_Cyber_Requirement",
-"UIC",
-"Flex_Field_1",
-"Flex_Field_2",
-"Flex_Field_3",
-"Flex_Field_4",
-"Flex_Field_5",
-"Emerging_Requirement",
-"CPA_Topic",
-"PBR_Submission",
-"UPL_Submission",
-"Contract_Number",
-"Task_Order_Number",
-"Target_Date_Of_Award",
-"POP_Expiration_Date",
-"ContractorManYearEquiv_CME",
-"COR_Email",
-"POC_Email",
-"Directorate",
-"Division",
-"Branch",
-"Rev_POC_Email",
-"MDEP_Functional_Email",
-"Notification_Email_List",
-"Comments",
-"JUON",
-"ISR_Flag",
-"Cost_Model",
-"Combat_Loss",
-"Cost_Location",
-"Category_A_Code",
-"CBS_Code",
-"MIP_Proj_Code",
-"SS_Priority",
-"Commitment_Group",
-"SS_Capability",
-"Strategic_BIN",
-"LIN",
-"FY1_QTY",
-"FY2_QTY",
-"FY3_QTY",
-"FY4_QTY",
-"FY5_QTY",
-"RequirementType",
-"DD_Priority",
-"Portfolio",
-"DD_Capability",
-"JNT_CAP_AREA",
-"TBM_COST_POOL",
-"TBM_TOWER",
-"APMS_AITR_Num",
-"ZERO_TRUST_CAPABILITY",
-"Associated_Directives",
-"CLOUD_INDICATOR",
-"STRAT_CYBERSEC_PGRM",
-"Notes",
-"UNIT_OF_MEASURE",
-"FY1_ITEMS",
-"FY1_UNIT_COST",
-"FY2_ITEMS",
-"FY2_UNIT_COST",
-"FY3_ITEMS",
-"FY3_UNIT_COST",
-"FY4_ITEMS",
-"FY4_UNIT_COST",
-"FY5_ITEMS",
-"FY5_UNIT_COST",
- "Command"})
-
-
-			
-sFileHeader = $"SCENARIO:Do Not Update,Entity:Do Not Update,FLOW:Do Not Update,REQUIREMENT STATUS:Do Not Update,APPN,MDEP,APE,DOLLAR_TYPE,OBJECTCLASS,CTYPE,FY{iTime0},FY{iTime1},FY{iTime2},FY{iTime3},FY{iTime4},Title,Description,Justification,Cost_Methodology,Impact_If_Not_Funded,Risk_If_Not_Funded,Cost_Growth_Justification,Must_Fund,Funding_Source,Army_Initiative_Directive,Command_Initiative_Directive,Activity_Exercise,IT_Cyber_Requirement,UIC,Flex_Field_1,Flex_Field_2,Flex_Field_3,Flex_Field_4,Flex_Field_5,Emerging_Requirement,CPA_Topic,PBR_Submission,UPL_Submission,Contract_Number,Task_Order_Number,Target_Date_Of_Award,POP_Expiration_Date,ContractorManYearEquiv_CME,COR_Email,POC_Email,Directorate,Division,Branch,Rev_POC_Email,MDEP_Functional_Email,Notification_Email_List,Comments,JUON,ISR_Flag,Cost_Model,Combat_Loss,Cost_Location,Category_A_Code,CBS_Code,MIP_Proj_Code,SS_Priority,Commitment_Group,SS_Capability,Strategic_BIN,LIN,FY1_QTY,FY2_QTY,FY3_QTY,FY4_QTY,FY5_QTY,RequirementType,DD_Priority,Portfolio,DD_Capability,JNT_CAP_AREA,TBM_COST_POOL,TBM_TOWER,APMS_AITR_Num,ZERO_TRUST_CAPABILITY,Associated_Directives,CLOUD_INDICATOR,STRAT_CYBERSEC_PGRM,Notes,UNIT_OF_MEASURE,FY1_ITEMS,FY1_UNIT_COST,FY2_ITEMS,FY2_UNIT_COST,FY3_ITEMS,FY3_UNIT_COST,FY4_ITEMS,FY4_UNIT_COST,FY5_ITEMS,FY5_UNIT_COST,Command:Do Not Update"
-			
-'Get variable Ids and flow list to remove Manpower reqs
-			Dim cubeid As Integer = BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId
-			Dim scenarioid As Integer =BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario)
-			Dim flowlist As List(Of MemberInfo) =  BRApi.Finance.Members.GetMembersUsingFilter(si, BRApi.Finance.Dim.GetDimPk(si, "F_REQ_Main"), $"F#Command_Requirements.Base.Where(Name DoesNotContain 'REQ_00')", True,,)
-		
-			
-			For Each Entity As Member In lsEntity
-				Dim entityid As Integer = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, Entity.Name)
+			Public Function CreateManpowerREQ(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
+				Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
+				Dim sEntity As String = args.NameValuePairs.XFGetValue("REQEntity")
+				Dim sREQTitle As String = "Manpower Requirement"
+				Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+				Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+				Dim sREQUser As String = si.UserName
+				Dim CurDate As Date = Datetime.Now
 				
-					For i As Integer = 0 To 4 Step 1 
-					Dim myDataUnitPk As New DataUnitPk( _
-					 cubeid, _
-					entityid, _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-					DimConstants.Local, _
-					scenarioid, _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
+				Dim REQIDMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_ID:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQTitleScr As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Title:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"							
+				Dim REQWFStatusMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Rqmt_Status:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQUserMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Creator_Name:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQDateMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Creation_Date_Time:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				
+				Dim objListofScriptsREQID As New List(Of MemberScriptandValue)
+			    Dim objScriptValREQID As New MemberScriptAndValue
+				objScriptValREQID.CubeName = sCube
+				objScriptValREQID.Script = REQIDMemberScript
+				objScriptValREQID.TextValue = sEntity.Replace("_General","_") & "00000" 
+				objScriptValREQID.IsNoData = False
+				objListofScriptsREQID.Add(objScriptValREQID)
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si,objListofScriptsREQID)
+				
+				' Update REQ Title For WF Scenario
+				Dim objListofScriptsTitle As New List(Of MemberScriptandValue)
+			    Dim objScriptValTitle As New MemberScriptAndValue
+				objScriptValTitle.CubeName = sCube
+				objScriptValTitle.Script = REQTitleScr
+				objScriptValTitle.TextValue = sREQTitle
+				objScriptValTitle.IsNoData = False
+				objListofScriptsTitle.Add(objScriptValTitle)
+				
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsTitle)
 
-					' Buffer coordinates.
-					' Default to #All for everything, then set IDs where we need it.
-					Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-					myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-					myDbCellPk.OriginId = DimConstants.BeforeAdj
-					myDbCellPk.UD7Id = DimConstants.None
-					myDbCellPk.UD8Id = DimConstants.None
-					
-		'Get full data set for all flows then filter down to flow Ids we want			
-					Dim allcellsubset As List(Of DataCell) = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-	
-					 If allcellsubset.Count  > 0 Then
-						 'Get flow Ids we need
-						 Dim DesiredFlowIds As New HashSet(Of Integer)(flowlist.Select(Function(f) f.Member.MemberId))
-						' Filter our subset cells vs the flows we want 
-						 Dim Filteredcells As List(Of DataCell) = allcellsubset.Where(Function(cell) DesiredFlowIds.Contains(cell.DataCellPk.FlowId)).ToList()
-					If Filteredcells.Count > 0 Then
-						'write filter data to table 
-						Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,Filteredcells)
-					End If 
+				'Update REQ Creator
+				Dim objListofScriptsUser As New List(Of MemberScriptandValue)
+			    Dim objScriptValUser As New MemberScriptAndValue
+				objScriptValUser.CubeName = sCube
+				objScriptValUser.Script = REQUserMemberScript
+				objScriptValUser.TextValue = sREQUser
+				objScriptValUser.IsNoData = False
+				objListofScriptsUser.Add(objScriptValUser)
+				
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsUser)
+				
+				'Update REQ Created Date
+				Dim objListofScriptsDate As New List(Of MemberScriptandValue)
+			    Dim objScriptValDate As New MemberScriptAndValue
+				objScriptValDate.CubeName = sCube
+				objScriptValDate.Script = REQDateMemberScript
+				objScriptValDate.TextValue = CurDate
+				objScriptValDate.IsNoData = False
+				objListofScriptsDate.Add(objScriptValDate)
+				
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsDate)
+
+				'Update REQ Workflow Status
+				Dim objListofScriptsWFStatus As New List(Of MemberScriptandValue)
+			    Dim objScriptValWFStatus As New MemberScriptAndValue
+				objScriptValWFStatus.CubeName = sCube
+				objScriptValWFStatus.Script = REQWFStatusMemberScript
+				objScriptValWFStatus.TextValue = "L2 Working"
+				objScriptValWFStatus.IsNoData = False
+				objListofScriptsWFStatus.Add(objScriptValWFStatus)
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsWFStatus)
+				
+				Try
+					'Me.UpdateStatusHistory(si, globals, api, args, "L2 Working","REQ_00")
+				Catch ex As Exception
+				End Try
+				
+				Return Nothing
+			End Function				
+
+			Public Function UpdateManpowerREQStatus(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
+				Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
+				Dim sEntity As String = args.NameValuePairs.XFGetValue("REQEntity")
+				Dim sREQTitle As String = "Manpower Requirement"
+				Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+				Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+				Dim sREQUser As String = si.UserName
+				Dim CurDate As Date = Datetime.Now
+				Dim sREQStatus As String = ""
+				
+				Dim REQIDMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_ID:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQTitleScr As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Title:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"							
+				Dim REQWFStatusMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Rqmt_Status:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQUserMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Creator_Name:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQDateMemberScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Creation_Date_Time:F#REQ_00:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				
+				Dim sCurrTitle As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQWFStatusMemberScript).DataCellEx.DataCellAnnotation
+				If sCurrTitle.XFEqualsIgnoreCase("L2 Working") Then 
+					sREQStatus = "L2 Approved"
 				End If 
+				If sCurrTitle.XFEqualsIgnoreCase("L2 Approved") Then 
+					sREQStatus = "L2 Working"
+				End If
 
-					
-				Next
-			Next
-		
-			
-			'Process the fetched data into a format usable for report		
-			Dim processDT As DataTable = Me.CreateReportDataTable(si,"processTableUpdate",processColumns,True)	
-			Dim dArgs As New Dictionary(Of String, String)
-			dArgs.Add("startYr",iTime.ToString)
-			dArgs.Add("Cube",sCube)
-			dArgs.Add("Entity",sCube)
-			dArgs.Add("Scenario",sScenario)
-			Me.ProcessTableForReport(si, FetchDt, processDT, dArgs)
-		
-			'Generate & write File and update FvParam for filepath needed for file viewer
-			Return Me.GenerateReportFile(si, processDT, sFileHeader, sCube, iTime, sTemplate,sFvParam)
+				'Update REQ Workflow Status
+				Dim objListofScriptsWFStatus As New List(Of MemberScriptandValue)
+			    Dim objScriptValWFStatus As New MemberScriptAndValue
+				objScriptValWFStatus.CubeName = sCube
+				objScriptValWFStatus.Script = REQWFStatusMemberScript
+				objScriptValWFStatus.TextValue = sREQStatus
+				objScriptValWFStatus.IsNoData = False
+				objListofScriptsWFStatus.Add(objScriptValWFStatus)
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsWFStatus)
+				
+				
+				Try
+					'Me.UpdateStatusHistory(si, globals, api, args, sREQStatus,"REQ_00")
+				Catch ex As Exception
+				End Try
 
+				
+				Return Nothing
+			End Function				
+#End Region
+
+#Region "Helper Methods"	
+
+#Region "Is REQ Title Blank"
+		'Updated: EH 8/28/2024 - Ticket 1565 Title member script updated to REQ_Shared scenario
+		'Updated: EH 9/18/2024 - RMW-1732 Reverting REQ_Shared changes
+		Public Function BlankTitleCheck(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim sFlow As String = args.NameValuePairs.XFGetValue("REQFlow").Trim
+			Dim sEntity As String = args.NameValuePairs.XFGetValue("REQEntity").Trim
+			Dim sREQTitleMbrScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Title:F#" & sFlow & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+			Dim sREQTitle As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sREQTitleMbrScript).DataCellEx.DataCellAnnotation	
+
+			If sREQTitle = "" Then
+
+				Dim objListofScriptsTitle As New List(Of MemberScriptandValue)
+			    Dim objScriptValTitle As New MemberScriptAndValue
+				objScriptValTitle.CubeName = sCube
+				objScriptValTitle.Script = sREQTitleMbrScript
+				objScriptValTitle.TextValue = "!!! REPLACE WITH REQUIREMENT TITLE !!!"
+				objScriptValTitle.IsNoData = False
+				objListofScriptsTitle.Add(objScriptValTitle)
+				
+				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsTitle)
+				
+				Throw New Exception("Requirement title cannot be blank." & environment.NewLine &  " Please enter a title and click save button.")
+			End If	
+			Return Nothing
+		
 		End Function
 #End Region
 
-
-#Region "ExportAllREQs(Review Daashboard)"	
-		'Export PGM Requirement Data
-		Public Function ExportAllREQs(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
-'BRapi.ErrorLog.LogMessage(si,$"Debug A")
-			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	 
-			Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity","")	
-			If sEntity.XFContainsIgnoreCase("_General") Then
-				sEntity = sEntity.Replace("_General","")
-			Else 
-				sEntity = sEntity
+#Region "Get Entity"
+		'Entity can be passed in directly in the Args or through session when it comes through a pop up
+		'This code handles that
+		Public Function GetEntity(ByVal si As SessionInfo, ByVal args As DashboardExtenderArgs) As String
+			Dim sEntity As String = args.NameValuePairs.XFGetValue("REQEntity")
+			If String.IsNullOrWhiteSpace(sEntity) Then
+				sEntity = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity","")
 			End If
-			Dim iMemberId As Integer = BRApi.Finance.Members.GetMemberId(si,dimtypeid.Entity,sEntity)
-			Dim SAccount As String = "REQ_Requested_Amt"
-			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim iScenarioID As Integer = brapi.Finance.Members.GetMemberId(si, DimType.Scenario.Id, sScenario)
-			Dim iTime As Integer = BRApi.Finance.Time.GetYearFromId(si,BRApi.Finance.Scenario.GetWorkflowTime(si, iScenarioID))
-			Dim sTemplate As String = args.NameValuePairs.XFGetValue("Template","")
-			Dim sFvParam As String = args.NameValuePairs.XFGetValue("FvParam","")
-			sFilePath = ""
-			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
-			
-			If String.IsNullOrWhiteSpace(sEntity) 
-				Throw New Exception("Please select a Command to export")
-			End If	
-			
-			'Declare all Time values
-			Dim iTime0 As Integer = iTime + 0
-			Dim iTime1 As Integer = iTime + 1
-			Dim iTime2 As Integer = iTime + 2
-			Dim iTime3 As Integer = iTime + 3
-			Dim iTime4 As Integer = iTime + 4
-		
-			sEntity = sEntity.Replace("""","")		
-			
-			'Declare variables to fetch data
-			Dim columns As New List(Of String)
-			Dim processColumns As New List(Of String)
-			Dim sFileHeader As String = ""
-			
-				columns.AddRange(New String(){"SCENARIO","ENTITY","FLOW","REQUIREMENT STATUS","U1","U2","U3","U4","U5","U6","TIME","AMOUNT"})
-			Dim FetchDt As DataTable = Me.CreateReportDataTable(si,sTemplate,columns)
+			Return sEntity
+		End Function
+#End Region	
 
-	
-			Dim dimPK As DimPk = BRApi.Finance.Dim.GetDimPk(si, $"E_{sCube}")
-			Dim lsEntity As List(Of Member) = BRApi.Finance.Members.GetBaseMembers(si, dimPK, iMemberId,)
-			processColumns.AddRange(New String(){"SCENARIO","Entity","FLOW","REQUIREMENT STATUS","APPN","MDEP","APE","DOLLAR_TYPE","COST_CATEGORY","CTYPE",
-			$"FY{iTime0}",$"FY{iTime1}",$"FY{iTime2}",$"FY{iTime3}",$"FY{iTime4}",
-			"Title",
-"Description",
-"Justification",
-"Cost_Methodology",
-"Impact_If_Not_Funded",
-"Risk_If_Not_Funded",
-"Cost_Growth_Justification",
-"Must_Fund",
-"Funding_Source",
-"Army_Initiative_Directive",
-"Command_Initiative_Directive",
-"Activity_Exercise",
-"IT_Cyber_Requirement",
-"UIC",
-"Flex_Field_1",
-"Flex_Field_2",
-"Flex_Field_3",
-"Flex_Field_4",
-"Flex_Field_5",
-"Emerging_Requirement",
-"CPA_Topic",
-"PBR_Submission",
-"UPL_Submission",
-"Contract_Number",
-"Task_Order_Number",
-"Target_Date_Of_Award",
-"POP_Expiration_Date",
-"ContractorManYearEquiv_CME",
-"COR_Email",
-"POC_Email",
-"Directorate",
-"Division",
-"Branch",
-"Rev_POC_Email",
-"MDEP_Functional_Email",
-"Notification_Email_List",
-"Comments",
-"REQ_Return_Cmt",
-"JUON",
-"ISR_Flag",
-"Cost_Model",
-"Combat_Loss",
-"Cost_Location",
-"Category_A_Code",
-"CBS_Code",
-"MIP_Proj_Code",
-"SS_Priority",
-"Commitment_Group",
-"SS_Capability",
-"Strategic_BIN",
-"LIN",
-"FY1_QTY",
-"FY2_QTY",
-"FY3_QTY",
-"FY4_QTY",
-"FY5_QTY",
-"RequirementType",
-"DD_Priority",
-"Portfolio",
-"DD_Capability",
-"JNT_CAP_AREA",
-"TBM_COST_POOL",
-"TBM_TOWER",
-"APMS_AITR_Num",
-"ZERO_TRUST_CAPABILITY",
-"Associated_Directives",
-"CLOUD_INDICATOR",
-"STRAT_CYBERSEC_PGRM",
-"Notes",
-"UNIT_OF_MEASURE",
-"FY1_ITEMS",
-"FY1_UNIT_COST",
-"FY2_ITEMS",
-"FY2_UNIT_COST",
-"FY3_ITEMS",
-"FY3_UNIT_COST",
-"FY4_ITEMS",
-"FY4_UNIT_COST",
-"FY5_ITEMS",
-"FY5_UNIT_COST",
- "Command"})
-
-
+#Region "Set Parameter"
+		'Set a parameter with passed in value using selectionChangedTaskResult
+		Public Function SetParameter(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal dKeyVal As Dictionary(Of String, String), Optional ByVal selectionChangedTaskResult As XFSelectionChangedTaskResult = Nothing )As Object				
+			If selectionChangedTaskResult Is Nothing Then
+				selectionChangedTaskResult = New XFSelectionChangedTaskResult()
+			End If
 			
-sFileHeader = $"SCENARIO,Entity,FLOW,REQUIREMENT STATUS,APPN,MDEP,APE,DOLLAR_TYPE,OBJECTCLASS,CTYPE,FY{iTime0},FY{iTime1},FY{iTime2},FY{iTime3},FY{iTime4},Title,Description,Justification,Cost_Methodology,Impact_If_Not_Funded,Risk_If_Not_Funded,Cost_Growth_Justification,Must_Fund,Funding_Source,Army_Initiative_Directive,Command_Initiative_Directive,Activity_Exercise,IT_Cyber_Requirement,UIC,Flex_Field_1,Flex_Field_2,Flex_Field_3,Flex_Field_4,Flex_Field_5,Emerging_Requirement,CPA_Topic,PBR_Submission,UPL_Submission,Contract_Number,Task_Order_Number,Target_Date_Of_Award,POP_Expiration_Date,ContractorManYearEquiv_CME,COR_Email,POC_Email,Directorate,Division,Branch,Rev_POC_Email,MDEP_Functional_Email,Notification_Email_List,Comments,Requirement_Return_Comment,JUON,ISR_Flag,Cost_Model,Combat_Loss,Cost_Location,Category_A_Code,CBS_Code,MIP_Proj_Code,SS_Priority,Commitment_Group,SS_Capability,Strategic_BIN,LIN,FY1_QTY,FY2_QTY,FY3_QTY,FY4_QTY,FY5_QTY,RequirementType,DD_Priority,Portfolio,DD_Capability,JNT_CAP_AREA,TBM_COST_POOL,TBM_TOWER,APMS_AITR_Num,ZERO_TRUST_CAPABILITY,Associated_Directives,CLOUD_INDICATOR,STRAT_CYBERSEC_PGRM,Notes,UNIT_OF_MEASURE,FY1_ITEMS,FY1_UNIT_COST,FY2_ITEMS,FY2_UNIT_COST,FY3_ITEMS,FY3_UNIT_COST,FY4_ITEMS,FY4_UNIT_COST,FY5_ITEMS,FY5_UNIT_COST,Command"
+			selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True			
+			selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
 			
+			For Each KeyVal As KeyValuePair(Of String, String) In dKeyVal
+				selectionChangedTaskResult.ModifiedCustomSubstVars.Remove(KeyVal.Key)
+				selectionChangedTaskResult.ModifiedCustomSubstVars.Add(KeyVal.Key, KeyVal.Value)
 			
-			For Each Entity As Member In lsEntity
-				For i As Integer = 0 To 4 Step 1 
-					Dim myDataUnitPk As New DataUnitPk( _
-					BRApi.Finance.Cubes.GetCubeInfo(si, sCube).Cube.CubeId, _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, Entity.Name ), _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Entity, ""), _
-					DimConstants.Local, _
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Scenario, sScenario),
-					BRApi.Finance.Members.GetMemberId(si, dimTypeId.Time, (iTime + i).ToString))
-
-					' Buffer coordinates.
-					' Default to #All for everything, then set IDs where we need it.
-					Dim myDbCellPk As New DataBufferCellPk( DimConstants.All )
-					myDbCellPk.AccountId = BRApi.Finance.Members.GetMemberId(si, dimTypeId.Account, sAccount)
-					myDbCellPk.OriginId = DimConstants.BeforeAdj
-					myDbCellPk.UD7Id = DimConstants.None
-					myDbCellPk.UD8Id = DimConstants.None
-					
-					Dim myCells As List(Of DataCell)  = BRApi.Finance.Data.GetDataBufferDataCells(si, myDataUnitPk, dimConstants.Periodic, myDbCellPk, True, True)
-					If myCells.Count > 0 Then Me.WriteFetchTable(si,FetchDt,Entity.Name,sScenario,(iTime + i).ToString,myCells)
-				Next
+				selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard.Add(KeyVal.Key, KeyVal.Value)			
 			Next
 			
-			'Process the fetched data into a format usable for report		
-			Dim processDT As DataTable = Me.CreateReportDataTable(si,"processTable",processColumns,True)	
-			Dim dArgs As New Dictionary(Of String, String)
-			dArgs.Add("startYr",iTime.ToString)
-			dArgs.Add("Cube",sCube)
-			dArgs.Add("Entity",sEntity)
-			dArgs.Add("Scenario",sScenario)
-			Me.ProcessTableForReport(si, FetchDt, processDT, dArgs)
-		
-			'Generate & write File and update FvParam for filepath needed for file viewer
-			Return Me.GenerateReportFile(si, processDT, sFileHeader, sCube, iTime, sTemplate,sFvParam)
-
+			Return selectionChangedTaskResult
 		End Function
+#End Region	
+
+#Region "Clear Selections"
+		Public Function ClearSelections(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs, ByVal ParamsToClear As String)As Object
+'BRApi.ErrorLog.LogMessage(si,$"ParamsToClear = {ParamsToClear}")
+			Dim objDictionary = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues
+			For i As Integer = 0 To objDictionary.Count -1
+				'Clear only prompts that are passed in as parameters
+				Dim thisKey = objDictionary.ElementAt(i).Key
+				Dim thisValue = objDictionary.ElementAt(i).Value
+				If(ParamsToClear.XFContainsIgnoreCase(thisKey)) Then
+					objDictionary.Remove(thisKey)
+					objDictionary.Add(thisKey,"")
+					
+				End If 
+			Next
+			
+			Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+			selectionChangedTaskResult.IsOK = True
+			selectionChangedTaskResult.ShowMessageBox = False
+			selectionChangedTaskResult.Message = ""
+			selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = False
+			selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = Nothing 'objXFSelectionChangedUIActionInfo
+			selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
+			selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
+			selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True
+			selectionChangedTaskResult.ModifiedCustomSubstVars = objDictionary
+			selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
+			selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = objDictionary
+			
+			Return selectionChangedTaskResult
+		End Function
+#End Region	
+
+#Region "Replace Selections"
+		'Updated: EH RMW-1564 9/3/24 Updated to annual for PGM_C20XX
+		Public Function ReplaceSelections(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs, ByVal ParamsToClear As String, Optional ByVal selectionChangedTaskResult As XFSelectionChangedTaskResult = Nothing)As Object
+			'set showhide boolean
+			Dim ShowHideCheck As Boolean = True
+			If selectionChangedTaskResult Is Nothing Then 
+				'if nothing is passed in then set boolean to false and taskresult as new
+				ShowHidecheck = False
+				selectionChangedTaskResult = New XFSelectionChangedTaskResult()
+			End If 
+			Dim objDictionary = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues	
+			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			'Dim wfLevel As String = wfProfileName.Substring(0,2).ToLower
+			Dim wfCube = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
+			Dim wfScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
+			Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim WFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)	
+			Dim WFMonth As Integer = TimeDimHelper.GetMonthIdFromId(si.WorkflowClusterPk.TimeKey)
+			Dim UFRTime As String = WFYear
+			Dim ufrEntity As String = args.NameValuePairs.XFGetValue("ufrEntity")
+			Dim ufrFlow As String = args.NameValuePairs.XFGetValue("ufrFlow")
+			'member scripts
+			Dim UFRWFMemberScript As String = "Cb#" & wfCube & ":E#" & ufrEntity & ":C#Local:S#" & wfScenario & ":T#" & UFRTime & ":V#Annotation:A#REQ_Workflow_Status:F#" & ufrFlow & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+			Dim UFRFundingMemberScript As String = "Cb#" & wfCube & ":E#" & ufrEntity & ":C#Local:S#" & wfScenario & ":T#" & UFRTime & ":V#Annotation:A#REQ_Funding_Status:F#" & ufrFlow & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+            'get wf and funding satus
+			Dim currentWFStatus As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, UFRWFMemberScript).DataCellEx.DataCellAnnotation
+			Dim currentFundingStatus As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, UFRFundingMemberScript).DataCellEx.DataCellAnnotation
+			For i As Integer = 0 To objDictionary.Count -1
+		
+				'Clear only prompts that are passed in as parameters
+				Dim thisKey = objDictionary.ElementAt(i).Key
+				Dim thisValue = objDictionary.ElementAt(i).Value
+				If(ParamsToClear.XFContainsIgnoreCase(thisKey)) Then
+					'Set parameter To actual Funding status
+					If thisKey.XFContainsIgnoreCase("FundingStatus") And currentWFStatus.XFContainsIgnoreCase("Disposition")
+						objDictionary.Remove(thisKey)
+						objDictionary.Add(thisKey,currentFundingStatus)
+					'set parameter to actual wf status
+					Else If thisKey.XFContainsIgnoreCase("WFStatus") And currentWFStatus.XFContainsIgnoreCase("Disposition")
+						objDictionary.Remove(thisKey)
+						objDictionary.Add(thisKey,currentWFStatus)
+					'clear params
+					Else 
+						objDictionary.Remove(thisKey)
+						objDictionary.Add(thisKey,"")
+					End If 
+				
+				End If 
+			Next
+
+			selectionChangedTaskResult.IsOK = True
+			selectionChangedTaskResult.ShowMessageBox = False
+			selectionChangedTaskResult.Message = ""
+			'if nothing is passed then set action in dash to false 
+			If ShowHideCheck = False Then 
+				selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = False
+			Else 
+				selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
+			End If
+			selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
+			selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
+			selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True
+			selectionChangedTaskResult.ModifiedCustomSubstVars = objDictionary
+			selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
+			selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = objDictionary
+		
+			Return selectionChangedTaskResult
+		End Function
+#End Region 'need to revise
+
+#End Region
+
+#Region "Calculate Full FYDP"	
+' Created 10/30/24 by JM for JIRA-114. Used to calculate FYDP 2-5 using infaltion rate and req amt during creation
+
+		Public Function CalculateFullFYDP(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs, ByVal REQFlow As String) 
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
+			Dim sEntity As String = GetEntity(si, args)			
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			
+			Dim sAPPNFund As String = args.NameValuePairs.XFGetValue("APPNFund")
+			Dim sMDEP As String = args.NameValuePairs.XFGetValue("MDEP")		
+			Dim sAPE As String = args.NameValuePairs.XFGetValue("APE")
+			Dim sDollarType As String = args.NameValuePairs.XFGetValue("DollarType")
+			Dim sCommitmentItem As String = args.NameValuePairs.XFGetValue("CommitmentItem")
+			Dim IC As String = sEntity
+
+			Dim REQRequestedAmt As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Periodic:A#REQ_Requested_Amt:F#" & REQFlow & ":O#BeforeAdj:I#" & IC & ":U1#" & sAPPNFund & ":U2#" & sMDEP & ":U3#" & sAPE & ":U4#" & sDollarType & ":U5#None:U6#" & sCommitmentItem & ":U7#None:U8#None"
+			Dim iCurrScenarioYear As Integer = Strings.Right(sScenario,4).XFConvertToInt
+			Dim iAPPNID As String = BRapi.Finance.Members.GetMemberId(si,dimtype.UD1.Id, sAPPNFund)
+			Dim sAPPN As String = ""
+			
+			If sAPPNFund.XFEqualsIgnoreCase("none") Then
+				sAPPN = "None"
+			Else	
+				sAPPN = BRApi.Finance.Members.GetParents(si, BRApi.Finance.Dim.GetDimPk(si, "U1_APPN_FUND"), iAPPNID, False)(0).Name  & "_General"
+			End If
+			
+			Dim sInfRateScript As String = "Cb#" & sCube & ":S#" & sScenario & ":T#" & iCurrScenarioYear.ToString & ":C#USD:E#"& sCube & "_General:V#Periodic:A#PGM_Inflation_Rate_Amt:O#BeforeAdj:I#None:F#None" 
+			sInfRateScript &= ":U1#" & sAPPN & ":U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"		
+			Dim dInflationRate As Decimal = 0
+				dInflationRate = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sInfRateScript).DataCellEx.DataCell.CellAmount
+				
+			Dim REQAMT As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQRequestedAmt).DataCellEx.DataCell.CellAmount
+			
+			Dim dAmt2 As Decimal = Math.Round( REQAMT * (1 + (dInflationRate/100)))
+			Dim dAmt3 As Decimal = Math.Round( dAmt2 * (1 + (dInflationRate/100)))
+			Dim dAmt4 As Decimal =  Math.Round(dAmt3 * (1 + (dInflationRate/100)))
+			Dim dAmt5 As Decimal =  Math.Round(dAmt4 * (1 + (dInflationRate/100)))
+			
+			Dim REQRequestedAmttMemberScriptFYDP As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":V#Periodic:A#REQ_Requested_Amt:F#" & REQFlow & ":O#BeforeAdj:I#" & IC & ":U1#" & sAPPNFund & ":U2#" & sMDEP & ":U3#" & sAPE & ":U4#" & sDollarType & ":U5#None:U6#" & sCommitmentItem & ":U7#None:U8#None"
+			
+			Dim FY2TimeScript As String = REQRequestedAmttMemberScriptFYDP & ":T#" & (iCurrScenarioYear + 1).ToString
+			Dim FY3TimeScript As String = REQRequestedAmttMemberScriptFYDP & ":T#" & (iCurrScenarioYear + 2).ToString
+			Dim FY4TimeScript As String = REQRequestedAmttMemberScriptFYDP & ":T#" & (iCurrScenarioYear + 3).ToString
+			Dim FY5TimeScript As String = REQRequestedAmttMemberScriptFYDP & ":T#" & (iCurrScenarioYear + 4).ToString
+			
+			Dim objListofAmountScripts As New List(Of MemberScriptandValue)
+			
+			
+			Dim objScriptValFY2 As New MemberScriptAndValue
+			objScriptValFY2.CubeName = sCube
+			objScriptValFY2.Script = FY2TimeScript
+			objScriptValFY2.Amount = dAmt2
+			objScriptValFY2.IsNoData = False
+			objListofAmountScripts.Add(objScriptValFY2)
+			
+			Dim objScriptValFY3 As New MemberScriptAndValue
+			objScriptValFY3.CubeName = sCube
+			objScriptValFY3.Script = FY3TimeScript
+			objScriptValFY3.Amount = dAmt3
+			objScriptValFY3.IsNoData = False
+			objListofAmountScripts.Add(objScriptValFY3)
+			
+			Dim objScriptValFY4 As New MemberScriptAndValue
+			objScriptValFY4.CubeName = sCube
+			objScriptValFY4.Script = FY4TimeScript
+			objScriptValFY4.Amount = dAmt4
+			objScriptValFY4.IsNoData = False
+			objListofAmountScripts.Add(objScriptValFY4)
+			
+			Dim objScriptValFY5 As New MemberScriptAndValue
+			objScriptValFY5.CubeName = sCube
+			objScriptValFY5.Script = FY5TimeScript
+			objScriptValFY5.Amount = dAmt5
+			objScriptValFY5.IsNoData = False
+			objListofAmountScripts.Add(objScriptValFY5)
+			
+			BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofAmountScripts)
+			
+			Return Nothing
+			
+		End Function
+#End Region
+		
+#Region "IsFilterSelected"
+		Private Sub IsFilterSelected(ByVal si As SessionInfo, ByVal args As DashboardExtenderArgs)
+			Try
+				Dim filterList As String = args.NameValuePairs.XFGetValue("FilterList")
+				If String.IsNullOrWhiteSpace(filterList) Then
+					Throw New XFUserMsgException(si, New Exception("Please select a filter."))
+				End If
+				
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+		End Sub
+#End Region
+
+#Region "Cache Dashboard"
+		Private Sub DbCache(ByVal si As SessionInfo, ByVal args As DashboardExtenderArgs)
+			Try
+				'cache in db name to be used for linked dashboard
+				Dim sDb As String = args.NameValuePairs.XFGetValue("Db","")
+				If Not String.IsNullOrWhiteSpace(sDb) Then BRApi.Utilities.SetWorkspaceSessionSetting(si,si.UserName,"LR_REQ_Prompts","Db",sDb)	
+				
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+		End Sub
 #End Region
 
 
 	End Class
+
 End Namespace
