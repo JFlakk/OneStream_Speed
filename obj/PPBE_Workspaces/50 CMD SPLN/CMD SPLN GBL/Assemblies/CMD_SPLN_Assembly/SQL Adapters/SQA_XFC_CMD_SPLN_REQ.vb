@@ -6,6 +6,7 @@ Imports System.Globalization
 Imports System.IO
 Imports System.Linq
 Imports Microsoft.VisualBasic
+Imports Microsoft.Data.SqlClient
 Imports OneStream.Finance.Database
 Imports OneStream.Finance.Engine
 Imports OneStream.Shared.Common
@@ -17,14 +18,14 @@ Imports OneStream.Stage.Engine
 Imports OneStreamWorkspacesApi
 Imports OneStreamWorkspacesApi.V800
 
-Public Class SQA_XFC_SubCMD_SPLN_REQ
+Public Class SQA_XFC_CMD_SPLN_REQ
 	Private ReadOnly _connection As SqlConnection
 
 	Public Sub New(connection As SqlConnection)
 		_connection = connection
 	End Sub
 
-	Public Sub Fill_XFC_SubCMD_SPLN_REQ_DT(adapter As SqlDataAdapter, dt As DataTable, selectQuery As String, ParamArray sqlparams() As SqlParameter)
+	Public Sub Fill_XFC_CMD_SPLN_REQ_DT(adapter As SqlDataAdapter, dt As DataTable, selectQuery As String, ParamArray sqlparams() As SqlParameter)
 		Using command As New SqlCommand(selectQuery, _connection)
 			command.CommandType = CommandType.Text
 			If sqlparams IsNot Nothing Then
@@ -37,21 +38,21 @@ Public Class SQA_XFC_SubCMD_SPLN_REQ
 		End Using
 	End Sub
 
-	Public Sub Update_XFC_SubCMD_SPLN_REQ(dt As DataTable, adapter As SqlDataAdapter)
+	Public Sub Update_XFC_CMD_SPLN_REQ(dt As DataTable, adapter As SqlDataAdapter)
 		Using transaction As SqlTransaction = _connection.BeginTransaction()
 			' Insert command
 			Dim insertQuery As String = """
-				INSERT INTO XFC_SubCMD_SPLN_REQ (
-					SubCMD_SPLN_REQ_ID, WFScenario_Name, WFCMD_Name, WFTime_Name, REQ_ID, Title, Description, Justification, Entity, APPN, MDEP, APE9, Dollar_Type, Obj_Class, CType, UIC, Cost_Methodology, Impact_Not_Funded, Risk_Not_Funded, Cost_Growth_Justification, Must_Fund, Funding_Src, Army_Init_Dir, CMD_Init_Dir, Activity_Exercise, Directorate, Div, Branch, IT_Cyber_REQ, Emerging_REQ, CPA_Topic, PBR_Submission, UPL_Submission, Contract_Num, Task_Order_Num, Award_Target_Date, POP_Exp_Date, CME, COR_Email, POC_Email, Review_POC_Email, MDEP_Functional_Email, Notification_List_Emails, FF_1, FF_2, FF_3, FF_4, FF_5, Attach_File_Name, Attach_File_Bytes, Status, Invalid, Val_Error, Create_Date, Create_User, Update_Date, Update_User
+				INSERT INTO XFC_CMD_SPLN_REQ (
+					CMD_SPLN_REQ_ID, WFScenario_Name, WFCMD_Name, WFTime_Name, REQ_ID, Title, Description, Justification, Entity, APPN, MDEP, APE9, Dollar_Type, Obj_Class, CType, UIC, Cost_Methodology, Impact_Not_Funded, Risk_Not_Funded, Cost_Growth_Justification, Must_Fund, Funding_Src, Army_Init_Dir, CMD_Init_Dir, Activity_Exercise, Directorate, Div, Branch, IT_Cyber_REQ, Emerging_REQ, CPA_Topic, PBR_Submission, UPL_Submission, Contract_Num, Task_Order_Num, Award_Target_Date, POP_Exp_Date, CME, COR_Email, POC_Email, Review_POC_Email, MDEP_Functional_Email, Notification_List_Emails, FF_1, FF_2, FF_3, FF_4, FF_5, Attach_File_Name, Attach_File_Bytes, Status, Invalid, Val_Error, Create_Date, Create_User, Update_Date, Update_User
 				) VALUES (
-					@SubCMD_SPLN_REQ_ID, @WFScenario_Name, @WFCMD_Name, @WFTime_Name, @REQ_ID, @Title, @Description, @Justification, @Entity, @APPN, @MDEP, @APE9, @Dollar_Type, @Obj_Class, @CType, @UIC, @Cost_Methodology, @Impact_Not_Funded, @Risk_Not_Funded, @Cost_Growth_Justification, @Must_Fund, @Funding_Src, @Army_Init_Dir, @CMD_Init_Dir, @Activity_Exercise, @Directorate, @Div, @Branch, @IT_Cyber_REQ, @Emerging_REQ, @CPA_Topic, @PBR_Submission, @UPL_Submission, @Contract_Num, @Task_Order_Num, @Award_Target_Date, @POP_Exp_Date, @CME, @COR_Email, @POC_Email, @Review_POC_Email, @MDEP_Functional_Email, @Notification_List_Emails, @FF_1, @FF_2, @FF_3, @FF_4, @FF_5, @Attach_File_Name, @Attach_File_Bytes, @Status, @Invalid, @Val_Error, @Create_Date, @Create_User, @Update_Date, @Update_User
+					@CMD_SPLN_REQ_ID, @WFScenario_Name, @WFCMD_Name, @WFTime_Name, @REQ_ID, @Title, @Description, @Justification, @Entity, @APPN, @MDEP, @APE9, @Dollar_Type, @Obj_Class, @CType, @UIC, @Cost_Methodology, @Impact_Not_Funded, @Risk_Not_Funded, @Cost_Growth_Justification, @Must_Fund, @Funding_Src, @Army_Init_Dir, @CMD_Init_Dir, @Activity_Exercise, @Directorate, @Div, @Branch, @IT_Cyber_REQ, @Emerging_REQ, @CPA_Topic, @PBR_Submission, @UPL_Submission, @Contract_Num, @Task_Order_Num, @Award_Target_Date, @POP_Exp_Date, @CME, @COR_Email, @POC_Email, @Review_POC_Email, @MDEP_Functional_Email, @Notification_List_Emails, @FF_1, @FF_2, @FF_3, @FF_4, @FF_5, @Attach_File_Name, @Attach_File_Bytes, @Status, @Invalid, @Val_Error, @Create_Date, @Create_User, @Update_Date, @Update_User
 				);"""
 			adapter.InsertCommand = New SqlCommand(insertQuery, _connection, transaction)
 			AddParameters(adapter.InsertCommand)
 
 			' Update command
 			Dim updateQuery As String = """
-				UPDATE XFC_SubCMD_SPLN_REQ SET
+				UPDATE XFC_CMD_SPLN_REQ SET
 					WFScenario_Name = @WFScenario_Name,
 					WFCMD_Name = @WFCMD_Name,
 					WFTime_Name = @WFTime_Name,
@@ -108,15 +109,15 @@ Public Class SQA_XFC_SubCMD_SPLN_REQ
 					Create_User = @Create_User,
 					Update_Date = @Update_Date,
 					Update_User = @Update_User
-				WHERE SubCMD_SPLN_REQ_ID = @SubCMD_SPLN_REQ_ID;"""
+				WHERE CMD_SPLN_REQ_ID = @CMD_SPLN_REQ_ID;"""
 
 			adapter.UpdateCommand = New SqlCommand(updateQuery, _connection, transaction)
 			AddParameters(adapter.UpdateCommand, True)
 
 			' Delete command
-			Dim deleteQuery As String = "DELETE FROM XFC_SubCMD_SPLN_REQ WHERE SubCMD_SPLN_REQ_ID = @SubCMD_SPLN_REQ_ID;"
+			Dim deleteQuery As String = "DELETE FROM XFC_CMD_SPLN_REQ WHERE CMD_SPLN_REQ_ID = @CMD_SPLN_REQ_ID;"
 			adapter.DeleteCommand = New SqlCommand(deleteQuery, _connection, transaction)
-			adapter.DeleteCommand.Parameters.Add("@SubCMD_SPLN_REQ_ID", SqlDbType.UniqueIdentifier).SourceColumn = "SubCMD_SPLN_REQ_ID"
+			adapter.DeleteCommand.Parameters.Add("@CMD_SPLN_REQ_ID", SqlDbType.UniqueIdentifier).SourceColumn = "CMD_SPLN_REQ_ID"
 
 			Try
 				adapter.Update(dt)
@@ -132,7 +133,7 @@ Public Class SQA_XFC_SubCMD_SPLN_REQ
 	End Sub
 
 	Private Sub AddParameters(cmd As SqlCommand, Optional isUpdate As Boolean = False)
-		cmd.Parameters.Add("@SubCMD_SPLN_REQ_ID", SqlDbType.UniqueIdentifier).SourceColumn = "SubCMD_SPLN_REQ_ID"
+		cmd.Parameters.Add("@CMD_SPLN_REQ_ID", SqlDbType.UniqueIdentifier).SourceColumn = "CMD_SPLN_REQ_ID"
 		cmd.Parameters.Add("@WFScenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFScenario_Name"
 		cmd.Parameters.Add("@WFCMD_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFCMD_Name"
 		cmd.Parameters.Add("@WFTime_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFTime_Name"
@@ -190,7 +191,7 @@ Public Class SQA_XFC_SubCMD_SPLN_REQ
 		cmd.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date"
 		cmd.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User"
 		If isUpdate Then
-			cmd.Parameters("@SubCMD_SPLN_REQ_ID").SourceVersion = DataRowVersion.Original
+			cmd.Parameters("@CMD_SPLN_REQ_ID").SourceVersion = DataRowVersion.Original
 		End If
 	End Sub
 End Class

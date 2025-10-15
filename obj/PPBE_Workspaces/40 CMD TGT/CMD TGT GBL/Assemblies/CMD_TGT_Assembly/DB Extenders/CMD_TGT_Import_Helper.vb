@@ -41,7 +41,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 #Region "Import TGT"
 						'This makes sure there is only one import running at a time to make sure data is not overidden.
 						'DEV NOTE: This may not be necessary with the new approach of adding the user into the loading tables
-						If args.FunctionName.XFEqualsIgnoreCase("ImportREQ") Then
+						If args.FunctionName.XFEqualsIgnoreCase("ImportTGT") Then
 							Try
 								'BRApi.Dashboards.Parameters.SetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import","completed")
 								Dim runningImport As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import")
@@ -85,75 +85,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			Dim fullFile = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.PrepImportFile(si,filePath)
 
 	        Dim validFile As Boolean = True
+			Dim ImportTGT As New DataTable()
+			ImportTGT = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.GetCsvDataReader(si, globals, sr, ",", Dist)
 
-			'Create DataTables to be used for importing and writing to the two relational tables
-	        Dim tgtDataTable As New DataTable("CMD_TGT_Import")							
-			Try
-'				Using sr As New IO.StreamReader(csvFilePath)
-'    dt = GetCsvDataReader(sr, delimiter)
-'End Using
-'	            Using reader As New StreamReader(fullFile)
-'	                reader.TextFieldType = FieldType.Delimited
-'	                reader.SetDelimiters(",")
-	
-'	                ' Add a column for validation errors and REQ_ID
-'	                tgtDataTable.Columns.Add("ValidationError",GetType(String))
-'					tgtDataTable.Columns.Add("ACOM",GetType(String))
-'					tgtDataTable.Columns.Add("FiscalYear",GetType(String))
-'					tgtDataTable.Columns.Add("FundsCenter",GetType(String))
-'					tgtDataTable.Columns.Add("FundCode",GetType(String))
-'					tgtDataTable.Columns.Add("MDEP",GetType(String))
-'					tgtDataTable.Columns.Add("APE9",GetType(String))
-'					tgtDataTable.Columns.Add("Amount",GetType(Decimal))
-'	                ' Assuming the first line contains headers
-'	                If Not reader.EndOfData Then
-'	                    Dim headers = reader.ReadFields()
-'	                    If headers.Length <> 7 Then
-'	                       ' Throw New InvalidDataException(objXFFileInfo.Name & " has invalid structure. Please check the file if its in the correct format. Expected number of columns is 7, number columns in file header is "& headers.Length & vbCrLf & headers.ToString )
-'	                    End If
-'	                Else
-'	                    Throw New InvalidDataException("The CSV file is empty.")
-'	                End If
-					
-												
-'	                Dim validLine As New StringBuilder()
-'	                ' Read the file line by line
-'	                While Not reader.EndOfData
-'	                    Dim fields = reader.ReadFields()
-'	                    Dim line As String = String.Join(",", fields)
-'	                    If line.StartsWith(comd) Then
-'	                        ' Process the previous valid line if it exists
-'	                        If validLine.Length > 0 Then
-'	                            ProcessLine(validLine.ToString(), fullDataTable, validFile)
-'	                            validLine.Clear()
-'	                        End If
-'	                        ' Start a new valid line
-'	                        validLine.Append(line)
-'	                    Else
-'	                        ' Concatenate with the previous line
-'	                        validLine.Append(" " & line)
-'	                    End If
-'	                End While
-								
-'	                ' Process the last valid line
-'	                If validLine.Length > 0 Then
-'	                    ProcessLine(validLine.ToString(), fullDataTable, validFile)
-'	                End If
-'				End Using
-											
-'				'Write to session
-'				BRApi.Utilities.SetSessionDataTable(si,si.UserName,"CMD_PGM_Import",fullDataTable)
-'                ' Write the fullDataTable to the session if there are validation errors
-'                If validFile Then
-'					'Split fullDataTable and insert into the two tables
-												
-'					Me.SplitAndInsertIntoREQTables(fullDataTable, REQDataTable,REQDetailDataTable)
-					
-'                End If
-			
-	        Catch ex As Exception
-	            Throw New Exception("An error occurred: " & ex.Message)
-	        End Try
 			'If the validation failed, write the error out.
 			'If there are more than ten, we show only the first ten messages for the sake of redablity
 '			Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
@@ -175,73 +109,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		Return Nothing
 		End Function
 #End Region
-
-#Region "Helper Functions"
-'    Sub ProcessLine(line As String, ByRef dataTable As DataTable, ByRef validFile As Boolean)
-'BRApi.ErrorLog.LogMessage(si, "Process Line 1")
-'        Dim cleanedLine As String = CleanUpSpecialCharacters(line)
-'		Dim values = ParseCsvLine(cleanedLine)
-'		Dim currREQ As New CMD_PGM_Requirement
-'BRApi.ErrorLog.LogMessage(si, "Process Line 2")		
-'		currREQ = Me.ParseREQ(si,values, dataTable)
-'		'If the FC is a parent, add _General
-'		currREQ.Entity = CMD_PGM_Utilities.CheckFor_General(si, currREQ.Entity)' & "_General"
-'BRApi.ErrorLog.LogMessage(si, "Process Line 3")
-'		' Get APPN_FUND And PARENT APPN_L2 
-'		currREQ.APE9 = CMD_PGM_Utilities.GetUD3(si, currREQ.FundCode, currREQ.APE9)
-'BRApi.ErrorLog.LogMessage(si, "Process Line 4")		
-''BRApi.ErrorLog.LogMessage(si, "entity: " & currREQ.Entity & ", APE: " & currREQ.APE9 & ", full line: " & line)		
-'        Dim newRow = dataTable.NewRow()
-
-'        ' Run validation (you can customize this part)
-'        If Me.ValidateMembers(si, currREQ) Then
-'BRApi.ErrorLog.LogMessage(si, "Process Line 5")			
-'            newRow("ValidationError") = ""
-'			Dim REQ_ID As String = Me.GetNextREQID(currREQ.Entity)' GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,currREQ.Entity)
-'BRApi.ErrorLog.LogMessage(si, "Process Line 6")			
-'			If Not String.IsNullOrWhiteSpace(REQ_ID) Then
-'				newRow("REQ_ID") = REQ_ID
-				
-'				'Update Status
-'				'Dim entityLevel As String = Me.GetEntityLevel(currREQ.Entity)
-'				Dim sREQWFStatus As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,currREQ.Entity) & "_Formulate_PGM"
-'				newRow("Status") = sREQWFStatus
-'			Else 'Failed to get REQ_ID. File will be marked failed
-'				validFile = False
-'			End If
-'        Else
-'            validFile = False
-'            newRow("ValidationError") = "Validation error: " & currREQ.validationError
-'        End If
-'BRApi.ErrorLog.LogMessage(si, "Process Line 7")	
-'		'The offset is to account for the number of rows added to the dataTable before the file data
-'		'The reason is so they can be seen easily at the begining of the table
-'        For i As Integer = 0 To values.Length - 1
-'            newRow(i + 5) = values(i)
-'        Next
-'		newRow("FundCenter") = currREQ.Entity
-'		newRow("APE9") = currREQ.APE9
-'		newRow("REQ_ID_Type") = "Requirement"
-'		'Update Audit fields
-'		newRow("Create_Date") = DateTime.Now
-'		newRow("Create_User") = si.UserName
-'		newRow("Update_Date") = DateTime.Now
-'		newRow("Update_User") = si.UserName
-'		newRow("WFScenario_Name") =  ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-'		newRow("WFTime_Name") = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-'		newRow("WFCMD_Name") =  BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
-'		newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
-'		newRow("IC") = "None"
-'		newRow("Account") = "REQ_Requested_Amt"
-'		newRow("Flow") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,currREQ.Entity) &"_Formulate_PGM"
-'		newRow("UD7") = "None"
-'		newRow("UD8") = "None"
-'		'newRow("FY_Total") = "None"
-'		'newRow("AlloUpdate") = "None"
-		
-'        dataTable.Rows.Add(newRow)
-'    End Sub
-#End Region	
 
 
 	End Class
