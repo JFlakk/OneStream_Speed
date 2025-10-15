@@ -2594,12 +2594,82 @@ Dim tStart As DateTime =  Date.Now()
 'If si.UserName.XFEqualsIgnoreCase("akalwa") Then BRapi.ErrorLog.LogMessage(si, sDebugRuleName & "." & sDebugFuncName & ":   " & Date.Now().ToString("hh:mm:ss:fff") & " REQ_UpdateFilterLists took: " & Date.Now().Subtract(tStart).TotalSeconds.ToString("0.0000"))									
 				Return selectionChangedTaskResult							
 
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try
-		End Function
+
+End Function
+
+		
 #End Region
+
+#Region "saveweightprioritization"
+Public Function saveweightprioritization() As Object
+	
+	Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+	Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+	Dim sTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+	Dim sEntity As String = GetEntity(si, args)
+    Dim sWeightPrioritizationMbrScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#RMW_Cycle_Config_Annual:T#" & sTime &":V#Periodic:A#GBL_Priority_Cat_Weight:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+	Dim TotPct As Double = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sWeightPrioritizationMbrScript).DataCellEx.DataCell.CellAmount
+	
+	If TotPct = 100 Then 
+		Return Nothing
+	End If
+		Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+				selectionChangedTaskResult.IsOK = True
+				selectionChangedTaskResult.ShowMessageBox = True
+				selectionChangedTaskResult.Message = "Prioritization categories' total weight does not equal 100%."
+				
+			Return selectionChangedTaskResult
+End Function
+#End Region	
+
+#Region"load_req_detailsdashboard"
+Public Function load_req_detailsdashboard() As XFLoadDashboardTaskResult
+	Dim LoadDBTaskResult As New XFLoadDashboardTaskResult()
+	LoadDBTaskResult.ChangeCustomSubstVarsInDashboard = True
+
+	Dim reqTitle = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("BL_CMD_PGM_REQTitleList")
+	If reqTitle <> String.Empty Or Not String.IsNullOrEmpty(reqTitle)
+		UpdateCustomSubstVar(LoadDBTaskResult,"IV_CMD_PGM_REQDetailsShowHide","CMD_PGM_0_Body_REQDetailsMain")
+	Else	
+		UpdateCustomSubstVar(LoadDBTaskResult,"IV_CMD_PGM_REQDetailsShowHide","CMD_PGM_0_Body_REQDetailsHide")
+	End If
+	Return LoadDBTaskResult
+End Function
+#End Region
+
+#Region "Delete Requirement ID"
+		Public Function DeleteRequirementID() As XFSelectionChangedTaskResult
+			Try
+				Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
+				Dim sEntity As String = GetEntity(si, args)			
+				Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+				Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+				
+				Dim sREQ As String = args.NameValuePairs.XFGetValue("REQ")
+				Dim REQ_ID As String = sREQ.Split(" "c)(1)
+				Dim REQ_ID_Type As String = sREQ.Split(" "c)(0).Trim()
+				
+				If REQ_ID_Type.XFEqualsIgnoreCase("Manpower") Then
+					Throw New XFUserMsgException(si, New Exception("Manpower REQs cannot be deleted."))
+				End If
+				
+				Dim IC As String = sEntity
+				Dim REQRequestedAmt As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Periodic:A#REQ_Requested_Amt:F#None:O#BeforeAdj:I#" & IC & ":U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQApprovedAmt As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Periodic:A#REQ_Approved_Amt:F#None:O#BeforeAdj:I#" & IC & ":U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim REQObligatedAmt As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Periodic:A#REQ_Obligated_Amt:F#None:
+
+
+#End Region
+#Region "UpdateCustomSubstVar"
+		Private Sub UpdateCustomSubstVar(ByRef Result As XFLoadDashboardTaskResult,ByVal key As String,ByVal value As String)
+			If Result.ModifiedCustomSubstVars.ContainsKey(key)
+				Result.ModifiedCustomSubstVars.XFSetValue(key,value)
+			Else
+				Result.ModifiedCustomSubstVars.Add(key,value)
+			End If
+			
+		End Sub
+#End Region		
 
 	End Class
 
