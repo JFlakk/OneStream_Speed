@@ -74,145 +74,88 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		'This rule reads the imported file chcks if it is readable then parses into the REQ class
 		'*****FILL OUT MORE
 
-		
-
 		Public Function	ImportREQ(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object							
-			Dim REQ As New CMD_PGM_Requirement()
-			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			
-			Dim timeStart As DateTime = System.DateTime.Now
-			Dim sScenario As String = "" 'Scenario will be determined from the Cycle.
-			Dim wfCube = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
 
-			Dim mbrComd = BRApi.Finance.Metadata.GetMember(si, dimTypeId.Entity, wfCube).Member
-			Dim comd As String = BRApi.Finance.Entity.Text(si, mbrComd.MemberId, 1, 0, 0)
-
-			'Confirm source file exists
-			Dim filePath As String = args.NameValuePairs.XFGetValue("FilePath")
-			Dim objXFFileInfo = New XFFileInfo(FileSystemLocation.ApplicationDatabase, filePath)
-			If objXFFileInfo Is Nothing
-				'Me.REQMassImportFileHelper(si, globals, api, args, "File " & objXFFileInfo.Name & " does NOT exist", "FAIL", objXFFileInfo.Name)
-				Throw New XFUserMsgException(si, New Exception(String.Concat("File " & objXFFileInfo.Name & " does NOT exist")))
-			End If
-			Dim objXFFileEx As XFFileEx = BRApi.FileSystem.GetFile(si, objXFFileInfo.FileSystemLocation, objXFFileInfo.FullName, True, True)			
-			Dim sFileText As String = system.Text.Encoding.ASCII.GetString(objXFFileEX.XFFile.ContentFileBytes)   
-			Dim fullFile As New StringReader(sFileText)
-			
-	        Dim validFile As Boolean = True
-
-			'Create DataTables to be used for importing and writing to the two relational tables
-	        Dim fullDataTable As New DataTable("CMD_PGM_Import")
-			Dim REQDataTable As New DataTable("XFC_CMD_PGM_REQ")
-			Dim REQDetailDataTable As New DataTable("XFC_CMD_PGM_REQ_Details")
-BRApi.ErrorLog.LogMessage(SI, "Main Import 1")								
 			Try
-	            Using reader As New TextFieldParser(fullFile)
-	                reader.TextFieldType = FieldType.Delimited
-	                reader.SetDelimiters(",")
+				Dim REQ As New CMD_PGM_REQ()
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+				
+				Dim timeStart As DateTime = System.DateTime.Now
+				Dim sScenario As String = "" 'Scenario will be determined from the Cycle.
 	
-	                ' Add a column for validation errors and REQ_ID
-	                fullDataTable.Columns.Add("ValidationError")
-					fullDataTable.Columns.Add("CMD_PGM_REQ_ID",GetType(Guid))
-					fullDataTable.PrimaryKey = New DataColumn() {fullDataTable.Columns("CMD_PGM_REQ_ID")}
-					fullDataTable.Columns.Add("REQ_ID")
-					fullDataTable.Columns.Add("Status")
-	                ' Assuming the first line contains headers
-	                If Not reader.EndOfData Then
-	                    Dim headers = reader.ReadFields()
-	                    If headers.Length <> 92 Then
-	                        Throw New InvalidDataException(objXFFileInfo.Name & " has invalid structure. Please check the file if its in the correct format. Expected number of columns is 92, number columns in file header is "& headers.Length & vbCrLf & headers.ToString )
-	                    End If
-						
-						'Create the columns of the Full data table
-	                    For Each header In headers
-	                        fullDataTable.Columns.Add(header.Trim(),GetType(String))
-	                    Next
-						'Add audit columns for narrative
-						fullDataTable.Columns.Add("Attach_File_Name",GetType(String))
-						fullDataTable.Columns.Add("Attach_File_Bytes",GetType(String))
-						fullDataTable.Columns.Add("Invalid",GetType(String))
-						fullDataTable.Columns.Add("Create_Date", GetType(DateTime))
-						fullDataTable.Columns.Add("Create_User",GetType(String))
-						fullDataTable.Columns.Add("Update_Date", GetType(DateTime))
-						fullDataTable.Columns.Add("Update_User",GetType(String))
-						fullDataTable.Columns.Add("WFScenario_Name",GetType(String))
-						fullDataTable.Columns.Add("WFCMD_Name",GetType(String))
-						fullDataTable.Columns.Add("WFTime_Name",GetType(String))
-						
-						'Add columns for detail
-						fullDataTable.Columns.Add("IC",GetType(String))
-						fullDataTable.Columns.Add("Account",GetType(String))
-						fullDataTable.Columns.Add("Flow",GetType(String))
-						fullDataTable.Columns.Add("UD7",GetType(String))
-						fullDataTable.Columns.Add("UD8",GetType(String))
-						fullDataTable.Columns.Add("FY_Total",GetType(String))
-						fullDataTable.Columns.Add("AllowUpdate",GetType(Boolean))
-						
-						fullDataTable.PrimaryKey = New DataColumn() {fullDataTable.Columns("CMD_PGM_REQ_ID")}
-	                Else
-	                    Throw New InvalidDataException("The CSV file is empty.")
-	                End If
-BRApi.ErrorLog.LogMessage(SI, "Main Import 2")													
-	                Dim validLine As New StringBuilder()
-	                ' Read the file line by line
-	                While Not reader.EndOfData
-	                    Dim fields = reader.ReadFields()
-	                    Dim line As String = String.Join(",", fields)
-	                    If line.StartsWith(comd) Then
-	                        ' Process the previous valid line if it exists
-	                        If validLine.Length > 0 Then
-	                            ProcessLine(validLine.ToString(), fullDataTable, validFile)
-	                            validLine.Clear()
-	                        End If
-	                        ' Start a new valid line
-	                        validLine.Append(line)
-	                    Else
-	                        ' Concatenate with the previous line
-	                        validLine.Append(" " & line)
-	                    End If
-	                End While
-BRApi.ErrorLog.LogMessage(SI, "Main Import 3 ")									
-	                ' Process the last valid line
-	                If validLine.Length > 0 Then
-	                    ProcessLine(validLine.ToString(), fullDataTable, validFile)
-	                End If
-				End Using
-BRApi.ErrorLog.LogMessage(SI, "Main Import 4")												
-				'Write to session
-				BRApi.Utilities.SetSessionDataTable(si,si.UserName,"CMD_PGM_Import",fullDataTable)
-                ' Write the fullDataTable to the session if there are validation errors
-                If validFile Then
-					'Split fullDataTable and insert into the two tables
-BRApi.ErrorLog.LogMessage(SI, "Main Import 5")													
-					Me.SplitAndInsertIntoREQTables(fullDataTable, REQDataTable,REQDetailDataTable)
+				Dim mbrComd = BRApi.Finance.Metadata.GetMember(si, dimTypeId.Entity, wfInfoDetails("CMDName")).Member
+				Dim comd As String = BRApi.Finance.Entity.Text(si, mbrComd.MemberId, 1, 0, 0)
+				
+				Dim fileName As String = args.NameValuePairs.XFGetValue("FileName") 
+	
+				Dim FilePath As String = $"{BRApi.Utilities.GetFileShareFolder(si, FileshareFolderTypes.FileShareRoot,Nothing)}/{FileName}"
+				'Confirm source file exists
+				'Dim filePath As String = args.NameValuePairs.XFGetValue("FilePath") 
+	'			Dim fullFile = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.PrepImportFile(si,filePath)
+		        
+				Dim Importreq_DT As New DataTable("Importreqs")
+				Using sr As New StreamReader(System.IO.File.OpenRead(filePath))
+					ImportREQ_DT = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.GetCsvDataReader(si, globals, sr, ",", REQ.ColumnMaps)
+					Importreq_DT.TableName = "Importreqs"
 					
-                End If
-BRApi.ErrorLog.LogMessage(SI, "Main Import 6")					
+				End Using
+'BRApi.ErrorLog.LogMessage(si, "Returned to Import: " & ImportREQ_DT.Rows(0)("Invalid Errors").ToString)
+
+				'Check for errors
+				Dim validFile As Boolean = True
+				Dim errRow As DataRow = Importreq_DT.AsEnumerable().
+											FirstOrDefault(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors")) )
+											
+				If errRow IsNot Nothing Then validFile = False
+
+				Dim REQDataTable As New DataTable("XFC_CMD_PGM_REQ")
+				Dim REQDetailDataTable As New DataTable("XFC_CMD_PGM_REQ_Details")
+				
+	            If validFile Then
+					'get req_id and guid
+					UpdateColsForDatabase(Importreq_DT)
+					PostProcessNewREQ(ImportREQ_DT)
+					
+'BRApi.ErrorLog.LogMessage(si, "Post proc completed " & Importreq_DT.TableName)					
+					'Split fullDataTable and insert into the two tables
+					Me.SplitAndInsertIntoREQTables(Importreq_DT, REQDataTable,REQDetailDataTable)
+					
+	            'End If
+'BRApi.ErrorLog.LogMessage(si, "Post 1")				
+					'write to cube
+					Dim REQ_IDs As New List(Of String)
+					For Each r As DataRow In ImportREQ_DT.Rows
+						REQ_IDs.Add(r("REQ_ID").ToString)	
+					Next
+'BRApi.ErrorLog.LogMessage(si, "Post 2")				
+					Dim loader As New CMD_PGM_Helper.MainClass
+					Args.NameValuePairs.Add("req_IDs", String.Join(",", REQ_IDs))
+					Args.NameValuePairs.Add("new_Status", "Formulate") 'It keeps the same status
+					loader.main(si, globals, api, args)
+					
+					'File load complete. Write file to explorer
+					'Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf & "Output file is located in the following folder for review:" & vbCrLf & "DOCUMENTS/USERS/" & si.UserName.ToUpper
+					Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf 
+					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", uploadStatus)
+					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_PGM_Import_" & wfInfoDetails("ScenarioName") ,  ImportREQ_DT)
+					
+					Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
+				Else 'If the validation failed, write the error out.
+					Dim sErrorLog As String = ""
+									
+					Dim stastusMsg As String = "LOAD FAILED" & vbCrLf & fileName & " has invalid data." & vbCrLf & vbCrLf & $"To view import error(s), please take look at the column titled ""ValidationError""."
+					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", stastusMsg)
+					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_PGM_Import_" & wfInfoDetails("ScenarioName"),  ImportREQ_DT)
+					Return Nothing
+				End If
+				
+
+'BRApi.ErrorLog.LogMessage(si, "Import completed")
+				Return Nothing
 	        Catch ex As Exception
 	            Throw New Exception("An error occurred: " & ex.Message)
 	        End Try
-			'If the validation failed, write the error out.
-			'If there are more than ten, we show only the first ten messages for the sake of redablity
-			Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
-			If Not validFile Then
-				Dim sErrorLog As String = ""
-								
-				Dim stastusMsg As String = "LOAD FAILED" & vbCrLf & objXFFileInfo.Name & " has invalid data." & vbCrLf & vbCrLf & $"To view import error(s), please take look at the column titled ""ValidationError""."
-				BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", stastusMsg)
-				Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_IPGM_mport",  fullDataTable)
-				Return Nothing
-			End If
-			
-			'File load complete. Write file to explorer
-			'Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf & "Output file is located in the following folder for review:" & vbCrLf & "DOCUMENTS/USERS/" & si.UserName.ToUpper
-			Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf 
-			BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", uploadStatus)
-			Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_IPGM_mport",  fullDataTable)
-
-		Return Nothing
 		End Function			
-
-
 #End Region
 
 #Region "Import Helpers"
@@ -222,101 +165,133 @@ BRApi.ErrorLog.LogMessage(SI, "Main Import 6")
 	Function GetNextREQID (fundCenter As String) As String
 		Dim currentREQID As Integer
 		Dim newREQ_ID As String
-'BRApi.ErrorLog.LogMessage(si,"Fund Center: " & fundCenter)		
 		If startingREQ_IDByFC.TryGetValue(fundCenter, currentREQID) Then
+'BRApi.ErrorLog.LogMessage(si,"IF Fund Center: " & fundCenter & ", currentREQID: " & currentREQID )			
 			currentREQID = currentREQID + 1
-			newREQ_ID =  "REQ_" & currentREQID.ToString("D5")	
+			Dim modifiedFC As String = fundCenter
+			modifiedFC = modifiedFC.Replace("_General", "")
+			If modifiedFC.Length = 3 Then modifiedFC = modifiedFC & "xx"
+			newREQ_ID =  modifiedFC &"_" & currentREQID.ToString("D5")
 			startingREQ_IDByFC(fundCenter) = currentREQID
 		Else	
 			newREQ_ID = GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,fundCenter)
-'BRApi.ErrorLog.LogMessage(si,"newREQ_ID: " & newREQ_ID)			
-			startingREQ_IDByFC.Add(fundCenter, newREQ_ID.Split("_")(1))
+'BRApi.ErrorLog.LogMessage(si,"ELSE Fund Center: " & fundCenter & ", newREQ_ID: " & newREQ_ID.Split("_")(1) )				
+			startingREQ_IDByFC.Add(fundCenter.Trim, newREQ_ID.Split("_")(1))
 		End If 
 			
 		Return newREQ_ID
 	End Function
 #End Region	
 
-#Region "Process Line"
-    Sub ProcessLine(line As String, ByRef dataTable As DataTable, ByRef validFile As Boolean)
-BRApi.ErrorLog.LogMessage(si, "Process Line 1")
-        Dim cleanedLine As String = CleanUpSpecialCharacters(line)
-		Dim values = ParseCsvLine(cleanedLine)
-		Dim currREQ As New CMD_PGM_Requirement
-BRApi.ErrorLog.LogMessage(si, "Process Line 2")		
-		currREQ = Me.ParseREQ(si,values, dataTable)
-		'If the FC is a parent, add _General
-		currREQ.Entity = CMD_PGM_Utilities.CheckFor_General(si, currREQ.Entity)' & "_General"
-BRApi.ErrorLog.LogMessage(si, "Process Line 3")
-		' Get APPN_FUND And PARENT APPN_L2 
-		currREQ.APE9 = CMD_PGM_Utilities.GetUD3(si, currREQ.FundCode, currREQ.APE9)
-BRApi.ErrorLog.LogMessage(si, "Process Line 4")		
-'BRApi.ErrorLog.LogMessage(si, "entity: " & currREQ.Entity & ", APE: " & currREQ.APE9 & ", full line: " & line)		
-        Dim newRow = dataTable.NewRow()
+	Public Function PostProcessNewREQ(ByRef dt As DataTable) As StringReader
+	    
+		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+		For Each row As DataRow In dt.Rows
+			
+			Dim fundCenter As String = row("FundCenter").ToString
+			'If 
+			Dim REQ_D As String = GetNextREQID(fundCenter)
+			row("REQ_ID") = REQ_D
+			
+			row("CMD_PGM_REQ_ID") = Guid.NewGuid()
+			row("WFScenario_Name") =  wfInfoDetails("ScenarioName")
+			row("WFTime_Name") =  wfInfoDetails("TimeName")
+			row("WFCMD_Name") =  wfInfoDetails("CMDName")
+			row("IC") = "None"
+			row("Account") = "Req_Funding"
+			row("Flow") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
+			row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
+			row("UD7") = "None"
+			row("UD8") = "None"			
+			row("FundCenter") = fundCenter
+			row("APE9") =  row("APPN") & "_" & row("APE9") 'CMD_PGM_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
+			row("REQ_ID_Type") = "Requirement"
+			row("Create_Date") = DateTime.Now
+			row("Create_User") = si.UserName
+			row("Update_Date") = DateTime.Now
+			row("Update_User") = si.UserName
 
-        ' Run validation (you can customize this part)
-        If Me.ValidateMembers(si, currREQ) Then
-BRApi.ErrorLog.LogMessage(si, "Process Line 5")			
-            newRow("ValidationError") = ""
-			Dim REQ_ID As String = Me.GetNextREQID(currREQ.Entity)' GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,currREQ.Entity)
-BRApi.ErrorLog.LogMessage(si, "Process Line 6")			
-			If Not String.IsNullOrWhiteSpace(REQ_ID) Then
-				newRow("REQ_ID") = REQ_ID
-				'Update Status
-				Dim entityLevel As String = Me.GetEntityLevel(currREQ.Entity)
-				Dim sREQWFStatus As String = entityLevel & "_Formulate_PGM"
-				newRow("Status") = sREQWFStatus
-			Else 'Failed to get REQ_ID. File will be marked failed
-				validFile = False
-			End If
-        Else
-            validFile = False
-            newRow("ValidationError") = "Validation error: " & currREQ.validationError
-        End If
-BRApi.ErrorLog.LogMessage(si, "Process Line 7")		
-        For i As Integer = 0 To values.Length - 1
-            newRow(i + 4) = values(i)
-        Next
-		newRow("FundCenter") = currREQ.Entity
-		newRow("APE9") = currREQ.APE9
-		'Update Audit fields
-		newRow("Create_Date") = DateTime.Now
-		newRow("Create_User") = si.UserName
-		newRow("Update_Date") = DateTime.Now
-		newRow("Update_User") = "SS"'si.UserName
-		newRow("WFScenario_Name") =  ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-		newRow("WFTime_Name") = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-		newRow("WFCMD_Name") =  BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
-		newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
-		newRow("IC") = "None"
-		newRow("Account") = "REQ_Requested_Amt"
-		newRow("Flow") = GetEntityLevel(currREQ.Entity) &"_Formulate_PGM"
-		newRow("UD7") = "None"
-		newRow("UD8") = "None"
-		'newRow("FY_Total") = "None"
-		'newRow("AlloUpdate") = "None"
+		Next
+       
+        Return Nothing
+	
+	End Function	
+
+	Public Function UpdateColsForDatabase(ByRef dt As DataTable) As StringReader
+	    
 		
-        dataTable.Rows.Add(newRow)
-    End Sub
-#End Region	
+		'Add columns in database but not in file records
+		dt.Columns.Add("ValidationError")
+		dt.Columns.Add("CMD_PGM_REQ_ID",GetType(Guid))
+		'dt.PrimaryKey = New DataColumn() {dt.Columns("CMD_PGM_REQ_ID")}
+		dt.Columns.Add("REQ_ID_Type")
+		dt.Columns.Add("REQ_ID")
+		dt.Columns.Add("Status")
+        ' Assuming the first line contains headers
+
+		'Add audit columns for narrative
+		'table updates will delete once confirmed.
+		'dt.Columns.Add("Attach_File_Name",GetType(String))
+		'dt.Columns.Add("Attach_File_Bytes",GetType(String))
+		dt.Columns.Add("Invalid",GetType(String))
+		dt.Columns.Add("Create_Date", GetType(DateTime))
+		dt.Columns.Add("Create_User",GetType(String))
+		dt.Columns.Add("Update_Date", GetType(DateTime))
+		dt.Columns.Add("Update_User",GetType(String))
+		dt.Columns.Add("WFScenario_Name",GetType(String))
+		dt.Columns.Add("WFCMD_Name",GetType(String))
+		dt.Columns.Add("WFTime_Name",GetType(String))
+		
+		'Add columns for detail
+		dt.Columns.Add("IC",GetType(String))
+		dt.Columns.Add("Account",GetType(String))
+		dt.Columns.Add("Flow",GetType(String))
+		dt.Columns.Add("UD7",GetType(String))
+		dt.Columns.Add("UD8",GetType(String))
+		dt.Columns.Add("FY_Total",GetType(String))
+		dt.Columns.Add("AllowUpdate",GetType(Boolean))
+       
+        Return Nothing
+	
+	End Function			
+	
+	Public Function GetExistingRow(ByRef dt As DataTable, ByRef account As String) As DataRow
+'		Dim existingRow As System.Data.DataRow = ( From r As System.Data.DataRow In dt.AsEnumerable()
+'									   Where r.Field(Of String)("CMD_PGM_REQ_ID").ToString().XFContainsIgnoreCase(row("CMD_PGM_REQ_ID").ToString) AndAlso
+'											 r.Field(Of String)("Cycle").ToString().XFContainsIgnoreCase(row("Cycle").ToString) AndAlso
+'											 r.Field(Of String)("UNIT_OF_MEASURE").ToString().XFContainsIgnoreCase(row("UNIT_OF_MEASURE").ToString) AndAlso
+'											 r.Field(Of String)("Account").ToString().XFContainsIgnoreCase(account) 
+'										Select r
+'										).FirstOrDefault()
+		For Each row In dt.Rows 
+			If (row("CMD_PGM_REQ_ID").ToString().XFContainsIgnoreCase(row("CMD_PGM_REQ_ID").ToString) AndAlso
+				row("Start_Year").ToString().XFContainsIgnoreCase(row("Start_Year").ToString) AndAlso
+				row("UNIT_OF_MEASURE").ToString().XFContainsIgnoreCase(row("UNIT_OF_MEASURE").ToString) AndAlso
+				row("Account").ToString().XFContainsIgnoreCase(account) )
+				Return row
+			End If
+		Next
+		Return Nothing
+	End Function
+		
 
 #Region "Get Entity Level"	
 
-	Public Function GetEntityLevel(sEntity As String) As String
-		Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sEntity).Member
-		Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
-		Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-		Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si,DimType.Time.Id,wfTime)
+'	Public Function GetEntityLevel(sEntity As String) As String
+'		Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sEntity).Member
+'		Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
+'		Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+'		Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si,DimType.Time.Id,wfTime)
 
-		Dim level As String  = String.Empty
-		Dim entityText3 As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 3, wfScenarioTypeID, wfTimeId)
-		If Not String.IsNullOrWhiteSpace(entityText3) AndAlso entityText3.StartsWith("EntityLevel") Then
-			level = entityText3.Substring(entityText3.Length -2, 2)
-		End If
+'		Dim level As String  = String.Empty
+'		Dim entityText3 As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 3, wfScenarioTypeID, wfTimeId)
+'		If Not String.IsNullOrWhiteSpace(entityText3) AndAlso entityText3.StartsWith("EntityLevel") Then
+'			level = entityText3.Substring(entityText3.Length -2, 2)
+'		End If
 		
-		Return level
+'		Return level
 		
-	End Function
+'	End Function
 #End Region	
 
 #Region "CleanUp Special Characters"	
@@ -381,31 +356,34 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
                 sqaREQReader.Fill_XFC_CMD_PGM_REQ_DT(sqa, REQDT, SqlREQ, sqlparamsREQ)
 				REQDT.PrimaryKey = New DataColumn() {REQDT.Columns("CMD_PGM_REQ_ID")}
 
-			'Prepare Detail	
-			 Dim sqaREQDetailReader As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
-			 Dim SqlREQDetail As String = $"SELECT * 
+				'Prepare Detail	
+				 Dim sqaREQDetailReader As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
+				 Dim SqlREQDetail As String = $"SELECT * 
 									FROM XFC_CMD_PGM_REQ_Details
 									WHERE WFScenario_Name = '{scName}'
 									And WFCMD_Name = '{cmd}'
 									AND WFTime_Name = '{tm}'"
 
-			 Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
+				Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
                 sqaREQDetailReader.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa, REQDTDetail, SqlREQDetail, sqlparamsREQDetails)
 				'Define PKs to match the table
-				REQDTDetail.PrimaryKey = New DataColumn() {
-					 REQDTDetail.Columns("CMD_PGM_REQ_ID"),
-					 REQDTDetail.Columns("Start_Year"),
-			         REQDTDetail.Columns("Unit_of_Measure"),
-					 REQDTDetail.Columns("Account")
-					 }
+'				REQDTDetail.PrimaryKey = New DataColumn() {
+'					 REQDTDetail.Columns("CMD_PGM_REQ_ID"),
+'					 REQDTDetail.Columns("Start_Year"),
+'			         REQDTDetail.Columns("Unit_of_Measure"),
+'					 REQDTDetail.Columns("Account")
+'					 }
 				'REQDTDetail.PrimaryKey = primaryKeyColumns
 				
 'Brapi.ErrorLog.LogMessage(si,"here * 1")			 				
-			Me.SplitFullDataTable(fullDT, REQDT, REQDTDetail)
-'Brapi.ErrorLog.LogMessage(si,"here * 2")			 							
-			sqaREQReader.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
+				Me.SplitFullDataTable(fullDT, REQDT, REQDTDetail)
+			
+'Brapi.ErrorLog.LogMessage(si,"here * 2 ")	
+
+'BRApi.ErrorLog.LogMessage(si, l)
+				sqaREQReader.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
 'Brapi.ErrorLog.LogMessage(si,"here * 3")			 							
-			sqaREQDetailReader.Update_XFC_CMD_PGM_REQ_Details(REQDTDetail,sqa)
+				sqaREQDetailReader.Update_XFC_CMD_PGM_REQ_Details(REQDTDetail,sqa)
 'Brapi.ErrorLog.LogMessage(si,"here * 4")			 								
 
 			End Using
@@ -425,111 +403,130 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 'BRApi.ErrorLog.LogMessage(si,"In Spli`t 2* GUID: " & row("CMD_PGM_REQ_ID").ToString & ", start_year: " & row("Cycle").ToString &  " ,Unit Of measure: " & row("UNIT_OF_MEASURE").ToString & " ,Acc: " & row("Account").ToString )
 		   
 			' Handle REQDT translation and insertion/update
+			Dim REQExists As Boolean = False
+			Dim existingREQ_ID As String
+			Dim existingCMD_PGM_REQ_ID As String
 			Dim MappingForREQ As New Dictionary(Of String, String)
 			MappingForREQ = GetMappingForREQ()
-		    Dim existingRowREQDT As DataRow = REQDT.Rows.Find(row("CMD_PGM_REQ_ID"))
-		    If existingRowREQDT IsNot Nothing Then
-		        ' Update the existing row
-		        For Each fullCol As String In MappingForREQ.Keys
-		            existingRowREQDT(MappingForREQ(fullCol)) = row(fullCol)
-		        Next
-		    Else
-		        ' Create a new row
-		        Dim newRowREQDT As DataRow = REQDT.NewRow()
-		        For Each fullCol As String In MappingForREQ.Keys
-		            newRowREQDT(MappingForREQ(fullCol)) = row(fullCol)
-			
-		        Next
-		        REQDT.Rows.Add(newRowREQDT)
+		    Dim existingRowREQDT As DataRow = REQDT.Rows.Find(row("CMD_PGM_REQ_ID")) '***DEV NOTE: TO DO this will have to be modified to match on other fields
+		    
+			If existingRowREQDT IsNot Nothing Then
+				REQExists = True
+				existingCMD_PGM_REQ_ID = existingRowREQDT("CMD_PGM_REQ_ID")
+				existingREQ_ID = existingRowREQDT("REQ_ID")
+			End If
+		      
+		    ' Create a new row
+	        Dim newRowREQDT As DataRow = REQDT.NewRow()
+	        For Each fullCol As String In MappingForREQ.Keys
+	            newRowREQDT(MappingForREQ(fullCol)) = row(fullCol)
+		
+	        Next
+			'If it is an existing row we will keep the original REC_ID. All the data will be from the file
+			If REQExists Then
+				 Me.UpdateExistingREQIDs(newRowREQDT, existingCMD_PGM_REQ_ID, existingREQ_ID)					 
+			End If
+		    
+			REQDT.Rows.Add(newRowREQDT)
 'BRApi.ErrorLog.LogMessage(si,"In REQ GUID       : " & newRowREQDT("CMD_PGM_REQ_ID").ToString )						
-		    End If
 			
 			
-		    ' Handle REQDTDetail Base translation and insertion/update
-			Dim keyValues As Object() = {row("CMD_PGM_REQ_ID"), row("Cycle"), row("UNIT_OF_MEASURE"), row("Account")}
+		    ' Handle REQDTDetail Base FYDP
+	        ' Create a new row
 			Dim MappingForREQDetails As New Dictionary(Of String, String)
 			MappingForREQDetails = GetMappingForREQDetailsBase()
-		    Dim existingRowREQDTDetail As DataRow = REQDTDetail.Rows.Find(keyValues)
-		    If existingRowREQDTDetail IsNot Nothing Then
-		        ' Update the existing row
-		        For Each fullCol As String In MappingForREQDetails.Keys
-		            existingRowREQDTDetail(MappingForREQDetails(fullCol)) = row(fullCol)
-		        Next
-		    Else
-		        ' Create a new row
-		        Dim newRowREQDTDetail As DataRow = REQDTDetail.NewRow()
-		        For Each fullCol As String In MappingForREQDetails.Keys
-		            newRowREQDTDetail(MappingForREQDetails(fullCol)) = row(fullCol)
-		        Next
-				'Map funding to the regular FYDEP
+	        Dim newRowREQDTDetail As DataRow = REQDTDetail.NewRow()
+	        For Each fullCol As String In MappingForREQDetails.Keys
+	            newRowREQDTDetail(MappingForREQDetails(fullCol)) = row(fullCol)
+	        Next
+			'Map funding to the regular FYDEP
 'BRApi.ErrorLog.LogMessage(si,"In REQ Detail Main GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & row("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
-				
-				newRowREQDTDetail("UNIT_OF_MEASURE") = "Funding"
-				REQDTDetail.Rows.Add(newRowREQDTDetail)
-		    End If
 			
-			' Handle REQDTDetail Items translation and insertion/update
-			Dim MappingForREQDetailsItems As New Dictionary(Of String, String)
-			MappingForREQDetailsItems = GetMappingForREQDetailsItems()
+			newRowREQDTDetail("UNIT_OF_MEASURE") = "Funding"
+			If REQExists Then
+				Me.UpdateExistingREQIDs(newRowREQDTDetail, existingCMD_PGM_REQ_ID, existingREQ_ID)	 				 
+			End If
+			REQDTDetail.Rows.Add(newRowREQDTDetail)
+		   
+			
+			' Handle REQDTDetail Items 
 			If  CheckItems(row) Then
-			    Dim existingRowREQDTDetailItem As DataRow = REQDTDetail.Rows.Find(keyValues)
-			    If existingRowREQDTDetailItem IsNot Nothing Then
-			        ' Update the existing row
-			        For Each fullCol As String In MappingForREQDetailsItems.Keys
-			            existingRowREQDTDetailItem(MappingForREQDetailsItems(fullCol)) = row(fullCol)
-			        Next
-			    Else
-			        ' Create a new row
-			        Dim newRowREQDTDetail As DataRow = REQDTDetail.NewRow()
-			        For Each fullCol As String In MappingForREQDetailsItems.Keys
-			            newRowREQDTDetail(MappingForREQDetailsItems(fullCol)) = row(fullCol)
-			        Next
-'BRApi.ErrorLog.LogMessage(si,"In REQ Detail item GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & newRowREQDTDetail("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
-					
-					newRowREQDTDetail("Account") = row("UNIT_OF_MEASURE")
-				    REQDTDetail.Rows.Add(newRowREQDTDetail)
-			    End If
+				Dim MappingForREQDetailsItems As New Dictionary(Of String, String)
+				MappingForREQDetailsItems = GetMappingForREQDetailsItem()
+		        ' Create a new row
+		        Dim newRowREQDTDetailItem As DataRow = REQDTDetail.NewRow()
+		        For Each fullCol As String In MappingForREQDetailsItems.Keys
+		            newRowREQDTDetailItem(MappingForREQDetailsItems(fullCol)) = row(fullCol)
+		        Next
+	'BRApi.ErrorLog.LogMessage(si,"In REQ Detail item GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & newRowREQDTDetail("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
 				
+				newRowREQDTDetailItem("Account") = row("UNIT_OF_MEASURE")
+			    If REQExists Then
+					Me.UpdateExistingREQIDs(newRowREQDTDetailItem, existingCMD_PGM_REQ_ID, existingREQ_ID)	 
+				End If
+				REQDTDetail.Rows.Add(newRowREQDTDetailItem)
 			End If
 			
-			' Handle REQDTDetail Cosy translation and insertion/update
-			Dim MappingForREQDetailsCost As New Dictionary(Of String, String)
-			MappingForREQDetailsCost = GetMappingForREQDetailsCost()
-			If  CheckItems(row) Then
-			    Dim existingRowREQDTDetailCost As DataRow = REQDTDetail.Rows.Find(keyValues)
-			    If existingRowREQDTDetailCost IsNot Nothing Then
-			        ' Update the existing row
-			        For Each fullCol As String In MappingForREQDetailsCost.Keys
-			            existingRowREQDTDetailCost(MappingForREQDetailsCost(fullCol)) = row(fullCol)
-			        Next
-			    Else
-			        ' Create a new row
-			        Dim newRowREQDTDetail As DataRow = REQDTDetail.NewRow()
-			        For Each fullCol As String In MappingForREQDetailsCost.Keys
-			            newRowREQDTDetail(MappingForREQDetailsCost(fullCol)) = row(fullCol)
-			        Next
+			' Handle REQDTDetail Cost 
+			If  CheckUnitCost(row) Then
+				Dim MappingForREQDetailsCost As New Dictionary(Of String, String)
+				MappingForREQDetailsCost = GetMappingForREQDetailsCost() 
+		        ' Create a new row
+		        Dim newRowREQDTDetailCost As DataRow = REQDTDetail.NewRow()
+		        For Each fullCol As String In MappingForREQDetailsCost.Keys
+		            newRowREQDTDetailCost(MappingForREQDetailsCost(fullCol)) = row(fullCol)
+		        Next
+	'BRApi.ErrorLog.LogMessage(si,"In REQ Detail item GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & newRowREQDTDetail("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
+				
+				newRowREQDTDetailCost("Account") = row("UNIT_OF_MEASURE") & "_Cost"
+				
+				 If REQExists Then
+					Me.UpdateExistingREQIDs(newRowREQDTDetailCost, existingCMD_PGM_REQ_ID, existingREQ_ID)	 
+				End If		
+				REQDTDetail.Rows.Add(newRowREQDTDetailCost)
+			End If
+			
+			' Handle REQDTDetail Quantity
+			
+			If  CheckQTY(row) Then
+				Dim MappingForREQDetailsQTY As New Dictionary(Of String, String)
+				MappingForREQDetailsQTY = GetMappingForREQDetailsQTY()
+		        ' Create a new row
+		        Dim newRowREQDTDetailQTY As DataRow = REQDTDetail.NewRow()
+		        For Each fullCol As String In MappingForREQDetailsQTY.Keys
+		            newRowREQDTDetailQTY(MappingForREQDetailsQTY(fullCol)) = row(fullCol)
+		        Next
 'BRApi.ErrorLog.LogMessage(si,"In REQ Detail item GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & newRowREQDTDetail("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
 					
-					newRowREQDTDetail("Account") = row("UNIT_OF_MEASURE") & "_Cost"
-				    REQDTDetail.Rows.Add(newRowREQDTDetail)
-			    End If
+				newRowREQDTDetailQTY("Account") = "Quantity"
 				
-			End If			
+				 If REQExists Then
+					 Me.UpdateExistingREQIDs(newRowREQDTDetailQTY, existingCMD_PGM_REQ_ID, existingREQ_ID)
+				End If			
+				REQDTDetail.Rows.Add(newRowREQDTDetailQTY)
+				
+			End If						
 			
 			
 		Next
 'BRApi.ErrorLog.LogMessage(si,"In Split* 7")
 
 	End Function
+	
+	Public Sub UpdateExistingREQIDs(ByRef dr As DataRow, ByVal existingCMD_PGM_REQ_ID As String, ByVal existingREQ_ID As String )
+		dr("CMD_PGM_REQ_ID") = existingCMD_PGM_REQ_ID
+		dr("REQ_ID") = existingREQ_ID
+	End Sub
 #End Region
 
-#Region	"Get Mapping XFC_CMD_PGM_REQ_Details Base"
+#Region	"Get Mapping XFC_CMD_PGM_REQ_Details"
 	Public Function GetMappingForREQDetailsBase() As Object
 		Dim REQ_DetailsColMapping As New Dictionary(Of String, String) From{
 				{"CMD_PGM_REQ_ID", "CMD_PGM_REQ_ID"},
 				{"WFScenario_Name", "WFScenario_Name"},
 				{"WFCMD_Name", "WFCMD_Name"},
-				{"WFTime_Name", "WFTime_Name"},		
+				{"WFTime_Name", "WFTime_Name"},	
+				{"UNIT_OF_MEASURE","Unit_of_Measure"},
 				{"FundCenter","Entity"},
 				{"IC","IC"},
 				{"Account","Account"},
@@ -558,18 +555,17 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 		
 		Return REQ_DetailsColMapping
 	End Function
-#End Region	
-
-#Region	"Get Mapping XFC_CMD_PGM_REQ_Details Items"
-	Public Function GetMappingForREQDetailsItems() As Object
+	
+	Public Function GetMappingForREQDetailsItem() As Object
 		Dim REQ_DetailsColMapping As New Dictionary(Of String, String) From{
 				{"CMD_PGM_REQ_ID", "CMD_PGM_REQ_ID"},
 				{"WFScenario_Name", "WFScenario_Name"},
 				{"WFCMD_Name", "WFCMD_Name"},
-				{"WFTime_Name", "WFTime_Name"},		
+				{"WFTime_Name", "WFTime_Name"},	
 				{"UNIT_OF_MEASURE","Unit_of_Measure"},
 				{"FundCenter","Entity"},
 				{"IC","IC"},
+				{"Account","Account"},
 				{"Flow","Flow"},
 				{"APPN","UD1"},
 				{"MDEP","UD2"},
@@ -595,18 +591,17 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 		
 		Return REQ_DetailsColMapping
 	End Function
-#End Region	
 
-#Region	"Get Mapping XFC_CMD_PGM_REQ_Details Cost"
 	Public Function GetMappingForREQDetailsCost() As Object
 		Dim REQ_DetailsColMapping As New Dictionary(Of String, String) From{
 				{"CMD_PGM_REQ_ID", "CMD_PGM_REQ_ID"},
 				{"WFScenario_Name", "WFScenario_Name"},
 				{"WFCMD_Name", "WFCMD_Name"},
-				{"WFTime_Name", "WFTime_Name"},		
+				{"WFTime_Name", "WFTime_Name"},	
 				{"UNIT_OF_MEASURE","Unit_of_Measure"},
 				{"FundCenter","Entity"},
 				{"IC","IC"},
+				{"Account","Account"},
 				{"Flow","Flow"},
 				{"APPN","UD1"},
 				{"MDEP","UD2"},
@@ -632,13 +627,50 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 		
 		Return REQ_DetailsColMapping
 	End Function
-#End Region	
+	
+	Public Function GetMappingForREQDetailsQTY() As Object
+		Dim REQ_DetailsColMapping As New Dictionary(Of String, String) From{
+				{"CMD_PGM_REQ_ID", "CMD_PGM_REQ_ID"},
+				{"WFScenario_Name", "WFScenario_Name"},
+				{"WFCMD_Name", "WFCMD_Name"},
+				{"WFTime_Name", "WFTime_Name"},	
+				{"UNIT_OF_MEASURE","Unit_of_Measure"},
+				{"FundCenter","Entity"},
+				{"IC","IC"},
+				{"Account","Account"},
+				{"Flow","Flow"},
+				{"APPN","UD1"},
+				{"MDEP","UD2"},
+				{"APE9","UD3"},
+				{"DollarType","UD4"},
+				{"Ctype","UD5"},
+				{"ObjectClass","UD6"},
+				{"UD7","UD7"},
+				{"UD8","UD8"},
+				{"Cycle","Start_Year"},
+				{"FY1_Unit_Cost","FY_1"},
+				{"FY2_Unit_Cost","FY_2"},
+				{"FY3_Unit_Cost","FY_3"},
+				{"FY4_Unit_Cost","FY_4"},
+				{"FY5_Unit_Cost","FY_5"},
+				{"FY_Total","FY_Total"},
+				{"AllowUpdate","AllowUpdate"},
+				{"Create_Date","Create_Date"},
+				{"Create_User","Create_User"},
+				{"Update_Date","Update_Date"},
+				{"Update_User","Update_User"}		
+		}
+		
+		Return REQ_DetailsColMapping
+	End Function
+
 
 #Region	"Get Mapping XFC_CMD_PGM_REQ"
 	Public Function GetMappingForREQ() As Object
 		Dim REQColMapping As New Dictionary(Of String, String) From{
 				{"CMD_PGM_REQ_ID", "CMD_PGM_REQ_ID"},
 				{"REQ_ID", "REQ_ID"},
+				{"REQ_ID_Type", "REQ_ID_Type"},
 				{"WFScenario_Name", "WFScenario_Name"},
 				{"WFCMD_Name", "WFCMD_Name"},
 				{"WFTime_Name", "WFTime_Name"},
@@ -712,8 +744,6 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 				{"FLEX3","FF_3"},
 				{"FLEX4","FF_4"},
 				{"FLEX5","FF_5"},
-				{"Attach_File_Name","Attach_File_Name"},
-				{"Attach_File_Bytes","Attach_File_Bytes"},
 				{"Status","Status"},
 				{"Invalid","Invalid"},
 				{"Create_Date","Create_Date"},
@@ -726,7 +756,7 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 
 #End Region
 
-#Region "Check Items"
+#Region "Check Amount"
 	Public Function CheckItems(row As DataRow) As Boolean
 		If ((Not IsDbNull(row("FY1_Items")) AndAlso Not String.IsNullOrEmpty(row("FY1_Items").ToString())) Or
 			(Not IsDbNull(row("FY2_Items")) AndAlso Not String.IsNullOrEmpty(row("FY2_Items").ToString())) Or
@@ -740,380 +770,36 @@ BRApi.ErrorLog.LogMessage(si, "Process Line 7")
 			Return False
 		End If
 	End Function
+	
+		Public Function CheckUnitCost(row As DataRow) As Boolean
+		If ((Not IsDbNull(row("FY1_Unit_Cost")) AndAlso Not String.IsNullOrEmpty(row("FY1_Items").ToString())) Or
+			(Not IsDbNull(row("FY2_Unit_Cost")) AndAlso Not String.IsNullOrEmpty(row("FY2_Items").ToString())) Or
+			(Not IsDbNull(row("FY3_Unit_Cost")) AndAlso Not String.IsNullOrEmpty(row("FY3_Items").ToString())) Or
+			(Not IsDbNull(row("FY4_Unit_Cost")) AndAlso Not String.IsNullOrEmpty(row("FY4_Items").ToString())) Or
+			(Not IsDbNull(row("FY5_Unit_Cost")) AndAlso Not String.IsNullOrEmpty(row("FY5_Items").ToString())))
+'BRApi.ErrorLog.LogMessage(si,"True")			
+			Return True
+		Else
+'BRApi.ErrorLog.LogMessage(si,"False")			
+			Return False
+		End If
+	End Function
+	
+		Public Function CheckQTY(row As DataRow) As Boolean
+		If ((Not IsDbNull(row("FY1_QTY")) AndAlso Not String.IsNullOrEmpty(row("FY1_Items").ToString())) Or
+			(Not IsDbNull(row("FY2_QTY")) AndAlso Not String.IsNullOrEmpty(row("FY2_Items").ToString())) Or
+			(Not IsDbNull(row("FY3_QTY")) AndAlso Not String.IsNullOrEmpty(row("FY3_Items").ToString())) Or
+			(Not IsDbNull(row("FY4_QTY")) AndAlso Not String.IsNullOrEmpty(row("FY4_Items").ToString())) Or
+			(Not IsDbNull(row("FY5_QTY")) AndAlso Not String.IsNullOrEmpty(row("FY5_Items").ToString())))
+'BRApi.ErrorLog.LogMessage(si,"True")			
+			Return True
+		Else
+'BRApi.ErrorLog.LogMessage(si,"False")			
+			Return False
+		End If
+	End Function
 #End Region
 
-#Region "Parse REQ"
-		'Parse a line into REQ object and return
-		Public Function	ParseREQ(ByVal si As SessionInfo, ByVal fields As String(), ByRef dt As DataTable)As Object
-			'The parsed fileds are stored in the class. If new column is introduced, it needs to be added to the REQ class object as well
-			Dim currREQ As CMD_PGM_Requirement = New CMD_PGM_Requirement
-			'Trim any unprintable character and surrounding quotes
-			If BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name.Split(" ")(0).XFEqualsIgnoreCase("USAREUR") Then
-				currREQ.command = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name.Split(" ")(0) & "_AF"
-			Else 
-				currREQ.command = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name.Split(" ")(0)
-			End If 
-			currREQ.Entity = fields(dt.Columns("FundCenter").Ordinal - 4).Trim().Trim("""")
-			currREQ.FundCode = fields(dt.Columns("APPN").Ordinal - 4).Trim().Trim("""") & "_General"
-			currREQ.MDEP = fields(dt.Columns("MDEP").Ordinal - 4).Trim().Trim("""")
-
-			currREQ.APE9 = fields(dt.Columns("APE9").Ordinal - 4).Trim().Trim("""")
-			currREQ.DollarType = fields(dt.Columns("DollarType").Ordinal - 4).Trim().Trim("""")
-			currREQ.CommitmentItem = fields(dt.Columns("ObjectClass").Ordinal - 4).Trim().Trim("""")
-			If String.IsNullOrWhiteSpace(currREQ.CommitmentItem)
-				currREQ.CommitmentItem = "None"
-			End If 
-			currREQ.sCtype = fields(dt.Columns("Ctype").Ordinal - 4).Trim().Trim("""")
-			If String.IsNullOrWhiteSpace(currREQ.sCType)
-				currREQ.sCType = "None"
-			End If 
-			currREQ.Cycle = fields(dt.Columns("Cycle").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY1 = fields(dt.Columns("FY1").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY2 = fields(dt.Columns("FY2").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY3 = fields(dt.Columns("FY3").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY4 = fields(dt.Columns("FY4").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY5 = fields(dt.Columns("FY5").Ordinal - 4).Trim().Trim("""")
-			currREQ.Title = fields(dt.Columns("Title").Ordinal - 4).Trim().Trim("""")
-			currREQ.Description = fields(dt.Columns("Description").Ordinal - 4).Trim().Trim("""")
-			currREQ.Justification = fields(dt.Columns("Justification").Ordinal - 4).Trim().Trim("""")
-			currREQ.CostMethodology = fields(dt.Columns("CostMethodology").Ordinal - 4).Trim().Trim("""")
-			currREQ.ImpactifnotFunded = fields(dt.Columns("ImpactIfNotFunded").Ordinal - 4).Trim().Trim("""")
-			currREQ.RiskifnotFunded = fields(dt.Columns("RiskIfNotFunded").Ordinal - 4).Trim().Trim("""")
-			currREQ.CostGrowthJustification = fields(dt.Columns("CostGrowthJustification").Ordinal - 4).Trim().Trim("""")
-			currREQ.MustFund = fields(dt.Columns("MustFund").Ordinal - 4).Trim().Trim("""")
-			currREQ.FundingSource = fields(dt.Columns("FundingSource").Ordinal - 4).Trim().Trim("""")
-			currREQ.ArmyInitiative_Directive = fields(dt.Columns("ArmyInitiative_Directive").Ordinal - 4).Trim().Trim("""")
-			currREQ.CommandInitiative_Directive = fields(dt.Columns("CommandInitiative_Directive").Ordinal - 4).Trim().Trim("""")
-			currREQ.Activity_Exercise = fields(dt.Columns("Activity_Exercise").Ordinal - 4).Trim().Trim("""")
-			currREQ.IT_CyberRequirement = fields(dt.Columns("IT_CyberRequirement").Ordinal - 4).Trim().Trim("""")
-			currREQ.UIC = fields(dt.Columns("UIC").Ordinal - 4).Trim().Trim("""")
-			currREQ.FlexField1  = fields(dt.Columns("FLEX1").Ordinal - 4).Trim().Trim("""")
-			currREQ.FlexField2  = fields(dt.Columns("FLEX2").Ordinal - 4).Trim().Trim("""")
-			currREQ.FlexField3  = fields(dt.Columns("FLEX3").Ordinal - 4).Trim().Trim("""")
-			currREQ.FlexField4  = fields(dt.Columns("FLEX4").Ordinal - 4).Trim().Trim("""")
-			currREQ.FlexField5  = fields(dt.Columns("FLEX5").Ordinal - 4).Trim().Trim("""")
-			currREQ.EmergingRequirement = fields(dt.Columns("EmergingRequirement_ER").Ordinal - 4).Trim().Trim("""")
-			currREQ.CPATopic = fields(dt.Columns("CPATopic").Ordinal - 4).Trim().Trim("""")
-			currREQ.PBRSubmission = fields(dt.Columns("PBRSubmission").Ordinal - 4).Trim().Trim("""")
-			currREQ.UPLSubmission = fields(dt.Columns("UPLSubmission").Ordinal - 4).Trim().Trim("""")
-			currREQ.ContractNumber = fields(dt.Columns("ContractNumber").Ordinal - 4).Trim().Trim("""")
-			currREQ.TaskOrderNumber = fields(dt.Columns("TaskOrderNumber").Ordinal - 4).Trim().Trim("""")
-			currREQ.AwardTargetDate = fields(dt.Columns("AwardTargetDate").Ordinal - 4).Trim().Trim("""")
-			currREQ.POPExpirationDate = fields(dt.Columns("POPExpirationDate").Ordinal - 4).Trim().Trim("""")
-			currREQ.ContractorManYearEquiv_CME = fields(dt.Columns("ContractManYearEquiv_CME").Ordinal - 4).Trim().Trim("""")
-			currREQ.COREmail = fields(dt.Columns("COREmail").Ordinal - 4).Trim().Trim("""")
-			currREQ.POCEmail = fields(dt.Columns("POCEmail").Ordinal - 4).Trim().Trim("""")
-			currREQ.Directorate = fields(dt.Columns("Directorate").Ordinal - 4).Trim().Trim("""")
-			currREQ.Division = fields(dt.Columns("Division").Ordinal - 4).Trim().Trim("""")
-			currREQ.Branch = fields(dt.Columns("Branch").Ordinal - 4).Trim().Trim("""")
-			currREQ.ReviewingPOCEmail = fields(dt.Columns("ReviewingPOCEmail").Ordinal - 4).Trim().Trim("""")
-			currREQ.MDEPFunctionalEmail = fields(dt.Columns("MDEPFunctionalEmail").Ordinal - 4).Trim().Trim("""")
-			currREQ.NotificationListEmails = fields(dt.Columns("NotificationEmailList").Ordinal - 4).Trim().Trim("""")
-			currREQ.GeneralComments_Notes = fields(dt.Columns("GeneralComments_Notes").Ordinal - 4).Trim().Trim("""")
-			currREQ.JUON = fields(dt.Columns("JUON").Ordinal - 4).Trim().Trim("""")
-			currREQ.ISR_Flag = fields(dt.Columns("ISR_Flag").Ordinal - 4).Trim().Trim("""")
-			currREQ.Cost_Model = fields(dt.Columns("Cost_Model").Ordinal - 4).Trim().Trim("""")
-			currREQ.Combat_Loss = fields(dt.Columns("Combat_Lost").Ordinal - 4).Trim().Trim("""")
-			currREQ.Cost_Location = fields(dt.Columns("Cost_Location").Ordinal - 4).Trim().Trim("""")
-			currREQ.Category_A_Code = fields(dt.Columns("Category_A_Code").Ordinal - 4).Trim().Trim("""")
-			currREQ.CBS_Code = fields(dt.Columns("CBS_Code").Ordinal - 4).Trim().Trim("""")
-			currREQ.MIP_Proj_Code = fields(dt.Columns("MIP_Proj_Code").Ordinal - 4).Trim().Trim("""")
-			currREQ.SS_Priority = fields(dt.Columns("SS_Priority").Ordinal - 4).Trim().Trim("""")
-			currREQ.Commitment_Group = fields(dt.Columns("Commitment_Group").Ordinal - 4).Trim().Trim("""")
-			currREQ.SS_Capability = fields(dt.Columns("SS_Capability").Ordinal - 4).Trim().Trim("""")
-			currREQ.Strategic_BIN = fields(dt.Columns("Strategic_BIN").Ordinal - 4).Trim().Trim("""")
-			currREQ.LIN = fields(dt.Columns("LIN").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY1_QTY = fields(dt.Columns("FY1_QTY").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY2_QTY = fields(dt.Columns("FY2_QTY").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY3_QTY = fields(dt.Columns("FY3_QTY").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY4_QTY = fields(dt.Columns("FY4_QTY").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY5_QTY = fields(dt.Columns("FY5_QTY").Ordinal - 4).Trim().Trim("""")
-			currREQ.RequirementType = fields(dt.Columns("RequirementType").Ordinal - 4).Trim().Trim("""")
-			currREQ.DD_Priority = fields(dt.Columns("DD_Priority").Ordinal - 4).Trim().Trim("""")
-			currREQ.Portfolio = fields(dt.Columns("Portfolio").Ordinal - 4).Trim().Trim("""")
-			currREQ.DD_Capability = fields(dt.Columns("DD_Capability").Ordinal - 4).Trim().Trim("""")
-			currREQ.JNT_CAP_AREA = fields(dt.Columns("JNT_CAP_AREA").Ordinal - 4).Trim().Trim("""")
-			currREQ.TBM_COST_POOL = fields(dt.Columns("TBM_COST_POOL").Ordinal - 4).Trim().Trim("""")
-			currREQ.TBM_TOWER = fields(dt.Columns("TBM_TOWER").Ordinal - 4).Trim().Trim("""")
-			currREQ.APMSAITRNum = fields(dt.Columns("APMSAITRNum").Ordinal - 4).Trim().Trim("""")
-			currREQ.ZERO_TRUST_CAPABILITY = fields(dt.Columns("ZERO_TRUST_CAPABILITY").Ordinal - 4).Trim().Trim("""")
-			currREQ.ASSOCIATED_DIRECTIVES = fields(dt.Columns("ASSOCIATED_DIRECTIVES").Ordinal - 4).Trim().Trim("""")
-			currREQ.CLOUD_INDICATOR = fields(dt.Columns("CLOUD_INDICATOR").Ordinal - 4).Trim().Trim("""")
-			currREQ.STRAT_CYBERSEC_PGRM = fields(dt.Columns("STRAT_CYBERSEC_PGRM").Ordinal - 4).Trim().Trim("""")
-			currREQ.NOTES = fields(dt.Columns("NOTES").Ordinal - 4).Trim().Trim("""")
-			currREQ.UNIT_OF_MEASURE = fields(dt.Columns("UNIT_OF_MEASURE").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY1_ITEMS = fields(dt.Columns("FY1_Items").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY1_UNIT_COST = fields(dt.Columns("FY1_Unit_Cost").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY2_ITEMS = fields(dt.Columns("FY2_Items").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY2_UNIT_COST = fields(dt.Columns("FY2_Unit_Cost").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY3_ITEMS = fields(dt.Columns("FY3_Items").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY3_UNIT_COST = fields(dt.Columns("FY3_Unit_Cost").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY4_ITEMS = fields(dt.Columns("FY4_Items").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY4_UNIT_COST = fields(dt.Columns("FY4_Unit_Cost").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY5_ITEMS = fields(dt.Columns("FY5_Items").Ordinal - 4).Trim().Trim("""")
-			currREQ.FY5_UNIT_COST = fields(dt.Columns("FY5_Unit_Cost").Ordinal - 4).Trim().Trim("""")
-			
-			
-			Return currREQ
-			
-		End Function
-#End Region
-
-#Region "Validate Members"		
-		Public Function	ValidateMembers(ByVal si As SessionInfo, ByRef currREQ As CMD_PGM_Requirement) As Object
-			
-			'validate fund code
-			'This code leverages the way we validate in Data Source
-			'BRApi.Finance.Metadata.GetMember(si, dimTypeId.UD1, fundCode, includeProperties, dimDisplayOptions, memberDisplayOptions)
-			
-			Dim isFileValid As Boolean = True
-			
-			If String.IsNullOrWhiteSpace(currREQ.title) Then
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Blank Title value in record"
-			End If
-			
-			'Validate that the Fund Center being loaded  s with in the command
-			Dim objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_" & currREQ.command)
-			Dim membList As List(Of memberinfo) = New List(Of MemberInfo)
-			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "E#" & currREQ.command & ".member.base", True)
-			Dim currEntity As String = currREQ.Entity
-			If Not membList.Exists(Function(x) x.Member.Name = currEntity) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: Invalid Entity: " & currREQ.Entity & " does not exist in command " & currREQ.command
-				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid Fund Code value: " & fundCode))
-			End If
-'BRApi.ErrorLog.LogMessage(si, "u1: " & currREQ.fundCode)			
-			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U1_FundCode")
-			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U1#" & currREQ.fundCode & ".member.base", True)
-			If (membList.Count <> 1 ) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: Invalid Fund Code value: " & currREQ.fundCode
-				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid Fund Code value: " & fundCode))
-			End If
-			
-'BRApi.ErrorLog.LogMessage(si, "u2: " & currREQ.MDEP)			
-			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP")
-			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U2#" & currREQ.MDEP & ".member.base", True)
-			If (membList.Count <> 1 ) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: Invalid MDEPP value: " & currREQ.MDEP
-				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid MDEP value: " & MDEP))
-			End If
-			
-'BRApi.ErrorLog.LogMessage(si, "u3: " & currREQ.APE9.Trim)			
-			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U3_ALL_APE")
-			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U3#" & currREQ.APE9.Trim & ".member.base", True)
-			If (membList.Count <> 1 ) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: Invalid APE value: " & currREQ.APE9
-				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid APE value: " & SAG_APE))
-			End If
-			
-'BRApi.ErrorLog.LogMessage(si, "u4: " & currREQ.DollarType)				
-			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U4_DollarType")
-			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U4#" &currREQ. DollarType & ".member.base", True)
-			If (membList.Count <> 1 ) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: Invalid Dollar Type value: " & currREQ.DollarType
-				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid Dollar Type value: " & DollarType))
-			End If
-			
-'BRApi.ErrorLog.LogMessage(si, "u5: " & currREQ.sCType)				
-			If (Not String.IsNullOrWhiteSpace(currREQ.sCType)) And (Not currREQ.sCType.XFEqualsIgnoreCase("None")) Then
-				objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U5_CTYPE")
-				membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U5#" &currREQ. sCType & ".member.base", True)
-				If (membList.Count <> 1 ) Then 
-					isFileValid = False
-					currREQ.valid = False
-					currREQ.ValidationError = "Error: Invalid CType value: " & currREQ.sCType
-					
-				End If
-			End If 
-			
-'BRApi.ErrorLog.LogMessage(si, "u6: " & currREQ.CommitmentItem)				
-			If (Not String.IsNullOrWhiteSpace(currREQ.CommitmentItem)) And (Not currREQ.CommitmentItem.XFEqualsIgnoreCase("None")) Then
-				objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "U6_CommitmentItem")
-				membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U6#" &currREQ. CommitmentItem & ".member.base", True)
-				If (membList.Count <> 1 ) Then 
-					isFileValid = False
-					currREQ.valid = False
-					currREQ.ValidationError = "Error: Invalid Cost Category value: " & currREQ.CommitmentItem
-					
-				End If
-			End If 
-			
-'BRApi.ErrorLog.LogMessage(si, "validtae numeric: ")					
-			'Validate Numeric
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY1)) And (Not IsNumeric(currREQ.FY1))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY1 should be Numeric: " & currREQ.FY1
-				
-			End If
-			
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY2)) And (Not IsNumeric(currREQ.FY2))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY2 should be Numeric: " & currREQ.FY2
-				
-			End If
-			
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY3)) And ( Not IsNumeric(currREQ.FY3))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY3 should be Numeric: " & currREQ.FY3
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY4)) And ( Not IsNumeric(currREQ.FY4))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY4 should be Numeric: " & currREQ.FY4
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY5)) And ( Not IsNumeric(currREQ.FY5))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY5 should be Numeric: " & currREQ.FY5
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY1_QTY)) And ( Not IsNumeric(currREQ.FY1_QTY))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY1_QTY should be Numeric: " & currREQ.FY1_QTY
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY2_QTY)) And ( Not IsNumeric(currREQ.FY2_QTY))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY2_QTY should be Numeric: " & currREQ.FY2_QTY
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY3_QTY)) And ( Not IsNumeric(currREQ.FY3_QTY))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY3_QTY should be Numeric: " & currREQ.FY3_QTY
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY4_QTY)) And ( Not IsNumeric(currREQ.FY4_QTY))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY4_QTY should be Numeric: " & currREQ.FY4_QTY
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY5_QTY)) And ( Not IsNumeric(currREQ.FY5_QTY))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY5_QTY should be Numeric: " & currREQ.FY5_QTY
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY1_Items)) And ( Not IsNumeric(currREQ.FY1_Items))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY1_Items should be Numeric: " & currREQ.FY1_Items
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY1_Unit_Cost)) And ( Not IsNumeric(currREQ.FY1_Unit_Cost))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY1_Unit_Cost should be Numeric: " & currREQ.FY1_Unit_Cost
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY2_Items)) And ( Not IsNumeric(currREQ.FY2_Items))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY2_Items should be Numeric: " & currREQ.FY2_Items
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY2_Unit_Cost)) And ( Not IsNumeric(currREQ.FY2_Unit_Cost))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY2_Unit_Cost should be Numeric: " & currREQ.FY2_Unit_Cost
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY3_Items)) And ( Not IsNumeric(currREQ.FY3_Items))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY3_Items should be Numeric: " & currREQ.FY3_Items
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY3_Unit_Cost)) And ( Not IsNumeric(currREQ.FY3_Unit_Cost))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY3_Unit_Cost should be Numeric: " & currREQ.FY3_Unit_Cost
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY4_Items)) And ( Not IsNumeric(currREQ.FY4_Items))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY4_Items should be Numeric: " & currREQ.FY4_Items
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY4_Unit_Cost)) And ( Not IsNumeric(currREQ.FY4_Unit_Cost))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY4_Unit_Cost should be Numeric: " & currREQ.FY4_Unit_Cost
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY5_Items)) And ( Not IsNumeric(currREQ.FY5_Items))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY5_Items should be Numeric: " & currREQ.FY5_Items
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.FY5_Unit_Cost)) And ( Not IsNumeric(currREQ.FY5_Unit_Cost))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: FY5_Unit_Cost should be Numeric: " & currREQ.FY5_Unit_Cost
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.ContractorManYearEquiv_CME)) And ( Not IsNumeric(currREQ.ContractorManYearEquiv_CME))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: ContractorManYearEquiv_CME should be Numeric: " & currREQ.ContractorManYearEquiv_CME
-								
-			End If
-			
-'BRApi.ErrorLog.LogMessage(si, "validtae date: ")			
-			Dim validDate As DateTime
-			If((Not String.IsNullOrWhiteSpace(currREQ.AwardTargetDate)) And ( Not DateTime.TryParse(currREQ.AwardTargetDate, validDate))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: AwardTargetDate is not a validate date: " & currREQ.AwardTargetDate
-				
-			End If
-			If((Not String.IsNullOrWhiteSpace(currREQ.POPExpirationDate)) And ( Not DateTime.TryParse(currREQ.POPExpirationDate, validDate))) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: AwardTargetDate is not a validate date: " & currREQ.POPExpirationDate
-				
-			End If
-			
-			'We determine the scenario from the cycle
-			'Dim wfScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim sScenario = "CMD_PGM_C" & currREQ.Cycle
-'BRApi.ErrorLog.LogMessage(si, "scenario: " & sScenario)								
-			objDimPk  = BRApi.Finance.Dim.GetDimPk(si, "S_RMW")
-			membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "S#" & sScenario & ".member.base", True)
-			If (membList.Count <> 1) Then 
-				isFileValid = False
-				currREQ.valid = False
-				currREQ.ValidationError = "Error: No valid Scenario for Cycle: " & currREQ.Cycle
-				'Throw New XFUserMsgException(si, New Exception(filePath & " has invalid Dollar Type value: " & DollarType))
-			Else
-				currREQ.scenario = sScenario
-			End If
-			
-BRApi.ErrorLog.LogMessage(si, "isFileValid: " & isFileValid & ", ValidationError: " & currREQ.ValidationError)			
-			Return isFileValid
-			
-		End Function
 #End Region
 
 #Region "Check_WF_Complete_Lock"

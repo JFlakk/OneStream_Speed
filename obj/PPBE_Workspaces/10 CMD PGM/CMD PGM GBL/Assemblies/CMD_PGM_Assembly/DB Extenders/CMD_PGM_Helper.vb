@@ -42,9 +42,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						Dim dbExt_LoadResult As New XFLoadDashboardTaskResult()
 						Select Case args.FunctionName.ToLower()
 								Case "load_req_detailsdashboard"
-'BRApi.ErrorLog.LogMessage(si,$"Hit this {args.FunctionName.ToLower()}")
-								dbExt_LoadResult = Me.load_req_detailsdashboard()
-								Return dbExt_LoadResult	
+bRApi.ErrorLog.LogMessage(si,$"Hit this {args.FunctionName.ToLower()}")
+									dbExt_LoadResult = Me.load_req_detailsdashboard()
+									Return dbExt_LoadResult	
+'								Case "load_cmd_pgm_header"
+'									dbExt_LoadResult = Me.load_cmd_pgm_header()
+'									Return dbExt_LoadResult
 						End Select		
 						
 					Case Is = DashboardExtenderFunctionType.ComponentSelectionChanged
@@ -158,8 +161,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 								End If
 								dbExt_ChangedResult = Me.setnotificationlist()
 								Return dbExt_ChangedResult	
-							Case "deleterequirementIDs"		
-								dbExt_ChangedResult = Me.setnotificationlist()
+							Case "deleterequirementids"		
+								dbExt_ChangedResult = Me.DeleteRequirementID()
+								Return dbExt_ChangedResult	
+								
+							Case "attachdocument"
+								dbExt_ChangedResult = Me.AttachDocument()
 								Return dbExt_ChangedResult
 						End Select					
 
@@ -216,7 +223,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 #Region "Clear Prompts"
 						If args.FunctionName.XFEqualsIgnoreCase("ClearPrompts") Then
 							Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-BRApi.ErrorLog.LogMessage(si,"test KN")
+'BRApi.ErrorLog.LogMessage(si,"test KN")
 '							 Me.ClearPrompts(si,globals,api,args)
 
 						End If
@@ -290,8 +297,6 @@ BRApi.ErrorLog.LogMessage(si,"test KN")
 '						End If
 #End Region
 
-
-
 #Region "REQ_UpdateFilterLists Rollover"
 						If args.FunctionName.XFEqualsIgnoreCase("REQ_UpdateFilterListsRollOver") Then
 							
@@ -334,8 +339,6 @@ Dim tStart As DateTime =  Date.Now()
 #Region "Set Notification List"
 
 	Public Function setnotificationlist()
-	'Added a section to show only validators on the list and seperated from all users - 5-30-24
-	
 		Try
 			Dim sEntity As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity","") 'args.NameValuePairs.XFGetValue("UFREntity")
 			Dim sREQ As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ","")	
@@ -347,69 +350,70 @@ Dim tStart As DateTime =  Date.Now()
 			
 			Dim stakeholderEmailList As String() = notificationEmails.split(",")
 			Dim validatorEmailList As String() = vNotificationEmails.split(",")
+			
+			
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			
+				Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+				Using connection As New SqlConnection(dbConnApp.ConnectionString)
+					connection.Open()
+				
+           
+					Dim sqa_xfc_cmd_pgm_req = New SQA_XFC_CMD_PGM_REQ(connection)
+					Dim SQA_XFC_CMD_PGM_REQ_DT = New DataTable()
+					Dim sqa = New SqlDataAdapter()
 
-			Dim notificationStakeholderEmailsScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Notification_Email_List:F#" & sREQ & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			Dim notificationValidatorEmailsScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Validation_Email_List:F#" & sREQ & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				'Fill the DataTable With the current data From FMM_Dest_Cell
+				Dim sql As String = $"SELECT * 
+									FROM XFC_CMD_PGM_REQ 
+									WHERE WFScenario_Name = @WFScenario_Name
+									AND WFCMD_Name = @WFCMD_Name
+									AND WFTime_Name = @WFTime_Name"
+				
 		
-			Dim stakeholderEmails As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, notificationStakeholderEmailsScript).DataCellEx.DataCellAnnotation
-			Dim validatorEmails As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, notificationValidatorEmailsScript).DataCellEx.DataCellAnnotation
+	    ' 2. Create a list to hold the parameters
+	   Dim sqlParams As SqlParameter() = New SqlParameter(){
+        New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+        New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+        New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
+   		}
+			sqa_xfc_cmd_pgm_req.Fill_XFC_CMD_PGM_REQ_DT(sqa, SQA_XFC_CMD_PGM_REQ_DT, sql, sqlparams)
+			
+			
+			Dim REQ_ID As String  = sREQ.Split(" "c)(1)
+			Dim Mainreqrow As DataRow = SQA_XFC_CMD_PGM_REQ_DT.Select($"REQ_ID ='{REQ_ID}'" ).FirstOrDefault()
+			Dim stakeholderEmails As String = Mainreqrow("Notification_List_Emails")
 			
 			'loop through all stakeholders
 			For Each email As String In stakeholderEmailList
 				If (Not stakeholderEmails.XFContainsIgnoreCase(email)) Then
 					If (String.IsNullOrWhiteSpace(stakeholderEmails)) Then
-						stakeholderEmails = email
+						Mainreqrow("Notification_List_Emails") = email
 					Else
-						stakeholderEmails = stakeholderEmails & "," & email	
+						Mainreqrow("Notification_List_Emails") = stakeholderEmails & "," & email	
 					End If
 				End If
 				
 			Next
-			
+			Dim validatorEmails As String  = Mainreqrow("Validation_List_Emails")
 			'loop through validators
 			For Each vemail As String In validatorEmailList
 				If (Not validatorEmails.XFContainsIgnoreCase(vemail)) Then
 					If (String.IsNullOrWhiteSpace(validatorEmails)) Then
-						validatorEmails = vemail
+						 Mainreqrow("Validation_List_Emails") = vemail
 					Else
-						validatorEmails = validatorEmails & "," & vemail	
+						 Mainreqrow("Validation_List_Emails") = validatorEmails & "," & vemail	
 					End If
 				End If
 			Next
 			
-			'Update related REQ List
-			Dim objListofScripts As New List(Of MemberScriptandValue)
-		   
-			'for all user
-			Dim objScriptVal As New MemberScriptAndValue
-			
-			' for Validator
-			Dim objScriptVal2 As New MemberScriptAndValue
-			
-			'Setting for all users
-			objScriptVal.CubeName = sCube
-			objScriptVal.Script = notificationStakeholderEmailsScript
-			objScriptVal.TextValue = stakeholderEmails
-			objScriptVal.IsNoData = False
-			objListofScripts.Add(objScriptVal)
-			
-			'setting for validators
-			objScriptVal2.CubeName = sCube
-			objScriptVal2.Script = notificationValidatorEmailsScript
-			objScriptVal2.TextValue = validatorEmails
-			objScriptVal2.IsNoData = False
-			objListofScripts.Add(objScriptVal2)
-			
-			BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScripts)
-			
-				
+		
 			Return Nothing
-
+		End Using 
 		Catch ex As Exception
 			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 		End Try 
 	End Function
-
 #End Region
 
 #Region "Status Updates"
@@ -421,6 +425,7 @@ Dim tStart As DateTime =  Date.Now()
 			Dim Dashboard As String = args.NameValuePairs.XFGetValue("Dashboard")
 			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
 			Dim wfStepAllowed As Boolean = True
+'brapi.ErrorLog.LogMessage(si,"REQIDS: " & req_IDs & ", Status: " & new_Status & ", Demote comment= " & demote_comment)
 
 			Try
 				If req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Formulate") And Not Dashboard.XFContainsIgnoreCase("Mpr") Then
@@ -460,6 +465,7 @@ Dim tStart As DateTime =  Date.Now()
 			Try
 
 				Dim Dashboard As String = args.NameValuePairs.XFGetValue("Dashboard")
+				Dim demote_comment As String = args.NameValuePairs.XFGetValue("demotecomment")
 				Dim FCList As New List(Of String)
 				Dim Status_manager As New Dictionary(Of String,String)
 				Status_manager.Add("L5_Formulate_PGM|Validate","L4_Validate_PGM")
@@ -477,22 +483,76 @@ Dim tStart As DateTime =  Date.Now()
 				Status_manager.Add("L2_Prioritize_PGM|Approve","L2_Approve_PGM")
 				Status_manager.Add("L2_Approve_PGM|Final","L2_Final_PGM")
 				Status_manager.Add("L3_Approve_PGM|Validate","L2_Validate_PGM")
+				Status_manager.Add("L4_Approve_PGM|Validate","L3_Validate_PGM")
 				Status_manager.Add("L2_Formulate_PGM|Final","L2_Final_PGM")
 				Status_manager.Add("L2_Final_PGM|Formulate","L2_Formulate_PGM")
+
+				
+				If args.NameValuePairs.XFGetValue("Demote") = "True" Then
+#Region "Demote Statuses"
+					'--------------------------Demote Statuses----------------------------------
+					'Approve
+					Status_manager.Add("L2_Approve_PGM|L2_Prioritize_PGM","L2_Prioritize_PGM")
+					Status_manager.Add("L2_Approve_PGM|L2_Validate_PGM","L2_Validate_PGM")
+					Status_manager.Add("L2_Approve_PGM|L3_Approve_PGM","L3_Approve_PGM")
+					Status_manager.Add("L2_Approve_PGM|L3_Prioritize_PGM","L3_Prioritize_PGM")
+					Status_manager.Add("L2_Approve_PGM|L3_Validate_PGM","L3_Validate_PGM")
+					Status_manager.Add("L2_Approve_PGM|L3_Formulate_PGM","L3_Formulate_PGM")
+					Status_manager.Add("L2_Approve_PGM|L4_Approve_PGM","L4_Approve_PGM")
+					Status_manager.Add("L2_Approve_PGM|L4_Prioritize_PGM","L4_Prioritize_PGM")
+					Status_manager.Add("L2_Approve_PGM|L4_Validate_PGM","L4_Validate_PGM")
+					Status_manager.Add("L2_Approve_PGM|L4_Formulate_PGM","L4_Formulate_PGM")
+					Status_manager.Add("L2_Approve_PGM|L5_Formulate_PGM","L5_Formulate_PGM")
+					
+					Status_manager.Add("L3_Approve_PGM|L3_Prioritize_PGM","L3_Prioritize_PGM")
+					Status_manager.Add("L3_Approve_PGM|L3_Validate_PGM","L3_Validate_PGM")
+					Status_manager.Add("L3_Approve_PGM|L3_Formulate_PGM","L3_Formulate_PGM")
+					Status_manager.Add("L3_Approve_PGM|L4_Approve_PGM","L4_Approve_PGM")
+					Status_manager.Add("L3_Approve_PGM|L4_Prioritize_PGM","L4_Prioritize_PGM")
+					Status_manager.Add("L3_Approve_PGM|L4_Validate_PGM","L4_Validate_PGM")
+					Status_manager.Add("L3_Approve_PGM|L4_Formulate_PGM","L4_Formulate_PGM")
+					Status_manager.Add("L3_Approve_PGM|L5_Formulate_PGM","L5_Formulate_PGM")
+					
+					Status_manager.Add("L4_Approve_PGM|L4_Prioritize_PGM","L4_Prioritize_PGM")
+					Status_manager.Add("L4_Approve_PGM|L4_Validate_PGM","L4_Validate_PGM")
+					Status_manager.Add("L4_Approve_PGM|L4_Formulate_PGM","L4_Formulate_PGM")
+					Status_manager.Add("L4_Approve_PGM|L5_Formulate_PGM","L5_Formulate_PGM")
+					
+					'Validate
+					Status_manager.Add("L2_Validate_PGM|L3_Approve_PGM","L3_Approve_PGM")
+					Status_manager.Add("L2_Validate_PGM|L3_Prioritize_PGM","L3_Prioritize_PGM")
+					Status_manager.Add("L2_Validate_PGM|L3_Validate_PGM","L3_Validate_PGM")
+					Status_manager.Add("L2_Validate_PGM|L3_Formulate_PGM","L3_Formulate_PGM")
+					Status_manager.Add("L2_Validate_PGM|L4_Approve_PGM","L4_Approve_PGM")
+					Status_manager.Add("L2_Validate_PGM|L4_Prioritize_PGM","L4_Prioritize_PGM")
+					Status_manager.Add("L2_Validate_PGM|L4_Validate_PGM","L4_Validate_PGM")
+					Status_manager.Add("L2_Validate_PGM|L4_Formulate_PGM","L4_Formulate_PGM")
+					Status_manager.Add("L2_Validate_PGM|L5_Formulate_PGM","L5_Formulate_PGM")
+					
+					Status_manager.Add("L3_Validate_PGM|L3_Formulate_PGM","L3_Formulate_PGM")
+					Status_manager.Add("L3_Validate_PGM|L4_Approve_PGM","L4_Approve_PGM")
+					Status_manager.Add("L3_Validate_PGM|L4_Prioritize_PGM","L4_Prioritize_PGM")
+					Status_manager.Add("L3_Validate_PGM|L4_Validate_PGM","L4_Validate_PGM")
+					Status_manager.Add("L3_Validate_PGM|L4_Formulate_PGM","L4_Formulate_PGM")
+					Status_manager.Add("L3_Validate_PGM|L5_Formulate_PGM","L5_Formulate_PGM")
+					
+					Status_manager.Add("L4_Validate_PGM|L4_Formulate_PGM","L4_Formulate_PGM")
+					Status_manager.Add("L4_Validate_PGM|L5_Formulate_PGM","L5_Formulate_PGM")
+					'--------------------------Demote Statuses----------------------------------
+#End Region
+				End If 
 				
 				Dim dbExt_ChangedResult As New XFSelectionChangedTaskResult()
 				Dim req_IDs As String = args.NameValuePairs.XFGetValue("req_IDs")
 				
 				Dim Mode As String = args.NameValuePairs.XFGetValue("Mode")
 			If Mode.XFEqualsIgnoreCase("Single") Then 
-				Brapi.ErrorLog.LogMessage(si, "Here")
+'Brapi.ErrorLog.LogMessage(si, "Here")
 				req_IDs = req_IDs.Split(" ").Last()
 			Else 
 				req_IDs = req_IDs
 				
 			End If 
-				
-			
 				
 			Dim Req_ID_List As List (Of String) =  StringHelper.SplitString(req_IDs, ",")
 'Brapi.ErrorLog.LogMessage(si, "Req_ID_List = " & Req_ID_List.Count)
@@ -610,7 +670,9 @@ Dim tStart As DateTime =  Date.Now()
 								dbExt_ChangedResult.ShowMessageBox = True
 								dbExt_ChangedResult.Message &= $"REQ_ID '{row("REQ_ID")}' has an incorrect status, can't be updated."
 							End If
-
+							If Not String.IsNullOrEmpty(demote_comment) Then
+								row("Demotion_Comment") = demote_comment
+							End If 
 							row("Status") = resolvedStatus
 							row("Update_User") = si.UserName
 							row("Update_Date") = DateTime.Now
@@ -637,7 +699,7 @@ Dim tStart As DateTime =  Date.Now()
 								'End If
 							End If
 							
-Brapi.ErrorLog.LogMessage(si, "Resolved Status" & resolvedStatus)
+'Brapi.ErrorLog.LogMessage(si, "Resolved Status" & resolvedStatus)
 
 							'Me.UpdateStatusHistory(si, globals, api, args, newREQStatus, reqFlow, reqEntity)
 							'Me.Send_Status_Change_Email(reqFlow, reqEntity)
@@ -844,7 +906,7 @@ Brapi.ErrorLog.LogMessage(si, "Resolved Status" & resolvedStatus)
 
 			Dim newREQ_ID As String= GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si, trgtfundCenter)
 			newRow("REQ_ID") = newREQ_ID
-BRApi.ErrorLog.LogMessage(si,"Copied REQ_ID: " & newREQ_ID)			
+'BRApi.ErrorLog.LogMessage(si,"Copied REQ_ID: " & newREQ_ID)			
 			newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
 			newRow("Title") = args.NameValuePairs.XFGetValue("NewREQName")
 			newRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, trgtfundCenter) & "_Formulate_PGM"
@@ -1099,7 +1161,10 @@ BRApi.ErrorLog.LogMessage(si,"Copied REQ_ID: " & newREQ_ID)
 				Throw New Exception("Please select a funds center.")
 				Return Nothing
 			End If
-			
+			If Not sMode.XFContainsIgnoreCase("copyREQ") And String.IsNullOrEmpty(sREQ) Then
+				Throw New Exception("Please select a requirement.")
+				Return Nothing
+			End If 
 			If Not String.IsNullOrWhiteSpace(sEntity) Then
 					BRApi.Utilities.SetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity",sEntity)
 			End If
@@ -1559,12 +1624,12 @@ Public Function SetRelatedREQs()
 			
 	'Update the other side - Set the related REQs From REQ list
 			For Each relatedREQ In REQList
-				Brapi.ErrorLog.LogMessage(si, "relatedREQ" & relatedREQ)
+				'Brapi.ErrorLog.LogMessage(si, "relatedREQ" & relatedREQ)
 				If relatedREQ.XFContainsIgnoreCase(mainREQ) Then Continue For
 				Dim REQ = relatedREQ.Split(" ")(1).Trim()
 				sEntity = relatedREQ.Split(" ")(0).Trim()
 				'Brapi.ErrorLog.LogMessage(si, "REQ" & REQ)
-				Brapi.ErrorLog.LogMessage(si, "Entity" & sEntity)
+				'Brapi.ErrorLog.LogMessage(si, "Entity" & sEntity)
 				Dim RelatedREQsList As DataRow = SQA_XFC_CMD_PGM_REQ_DT.Select($"REQ_ID ='{REQ}'" ).FirstOrDefault()
 				currentREQs = RelatedREQsList("Related_REQs").ToString()
 				
@@ -1938,10 +2003,10 @@ Public Function saveweightprioritization() As Object
 	Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
 	Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
 	Dim sTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-	Dim sEntity As String = GetEntity(si, args)
+	Dim sEntity As String = args.NameValuePairs.XFGetValue("entity")
     Dim sWeightPrioritizationMbrScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#RMW_Cycle_Config_Annual:T#" & sTime &":V#Periodic:A#GBL_Priority_Cat_Weight:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 	Dim TotPct As Double = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sWeightPrioritizationMbrScript).DataCellEx.DataCell.CellAmount
-	
+'brapi.ErrorLog.Logmessage(si, $"entity: {sEntity} | TotPct: {TotPct} | mbrscript: {sWeightPrioritizationMbrScript}")	
 	If TotPct = 100 Then 
 		Return Nothing
 	End If
@@ -1958,8 +2023,9 @@ End Function
 Public Function load_req_detailsdashboard() As XFLoadDashboardTaskResult
 	Dim LoadDBTaskResult As New XFLoadDashboardTaskResult()
 	LoadDBTaskResult.ChangeCustomSubstVarsInDashboard = True
-
+	
 	Dim reqTitle = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("BL_CMD_PGM_REQTitleList")
+	
 	If reqTitle <> String.Empty Or Not String.IsNullOrEmpty(reqTitle)
 		UpdateCustomSubstVar(LoadDBTaskResult,"IV_CMD_PGM_REQDetailsShowHide","CMD_PGM_0_Body_REQDetailsMain")
 	Else	
@@ -1969,13 +2035,63 @@ Public Function load_req_detailsdashboard() As XFLoadDashboardTaskResult
 End Function
 #End Region
 
+#Region"load_cmd_pgm_header"
+'Public Function load_cmd_pgm_header() As XFLoadDashboardTaskResult
+'	Dim LoadDBTaskResult As New XFLoadDashboardTaskResult()
+'	LoadDBTaskResult.ChangeCustomSubstVarsInDashboard = True
+	
+''====Body====	
+'	Dim reqTitle = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("BL_CMD_PGM_REQTitleList")
+'	If reqTitle <> String.Empty Or Not String.IsNullOrEmpty(reqTitle)
+'		UpdateCustomSubstVar(LoadDBTaskResult,"IV_CMD_PGM_REQDetailsShowHide","CMD_PGM_0_Body_REQDetailsMain")
+'brapi.ErrorLog.Logmessage(si, $"BODY IF STATE | reqTitle: {reqTitle}.")		
+'	Else	
+'		UpdateCustomSubstVar(LoadDBTaskResult,"IV_CMD_PGM_REQDetailsShowHide","CMD_PGM_0_Body_REQDetailsHide")
+'brapi.ErrorLog.Logmessage(si, $"BODY ELSE STATE | reqTitle: {reqTitle}.")	
+'	End If	
+''====END=====	
+	
+'	Dim sEntity = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue("BL_CMD_PGM_FundsCenter")
+'	Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+'	Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+'	Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+'	wfProfileName = If(wfProfileName.Contains("."), wfProfileName.Substring(wfProfileName.IndexOf(".") + 1).Trim().Split(" "c)(0), String.Empty)
+	
+''brapi.ErrorLog.Logmessage(si, $"entity: {sEntity} | wfPrfoileName: {wfProfileName}")
+
+'	Dim WF_ProcCtrl_Account As New Dictionary(Of String, String) From {
+'		{"Formulate","CMD_PGM_Allow_Req_Creation"},
+'		{"Import","CMD_PGM_Allow_Req_Creation"},
+'		{"Validate","CMD_PGM_Allow_Req_Validation"},
+'		{"Prioritize","CMD_PGM_Allow_Req_Priority"},
+'		{"Rollover","CMD_PGM_Allow_Req_Rollover"}
+'		}	
+'	If WF_ProcCtrl_Account.ContainsKey(wfProfileName) Then
+''brapi.ErrorLog.Logmessage(si, $"wfPrfoileName: {wfProfileName}")
+'    	Dim sAllowAccount As String = WF_ProcCtrl_Account(wfProfileName)
+'  		Dim sAllowAccountMbrScript As String = $"Cb#{sCube}:E#{sEntity}:C#Local:S#RMW_Cycle_Config_Annual:T#{sREQTime}:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+'		Dim sAllowAccountValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation
+''brapi.ErrorLog.Logmessage(si, $"HERE: sAllowAccountValue: {sAllowAccountValue}")		
+'		If sAllowAccountValue.XFContainsIgnoreCase("no") Then
+''brapi.ErrorLog.Logmessage(si, $"HERE:")			
+'			UpdateCustomSubstVar(LoadDBTaskResult,"IV_CMD_PGM_ProcCtrl","False")
+'		End If
+'	End If
+'	Return LoadDBTaskResult
+'End Function
+#End Region
+
 #Region "Delete Requirement ID"
 		Public Function DeleteRequirementID() As XFSelectionChangedTaskResult
 			Try
 				Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
-
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 				' Get list of REQ IDs from args and split into list
 				Dim req_IDsRaw As String = args.NameValuePairs.XFGetValue("req_IDs", "")
+				Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity", "")
+				Dim tm As String = wfInfoDetails("TimeName")
+				Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+'brapi.ErrorLog.LogMessage(si,"sEntity = " & sEntity)
 				' Build a cleaned list of REQ IDs (handle single value, comma separated, or space-delimited passed-in values)
 				Dim Req_ID_List As List(Of String) = New List(Of String)()
 				Dim raw As String = req_IDsRaw.Trim()
@@ -1990,14 +2106,15 @@ End Function
 				Else
 					Req_ID_List.Add(raw)
 				End If
-
+'brapi.ErrorLog.LogMessage(si,"here1")
 				' Remove duplicates if any
 				Req_ID_List = Req_ID_List.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
 				' Prepare datatables to be filled and fill them from DB
 				Dim REQDT As New DataTable()
 				Dim REQDetailDT As New DataTable()
-
-				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+				Dim Status As String = ""
+				Dim StatusList As String = ""
+				
 				Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
 
 				Using connection As New SqlConnection(dbConnApp.ConnectionString)
@@ -2017,54 +2134,80 @@ End Function
 						New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
 						New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
 					}
+'brapi.ErrorLog.LogMessage(si,"here2")
+					Dim sqa_xfc_cmd_pgm_req_details = New SQA_XFC_CMD_PGM_REQ_Details(connection)
 
+					' Build details SQL using CMD_PGM_REQ_ID IN (...) so both queries filter by the same parent identifiers
+					Dim detailSql As String = $"SELECT * 
+												FROM XFC_CMD_PGM_REQ_Details AS Req
+       											LEFT JOIN XFC_CMD_PGM_REQ AS Dtl
+       											ON Req.CMD_PGM_REQ_ID = Dtl.CMD_PGM_REQ_ID
+												WHERE Req.WFScenario_Name = @WFScenario_Name
+												AND Req.WFCMD_Name = @WFCMD_Name
+												AND Req.WFTime_Name = @WFTime_Name"
+
+					Dim detailParamList As New List(Of SqlParameter) From {
+						New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+						New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+						New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
+					}
+'brapi.ErrorLog.LogMessage(si,"here3")
 					If Req_ID_List IsNot Nothing AndAlso Req_ID_List.Count > 0 Then
 						If Req_ID_List.Count = 1 Then
 							sql &= " AND REQ_ID = @REQ_ID"
+							detailSql &= " AND Dtl.REQ_ID = @REQ_ID"
 							paramList.Add(New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = Req_ID_List(0)})
+							detailParamList.Add(New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = Req_ID_List(0)})
 						Else
 							Dim paramNames As New List(Of String)
 							For i As Integer = 0 To Req_ID_List.Count - 1
 								Dim pname As String = "@REQ_ID" & i
 								paramNames.Add(pname)
 								paramList.Add(New SqlParameter(pname, SqlDbType.NVarChar) With {.Value = Req_ID_List(i)})
+								detailParamList.Add(New SqlParameter(pname, SqlDbType.NVarChar) With {.Value = Req_ID_List(i)})
 							Next
 							sql &= $" AND REQ_ID IN ({String.Join(",", paramNames)})"
+							detailSql &= $" AND Dtl.REQ_ID IN ({String.Join(",", paramNames)})"
 						End If
 					End If
-
+'brapi.ErrorLog.LogMessage(si,"here4")
 					sqa_xfc_cmd_pgm_req.Fill_XFC_CMD_PGM_REQ_DT(sqa, REQDT, sql, paramList.ToArray())
+					sqa_xfc_cmd_pgm_req_details.Fill_XFC_CMD_PGM_REQ_DETAILS_DT(sqa, REQDetailDT, detailSql, detailParamList.ToArray())
 
-					' Collect parent IDs (CMD_PGM_REQ_ID GUIDs) and fill details table using the same parent filter
-					Dim parentIds As New List(Of String)()
-					For Each parentRow As DataRow In REQDT.Rows
-						If Not IsDBNull(parentRow("CMD_PGM_REQ_ID")) Then
-							parentIds.Add(parentRow("CMD_PGM_REQ_ID").ToString())
-						End If
-					Next
-
-					If parentIds.Count > 0 Then
-						Dim sqa_xfc_cmd_pgm_req_details = New SQA_XFC_CMD_PGM_REQ_Details(connection)
-
-						' Build details SQL using CMD_PGM_REQ_ID IN (...) so both queries filter by the same parent identifiers
-						Dim detailsSql As String = $"SELECT * 
-													FROM XFC_CMD_PGM_REQ_Details 
-													WHERE WFScenario_Name = @WFScenario_Name
-													AND WFCMD_Name = @WFCMD_Name
-													AND WFTime_Name = @WFTime_Name
-													AND CMD_PGM_REQ_ID IN ({String.Join(",", parentIds.Select(Function(p, idx) $"@ID{idx}"))})"
-
-						Dim detailsParams As New List(Of SqlParameter) From {
-							New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
-							New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-							New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
-						}
-						For i As Integer = 0 To parentIds.Count - 1
-							detailsParams.Add(New SqlParameter($"@ID{i}", SqlDbType.NVarChar) With {.Value = parentIds(i)})
+					' Mark rows for deletion in both tables
+					For Each reqId As String In Req_ID_List
+						Dim rows As DataRow() = REQDT.Select($"REQ_ID = '{reqId}'")
+						Dim GUIDROW As String = rows.FirstOrDefault().Item("CMD_PGM_REQ_ID").tostring
+						Status  = rows.FirstOrDefault().Item("Status").tostring
+						If Status.XFEqualsIgnoreCase("") Then
+							StatusList = Status
+						Else
+							statuslist += StatusList & "|" & Status
+						End If 
+						For Each row As DataRow In rows
+							row.Delete()
 						Next
 
-						sqa_xfc_cmd_pgm_req_details.Fill_XFC_CMD_PGM_REQ_DETAILS_DT(sqa, REQDetailDT, detailsSql, detailsParams.ToArray())
-					End If
+						Dim detailRows As DataRow() = REQDetailDT.Select($"CMD_PGM_REQ_ID = '{GUIDROW}'")
+						For Each drow As DataRow In detailRows
+							drow.Delete()
+						Next
+					Next
+					' Persist changes back to DB
+					sqa_xfc_cmd_pgm_req_details.Update_XFC_CMD_PGM_REQ_Details(REQDetailDT, sqa)
+					sqa_xfc_cmd_pgm_req.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
+					
+					'clear cube
+					Dim workspaceID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "10 CMD PGM")	
+					Dim customSubstVars As New Dictionary(Of String, String) 
+					globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", statuslist)
+					customSubstVars.Add("EntList","E#" & sEntity)
+					customSubstVars.Add("WFScen", sScenario)
+					Dim currentYear As Integer = Convert.ToInt32(tm)
+					customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
+					BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
+					
+
 				End Using
 
 				Return Nothing
@@ -2086,6 +2229,101 @@ End Function
 			
 		End Sub
 #End Region		
+
+#Region "Attach Document"
+Public Function AttachDocument()
+		Try
+		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			
+				 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+        Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+            sqlConn.Open()
+				 Dim dt As New DataTable()
+				Dim sqa As New SqlDataAdapter()
+				Dim sqaReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
+				
+				Dim ReqID As String = args.NameValuePairs.XFGetValue("REQ_ID","")
+				If String.IsNullOrWhiteSpace(ReqID)
+					Return Nothing
+				Else 
+			Dim REQ_ID_Split As List(Of String) = StringHelper.SplitString(ReqID, " ")
+			Dim Entity As String  =  REQ_ID_Split(0)
+			Dim RequirementID As String  = REQ_ID_Split(1)
+					
+	
+
+				'Fill the DataTable 
+				Dim sql As String = $"SELECT * 
+									FROM XFC_CMD_PGM_REQ 
+									WHERE WFScenario_Name = @WFScenario_Name
+									AND WFCMD_Name = @WFCMD_Name
+									AND WFTime_Name = @WFTime_Name
+									AND REQ_ID  = @REQ_ID"
+				
+		
+	    ' 2. Create a list to hold the parameters
+	   Dim sqlParams As SqlParameter() = New SqlParameter(){
+        New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+        New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+        New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
+		New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = RequirementID}
+   		}
+			sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa,dt, sql, sqlparams)
+			
+			Dim sREQ_ID_Val As String = String.Empty
+			Dim REQ_ID_Val_guid As Guid = Guid.Empty
+			
+		If dt.Rows.Count > 0 Then
+    sREQ_ID_Val = Convert.ToString(dt.Rows(0)("CMD_PGM_REQ_ID"))
+    REQ_ID_Val_guid = sREQ_ID_Val.XFConvertToGuid
+Else
+    
+    Return Nothing 
+End If
+			
+			
+		  Dim dt_Attachment As New DataTable()
+			Dim sqa2 As New SqlDataAdapter()
+            Dim sqaReaderAttachment As New SQA_XFC_CMD_PGM_REQ_Attachment(sqlConn)
+            Dim sqlAttach As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Attachment Where CMD_PGM_REQ_ID = @CMD_PGM_REQ_ID"
+		Dim sqlParamsAttach As SqlParameter() = New SqlParameter(){
+			New SqlParameter("@CMD_PGM_REQ_ID", SqlDbType.uniqueidentifier) With {.Value = REQ_ID_Val_guid}
+			}
+			  sqaReaderAttachment.Fill_XFC_CMD_PGM_REQ_Attachment_DT(sqa2, dt_Attachment, sqlAttach, sqlParamsAttach)
+			 
+			  Dim Tatgetrow As DataRow
+			  
+			  If dt_Attachment.rows.count.Equals(0) Then
+		
+			  Tatgetrow = dt_Attachment.NewRow()
+			  dt_Attachment.Rows.Add(Tatgetrow)
+			  Else
+			  
+			  Tatgetrow = dt_Attachment.Select($"CMD_PGM_REQ_ID = '{REQ_ID_Val_guid}'").FirstOrDefault()
+			  End If
+			  
+		Tatgetrow("CMD_PGM_REQ_ID") = REQ_ID_Val_guid
+			
+		Dim FilePath As String = args.NameValuePairs.XFGetValue("FilePath")
+		Dim fileInfo As XFFileEx = BRApi.FileSystem.GetFile(si, FileSystemLocation.ApplicationDatabase, filePath, True, False, False, SharedConstants.Unknown, Nothing, True)
+		
+		Tatgetrow("Attach_File_Name") = fileInfo.XFFile.FileInfo.Name
+		Tatgetrow("Attach_File_Bytes") = fileInfo.XFFile.ContentFileBytes
+		
+		
+		
+		sqaReaderAttachment.Update_XFC_CMD_PGM_REQ_Attachment(dt_Attachment,sqa2)
+End If
+	End Using
+End Using
+
+				Return Nothing
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+			
+		End Function
+#End Region
 
 	End Class
 
