@@ -34,36 +34,37 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		
         Public Shared Function Convert_xftvCol_to_DbValue(si As SessionInfo, xftvCol As TableViewColumn) As Object
             Try
+				BRApi.ErrorLog.LogMessage(si, $"Hit: {xftvCol.DataType.ToString()} - {xftvCol.Value}")
 				If xftvCol Is Nothing Then
 	                Return DBNull.Value
                 Else
-                    Select Case xftvCol.DataType()
-                        Case XfDataType.Text
+                    Select Case xftvCol.DataType.ToString()
+                        Case "Text"
                             If xftvCol.Value Is Nothing Then
                                 Return DBNull.Value
                             End If
                             Return xftvCol.Value
-                        Case XfDataType.Int16, XfDataType.Int32, XfDataType.Int64
+                        Case "Int16", "Int32", "Int64"
                             If xftvCol.Value Is Nothing Then
                                 Return DBNull.Value
                             End If
                             Return xftvCol.Value.XFConvertToInt()
-                        Case XfDataType.Decimal, XfDataType.Double
+                        Case "Decimal", "Double"
                             If xftvCol.Value Is Nothing Then
                                 Return DBNull.Value
                             End If
                             Return xftvCol.Value.XFConvertToDecimal()
-                        Case XfDataType.Boolean
+                        Case "Boolean"
                             If xftvCol.Value Is Nothing Then
                                 Return DBNull.Value
                             End If
                             Return xftvCol.Value.XFConvertToBool()
-                        Case XfDataType.DateTime
+                        Case "DateTime"
                             If xftvCol.Value Is Nothing Then
                                 Return DBNull.Value
                             End If
 							Return DateTime.ParseExact(xftvCol.Value,"MM/dd/yyyy",CultureInfo.InvariantCulture)
-                        Case XfDataType.Guid
+                        Case "Guid"
                             If xftvCol.Value Is Nothing Then
                                 Return DBNull.Value
                             End If
@@ -74,27 +75,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 End If
             ' Obtain Value and DataType properties by reflection (works for the XFTV cell)
             Catch ex As Exception
-	            BRApi.ErrorLog.LogMessage(si, $"ConvertxftvColtoDbValue: unexpected error: {ex.Message}")
+	           ' BRApi.ErrorLog.LogMessage(si, $"ConvertxftvColtoDbValue: unexpected error: {ex.Message}")
 	            Return DBNull.Value
             End Try
         End Function
 
-        Public Shared Function GetWFInfoDetails(si As SessionInfo) As Dictionary(Of String, String)
-            Dim WFInfoDetails As New Dictionary(Of String, String)()
-
-            Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
-            Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
-            Dim wfCubeRootInfo = BRApi.Workflow.Metadata.GetCubeRootInfo(si, wfUnitInfo.wfunitPk.ProfileKey,True)
-
-
-            WFInfoDetails.Add("ProfileName", wfUnitInfo.ProfileName)
-            WFInfoDetails.Add("ScenarioName", wfUnitInfo.ScenarioName)
-            WFInfoDetails.Add("TimeName", wfUnitInfo.TimeName)
-            WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeRootProfile.CubeName)
-
-            Return WFInfoDetails
-        End Function
-
 	End Class
 End Namespace
-

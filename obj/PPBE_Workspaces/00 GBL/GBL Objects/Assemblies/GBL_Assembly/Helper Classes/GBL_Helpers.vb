@@ -22,14 +22,64 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         Public Shared Function GetSrccPROBEScen(ByVal si As SessionInfo,ByVal Scenario As String) As String
             Try
-				
-				'Cb#ARMY:E#GlobalVar:P#?:C#Local:S#BUD_C2023:T#2023M1:V#Annotation:A#Var_Selected_Position:F#None:O#Forms:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None
-				'Dim objDataCellInfoUsingMemberScript As DataCellInfoUsingMemberScript = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, cubeName, memberScript)
-                Return Nothing
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+				Dim sCube = "Army"
+' Updated 11/3/25  - Updated to allow CMD_SPLN to look at Montlhy Scenario on cprobe admin dashboard 
+				Dim memberScript As String = ""
+				If Scenario.XFContainsIgnoreCase("CMD_SPLN") Then
+					memberScript = $"Cb#ARMY:E#ARMY:C#Local:S#{Scenario}:T#{wfInfoDetails("TimeName")}M1:V#Annotation:A#Var_Selected_Position:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Else 
+					memberScript = $"Cb#ARMY:E#ARMY:C#Local:S#{Scenario}:T#{wfInfoDetails("TimeName")}:V#Annotation:A#Var_Selected_Position:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				End If 
+				Dim sCprobeScen As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, memberScript).DataCellEx.DataCellAnnotation
+			
+                Return sCprobeScen
             Catch ex As Exception
                 Throw New XFException(si, ex)
 			End Try
         End Function
+		
+		Public Shared Function GetValidationApproach(si As SessionInfo,ByVal CMD As String,ByVal Year As String) As Dictionary(Of String, String)
+            Try
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+				Dim cmd_ValidationApproaches As New Dictionary(Of String, String)
+				#Region "acctList"
+				Dim acctList As New List(Of String)
+				acctList.Add("CMD_Val_APPN_Approach")
+				acctList.Add("CMD_Val_APE_Approach")
+				acctList.Add("CMD_Val_MDEP_Approach")
+				acctList.Add("CMD_Val_DollarType_Approach")
+				acctList.Add("CMD_Val_Pay_NonPay_Approach")
+				#End Region
+				#Region "CMD_Val_Config"
+				Dim cmd_Validations As New Dictionary(Of String, String)
+				cmd_Validations.Add("CMD_Val_APPN_Approach|1","APPN")
+				cmd_Validations.Add("CMD_Val_APPN_Approach|2","Fund Code")
+				cmd_Validations.Add("CMD_Val_APE_Approach|1","ABO Level")
+				cmd_Validations.Add("CMD_Val_APE_Approach|2","APE9")
+				cmd_Validations.Add("CMD_Val_MDEP_Approach|1","Yes")
+				cmd_Validations.Add("CMD_Val_MDEP_Approach|0","No")
+				cmd_Validations.Add("CMD_Val_DollarType_Approach|1","Yes")
+				cmd_Validations.Add("CMD_Val_DollarType_Approach|0","No")
+				cmd_Validations.Add("CMD_Val_Pay_NonPay_Approach|1","Yes")
+				cmd_Validations.Add("CMD_Val_Pay_NonPay_Approach|0","No")
+				#End Region
+				
+				For Each acct As String In acctList
+					Dim memberScript As String = $"cb#{wfInfoDetails("CMDName")}:E#{CMD}:C#Local:S#RMW_Cycle_Config_Annual:T#{Year}:V#Periodic:A#{acct}:F#None:O#AdjInput:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+					Dim Val_Approach As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si,wfInfoDetails("CMDName"), memberScript).DataCellEx.DataCell.CellAmount
+					BRAPI.ErrorLog.LogMessage(si,$"{CMD} - {acct}|{Val_Approach.XFToString}")
+					If cmd_Validations.XFGetValue($"{acct}|{Val_Approach.XFToString}","NA") <> "NA"
+						cmd_ValidationApproaches.Add(acct,cmd_Validations.XFGetValue($"{acct}|{Val_Approach.XFToString()}","NA"))
+					End If
+				Next
+				
+                Return cmd_ValidationApproaches
+			
+			Catch ex As Exception
+                Throw New XFException(si, ex)
+			End Try
+		End Function
 		
         Public Shared Function GetWFInfoDetails(si As SessionInfo) As Dictionary(Of String, String)
             Dim WFInfoDetails As New Dictionary(Of String, String)()

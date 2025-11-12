@@ -1,0 +1,1055 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OneStreamXF version="9.0.1.17403">
+    <applicationWorkspacesRoot>
+        <workspaces>
+            <workspace name="00 GBL" description="" notes="" accessGroup="Everyone" maintenanceGroup="Everyone" isShareableWorkspace="true" sharedWorkspaceNames="10 CMD PGM,20 cPROBE,40 CMD TGT,50 CMD SPLN,60 HQ SPLN,zYH 10 CMD PGM" companyName="" versionNum="" author="" namespacePrefix="GBL" importsNamespace1="" importsNamespace2="" importsNamespace3="" importsNamespace4="" importsNamespace5="" importsNamespace6="" importsNamespace7="" importsNamespace8="" wsAssemblyService="" text1="" text2="" text3="" text4="" text5="" text6="" text7="" text8="">
+                <WorkspaceDefinition>
+                    <SubstitutionVariableItems />
+                </WorkspaceDefinition>
+                <maintenanceUnits>
+                    <maintenanceUnit name="GBL Dashboard" description="" uiPlatformType="WpfOrSilverlight" accessGroup="Everyone" maintenanceGroup="Everyone" wsAssemblyService="">
+                        <fileResources />
+                        <stringResources />
+                        <parameters>
+                            <parameter name="DL_GBL_Rpt_MenuOptions" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems>|!IV_GBL_Rpt_Text1!|</displayItems>
+                                <valueItems>|!IV_GBL_Rpt_Text3!|</valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="DL_GBL_WF_MenuOptions" description="" userPrompt="" parameterType="DelimitedList" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems>|WFText1|</displayItems>
+                                <valueItems>|WFText3|</valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_GBL_DynamicContent" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_GBL_DynamicCV" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_GBL_DynamicHeader" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_GBL_Rpt_Text1" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_GBL_Rpt_Text2" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_GBL_Rpt_Text3" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_GBL_Rpt_Text3_Default" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_GBL_Rpt_Text4" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                        </parameters>
+                        <adapters />
+                        <components>
+                            <component name="btn_GBL_WF_HeaderClose" description="" xfText="" toolTip="Close Header" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_GBL_OpenClosebtn_Format!|</displayFormat>
+                                <dashboardsToRedraw>GBL_WF_0b_Header</dashboardsToRedraw>
+                                <dashboardsToShow>GBL_WF_0b3_Header</dashboardsToShow>
+                                <dashboardsToHide>GBL_WF_0b1_Header, GBL_WF_0b2_Header</dashboardsToHide>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>Unknown</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName />
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="btn_GBL_WF_HeaderOpen" description="" xfText="" toolTip="Open Header" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_GBL_OpenClosebtn_Format!|</displayFormat>
+                                <dashboardsToRedraw>GBL_WF_0b_Header</dashboardsToRedraw>
+                                <dashboardsToShow>GBL_WF_0b1_Header, GBL_WF_0b2_Header</dashboardsToShow>
+                                <dashboardsToHide>GBL_WF_0b3_Header</dashboardsToHide>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>Unknown</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName />
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="btn_GBL_WF_MenuClose" description="" xfText="" toolTip="" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <dashboardsToRedraw>GBL_WF_0b_Header</dashboardsToRedraw>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>Unknown</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName />
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="cbx_GBL_Rpt_MenuOptions" description="" xfText="Select a Dashboard:" toolTip="Select a Dashboard" componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_GBL_Rpt_MenuOptions" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_GBL_cbx_MenuOptions_Format!|</displayFormat>
+                                <dashboardsToRedraw>GBL_Rpt_0_Main</dashboardsToRedraw>
+                                <adapterMembers />
+                            </component>
+                            <component name="cbx_GBL_WF_MenuOptions" description="" xfText="Select a Dashboard:" toolTip="Select a dashboard." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_GBL_WF_MenuOptions" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_GBL_cbx_MenuOptions_Format!|</displayFormat>
+                                <dashboardsToRedraw>GBL_WF_0_Main</dashboardsToRedraw>
+                                <adapterMembers />
+                            </component>
+                            <component name="cv_GBL_Dynamic" description="" xfText="" toolTip="" componentType="CubeView" templateParameterValues="" brText1="" brText2="" boundParameterName="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <componentDefinition>
+                                    <XFCubeViewDefinition>
+                                        <CubeViewName>|!IV_GBL_DynamicCV!|</CubeViewName>
+                                        <ShowHeader>true</ShowHeader>
+                                        <ShowToggleSizeButton>true</ShowToggleSizeButton>
+                                    </XFCubeViewDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="emb Dynamic GBL_Rpt_0b1b_Header" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="|!IV_GBL_DynamicHeader!|" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="emb Dynamic GBL_Rpt_0c2_Dynamic_Body" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="|!IV_GBL_DynamicContent!|" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="emb Dynamic GBL_WF_0b1b_Header" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="|!IV_GBL_DynamicHeader!|" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="emb Dynamic GBL_WF_0c2_Dynamic_Body" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="|!IV_GBL_DynamicContent!|" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_0c1a_Dynamic_CV" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_0c1a_Dynamic_CV" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_Rpt_0_Main" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_Rpt_0_Main" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_Rpt_0a_Banner" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_Rpt_0a_Banner" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_Rpt_0a1_WFStatus" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_Rpt_0a1_WFStatus" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_Rpt_0b_Header" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_Rpt_0b_Header" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_Rpt_0b1_MenuOptions" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_Rpt_0b1_MenuOptions" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_Rpt_0c_Body" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_Rpt_0c_Body" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_Rpt_0c1_Dynamic_Body" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_Rpt_0c1_Dynamic_Body" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0_Main" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0_Main" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0a_Banner" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0a_Banner" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0a1_WFStatus" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0a1_WFStatus" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0b_Header" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0b_Header" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0b1_Header" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0b1_Header" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0b1a_MenuOptions" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0b1a_MenuOptions" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0b2_Header" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0b2_Header" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0b3_Header" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0b3_Header" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0c_Body" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0c_Body" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded GBL_WF_0c1_Dynamic_Body" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="GBL_WF_0c1_Dynamic_Body" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="logo_GBL_Frame" description="" xfText="" toolTip="Army Logo" componentType="Logo" templateParameterValues="" brText1="" brText2="">
+                                <displayFormat>|!LV_GBL_Logo_Format!|</displayFormat>
+                                <adapterMembers />
+                            </component>
+                            <component name="sp_BL_CMD_PGM_FundsCenter" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_CMD_PGM_FundsCenter" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_DL_GBL_Rpt_MenuOptions" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_GBL_Rpt_MenuOptions" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_DL_GBL_WF_MenuOptions" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_GBL_WF_MenuOptions" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_IV_GBL_DynamicContent" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_DynamicContent" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_IV_GBL_DynamicCV" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_DynamicCV" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_IV_GBL_DynamicHeader" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_DynamicHeader" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_IV_GBL_Rpt_Text1" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_Rpt_Text1" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_IV_GBL_Rpt_Text2" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_Rpt_Text2" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_IV_GBL_Rpt_Text3" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_Rpt_Text3" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_IV_GBL_Rpt_Text3_Default" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_Rpt_Text3_Default" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="SP_IV_GBL_Rpt_Text4" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_Rpt_Text4" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                        </components>
+                        <dashboardGroups>
+                            <dashboardGroup name="GBL Dashboard CV" description="" accessGroup="Administrators">
+                                <dashboards>
+                                    <dashboard name="GBL_0c1a_Dynamic_CV" description="Menu Fields" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cv_GBL_Dynamic" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                </dashboards>
+                            </dashboardGroup>
+                            <dashboardGroup name="GBL Dashboard Rpt" description="" accessGroup="Administrators">
+                                <dashboards>
+                                    <dashboard name="GBL_Rpt_0_Main" description="Main" pageCaption="" dashboardType="EmbeddedTopLevelWithoutParameterPrompts" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBRAllActions">
+                                        <loadDashboardTaskArgs>{Workspace.Current.GBL_Dashboard_Assembly.GBL_Dashboard_Helper}{Load_GBL_DB}{WFText2=[|!IV_GBL_Rpt_Text2!|],WFText3=[|!IV_GBL_Rpt_Text3!|],WFText4=[|!IV_GBL_Rpt_Text4!|],SelectedDB=[|!DL_GBL_Rpt_MenuOptions!|],DynMenuParam=DL_GBL_Rpt_MenuOptions}</loadDashboardTaskArgs>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_Rpt_0a_Banner" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded GBL_Rpt_0b_Header" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded GBL_Rpt_0c_Body" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_DL_GBL_Rpt_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_DynamicHeader" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_DynamicContent" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_DynamicCV" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_Rpt_Text1" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_Rpt_Text2" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_Rpt_Text3" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_Rpt_Text4" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_Rpt_Text3_Default" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_Rpt_0a_Banner" description="Banner" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_Banner_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_Rpt_0a1_WFStatus" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_Rpt_0a1_WFStatus" description="Main" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_Banner_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="60" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="90" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="logo_GBL_Frame" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_Rpt_0b_Header" description="Header" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="MoveableSplitter" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_Rpt_0b1_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="emb Dynamic GBL_Rpt_0b1b_Header" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_Rpt_0b1_MenuOptions" description="Menu Top" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_MenuOptions_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_GBL_Rpt_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_Rpt_0c_Body" description="Body" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!format_TMPMCR_Body!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_Rpt_0c1_Dynamic_Body" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_Rpt_0c1_Dynamic_Body" description="Menu Fields" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="emb Dynamic GBL_Rpt_0c2_Dynamic_Body" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                </dashboards>
+                            </dashboardGroup>
+                            <dashboardGroup name="GBL Dashboard WF" description="" accessGroup="Administrators">
+                                <dashboards>
+                                    <dashboard name="GBL_WF_0_Main" description="Main" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBRAllActions">
+                                        <loadDashboardTaskArgs>{Workspace.Current.GBL_Dashboard_Assembly.GBL_Dashboard_Helper}{Load_GBL_DB}{WFText2=[|WFText2|],WFText3=[|WFText3|],WFText4=[|WFText4|],SelectedDB=[|!DL_GBL_WF_MenuOptions!|],DynMenuParam=DL_GBL_WF_MenuOptions}</loadDashboardTaskArgs>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_WF_0a_Banner" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded GBL_WF_0b_Header" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded GBL_WF_0c_Body" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_DynamicContent" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_DynamicCV" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_IV_GBL_DynamicHeader" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="SP_DL_GBL_WF_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_BL_CMD_PGM_FundsCenter" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0a_Banner" description="Banner" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_Banner_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_WF_0a1_WFStatus" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0a1_WFStatus" description="Main" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_Banner_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="60" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="90" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="logo_GBL_Frame" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0b_Header" description="Header" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_WF_0b1_Header" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded GBL_WF_0b2_Header" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded GBL_WF_0b3_Header" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0b1_Header" description="Header" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="MoveableSplitter" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_WF_0b1a_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="emb Dynamic GBL_WF_0b1b_Header" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0b1a_MenuOptions" description="Menu Top" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_MenuOptions_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_GBL_WF_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0b2_Header" description="Header" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_OpenCloseDB_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="btn_GBL_WF_HeaderClose" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0b3_Header" description="Header" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="false" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_OpenCloseDB_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="btn_GBL_WF_HeaderOpen" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0c_Body" description="Body" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded GBL_WF_0c1_Dynamic_Body" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="GBL_WF_0c1_Dynamic_Body" description="Menu Fields" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
+                                            </GridLayoutDefinition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="emb Dynamic GBL_WF_0c2_Dynamic_Body" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                </dashboards>
+                            </dashboardGroup>
+                        </dashboardGroups>
+                        <workspaceAssemblies>
+                            <workspaceAssembly name="GBL_Dashboard_Assembly" description="" compilerLanguage="VisualBasic">
+                                <dependencies />
+                                <files>
+                                    <folder name="DB Extenders">
+                                        <file name="GBL_Dashboard_Helper.vb" fileType="VisualBasic" businessRuleType="DashboardExtender" compilerActionType="Compile" isEncrypted="false">
+                                            <sourceCode><![CDATA[Imports System
+Imports System.Data
+Imports System.Data.Common
+Imports System.IO
+Imports System.Collections.Generic
+Imports System.Globalization
+Imports System.Linq
+Imports Microsoft.VisualBasic
+Imports System.Windows.Forms
+Imports OneStream.Shared.Common
+Imports OneStream.Shared.Wcf
+Imports OneStream.Shared.Engine
+Imports OneStream.Shared.Database
+Imports OneStream.Stage.Engine
+Imports OneStream.Stage.Database
+Imports OneStream.Finance.Engine
+Imports OneStream.Finance.Database
+
+Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.GBL_Dashboard_Helper
+	Public Class MainClass
+		Public si As SessionInfo
+		Public globals As BRGlobals
+		Public api As Object
+		Public args As DashboardExtenderArgs
+		Public Function Main(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
+			Try
+				Me.si = si
+				Me.api = api
+				Me.args = args
+				Me.globals = globals
+				Select Case args.FunctionType
+					Case Is = DashboardExtenderFunctionType.LoadDashboard
+						If args.FunctionName.XFEqualsIgnoreCase("Load_GBL_DB") Then
+							Dim loadDashboardTaskResult As New XFLoadDashboardTaskResult()
+							If (args.PrimaryDashboard.Name <> "GBL_Rpt_0_Main" And args.LoadDashboardTaskInfo.Reason = LoadDashboardReasonType.Initialize And (args.LoadDashboardTaskInfo.Action = LoadDashboardActionType.BeforeFirstGetParameters or args.LoadDashboardTaskInfo.Action = LoadDashboardActionType.BeforeSubsequentGetParameters)) Or
+								(args.LoadDashboardTaskInfo.Reason = LoadDashboardReasonType.ComponentSelectionChanged And args.LoadDashboardTaskInfo.Action = LoadDashboardActionType.BeforeSubsequentGetParameters) Then
+								loadDashboardTaskResult = Me.Load_GBL_DB()
+							End If
+
+							Return loadDashboardTaskResult
+						End If		
+						
+				End Select
+
+				Return Nothing
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+		End Function
+		
+		
+#Region "Load_GBL_DB()"	
+		Public Function Load_GBL_DB() As XFLoadDashboardTaskResult
+			Try
+				Dim LoadDBTaskResult As New XFLoadDashboardTaskResult()
+				LoadDBTaskResult.ChangeCustomSubstVarsInDashboard = True
+		
+				Dim Load_SPLN_DB_SubstVars As Dictionary(Of String, String) = Me.args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved() 'CustomSubstVarsFromPriorRun()
+
+				' Loop through each key-value pair in the dictionary
+				For Each kvp As KeyValuePair(Of String, String) In args.NameValuePairs
+				    ' Access the Key and Value for each pair
+				    Dim key As String = kvp.Key
+				    Dim value As String = kvp.Value
+				
+				   ' brapi.ErrorLog.LogMessage(si,$"Here 1.5 {kvp.Key} - {kvp.Value}")
+				Next
+
+				Dim WFText2 As String = args.NameValuePairs.XFGetValue("WFText2","")
+				Dim WFText3 As String = args.NameValuePairs.XFGetValue("WFText3","")
+				Dim WFText4 As String = args.NameValuePairs.XFGetValue("WFText4","")
+				Dim SelectedDB As String = args.NameValuePairs.XFGetValue("SelectedDB","")
+				Dim DynMenuParam As String = args.NameValuePairs.XFGetValue("DynMenuParam","")
+				If SelectedDB.Contains("|!") Then SelectedDB = ""
+				Dim Dynamic_Content As String = args.NameValuePairs.XFGetValue(DynMenuParam,"")
+				
+				'brapi.ErrorLog.LogMessage(si,$"Here 1.5 {DynMenuParam} - {Dynamic_Content} - {selectedDB} - {WFText2} - {WFText3}")
+
+				
+				'If dropdown has a previously selected value evaluate according to the list stored in the selected wf step and the currently selected value in dropdown
+				'If there was previously selected value but no currently selected value
+				If Dynamic_Content <> String.Empty And String.IsNullOrEmpty(SelectedDB)						
+					'if previously selected value exists in WFStep's list - use the previously selected value (as user is returning to the same step that they left off at or just refreshed)
+					If WFText3 <> String.Empty And WFText3.XFContainsIgnoreCase(Dynamic_Content)
+						If Dynamic_Content.Substring(0,3) = "DB_"
+'BRApi.ErrorLog.LogMessage(si,$"Here1 - {Dynamic_Content}")	
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicContent",Dynamic_Content.Substring(3,Dynamic_Content.Length-3))
+						Else
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicContent","GBL_0c1a_Dynamic_CV")
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicCV",Dynamic_Content.Substring(3,Dynamic_Content.Length-3))
+						End If
+												
+						UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicHeader",GetDynamicHeader(Dynamic_Content,WFText2,WFText3))
+						UpdateCustomSubstVar(LoadDBTaskResult,DynMenuParam,Dynamic_Content)	
+
+					'if not - the user has selected a different wf step and therefore default to the first db
+					ElseIf WFText3 <> String.Empty And Not WFText3.XFContainsIgnoreCase(Dynamic_Content) 
+						If WFText3.XFContainsIgnoreCase(",") Then
+							WFText3 = WFText3.Split(",")(0)
+						End If
+						'brapi.ErrorLog.LogMessage(si,$"Here 1.5 {WFText3}")
+						If WFText3.Substring(0,3) = "DB_"					
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicContent",WFText3.Substring(3,WFText3.Length-3))	
+						Else
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicContent","GBL_0c1a_Dynamic_CV")
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicCV",WFText3.Substring(3,WFText3.Length-3))
+						End If
+						If WFText2.XFContainsIgnoreCase(",") Then
+							WFText2 = WFText2.Split(",")(0)
+						End If
+						UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicHeader",WFText2)
+						UpdateCustomSubstVar(LoadDBTaskResult,DynMenuParam,WFText3)	
+					End If
+				'If there is currently selected value and is part of WFStep's list, use it	
+				ElseIf Not String.IsNullOrEmpty(SelectedDB) And WFText3.XFContainsIgnoreCase(SelectedDB)
+					
+					If SelectedDB.Substring(0,3) = "DB_"					
+						UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicContent",SelectedDB.Substring(3,SelectedDB.Length-3))	
+					Else
+						UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicContent","GBL_0c1a_Dynamic_CV")
+						UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicCV",SelectedDB.Substring(3,SelectedDB.Length-3))
+					End If
+					
+					UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicHeader",GetDynamicHeader(SelectedDB,WFText2,WFText3))
+					UpdateCustomSubstVar(LoadDBTaskResult,DynMenuParam,SelectedDB)
+			
+				'if dropdown does not have a selected value (due to first time logging in or new session) then default to wfstep's first db	
+				Else		
+					'BRApi.ErrorLog.LogMessage(si,$"Here1 - {WFText3}")	
+					If WFText3 <> String.Empty Then	
+						'BRApi.ErrorLog.LogMessage(si,$"Here1 - {WFText3}")	
+						If WFText3.XFContainsIgnoreCase(",") Then
+							WFText3 = WFText3.Split(",")(0)
+						End If
+						'BRApi.ErrorLog.LogMessage(si,$"Here1 - {selectedDB} - {DynMenuParam}")	
+						If WFText3.XFContainsIgnoreCase("|!")
+							'Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, args.PrimaryDashboard.WorkspaceID)
+							Dim DBParamInfo As DashboardParamDisplayInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, False,args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved, args.PrimaryDashboard.WorkspaceID, DynMenuParam)
+							'args.PrimaryDashboard.
+							WFText3 = DBParamInfo.Parameter.ValueItems
+							'BRApi.ErrorLog.LogMessage(si,$"Default - {DBParamInfo.Parameter.ValueItems}")	
+						End If	
+						If WFText3.Substring(0,3) = "DB_"					
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicContent",WFText3.Substring(3,WFText3.Length-3))	
+						Else
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicContent","GBL_0c1a_Dynamic_CV")
+							UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicCV",WFText3.Substring(3,WFText3.Length-3))
+						End If
+						If WFText2.XFContainsIgnoreCase(",") Then
+							WFText2 = WFText2.Split(",")(0)
+						End If
+						'BRApi.ErrorLog.LogMessage(si,$"Here1 - {WFText2}")
+						UpdateCustomSubstVar(LoadDBTaskResult,"IV_GBL_DynamicHeader",WFText2)
+						'LoadDBTaskResult.ModifiedCustomSubstVars.XFGetValue("IV_GBL_DynamicHeader","NA")
+						'BRApi.ErrorLog.LogMessage(si,$"Here1 - {LoadDBTaskResult.ModifiedCustomSubstVars.XFGetValue("IV_GBL_DynamicHeader","NA")}")
+						UpdateCustomSubstVar(LoadDBTaskResult,DynMenuParam,WFText3)	
+					End If
+				End If
+				Return LoadDBTaskResult
+				Catch ex As Exception
+					Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+				End Try			
+		End Function
+#End Region	
+
+#Region "UpdateCustomSubstVar"
+		Private Sub UpdateCustomSubstVar(ByRef Result As XFLoadDashboardTaskResult,ByVal key As String,ByVal value As String)
+'BRApi.ErrorLog.LogMessage(si,$"{key} | {value}")				
+			If Result.ModifiedCustomSubstVars.ContainsKey(key)
+				Result.ModifiedCustomSubstVars.XFSetValue(key,value)
+			Else
+				Result.ModifiedCustomSubstVars.Add(key,value)
+			End If
+			
+		End Sub
+#End Region		
+
+#Region "GetDynamic DB Items"
+Private Function GetDynamicHeader(Dynamic_Content As String,WFText2 As String,WFText3 As String) As String
+	Dim WFText2List As List( Of String ) = WFText2.Split(",").ToList()
+	Dim WFText3List As List( Of String ) = WFText3.Split(",").ToList()
+	'BRApi.ErrorLog.LogMessage(si,$"Hit {Dynamic_Content}")
+	If WFText2List.Count > 1
+		Dim contentPos As Integer = WFText3List.FindIndex(Function(x) x.XFEqualsIgnoreCase(Dynamic_Content))
+		'BRApi.ErrorLog.LogMessage(si,$"Hit {Dynamic_Content} - {WFText3List.Count} - {WFText3}")
+		Return WFText2List(contentPos)
+	Else
+		Return WFText2
+	End If
+
+End Function
+
+Private Function GetDynamicHelp(Dynamic_Content As String,WFText3 As String,WFText4 As String) As String
+	Dim WFText4List As List( Of String ) = WFText4.Split(",").ToList()
+	Dim WFText3List As List( Of String ) = WFText3.Split(",").ToList()
+	If WFText4List.Count > 1
+		Dim contentPos As Integer = WFText3List.FindIndex(Function(x) x.XFEqualsIgnoreCase(Dynamic_Content))
+		Return WFText4List(contentPos)
+	Else
+		Return WFText4
+	End If
+
+End Function
+	
+#End Region		
+
+End Class
+End Namespace
+]]></sourceCode>
+                                        </file>
+                                    </folder>
+                                </files>
+                            </workspaceAssembly>
+                        </workspaceAssemblies>
+                        <cubeViewGroups />
+                        <dataManagementGroups />
+                    </maintenanceUnit>
+                </maintenanceUnits>
+            </workspace>
+        </workspaces>
+    </applicationWorkspacesRoot>
+</OneStreamXF>

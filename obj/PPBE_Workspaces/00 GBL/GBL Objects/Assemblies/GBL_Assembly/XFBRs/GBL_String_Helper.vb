@@ -39,10 +39,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				Me.args = args
 				
 				Select Case args.FunctionName.ToLower()
+					Case "getcascadingmbrfilter"
+						Return Me.GetCascadingMbrFilter()
 					Case "getcprobefdxfilteredrows"
 						Return Me.GetcPROBEFDXFilteredRows()
-					Case "get"
-					
+					Case "getcprobefdxappnrows"
+						Return Me.GetcPROBEFDXAPPNRows()
+					Case "getpomyears"
+						Return Me.GetPOMYears()
 				End Select
 				If args.FunctionName.XFEqualsIgnoreCase("Remove_General") Then
 #Region "Remove_General"
@@ -216,17 +220,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 #End Region
 				End If
 
-				If args.FunctionName.XFEqualsIgnoreCase("GetBUOSourceScenario") Then
-					Return Me.GetBUOSourceScenario(si, args)
-#Region "GetBUOSourceScenario (RDD 2024.04.24: MOVED CODE, REGION FLAGGED FOR DELETION)"
-'	                    'Example: S#XFBR(GEN_General_String_Helper, GetBUOSourceScenario, BUOScenario=|WFScenario|)
-'	                    Dim sBUOScenario As String = args.NameValuePairs.XFGetValue("BUOScenario")            
-'	                    If Not sBUOScenario.Contains("_BUO") Then Return Nothing
-'	                    Dim sBUOSourceScenario As String = sBUOScenario.Split("_")(0).Trim
-''BRapi.ErrorLog.LogMessage(si,"GetBUOSourceScenario: sBUOScenario=" & sBUOScenario & "  sBUOSourceScenario=" & sBUOSourceScenario)
-'	                    Return sBUOSourceScenario
-#End Region
-				End If
 
 				If args.FunctionName.XFEqualsIgnoreCase("GetControlBudgetSourceScenario") Then
 					Return Me.GetControlBudgetSourceScenario(si)
@@ -460,10 +453,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 '					Return sRtnString
 #End Region
 	            End If
-				
-				If args.FunctionName.XFEqualsIgnoreCase("GetGlobalParameters") Then
-					Return Me.GetGlobalParameters(si, args)
-	            End If
 
 				If args.FunctionName.XFEqualsIgnoreCase("GetConsolidationStatus") Then
 					Return Me.GetConsolidationStatus(si, args)
@@ -500,32 +489,351 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 		
 #End Region
 
+#Region "GetCascadingMbrFilter"
+		Public Function GetCascadingMbrFilter() As String
+			Try
+				#Region "Args"
+				' Read incoming args
+				Dim scenList As String = args.NameValuePairs.XFGetValue("scenList", "NA")
+				Dim cmd As String = args.NameValuePairs.XFGetValue("cmd", "NA")
+				Dim entity As String = args.NameValuePairs.XFGetValue("entity", "NA")
+				Dim appn As String = args.NameValuePairs.XFGetValue("appn","OMA")
+				If appn = String.Empty
+					appn = "OMA"
+				End If
+				Dim mdep As String = args.NameValuePairs.XFGetValue("mdep", "NA")
+				If mdep = String.Empty
+					mdep = "NA"
+				End If
+				Dim sag As String = args.NameValuePairs.XFGetValue("sag", "NA")
+				If sag = String.Empty
+					sag = "NA"
+				End If
+				Dim ape As String = args.NameValuePairs.XFGetValue("ape", "NA")
+				If ape = String.Empty
+					ape = "NA"
+				End If
+				Dim dollarType As String = args.NameValuePairs.XFGetValue("dollarType", "NA")
+				If dollarType = String.Empty
+					dollarType = "NA"
+				End If
+				Dim status As String = args.NameValuePairs.XFGetValue("status", "NA")
+				Dim app_module As String = args.NameValuePairs.XFGetValue("app_module", "NA")
+				Dim returnType As String = args.NameValuePairs.XFGetValue("returnType", "NA")
+				Dim cvName As String = args.NameValuePairs.XFGetValue("cvName", "NA") '$"{app_module}_cPROBE_FDX_CV"
+				#End Region
+				Dim resultList As New List(Of String)
+				' Build a compact signature for Entity + Appn only
+				Dim currRebuildparams As String = $"{cmd}|{entity}|{scenList}|{appn}|{status}"
+				Dim U3DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U3_ALL_APE")
+				
+				' Use workspace session settings to persist last seen signatures per user/workspace
+				Dim cacheCat As String = $"{app_module}_CascadingFilterCache"
+				Dim filterDTparams As String = $"{app_module}_FilterDTparams"
+				Dim rebuildparams As String = $"{app_module}_rebuildparams_APPN"
+				If Not returnType.XFEqualsIgnoreCase("APPN")
+					rebuildparams = $"{app_module}_rebuildparams_Other"
+				End If
+
+				Dim prevRebuildParams As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, "")
+				Dim needsRebuild As Boolean = Not String.Equals(prevRebuildParams, currRebuildparams, StringComparison.Ordinal)
+
+				Dim dt As New DataTable 
+			'If String.IsNullOrEmpty(prevRebuildParams)
+				If needsRebuild Then
+					Brapi.ErrorLog.LogMessage(si,"In needs rebuild")
+					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, currRebuildparams)
+					If cvName.XFContainsIgnoreCase("cPROBE") And Not app_module.XFContainsIgnoreCase("cPROBE")
+						dt = GetFDXcPROBESrcData(cvName,cmd,appn)
+					Else If cvName.XFContainsIgnoreCase("CMD_TGT")
+						dt = GetFDXCMD_TGTDISTData(cvName,cmd,appn)
+					Else If cvName.XFContainsIgnoreCase("cPROBE") And app_module.XFContainsIgnoreCase("cPROBE")
+						dt = GetFDXcPROBEData(cvName,cmd,appn,scenList)
+					End If
+					If returnType.XFEqualsIgnoreCase("APPN")
+						BRApi.Utilities.SetSessionDataTable(si, si.UserName, $"{app_module}_CascadingFilter_APPN",dt)
+					Else
+						BRApi.Utilities.SetSessionDataTable(si, si.UserName, $"{app_module}_CascadingFilter",dt)
+					End If
+				Else
+					If returnType.XFEqualsIgnoreCase("APPN")
+						dt = BRApi.Utilities.GetSessionDataTable(si, si.UserName, $"{app_module}_CascadingFilter_APPN")
+					Else
+						dt = BRApi.Utilities.GetSessionDataTable(si, si.UserName, $"{app_module}_CascadingFilter")
+					End If
+				End If
+				If Not dt Is Nothing Then
+
+					' Build a deterministic signature of the inputs (full)
+					Dim currFilterDTparams As String = String.Concat(scenList, "|", entity, "|", appn, "|", status, "|", returnType, "|", mdep, "|", sag, "|", ape, "|", dollarType)
+	
+					Dim returnTypeMap As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase) From {
+							{"APPN", "UD1"},
+							{"MDEP", "UD2"},
+							{"SAG",  "UD3"},
+							{"APE",  "UD3"},
+							{"DollarType",  "UD4"}
+						}
+					'Dim prevFilterDTparams As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, filterDTparams, "")
+					If returnType = "APPN"
+						Dim dv As DataView = New DataView(dt)
+						' Map returnType values to column keys (case-insensitive)
+
+						' Determine which physical column (if any) corresponds to the requested returnType
+						Dim selectedColumn = String.Empty
+						selectedColumn = returnTypeMap.XFGetValue(returnType,"Not Found")
+						If selectedColumn <> "Not Found"
+		
+							dv.RowFilter = $"{selectedColumn} IS NOT NULL AND {selectedColumn} <> ''"
+							dv.Sort = selectedColumn & " ASC"
+							Dim mlDT = dv.ToTable(True, selectedColumn) ' Distinct values only
+
+							For Each dr As DataRow In mlDT.Rows
+								Dim val As String = dr(selectedColumn).ToString()
+								If Not String.IsNullOrWhiteSpace(val) Then
+									If Not resultList.Contains($"{selectedColumn}#{val}")
+										resultList.Add($"{selectedColumn}#{val}")
+									End If
+								End If
+							Next
+							Return String.Join(",",resultList)
+						Else
+							Return String.Empty
+						End If
+						
+					Else
+	
+						Dim filterParts As New List(Of String)
+		
+						' Only add filters when parameter is provided and not "NA"
+						If Not String.IsNullOrWhiteSpace(appn) AndAlso Not appn.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+							filterParts.Add("[UD1] = '" & appn.Replace("'", "''") & "'")
+						End If
+						
+						If Not String.IsNullOrWhiteSpace(mdep) AndAlso Not mdep.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+							filterParts.Add("[UD2] = '" & mdep.Replace("'", "''") & "'")
+						End If
+						
+						If Not String.IsNullOrWhiteSpace(sag) AndAlso Not sag.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+							If String.IsNullOrWhiteSpace(ape) OrElse ape.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+								Dim apeFilters As New List(Of String)
+								Dim ape9List As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, U3DimPK, $"U3#{sag}.Base", True)
+								If Not ape9List Is Nothing
+									If ape9List.Count > 0
+										For Each ape9 As MemberInfo In ape9List
+											apeFilters.Add($"'{ape9.Member.Name}'")
+										Next
+										filterParts.Add($"[UD3] IN ({String.Join(",",apeFilters)})")
+									End If	
+								End If
+							End If
+						End If
+						
+						If Not String.IsNullOrWhiteSpace(ape) AndAlso Not ape.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+							filterParts.Add("[UD3] = '" & ape.Replace("'", "''") & "'")
+						End If
+						
+						If Not String.IsNullOrWhiteSpace(dollarType) AndAlso Not dollarType.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+							filterParts.Add("[UD4] = '" & dollarType.Replace("'", "''") & "'")
+						End If
+		
+		
+						Dim filterExpr As String = If(filterParts.Count > 0, String.Join(" AND ", filterParts), String.Empty)
+
+						' Filter dt into a DataTable so it can be converted to a DataView
+						Dim filteredDt As DataTable
+						If String.IsNullOrEmpty(filterExpr) Then
+							filteredDt = dt.Copy()
+						Else
+							filteredDt = dt.Clone()
+							Dim selectedRows() As DataRow = dt.Select(filterExpr)
+							For Each row As DataRow In selectedRows
+								filteredDt.ImportRow(row)
+							Next
+						End If
+						'BRApi.Utilities.SetSessionDataTable(si, si.UserName, $"{app_module}_CascadingFilter",filteredDt)
+		
+						Dim dv As DataView = New DataView(filteredDt)
+						' Map returnType values to column keys (case-insensitive)
+
+						' Determine which physical column (if any) corresponds to the requested returnType
+						Dim selectedColumn = String.Empty
+						selectedColumn = returnTypeMap.XFGetValue(returnType,"Not Found")
+						If selectedColumn <> "Not Found"
+		
+							dv.RowFilter = $"{selectedColumn} IS NOT NULL AND {selectedColumn} <> ''"
+							dv.Sort = selectedColumn & " ASC"
+							Dim mlDT = dv.ToTable(True, selectedColumn) ' Distinct values only
+			
+							Dim result As String = String.Empty
+							For Each dr As DataRow In mlDT.Rows
+								Dim val As String = dr(selectedColumn).ToString()
+								If Not String.IsNullOrWhiteSpace(val) Then
+									If returnType.XFEqualsIgnoreCase("SAG")
+										Dim lsAncestorList As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, U3DimPK, $"U3#{val}.Ancestors.Where(Text1 = SAG)", True,,)
+   		   								If Not lsAncestorList Is Nothing
+											If lsAncestorList.Count > 0
+												val = lsAncestorList(0).Member.Name
+											End If	
+										End If
+									End If
+									If Not resultList.Contains($"{selectedColumn}#{val}")
+										resultList.Add($"{selectedColumn}#{val}")
+									End If
+								End If
+							Next
+							Return String.Join(",",resultList)
+						Else
+							Return String.Empty
+						End If
+					End If
+				Else
+'BRapi.ErrorLog.LogMessage(si,"Hit Empty")
+					Return String.Empty
+				End If					
+
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+		End Function
+#End Region 'Updated 10/16/2025
+
+#Region "Helper Functions"
+	
+		Private Function GetFDXcPROBESrcData(ByVal cvName As String,ByVal entFilter As String,ByVal appn As String) As DataTable
+			Dim dt As New DataTable()
+			Dim wsName As String = "00 GBL"
+			Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim CprobeScen As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetSrccPROBEScen(si,sScenario)
+
+			Dim entDim = $"E_{wfInfoDetails("CMDName")}"
+			Dim scenDim = "S_RMW"
+			Dim scenFilter = $"S#{CprobeScen}"
+			Dim timeFilter = String.Empty '$"T#{wfInfoDetails("TimeName")}"
+			Dim NameValuePairs = New Dictionary(Of String,String)
+			If cvName.XFEqualsIgnoreCase("GBL_cPROBE_FDX_CV")
+				NameValuePairs.Add("ML_GBL_APPN",appn)
+			End If
+			Brapi.ErrorLog.LogMessage(si,"Scenario" & scenFilter)
+			Brapi.ErrorLog.LogMessage(si,"timeFilter" & timeFilter)
+			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
+
+			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 8, False)
+If dt Is Nothing
+			BRAPI.ErrorLog.LogMessage(si,$"Hit FDX {EntFilter} - {cvName}")
+		End If
+			Return dt
+		End Function
+		
+		Private Function GetFDXcPROBEData(ByVal cvName As String,ByVal entFilter As String,ByVal appn As String,ByVal scenFilter As String) As DataTable
+			Dim dt As New DataTable()
+			Dim wsName As String = "00 GBL"
+			Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
+
+			Dim entDim = $"E_{entFilter}"
+			Dim scenDim = "S_RMW"
+			Dim timeFilter = String.Empty '"T#2026" '$"T#{wfInfoDetails("TimeName")}"
+			Dim NameValuePairs = New Dictionary(Of String,String)
+			If cvName.XFEqualsIgnoreCase("GBL_cPROBE_FDX_by_Position_CV")
+				NameValuePairs.Add("ML_GBL_APPN",appn)
+			End If
+			NameValuePairs.Add("ML_GBL_Scenario",scenFilter)
+			NameValuePairs.Add("ML_GBL_AllYears","2026")
+			BRAPI.ErrorLog.LogMessage(si,$"Hit Scen: {scenFilter}")
+			
+			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
+
+			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}",String.Empty,String.Empty, timeFilter, nvbParams, False, True, True, String.Empty, 8, False)
+If dt Is Nothing
+			BRAPI.ErrorLog.LogMessage(si,$"Hit FDX {EntFilter} - {cvName}")
+		End If
+			Return dt
+		End Function
+		
+		Private Function GetFDXCMD_TGTDISTData(ByVal cvName As String,ByVal entFilter As String,ByVal appn As String) As DataTable
+			Dim dt As New DataTable()
+			Dim wsName As String = "00 GBL"
+			Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim CprobeScen As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetSrccPROBEScen(si,sScenario)
+
+			Dim entDim = $"E_{wfInfoDetails("CMDName")}"
+			Dim scenDim = "S_RMW"
+			Dim scenFilter = $"S#{CprobeScen}"
+			Dim timeFilter = String.Empty '$"T#{wfInfoDetails("TimeName")}"
+			Dim NameValuePairs = New Dictionary(Of String,String)
+			If cvName.XFEqualsIgnoreCase("GBL_cPROBE_FDX_CV")
+				NameValuePairs.Add("ML_GBL_APPN",appn)
+			End If
+			
+			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
+
+			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 1, False)
+
+			Return dt
+		End Function
+#End Region
+
 #Region "GetcPROBEFDXFilteredRows"
 Public Function GetcPROBEFDXFilteredRows() As String
 			Dim cmd As String = args.NameValuePairs.XFGetValue("cmd", "NA")
 			Dim scen As String = args.NameValuePairs.XFGetValue("scen", "NA")
 			Dim time As String = args.NameValuePairs.XFGetValue("time", "NA")
-			Dim appn As String = args.NameValuePairs.XFGetValue("appn", String.Empty)
+			Dim appn As String = args.NameValuePairs.XFGetValue("appn",String.Empty)
 			Dim commDims As String
 			Dim FilterString = String.Empty
 			Dim toSort As New Dictionary(Of String,String)
 			Dim output = vbNullString
+			Dim scenParts As New List(Of String)	
 
-			If appn = String.Empty
-				commDims = $"Cb#{cmd}:C#Local:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U5#Top:U6#Top:U7#Top:U8#Top"
-				FilterString = $",[U1#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
-								  [U2#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
-								  [U3#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
-								  [U4#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
+			' Handle single or multiple scenarios in scen (comma-delimited)
+			scenParts = stringhelper.SplitString(scen,",")
+
+			If scenParts.Count > 1
+				' Build one commDims segment per scenario then join with " + "
+				Dim segments As New List(Of String)
+				For Each sc As String In scenParts
+					If appn = String.Empty
+						segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U5#Top:U6#Top:U7#Top:U8#Top")
+					Else
+						segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#[{appn}]:U5#Top:U6#Top:U7#Top:U8#Top")
+					End If
+				Next
+				commDims = String.Join(" + ", segments)
+
+				' Use same FilterString rules as single-scenario branch (only set once)
+				If appn = String.Empty
+					FilterString = $",[U1#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U2#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U3#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U4#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
+				Else
+					FilterString = $",[U2#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U3#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U4#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
+				End If
+
 			Else
-				commDims = $"Cb#{cmd}:C#Local:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#[{appn}]:U5#Top:U6#Top:U7#Top:U8#Top"
-			    FilterString = $",[U2#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
-								  [U3#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
-								  [U4#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
+				' Single scenario - preserve original behavior
+				If appn = String.Empty
+					commDims = $"Cb#{cmd}:C#Aggregated:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U5#Top:U6#Top:U7#Top:U8#Top"
+					FilterString = $",[U1#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U2#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U3#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U4#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
+				Else
+					commDims = $"Cb#{cmd}:C#Aggregated:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#[{appn}]:U5#Top:U6#Top:U7#Top:U8#Top"
+					FilterString = $",[U2#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U3#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
+									 [U4#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
+				End If
 			End If
 			
 			Dim bufferFilter = $"FilterMembers(REMOVENODATA({commDims}){FilterString})"
-			BRapi.ErrorLog.LogMessage(si,$"Hit Buffer {bufferFilter}")
+			
 
 			globals.SetStringValue("Filter", bufferFilter)
 			
@@ -558,11 +866,77 @@ Public Function GetcPROBEFDXFilteredRows() As String
 					output &= item.Script & ","
 				Next
 			End If
+			'BRAPI.ErrorLog.LogMessage(si,$"Output: {output}")
 			Return output
 			
 		End Function
 #End Region
 
+#Region "GetcPROBEFDXAPPNRows"
+Public Function GetcPROBEFDXAPPNRows() As String
+			Dim cmd As String = args.NameValuePairs.XFGetValue("cmd", "NA")
+			Dim scen As String = args.NameValuePairs.XFGetValue("scen", "NA")
+			Dim time As String = args.NameValuePairs.XFGetValue("time", "NA")
+			Dim commDims As String
+			Dim FilterString = String.Empty
+			Dim toSort As New Dictionary(Of String,String)
+			Dim output = vbNullString
+			Dim scenParts As New List(Of String)	
+
+			' Handle single or multiple scenarios in scen (comma-delimited)
+			scenParts = stringhelper.SplitString(scen,",")
+			If scenParts.Count > 1
+				' Build one commDims segment per scenario then join with " + "
+				Dim segments As New List(Of String)
+				For Each sc As String In scenParts
+					segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#Top")
+				Next
+				commDims = String.Join(" + ", segments)
+			Else
+				commDims = $"Cb#{cmd}:C#Aggregated:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#Top"
+			End If
+			FilterString = $",[U1#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
+			
+			Dim bufferFilter = $"FilterMembers(REMOVENODATA({commDims}){FilterString})"
+			BRAPI.ErrorLog.LogMessage(si,bufferFilter)
+			globals.SetStringValue("Filter", bufferFilter)
+			
+			GetDataBuffer(si,globals,api,args)
+	
+			If Not globals.GetObject("Results") Is Nothing
+				Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
+
+				' Normalize each MemberScriptBuilder and project to (script, sortKey)
+				Dim projected = results.Keys.Select(Function(msb)
+													  msb.Entity = vbNullString
+													  msb.Scenario = vbNullString
+													  msb.Origin = vbNullString
+													  msb.Account = vbNullString
+													  msb.IC = vbNullString
+													  msb.Flow = vbNullString
+													  msb.UD2 = vbNullString
+													  msb.UD3 = vbNullString
+													  msb.UD4 = vbNullString
+													  msb.UD5 = vbNullString
+													  msb.UD6 = vbNullString
+													  msb.UD7 = vbNullString
+													  msb.UD8 = vbNullString
+													  Return New With {
+														  .Script = msb.GetMemberScript,
+														  .SortKey = $"U1#{msb.UD1}"
+													  }
+												  End Function).ToList()
+
+				' Order and build output
+				For Each item In projected.OrderByDescending(Function(x) x.SortKey)
+					output &= item.Script & ","
+				Next
+			End If
+			BRAPI.ErrorLog.LogMessage(si,$"Output: {output}")
+			Return output
+			
+		End Function
+#End Region
 #Region "GetPrimaryFundCenter"
 
 		Private Function GetPrimaryFundCenter(ByVal si As SessionInfo, ByVal args As DashboardStringFunctionArgs) As String
@@ -1050,6 +1424,30 @@ Public Function GetcPROBEFDXFilteredRows() As String
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
 		End Function
+		
+		Private Function GetPOMYears() As String
+			Try
+				Dim srcScenario As String = args.NameValuePairs.XFGetValue("SrcScenario","NA")
+				Dim srcScenarioMbfInfo As MemberInfo = BRApi.Finance.Members.GetMemberInfo(si,dimtype.Scenario.Id,srcScenario)
+				Dim StartYr_Key As Integer = BRApi.Finance.Scenario.GetWorkflowTime(si, srcScenarioMbfInfo.Member.MemberId)
+				Dim StartYr As String = BRApi.Finance.Time.GetNameFromId(si,StartYr_Key)
+			  
+				Dim iStartYr As Integer = Integer.Parse(StartYr)
+
+				Dim i As Integer = 1
+				Dim sResult As String = $"T#{iStartYr}"
+				
+				While i < Integer.Parse(5)
+					sResult = $"{sResult},T#{iStartYr+i}"
+					i = i+1
+				End While
+				
+				Return sResult
+
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+		End Function
 
 #End Region
 
@@ -1069,171 +1467,6 @@ Public Function GetcPROBEFDXFilteredRows() As String
 			End Try
 		End Function
 
-#End Region
-
-#Region "GetGlobalParameters"
-		'Created 5/15/2024 by AK and Fronz
-		'Receives dimension parameters to create and return a member script
-		Private Function GetGlobalParameters(ByVal si As SessionInfo, ByVal args As DashboardStringFunctionArgs) As String
-			Try
-				Dim sValueMemberScript As String = ""
-				'Cube
-				Dim sCube As String = args.NameValuePairs.XFGetValue("Cube").Trim
-				If sCube = "" Then
-					sValueMemberScript &= "Cb#None"
-				Else 	
-					sValueMemberScript &= "Cb#" & sCube
-				End If
-				'Entity
-				Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity").Trim
-				If sEntity = "" Then
-					sValueMemberScript &= ":E#None"
-				Else 	
-					sValueMemberScript &= ":E#" & sEntity
-				End If
-				'Scenario
-				Dim sScenario As String = args.NameValuePairs.XFGetValue("Scenario").Trim
-				If sScenario = "" Then
-					sValueMemberScript &= ":S#None"
-				Else 	
-					sValueMemberScript &= ":S#" & sScenario
-				End If
-				'Time
-				Dim sTime As String = args.NameValuePairs.XFGetValue("Time").Trim
-				Dim wfScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-'Brapi.ErrorLog.LogMessage(si, "GENGEN GetGlobalParameters: wfScenarioTypeName=" & wfScenarioTypeName & "   sTime=" & sTime)				
-				Select Case True
-					Case wfScenario.XFContainsIgnoreCase("PGM") 'annual
-						If sTime.XFContainsIgnoreCase("M") Then sTime = sTime.Split("M")(0)
-					Case Else 'monthly	
-						'do nothing
-				End Select
-				If sTime = "" Then
-					sValueMemberScript &= ":T#None"
-				Else 	
-					sValueMemberScript &= ":T#" & sTime	
-				End If
-				'Account
-				Dim sAccount As String = args.NameValuePairs.XFGetValue("Account").Trim
-				If sAccount = "" Then
-					sValueMemberScript &= ":A#None"
-				Else 	
-					sValueMemberScript &= ":A#" & sAccount
-				End If
-				'Consolidation
-				Dim sConsolidation As String = args.NameValuePairs.XFGetValue("Consolidation").Trim
-				If sConsolidation = "" Then
-					sValueMemberScript &= "C#Local"
-				Else 	
-					sValueMemberScript &= ":C#" & sConsolidation
-				End If
-				'View
-				Dim sView As String = args.NameValuePairs.XFGetValue("View").Trim
-				If sView = "" Then
-					sValueMemberScript &= ":V#Annotation"
-				Else 	
-					sValueMemberScript &= ":V#" & sView
-				End If
-				'Flow
-				Dim sFlow As String = args.NameValuePairs.XFGetValue("Flow").Trim
-				If sFlow = "" Then
-					sValueMemberScript &= ":F#None"
-				Else 	
-					sValueMemberScript &= ":F#" & sFlow
-				End If	
-				'Origin
-				Dim sOrigin As String = args.NameValuePairs.XFGetValue("Origin").Trim
-				If sOrigin = "" Then
-					sValueMemberScript &= ":O#Forms"
-				Else 	
-					sValueMemberScript &= ":O#" & sOrigin
-				End If
-				'InterCompany (IC)
-				Dim sIC As String = args.NameValuePairs.XFGetValue("IC").Trim
-				If sIC = "" Then
-					sValueMemberScript &= ":I#None"
-				Else 	
-					sValueMemberScript &= ":I#" & sIC
-				End If	
-				'UD1
-				Dim sU1 As String = args.NameValuePairs.XFGetValue("U1").Trim
-				If sU1 = "" Then
-					sValueMemberScript &= ":U1#None"
-				Else 	
-					sValueMemberScript &= ":U1#" & sU1
-				End If
-				'UD2
-				Dim sU2 As String = args.NameValuePairs.XFGetValue("U2").Trim
-				If sU2 = "" Then
-					sValueMemberScript &= ":U2#None"
-				Else 	
-					sValueMemberScript &= ":U2#" & sU2
-				End If	
-				'UD3
-				Dim sU3 As String = args.NameValuePairs.XFGetValue("U3").Trim
-				If sU3 = "" Then
-					sValueMemberScript &= ":U3#None"
-				Else 	
-					sValueMemberScript &= ":U3#" & sU3
-				End If	
-				'UD4
-				Dim sU4 As String = args.NameValuePairs.XFGetValue("U4").Trim
-				If sU4 = "" Then
-					sValueMemberScript &= ":U4#None"
-				Else 	
-					sValueMemberScript &= ":U4#" & sU4
-				End If	
-				'UD5
-				Dim sU5 As String = args.NameValuePairs.XFGetValue("U5").Trim
-				If sU5 = "" Then
-					sValueMemberScript &= ":U5#None"
-				Else 	
-					sValueMemberScript &= ":U5#" & sU5
-				End If	
-				'UD6
-				Dim sU6 As String = args.NameValuePairs.XFGetValue("U6").Trim
-				If sU6 = "" Then
-					sValueMemberScript &= ":U6#None"
-				Else 	
-					sValueMemberScript &= ":U6#" & sU6
-				End If	
-				'UD7
-				Dim sU7 As String = args.NameValuePairs.XFGetValue("U7").Trim
-				If sU7 = "" Then
-					sValueMemberScript &= ":U7#None"
-				Else 	
-					sValueMemberScript &= ":U7#" & sU7
-				End If	
-				'UD8
-				Dim sU8 As String = args.NameValuePairs.XFGetValue("U8").Trim
-				If sU8 = "" Then
-					sValueMemberScript &= ":U8#None"
-				Else 	
-					sValueMemberScript &= ":U8#" & sU8
-				End If
-				
-				Dim sMemberScriptValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sValueMemberScript).DataCellEx.DataCellAnnotation
-			
-'				Dim objListofScriptsDate As New List(Of MemberScriptandValue)
-'		    	Dim objScriptValDate As New MemberScriptAndValue
-'				objScriptValDate.CubeName = sCube
-'				objScriptValDate.Script = sMemberScript
-'				objScriptValDate.TextValue = sValue
-'				objScriptValDate.IsNoData = False
-'				objListofScriptsDate.Add(objScriptValDate)
-'				BRApi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsDate)				
-				
-brapi.ErrorLog.LogMessage(si, sValueMemberScript & "      Value = " & sMemberScriptValue)					
-				Return sMemberScriptValue			
-				
-'sValueMemberScript = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sTime & ":V#Annotation:A#Var_Selected_Position:F#None:O#Forms:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"				
-
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try
-		End Function
-		
 #End Region
 
 #Region "GetConsolidationStatus"

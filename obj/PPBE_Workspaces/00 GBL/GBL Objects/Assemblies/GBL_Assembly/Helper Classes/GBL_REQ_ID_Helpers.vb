@@ -32,7 +32,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     UNION ALL
                     SELECT REQ_ID FROM XFC_CMD_SPLN_REQ WHERE ENTITY = '{fundcenter}' AND WFScenario_Name = '{WFScenario}'
                 ) AS Combined"
-BRApi.ErrorLog.LogMessage(si,"SQL: " & SQL)
+'BRApi.ErrorLog.LogMessage(si,"SQL: " & SQL)
 			
 			Dim dtREQID As DataTable = New DataTable()
 			Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
@@ -49,7 +49,7 @@ BRApi.ErrorLog.LogMessage(si,"SQL: " & SQL)
 			modifiedFC = modifiedFC.Replace("_General", "")
 			If modifiedFC.Length = 3 Then modifiedFC = modifiedFC & "xx"
 			Dim nextREQ_ID As String = modifiedFC &"_" & nextID.ToString("D5")
-BRApi.ErrorLog.LogMessage(si,"nextREQ_ID: " &nextREQ_ID)				
+'BRApi.ErrorLog.LogMessage(si,"nextREQ_ID: " &nextREQ_ID)				
 
 			Return nextREQ_ID
         End Function
