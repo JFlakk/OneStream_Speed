@@ -36,16 +36,16 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				Me.globals = globals
 				Me.Global_Functions = New OneStream.BusinessRule.Finance.Global_Functions.MainClass(si,globals,api,args)
 #End Region
-
+BRApi.ErrorLog.LogMessage(SI, "args.CustomCalculateArgs.FunctionName.ToLower() " & args.CustomCalculateArgs.FunctionName.ToLower())
 				Select Case args.CustomCalculateArgs.FunctionName.ToLower()
 					Case "copycprobetotarget"
 						Me.CopycPROBEtoTGT()
-					Case "loaddisttocube"
-						Me.Load_TGT_Data_to_Cube("Dist")
-					Case "procdistout"
-						Me.Process_TGT_Dist_Out()
+					Case "tgtdst_load_targets_to_cube"
+						Me.Load_TGT_Data_to_Cube("TGT_Dist")
 					Case "loadwhtocube"
 						Me.Load_TGT_Data_to_Cube("WH")
+					Case "procdistout"
+						Me.Process_TGT_Dist_Out()
 				End Select
 
             Catch ex As Exception
@@ -56,11 +56,13 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 #Region "CopycPROBEtoTGT"		
 		Private Sub CopycPROBEtoTGT()
 			Dim apiCube = api.Pov.Cube.Name
+			Dim src_DataBuffer As New DataBuffer()
 
 			Dim apiYear As Integer = TimeDimHelper.GetYearFromId(api.Pov.Time.MemberId)	
 			Dim apiYear2Char As String = Strings.Right(apiYear, 2) 
 			Dim scenario As String = args.CustomCalculateArgs.NameValuePairs.XFGetValue("cPROBEscen")
 			brapi.ErrorLog.LogMessage(si,$"Hit {apiCube} - {api.pov.scenario.Name} - {api.pov.entity.name}")
+		
 			'Build SQL to return list of requirements that fit the user's criterias
 			Dim SQL As String
 			SQL = $"SELECT Appropriation_CD, Dollar_Type, Partial_Fund_CD  
@@ -84,14 +86,21 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				End If
 			Next
 			
-			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula("FilterMembers(RemoveNoData(V#Periodic),[A#Ctrl_Target_In])")
+			Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,api.Pov.Entity.Name,api.Pov.Time.Name)
+			If Val_Approach("CMD_Val_Pay_NonPay_Approach") = "Yes" Then
+				Dim Src_Data As String = $"E#{apiCube}:S#{scenario}:C#Aggregated:V#Periodic:O#Top:I#Top:F#Tot_Position:U5#Top:U6#Top:U7#Top:U8#Top"
+				Src_DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData({Src_Data}),[A#BO5])")
+			End If
+			
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula("FilterMembers(RemoveNoData(V#Periodic),[A#Target],[O#AdjInput],[F#L2_Ctrl_Intermediate])")
 			Dim destBuffer As DataBuffer = New DataBuffer(currCubeBuffer.CommonDataBufferCellPk)
 
             Dim ClearCubeData As DataBuffer = New DataBuffer()
 			
-			Dim Src_Calc As String = $"Cb#{apiCube}:E#{apiCube}:S#{scenario}:T#{apiYear}:A#BO1:O#BeforeAdj:I#Top:F#Total_Position:U5#Top:U6#Top:U7#Top"
+			Dim Src_Calc As String = $"E#{apiCube}:S#{scenario}:C#Aggregated:V#Periodic:O#Top:I#Top:A#BO1:F#Tot_Position:U5#Top:U6#Top:U7#Top:U8#Top"
+			BRAPI.ErrorLog.LogMessage(SI, $"Hit: {Src_Calc}")
 			Dim Src_CalcBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula("FilterMembers(" & Src_Calc & ")")
-			Src_CalcBuffer.LogDataBuffer(api,"SRC",200)
+			Src_CalcBuffer.LogDataBuffer(api,$"SRC: {api.pov.entity.Name}",200)
 
 			For Each Src_CalcCell As DataBufferCell In Src_CalcBuffer.DataBufferCells.Values
 				Dim destU1 As String
@@ -101,15 +110,33 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					destU1 = Src_CalcCell.DataBufferCellPk.GetUD1Name(api).ToLower & "_General"
 				End If
 				
-				Dim Destcell As New DataBufferCell(UpdateCellDefinition(Src_CalcCell,"Ctrl_Target_In","Baseline","Forms","None",destU1,,,,"None","None","None"))
+				If Val_Approach("CMD_Val_Pay_NonPay_Approach") = "Yes" Then
+					
+					Dim Pay_TGT As Decimal = GetBCValue(Src_CalcCell,Src_DataBuffer,"BO5")
+					Dim NonPay_TGT = Src_CalcCell.CellAmount-Pay_TGT
+					
+					Dim DestNonPaycell As New DataBufferCell(UpdateCellDefinition(Src_CalcCell,"Target","L2_Ctrl_Intermediate","AdjInput","None",destU1,,,,"None","Non_Pay","None","None"))
+	
+					UpdateValue(DestNonPaycell, CurrCubeBuffer, destBuffer, NonPay_TGT)
+					CurrCubeBuffer.DataBufferCells.Remove(DestNonPaycell.DataBufferCellPk)
+					
+					Dim DestPaycell As New DataBufferCell(UpdateCellDefinition(Src_CalcCell,"Target","L2_Ctrl_Intermediate","AdjInput","None",destU1,,,,"None","Pay_Benefits","None","None"))
+	
+					UpdateValue(DestPaycell, CurrCubeBuffer, destBuffer, Pay_TGT)
+					CurrCubeBuffer.DataBufferCells.Remove(DestPaycell.DataBufferCellPk)
+					BRAPI.ErrorLog.LogMessage(SI, $"Hit: {Src_CalcCell.CellAmount} - {Pay_TGT}")
 
-				UpdateValue(Destcell, CurrCubeBuffer, destBuffer, Src_CalcCell.CellAmount)
-				CurrCubeBuffer.DataBufferCells.Remove(Destcell.DataBufferCellPk)
+				Else
+					Dim Destcell As New DataBufferCell(UpdateCellDefinition(Src_CalcCell,"Target","L2_Ctrl_Intermediate","AdjInput","None",destU1,,,,"None","CostCat_General","None","None"))
+	
+					UpdateValue(Destcell, CurrCubeBuffer, destBuffer, Src_CalcCell.CellAmount)
+					CurrCubeBuffer.DataBufferCells.Remove(Destcell.DataBufferCellPk)
+				End If
 
 			Next
 
 			Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
-
+destBuffer.LogDataBuffer(api,$"Dest: {api.pov.Cons.Name}",200)
 			api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,,True)
 			destBuffer.DataBufferCells.Clear()
 
@@ -127,90 +154,60 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 #End Region
 
 #Region "Load_TGT_Data_to_Cube"
-		Public Sub Load_TGT_Data_to_Cube(ByVal loadType As String)
+		Public Sub Load_TGT_Data_to_Cube(ByVal loadType As String)			
 			'Load_Type Param - Status Updates, New Req Creation, Rollover, Mpr Req Creation, Copy
-			Dim POVPeriodNum As Integer = api.Time.GetPeriodNumFromId(api.Time.GetIdFromName(api.Pov.Time.Name))
-			Dim POVYear As Integer = api.Time.GetYearFromId(api.Time.GetIdFromName(api.Pov.Time.Name))
-			Dim StatusbyFundsCenter As String = globals.GetStringValue($"FundsCenterStatusUpdates - {api.pov.entity.name}",String.Empty)
-			If StatusbyFundsCenter <> String.Empty
-				StatusbyFundsCenter = $",[{StatusbyFundsCenter}]"
+			Dim tgt_Acct As String = "Target"
+			Dim tgt_Flow As String = "L3_Dist_Intermediate_In"
+			Dim tgt_Origin As String = "AdjInput"
+			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")	
+			Dim EntBase = Not BRApi.Finance.Members.HasChildren(si, entDimPk, api.Pov.Entity.MemberId)
+			Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,api.Pov.Entity.Name)
+			If EntityLevel.XFContainsIgnoreCase("L3") And EntBase = True And loadType = "TGT_DIST"
+				tgt_Flow = "L3_Dist_Final"
+				tgt_Origin = "Import"
+			Else If EntityLevel.XFContainsIgnoreCase("L4") And EntBase = True And loadType = "TGT_DIST"
+				tgt_Flow = "L4_Dist_Final"
+				tgt_Origin = "Import"
+			Else If EntityLevel.XFContainsIgnoreCase("L4") And EntBase = False And loadType = "TGT_DIST"
+				tgt_Flow = "L4_Dist_Intermediate_In"
+			Else If EntityLevel.XFContainsIgnoreCase("L5") And EntBase = True And loadType = "TGT_DIST"
+				tgt_Flow = "L5_Dist_Final"
+				tgt_Origin = "Import"
+			Else If EntityLevel.XFContainsIgnoreCase("L2") And EntBase = False And loadType = "TGT_WH"
+				tgt_Flow = "L2_Dist_Final"
+				tgt_Acct = "TGT_WH"
+			Else If EntityLevel.XFContainsIgnoreCase("L3") And EntBase = False And loadType = "TGT_WH"
+				tgt_Flow = "L3_Dist_Final"
+				tgt_Acct = "TGT_WH"
+			Else If EntityLevel.XFContainsIgnoreCase("L4") And EntBase = False And loadType = "TGT_WH"
+				tgt_Flow = "L4_Dist_Final"
+				tgt_Acct = "TGT_WH"
 			End If
-			
-			Dim TGT_Dist_DT = Brapi.Utilities.GetSessionDataTable(si,si.UserName, "CMD_PGM_Import")
-			
-			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(REMOVEZeros(V#Periodic),[O#Import]{StatusbyFundsCenter})")
-	
+			Dim TGT_Import_DT As DataTable = Brapi.Utilities.GetSessionDataTable(si,si.UserName, $"CMD_TGT_Import_{loadType}_{api.pov.scenario.Name}")	
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(REMOVEZeros(V#Periodic),[A#{tgt_Acct}],[O#{tgt_Origin}],[F#{tgt_Flow}])")
+
 			Dim destBuffer As DataBuffer = New DataBuffer()
 			Dim ClearCubeData As DataBuffer = New DataBuffer()
 			'Select form the DataTable
             'Filter rows by FundsCenter = current POV entity and loop them into a DataBuffer
-            Dim filteredRows = TGT_Dist_DT.AsEnumerable().
+            Dim filteredRows = TGT_Import_DT.AsEnumerable().
                 Where(Function(r) Not IsDBNull(r("FundsCenter")) AndAlso
-                                  String.Equals(r("FundsCenter").ToString(), api.Pov.Entity.Name, StringComparison.OrdinalIgnoreCase)).
-                ToList()
-
+                                  String.Equals(r("FundsCenter").ToString(), api.Pov.Entity.Name, StringComparison.OrdinalIgnoreCase)).ToList()
             For Each row As DataRow In filteredRows
-                Dim cellPk As New DataBufferCellPk()
+                Dim tgtcellPk As New DataBufferCellPk()
                 Dim status As New DataCellStatus(True)
-                Dim dbCell As New DataBufferCell(cellPk, 0D, status)
-
-                'Set common dimension values if present in the datatable
-                If TGT_Dist_DT.Columns.Contains("Account") AndAlso Not IsDBNull(row("Account")) Then
-                    cellPk.SetAccount(api, row("Account").ToString())
-                End If
-                If TGT_Dist_DT.Columns.Contains("IC") AndAlso Not IsDBNull(row("IC")) Then
-                    cellPk.SetIC(api, row("IC").ToString())
-                End If
-                If TGT_Dist_DT.Columns.Contains("Flow") AndAlso Not IsDBNull(row("Flow")) Then
-                    cellPk.SetFlow(api, row("Flow").ToString())
-                End If
-
-                'Set origin to Import (matches prior behaviour)
-                cellPk.SetOrigin(api, "Import")
-
-                'Set UD1..UD8 if they exist
-                For i As Integer = 1 To 8
-                    Dim colName = $"UD{i}"
-                    If TGT_Dist_DT.Columns.Contains(colName) AndAlso Not IsDBNull(row(colName)) Then
-                        Select Case i
-                            Case 1 : cellPk.SetUD1(api, row(colName).ToString())
-                            Case 2 : cellPk.SetUD2(api, row(colName).ToString())
-                            Case 3 : cellPk.SetUD3(api, row(colName).ToString())
-                            Case 4 : cellPk.SetUD4(api, row(colName).ToString())
-                            Case 5 : cellPk.SetUD5(api, row(colName).ToString())
-                            Case 6 : cellPk.SetUD6(api, row(colName).ToString())
-                            Case 7 : cellPk.SetUD7(api, row(colName).ToString())
-                            Case 8 : cellPk.SetUD8(api, row(colName).ToString())
-                        End Select
-                    End If
-                Next
-
-                'Determine amount: prefer period column FY_<POVPeriodNum>, fallback to common amount columns
-                Dim amount As Decimal = 0D
-                Dim periodCol As String = $"FY_{POVPeriodNum}"
-                If TGT_Dist_DT.Columns.Contains(periodCol) AndAlso Not IsDBNull(row(periodCol)) Then
-                    Decimal.TryParse(row(periodCol).ToString(), amount)
-                ElseIf TGT_Dist_DT.Columns.Contains("Amount") AndAlso Not IsDBNull(row("Amount")) Then
-                    Decimal.TryParse(row("Amount").ToString(), amount)
-                ElseIf TGT_Dist_DT.Columns.Contains("Tot_Annual") AndAlso Not IsDBNull(row("Tot_Annual")) Then
-                    Decimal.TryParse(row("Tot_Annual").ToString(), amount)
-                End If
-
-                'Only add non-zero amounts
-                If amount <> 0D Then
-                    dbCell.CellAmount = amount
-                    destBuffer.DataBufferCells.Add(dbCell.DataBufferCellPk, dbCell)
-
-                    'Remove any matching cell from current cube buffer so it will be cleared later (keeps behaviour consistent with other code)
-                    If CurrCubeBuffer.DataBufferCells.ContainsKey(dbCell.DataBufferCellPk) Then
-                        CurrCubeBuffer.DataBufferCells.Remove(dbCell.DataBufferCellPk)
-                    End If
-                End If
+                Dim tgtDataCell As New DataBufferCell(tgtcellPk, 0, status)				
+				Dim Destcell As New DataBufferCell(UpdateCellDefinition(tgtDataCell,tgt_Acct,tgt_Flow,tgt_Origin,"None",row("FundsCode").ToString(),row("MDEP").ToString(),row("APE9").ToString(),"None","None","None","None"))
+                'Determine amount: prefer period column FY_<POVPeriodNum>, fallback to common amount column	
+				If Not IsDBNull(row("Amount")) AndAlso row("Amount") <> 0 Then
+					Destcell.CellAmount = Convert.ToDecimal(row("Amount"))
+					destBuffer.DataBufferCells.Add(Destcell.DataBufferCellPk,Destcell)
+					CurrCubeBuffer.DataBufferCells.Remove(Destcell.DataBufferCellPk)
+				End If
             Next
 			'Delete from the DatatABLE
-
+'destBuffer.LogDataBuffer(api,"@ DataBuffer: " & api.Pov.Entity.Name & " : "  & api.Pov.Time.Name ,1000)
 			Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
-
 			If destBuffer.DataBufferCells.Count > 0 Then
 				api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,, True)
 				destBuffer.DataBufferCells.Clear()
