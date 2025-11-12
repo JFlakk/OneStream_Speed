@@ -27,14 +27,35 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				Me.globals = globals
 				Me.api = api
 				Me.args = args
-				If args.FunctionName.XFEqualsIgnoreCase("SayHello") Then
-					Return "Hello"
-				End If
+				Select Case args.FunctionName
+					Case Is = "cPRPOBE_posAssignment"
+						Return cPRPOBE_posAssignment()
+				End Select
 
 				Return Nothing
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
 		End Function
+
+
+ 		Private Function cPRPOBE_posAssignment() As String
+                  Dim scenList As New List(Of String)
+                  Dim scenDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "S_RMW")
+                  Dim scenmbrList As New List(Of MemberInfo)
+                  scenmbrList = BRApi.Finance.Members.GetMembersUsingFilter(si, scenDimPk, $"S#CMD_PGM.Base, S#CMD_TGT.Base, S#CMD_SPLN.Base, S#HQ_SPLN.Base", True)
+                  For Each scenmbr As memberInfo In scenmbrList
+                        Dim timeID As Integer = BRApi.Finance.Scenario.GetWorkflowTime(si, scenmbr.Member.MemberID)                       
+                        Dim WFTime As String = BRApi.Finance.Time.GetNameFromId(si, timeId)
+                        Dim monthly As String = String.Empty
+                        If scenmbr.Member.Name.xfcontainsignorecase("SPLN")
+                              monthly = "M1"
+                        End If
+                        scenList.Add($"S#{scenmbr.Member.Name}:T#{WFTime}{monthly}")            
+                  Next
+                  Return String.Join(",",scenList)
+                  
+		End Function
+		
 	End Class
 End Namespace
