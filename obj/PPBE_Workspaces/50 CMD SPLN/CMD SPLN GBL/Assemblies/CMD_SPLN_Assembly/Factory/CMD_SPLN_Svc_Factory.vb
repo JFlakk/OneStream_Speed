@@ -40,7 +40,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     	'Return New WsasDynamicDashboards()
 
                     Case Is = WsAssemblyServiceType.DynamicCubeView
-                    	Return New CMD_SPLN_Dyn_CV_Svc()
+                    	'Return New CMD_SPLN_Dyn_CV_Svc()
 
                     Case Is = WsAssemblyServiceType.DynamicGrid
                         Return New CMD_SPLN_Dyn_Grid_Svc()
