@@ -42,23 +42,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						'This makes sure there is only one import running at a time to make sure data is not overidden.
 						'DEV NOTE: This may not be necessary with the new approach of adding the user into the loading tables
 						If args.FunctionName.XFEqualsIgnoreCase("ImportTGT") Then
-							Try
-								'BRApi.Dashboards.Parameters.SetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import","completed")
-								Dim runningImport As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import")
-								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
-								If Not runningImport.XFEqualsIgnoreCase("running")
-									BRApi.Dashboards.Parameters.SetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import","running")
-									
-									Me.ImportTGT()
-								Else
-									Throw New System.Exception("There is an import running currently." & vbCrLf & " Please try in a few minutes.")
-								End If
-								
-									BRApi.Dashboards.Parameters.SetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import","completed")
-							Catch ex As Exception
-								BRApi.Dashboards.Parameters.SetLiteralParameterValue(si, False, "var_REQPRO_IMPORT_0CaAa_A_Requirement_Singular_Import","completed")
-								Throw ErrorHandler.LogWrite(si, New XFException(si,ex))
-							End Try
+							dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+							Me.ImportTGT()
+						Else If args.FunctionName.XFEqualsIgnoreCase("ImportWH") Then
+							dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+							Me.ImportWH()
 						End If
 #End Region 
 				End Select
@@ -75,6 +63,77 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			
 			Dim timeStart As DateTime = System.DateTime.Now
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+
+			Dim mbrComd = BRApi.Finance.Metadata.GetMember(si, dimTypeId.Entity, wfInfoDetails("CMDName")).Member
+			Dim comd As String = BRApi.Finance.Entity.Text(si, mbrComd.MemberId, 1, 0, 0)
+			
+			Dim fileName As String = args.NameValuePairs.XFGetValue("FileName") 
+
+			Dim FilePath As String = $"{BRApi.Utilities.GetFileShareFolder(si, FileshareFolderTypes.FileShareRoot,Nothing)}/{FileName}"
+			'Confirm source file exists
+			'Dim filePath As String = args.NameValuePairs.XFGetValue("FilePath") 
+'			Dim fullFile = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.PrepImportFile(si,filePath)
+
+	        Dim validFile As Boolean = True
+			Dim ImportTGT_DT As New DataTable()
+			Using sr As New StreamReader(System.IO.File.OpenRead(filePath))
+				ImportTGT_DT = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.GetCsvDataReader(si, globals, sr, ",", Dist.ColumnMaps)
+			End Using
+			If ImportTGT_DT Is Nothing	Then
+				BRApi.ErrorLog.LogMessage(si, "Blank")
+			Else 
+				BRApi.ErrorLog.LogMessage(si, "ImportTGT_DT count = " & ImportTGT_DT.Rows.count)
+			End If
+			ImportTGT_DT.TableName = "ImportTGT_DT"
+			
+			'Check for errors
+			Dim errRow As DataRow = ImportTGT_DT.AsEnumerable().
+										FirstOrDefault(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors")) )
+										
+			If errRow IsNot Nothing Then validFile = False
+'BRApi.ErrorLog.LogMessage(si, "errRow: " & sScenario & " " & ImportTGT_DT.Rows.Count & ", passed: " & validFile)	
+				
+			'Write to the cube
+			
+
+			Dim stastusMsg As String = ""
+			If Not validFile Then
+				stastusMsg = "LOAD FAILED" & vbCrLf & fileName & " has invalid data." & vbCrLf & vbCrLf & $"To view import error(s), please take look at the column titled ""ValidationError""."
+			Else 
+				Me.UpdateUD3(ImportTGT_DT)
+				stastusMsg = "IMPORT PASSED" & vbCrLf 
+			End If
+
+			BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", stastusMsg)
+			Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_TGT_Import_" & sScenario,  ImportTGT_DT)
+			
+			Brapi.Utilities.SetSessionDataTable(si,si.UserName, $"CMD_TGT_Import_TGT_Dist_{sScenario}", ImportTGT_DT)	
+
+			'Load to cube
+			If validFile Then
+				
+				Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"40 CMD TGT")
+				Dim EntityList As String = "E#" & String.Join(",E#", ImportTGT_DT.AsEnumerable().Select(Function(row) row.Field(Of String)("FundsCenter"))) & ""
+	Brapi.ErrorLog.LogMessage(si,"@HERE1" &String.Join(",",EntityList))
+				Dim customSubstVars As New Dictionary(Of String, String) 
+				customSubstVars.Add("EntityList",EntityList)
+				BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_TGT_Load_TGT_Dist_to_Cube", customSubstVars)
+			End If
+			
+Brapi.ErrorLog.LogMessage(si,"Done")
+
+		Return Nothing
+		End Function
+#End Region
+
+#Region "TGT Mass Import"
+		Public Function	ImportWH() As Object							
+			Dim Dist As New CMD_TGT_Dist()
+BRApi.ErrorLog.LogMessage(si, "in TGT Import")			
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			
+			Dim timeStart As DateTime = System.DateTime.Now
 			Dim sScenario As String = "" 'Scenario will be determined from the Cycle.
 
 			Dim mbrComd = BRApi.Finance.Metadata.GetMember(si, dimTypeId.Entity, wfInfoDetails("CMDName")).Member
@@ -82,12 +141,40 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 			'Confirm source file exists
 			Dim filePath As String = args.NameValuePairs.XFGetValue("FilePath") 
-			Dim fullFile = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.PrepImportFile(si,filePath)
+'			Dim fullFile = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.PrepImportFile(si,filePath)
 
 	        Dim validFile As Boolean = True
-			Dim ImportTGT As New DataTable()
-			ImportTGT = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.GetCsvDataReader(si, globals, sr, ",", Dist)
+			Dim ImportTGT_DT As New DataTable()
+			Using sr As New StreamReader(System.IO.File.OpenRead(filePath))
+				ImportTGT_DT = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.GetCsvDataReader(si, globals, sr, ",", Dist.ColumnMaps)
+			End Using
+			
+			'Check for errors
+			Dim errRow As DataRow = ImportTGT_DT.AsEnumerable().
+										FirstOrDefault(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors")) )
+										
+			If errRow IsNot Nothing Then validFile = False
 
+'			Dim REQDataTable As New DataTable("XFC_CMD_PGM_REQ")
+'			Dim REQDetailDataTable As New DataTable("XFC_CMD_PGM_REQ_Details")
+			
+'            If validFile Then
+'				'get req_id and guid
+'				UpdateColsForDatabase(Importreq_DT)
+'				PostProcessNewREQ(ImportREQ_DT)
+				
+''BRApi.ErrorLog.LogMessage(si, "Post proc completed " & Importreq_DT.TableName)					
+'				'Split fullDataTable and insert into the two tables
+'				Me.SplitAndInsertIntoREQTables(Importreq_DT, REQDataTable,REQDetailDataTable)
+				
+'            End If
+			
+			'write to cube
+'			Dim REQ_IDs As New List(Of String)
+'			For Each r As DataRow In ImportTGT_DT.Rows
+'				REQ_IDs.Add(r("REQ_ID").ToString)	
+'			Next
+			
 			'If the validation failed, write the error out.
 			'If there are more than ten, we show only the first ten messages for the sake of redablity
 '			Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
@@ -106,10 +193,23 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 '			BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", uploadStatus)
 '			Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_IPGM_mport",  fullDataTable)
 
+'Get Entity List
+'Run DM Sequence to load data into Cube
 		Return Nothing
 		End Function
 #End Region
 
+#Region "Helper Functions"
+		Public  Function UpdateUD3(ByRef importTGT_DT As DataTable) As Object
+			
+			For Each r As DataRow In importTGT_DT.Rows
+				r("APE9") = r("FundsCode").ToString().Trim & "_" & r("APE9").ToString().Trim
+Brapi.ErrorLog.LogMessage(si,"APE: " & r("APE9"))
+				
+			Next
+			Return Nothing
+	End Function
 
+#End Region
 	End Class
 End Namespace

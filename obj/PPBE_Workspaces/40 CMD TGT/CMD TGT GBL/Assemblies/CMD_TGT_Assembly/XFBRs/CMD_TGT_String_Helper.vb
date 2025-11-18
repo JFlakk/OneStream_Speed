@@ -40,23 +40,23 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 					wfCMDLevel = "SubCMD"
 				End If
 				
-				Select Case args.FunctionName.ToLower()
-					Case "gettgtreviewdist"
+				Select Case args.FunctionName
+					Case Is = "GetTGTReviewDist"
 						Return Me.GetTGTReviewDist()
-					Case "returnentity"
+					Case "ReturnEntity"
 						Return Me.ReturnEntityList()
-					Case "returnmodifyflow"
+					Case "ReturnModifyFlow"
 						Return Me.ReturnModifyFlow()
-					Case "returnmodifyorigin"
+					Case "ReturnModifyOrigin"
 						Return Me.ReturnModifyOrigin()
-					Case "returnentctrlacct"
+					Case "ReturnEntCtrlAcct"
 						Return Me.ReturnEntCtrlAcct()
-					Case "getcascadingmbrfilter"
-						Return Me.GetCascadingMbrFilter()
-					Case "getpaynonpay"
+					Case "GetPayNonPay"
 						Return Me.GetPayNonPay()
-					Case "getentflow"
+					Case "GetEntFlow"
 						Return Me.GetEntFlow()
+					Case "GetNewTGTDist_EntAcctList"
+						Return Me.GetNewTGTDist_EntAcctList()
 				End Select				
 
 #Region "GetProfileEntity"
@@ -123,23 +123,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				End If
 #End Region
 
-#Region "CopySourceAccountScenario"
-'Called By CMD_TGT_SelectTopLineTargetsInitDistrVsSpendPlan
-				If args.FunctionName.XFEqualsIgnoreCase("CopySourceAccountScenario") Then
-						Dim sWFTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-						Dim sSource As String = args.NameValuePairs.XFGetValue("SourcePosition")
-						Dim sPBScenario As String = args.NameValuePairs.XFGetValue("PBScenario")
-		
-						If sSource.XFContainsIgnoreCase("cProbe") Then
-							If String.IsNullOrWhiteSpace(sPBScenario) Then
-								Return "S#None" & ":A#BO1:Name(Copy From cPROBE)"
-							End If	
-							Return "S#" & sPBScenario & ":A#BO1:Name(Copy From cPROBE)"
-						Else
-							Return "S#Initial_Distribution_FY" & sWFTime & ":A#Total_Appr_Distr_Budget:Name(Copy From Initial Distribution)"
-						End If
-				End If
-#End Region
 
 #Region "TargetLockCheck"
 				If args.FunctionName.XFEqualsIgnoreCase("TargetLockCheck") Then
@@ -299,167 +282,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
 		End Function
-		
-#Region "GetCascadingMbrFilter"
-		Public Function GetCascadingMbrFilter() As String
-			Try
-				' Read incoming args
-				Dim cmd As String = args.NameValuePairs.XFGetValue("cmd", "NA")
-				Dim entity As String = args.NameValuePairs.XFGetValue("entity", "NA")
-				Dim appn As String = args.NameValuePairs.XFGetValue("appn", String.Empty)
-				Dim mdep As String = args.NameValuePairs.XFGetValue("mdep", "NA")
-				Dim sag As String = args.NameValuePairs.XFGetValue("sag", "NA")
-				Dim ape As String = args.NameValuePairs.XFGetValue("ape", "NA")
-				Dim dollarType As String = args.NameValuePairs.XFGetValue("dollarType", "NA")
-				Dim status As String = args.NameValuePairs.XFGetValue("status", "NA")
-				Dim returnType As String = args.NameValuePairs.XFGetValue("returnType", "NA")
-				Dim cvName As String = args.NameValuePairs.XFGetValue("cvName", "NA") '"CMD_PGM_cPROBE_FDX_CV"
-
-				' Build a compact signature for Entity + Appn only
-				Dim currRebuildparams As String = String.Concat(cmd, "|", entity, "|", appn, "|", status)
-				
-				' Use workspace session settings to persist last seen signatures per user/workspace
-				Dim cacheCat As String = $"CMD_TGT_CascadingFilterCache_{cvName}"
-				Dim filterDTparams As String = $"CMD_TGT_FilterDTparams_{cvName}"
-				Dim rebuildparams As String = "CMD_TGT_rebuildparams_{cvName}"
-
-				Dim prevRebuildParams As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, "")
-				Dim needsRebuild As Boolean = Not String.Equals(prevRebuildParams, currRebuildparams, StringComparison.Ordinal)
-
-				Dim dt As New DataTable 
-BRApi.Errorlog.LogMessage(si,$"Hit here - {entity} - {returnType} - {appn} - {Cmd} - {needsRebuild}")
-
-				If needsRebuild Then
-					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, currRebuildparams)
-					If cvName.Substring(0,7) = "CMD_TGT"
-						BRApi.Errorlog.LogMessage(si,$"Hit This")
-						dt = GetFDXCascadingMbrFilter(cvName,entity,appn)
-					Else
-						BRApi.Errorlog.LogMessage(si,$"Hit Else")
-						dt = GetFDXCascadingMbrFilter(cvName,Cmd,appn)
-					End If
-				Else
-					dt = BRApi.Utilities.GetSessionDataTable(si, si.UserName, "CMD_TGT_CascadingFilter")
-				End If
-				
-				Dim returnTypeMap As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase) From {
-					{"APPN", "UD1"},
-					{"MDEP", "UD2"},
-					{"SAG",  "UD3"},
-					{"APE",  "UD3"},
-					{"DollarType",  "UD4"}
-				}
-
-				' Determine which physical column (if any) corresponds to the requested returnType
-				Dim selectedColumn = String.Empty
-				selectedColumn = returnTypeMap.XFGetValue(returnType,"Not Found")
-				If Not dt Is Nothing Then
-
-					' Build a deterministic signature of the inputs (full)
-					Dim currFilterDTparams As String = String.Concat(entity, "|", appn, "|", status, "|", returnType, "|", mdep, "|", sag, "|", ape, "|", dollarType)
-	
-					Dim prevFilterDTparams As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, filterDTparams, "")
-	
-	
-					Dim filterParts As New List(Of String)
-	
-					' Only add filters when parameter is provided and not "NA"
-					If Not String.IsNullOrWhiteSpace(mdep) AndAlso Not mdep.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
-						filterParts.Add("[UD2] = '" & mdep.Replace("'", "''") & "'")
-					End If
-	
-					If Not String.IsNullOrWhiteSpace(ape) AndAlso Not ape.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
-						filterParts.Add("[UD3] = '" & ape.Replace("'", "''") & "'")
-					End If
-	
-					If Not String.IsNullOrWhiteSpace(dollarType) AndAlso Not dollarType.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
-						filterParts.Add("[UD4] = '" & dollarType.Replace("'", "''") & "'")
-					End If
-	
-	
-					Dim filterExpr As String = If(filterParts.Count > 0, String.Join(" AND ", filterParts), String.Empty)
-					' Filter dt into a DataTable so it can be converted to a DataView
-					Dim filteredDt As DataTable
-					If String.IsNullOrEmpty(filterExpr) Then
-						filteredDt = dt.Copy()
-					Else
-						filteredDt = dt.Clone()
-						Dim selectedRows() As DataRow = dt.Select(filterExpr)
-						For Each row As DataRow In selectedRows
-							filteredDt.ImportRow(row)
-						Next
-					End If
-					BRApi.Utilities.SetSessionDataTable(si, si.UserName, "CMD_TGT_CascadingFilter",filteredDt)
-	
-					Dim dv As DataView = New DataView(filteredDt)
-					' Map returnType values to column keys (case-insensitive)
-
-					If selectedColumn <> "Not Found"
-	
-						dv.RowFilter = $"{selectedColumn} IS NOT NULL AND {selectedColumn} <> ''"
-						dv.Sort = selectedColumn & " ASC"
-						Dim mlDT = dv.ToTable(True, selectedColumn) ' Distinct values only
-		
-						Dim result As String = String.Empty
-						For Each dr As DataRow In mlDT.Rows
-							Dim val As String = dr(selectedColumn).ToString()
-							If Not String.IsNullOrWhiteSpace(val) Then
-								If String.IsNullOrEmpty(result) Then
-									result = $"{selectedColumn}#{val}"
-								Else
-									result &= $",{selectedColumn}#{val}"
-								End If
-							End If
-						Next
-
-						Return result
-					Else
-						Return String.Empty
-					End If
-				Else
-'BRapi.ErrorLog.LogMessage(si,"Hit Empty")
-					Return $"{selectedColumn}#None"
-				End If					
-
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try
-		End Function
-#End Region 'Updated 10/16/2025
-		
-#Region "Helper Functions"
-	
-		Private Function GetFDXCascadingMbrFilter(ByVal cvName As String,ByVal entFilter As String,ByVal appn As String) As DataTable
-			Dim dt As New DataTable()
-			Dim wsName As String = "00 GBL"
-			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim CprobeScen As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetSrccPROBEScen(si,wfInfoDetails("ScenarioName"))
-
-			Dim entDim = $"E_{wfInfoDetails("CMDName")}"
-			Dim scenDim = "S_RMW"
-			Dim scenFilter = $"S#{CprobeScen}"
-			Dim timeFilter = String.Empty '$"T#{wfInfoDetails("TimeName")}"
-			Dim NameValuePairs = New Dictionary(Of String,String)
-'			If appn = String.Empty
-'				appn = "OMA"
-'			End If
-			NameValuePairs.Add("ML_GBL_APPN",appn)
-			
-			If cvName.Substring(0,7) = "CMD_TGT"
-				wsName = "40 CMD TGT"
-				scenFilter = $"S#{wfInfoDetails("ScenarioName")}"
-				NameValuePairs.Remove("ML_GBL_APPN")
-			End If
-			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
-			Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
-			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 1, False)
-If dt Is Nothing
-	BRAPI.ErrorLog.LogMessage(si,$"Hit NOthing - {wfInfoDetails("ScenarioName")} - {CprobeScen}")
-End If
-			Return dt
-		End Function
-#End Region 'Updated 10/16/2025
 
 #Region "Get Pay/Non-Pay"
 		Public Function GetPayNonPay() As String
@@ -472,17 +294,18 @@ End If
 				Dim mbrInfo As MemberInfo = BRApi.Finance.Members.GetMemberInfo(si, dimType.Entity.Id, Entity)
 				Entity = BRApi.Finance.Entity.Text(si, mbrInfo.Member.MemberId, 1, DimConstants.Unknown, DimConstants.Unknown)
 			End If
+			BRAPI.ErrorLog.LogMessage(si,"Hit {Entity}")
 			Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,Entity,wfInfoDetails("TimeName"))
 			If Val_Approach("CMD_Val_Pay_NonPay_Approach") = "Yes"
 				If PayNonPayType = "cPROBEBO5"
 					Return "A#BO5"
-				ElseIf PayNonPayType = "TopLineAdj" Or PayNonPayType = "ModifyTGTDistWH" Or PayNonPayType = "NewTGTDist" Or PayNonPayType = "NewWH" Then
+				ElseIf (PayNonPayType = "TopLineAdj" Or PayNonPayType = "ModifyTGTDistWH" Or PayNonPayType = "NewDistWH") Then
 					Return "U6#CostCat,U6#Pay_Benefits,U6#Non_Pay"
 				End If
 			Else
 				If PayNonPayType = "cPROBEBO5" 
 					Return "A#NA"
-				ElseIf (PayNonPayType = "TopLineAdj" Or PayNonPayType = "ModifyTGTDistWH" Or PayNonPayType = "NewTGTDist" Or PayNonPayType = "NewWH") Then
+				ElseIf (PayNonPayType = "TopLineAdj" Or PayNonPayType = "ModifyTGTDistWH" Or PayNonPayType = "NewDistWH") Then
 					Return "U6#CostCat_General"
 				End If
 			End If
@@ -496,19 +319,89 @@ End If
 #Region "Get Entity Flow"
 		Public Function GetEntFlow() As String
 			Dim Entity As String = args.NameValuePairs.XFGetValue("Entity","NA")
-			Dim newRowType As String = args.NameValuePairs.XFGetValue("newRowType","NA")
-			Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Entity)
-			If newRowType = "WH"
-				Return $"{entityLevel}_Dist_Final"
+			Dim flowType As String = args.NameValuePairs.XFGetValue("flowType","NA")
+			Dim entityLevel As String 
+			If Entity = "NA" Or Entity = String.Empty Then
+				entityLevel = "L2"
 			Else
-				Return $"{entityLevel}_Ctrl_Intermediate"
+				entityLevel = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Entity)
+			End If
+			If flowType = "Control Target"
+				Return $"A#Target:F#{entityLevel}_Ctrl_Intermediate:Name(Control Target)"
+			ElseIf flowType = "Total Out"
+				Return $"A#TGT_Target_WH:F#{entityLevel}_Dist_Out:Name(Total WH + Distributed)"
+			ElseIf flowType = "Control Target Out"
+				Return $"A#Target:F#{entityLevel}_Dist_Intermediate_Out:Name(Total Distributed)"
+			ElseIf flowType = "WithHold"
+				Return $"A#TGT_WH:F#{entityLevel}_Dist_Final:Name(Total Withhold)"
 			End If
 			
 			
 		End Function
 
-
 #End Region
+
+		Public Function GetNewTGTDist_EntAcctList() As String
+			
+			Dim entMbrFilterList As New Dictionary(Of String, String)
+			Dim Entity As String = args.NameValuePairs.XFGetValue("Entity","NA")
+			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")		
+			Dim ent_List As New List(Of MemberInfo) 
+			Dim topMbrIndent As Integer = 2
+			Dim indentLevel As Integer = 0
+
+			ent_List = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{Entity}.ChildrenInclusive.Where(Name DoesNotContain _General)", True)
+			If ent_List.Count > 0 Then
+				For Each Ent As MemberInfo In ent_List
+					Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Ent.Member.Name)
+					Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk, Ent.Member.MemberId)
+					Select Case EntityLevel
+				    	Case "L2"
+							entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L2_Ctrl_Intermediate:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
+							entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L2_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:2")
+						Case "L3"
+							If ent.Member.Name = Entity Then
+								If Ent_Base = True
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Dist_Final:O#Forms:C#Aggregated",$"E#{Ent.Member.Name}:F#L3_Dist_Final")
+								Else
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Ctrl_Intermediate:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:2")
+								End If
+							Else
+								If Ent_Base = True
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Dist_Final:O#Forms:C#Aggregated",$"E#{Ent.Member.Name}:F#L3_Dist_Final")
+								Else
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Ctrl_Intermediate:O#AdjInput:C#Local",$"E#{Ent.Member.Name}:F#L3_Dist_Intermediate_Out")
+								End If
+							End If
+						Case "L4"
+							If ent.Member.Name = Entity Then
+								topMbrIndent = 3
+								If Ent_Base = True
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Dist_Final:O#Forms:C#Aggregated",$"E#{Ent.Member.Name}:F#L4_Dist_Final")
+								Else
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Ctrl_Intermediate:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:2")
+								End If
+							Else
+								If Ent_Base = True
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Dist_Final:O#Forms:C#Aggregated",$"E#{Ent.Member.Name}:F#L4_Dist_Final")
+								Else
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Ctrl_Intermediate:O#AdjInput:C#Local",$"E#{Ent.Member.Name}:F#L4_Dist_Intermediate_Out")
+								End If
+							End If
+						Case "L5"
+							If ent.Member.Name = Entity Then
+								entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L5_Dist_Final:O#Forms:C#Aggregated",$"E#{Ent.Member.Name}:F#L5_Dist_Final")
+							End If
+					End Select
+				Next
+				BRApi.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
+				Return String.Join(",",entMbrFilterList.Select(Function(kvp) kvp.Key))
+			Else
+			End If
+		End Function
+		
 #Region "TargetLockCheck"
 		Private Function TargetLockCheck(ByVal si As SessionInfo, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
 			'Command: XFBR({TGT_String_Helper}{TargetLockCheck}{argsPath=CMDXYZ})

@@ -37,15 +37,17 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				Me.Global_Functions = New OneStream.BusinessRule.Finance.Global_Functions.MainClass(si,globals,api,args)
 #End Region
 BRApi.ErrorLog.LogMessage(SI, "args.CustomCalculateArgs.FunctionName.ToLower() " & args.CustomCalculateArgs.FunctionName.ToLower())
-				Select Case args.CustomCalculateArgs.FunctionName.ToLower()
-					Case "copycprobetotarget"
+				Select Case args.CustomCalculateArgs.FunctionName
+					Case "CopycPROBEtoTGT"
 						Me.CopycPROBEtoTGT()
 					Case "tgtdst_load_targets_to_cube"
 						Me.Load_TGT_Data_to_Cube("TGT_Dist")
 					Case "loadwhtocube"
 						Me.Load_TGT_Data_to_Cube("WH")
-					Case "procdistout"
-						Me.Process_TGT_Dist_Out()
+					Case "ProcessDistOut"
+						Me.ProcessDistOut()
+					Case "CopyLocal"
+						Me.CopyLocal()
 				End Select
 
             Catch ex As Exception
@@ -61,7 +63,6 @@ BRApi.ErrorLog.LogMessage(SI, "args.CustomCalculateArgs.FunctionName.ToLower() "
 			Dim apiYear As Integer = TimeDimHelper.GetYearFromId(api.Pov.Time.MemberId)	
 			Dim apiYear2Char As String = Strings.Right(apiYear, 2) 
 			Dim scenario As String = args.CustomCalculateArgs.NameValuePairs.XFGetValue("cPROBEscen")
-			brapi.ErrorLog.LogMessage(si,$"Hit {apiCube} - {api.pov.scenario.Name} - {api.pov.entity.name}")
 		
 			'Build SQL to return list of requirements that fit the user's criterias
 			Dim SQL As String
@@ -98,9 +99,8 @@ BRApi.ErrorLog.LogMessage(SI, "args.CustomCalculateArgs.FunctionName.ToLower() "
             Dim ClearCubeData As DataBuffer = New DataBuffer()
 			
 			Dim Src_Calc As String = $"E#{apiCube}:S#{scenario}:C#Aggregated:V#Periodic:O#Top:I#Top:A#BO1:F#Tot_Position:U5#Top:U6#Top:U7#Top:U8#Top"
-			BRAPI.ErrorLog.LogMessage(SI, $"Hit: {Src_Calc}")
+
 			Dim Src_CalcBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula("FilterMembers(" & Src_Calc & ")")
-			Src_CalcBuffer.LogDataBuffer(api,$"SRC: {api.pov.entity.Name}",200)
 
 			For Each Src_CalcCell As DataBufferCell In Src_CalcBuffer.DataBufferCells.Values
 				Dim destU1 As String
@@ -124,7 +124,6 @@ BRApi.ErrorLog.LogMessage(SI, "args.CustomCalculateArgs.FunctionName.ToLower() "
 	
 					UpdateValue(DestPaycell, CurrCubeBuffer, destBuffer, Pay_TGT)
 					CurrCubeBuffer.DataBufferCells.Remove(DestPaycell.DataBufferCellPk)
-					BRAPI.ErrorLog.LogMessage(SI, $"Hit: {Src_CalcCell.CellAmount} - {Pay_TGT}")
 
 				Else
 					Dim Destcell As New DataBufferCell(UpdateCellDefinition(Src_CalcCell,"Target","L2_Ctrl_Intermediate","AdjInput","None",destU1,,,,"None","CostCat_General","None","None"))
@@ -136,7 +135,6 @@ BRApi.ErrorLog.LogMessage(SI, "args.CustomCalculateArgs.FunctionName.ToLower() "
 			Next
 
 			Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
-destBuffer.LogDataBuffer(api,$"Dest: {api.pov.Cons.Name}",200)
 			api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,,True)
 			destBuffer.DataBufferCells.Clear()
 
@@ -227,8 +225,87 @@ destBuffer.LogDataBuffer(api,$"Dest: {api.pov.Cons.Name}",200)
 		End Sub
 #End Region
 
-	Private Sub Process_TGT_Dist_Out()
+	Private Sub ProcessDistOut()
+		Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")	
+		Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk, api.Pov.Entity.MemberId)
+		If Not Ent_Base Then
+			Dim src_DataBuffer As New DataBuffer()
+			Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,api.Pov.Entity.Name)
+			Dim srcflowMbr As String = "L3_Ctrl_Intermediate"
+			Dim destflowMbr As String = "L2_Dist_Intermediate_Out"
+			Select Case EntityLevel
+				Case "L3"
+					srcflowMbr = "L4_Ctrl_Intermediate"
+					destflowMbr = "L3_Dist_Intermediate_Out"
+				Case "L4"
+					srcflowMbr = "L5_Ctrl_Intermediate"
+					destflowMbr = "L4_Dist_Intermediate_Out"
+			End Select
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula("FilterMembers(RemoveNoData(V#Periodic),[F#{destflowMbr}],[A#Target,A#TGT_WH])")
+			Dim destBuffer As DataBuffer = New DataBuffer()
+			Dim ClearCubeData As DataBuffer = New DataBuffer()
+	
+			
+			Dim Src_Data As String = $"E#{api.pov.Entity.name}:S#{api.pov.scenario.name}:C#Aggregated:V#Periodic:F#{srcflowMbr}"
+	
+			Src_DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData({Src_Data}))")
+			For Each Src_DataCell As DataBufferCell In Src_DataBuffer.DataBufferCells.Values
+				Dim Destcell As New DataBufferCell(UpdateCellDefinition(Src_DataCell,,destflowMbr))
+				UpdateValue(Destcell, CurrCubeBuffer, destBuffer, Destcell.CellAmount)
+				CurrCubeBuffer.DataBufferCells.Remove(Destcell.DataBufferCellPk)
+			Next
+			
+			Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
+			api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,,True)
+			destBuffer.DataBufferCells.Clear()
+	
+			For Each ClearCubeCell As DataBufferCell In CurrCubeBuffer.DataBufferCells.Values
+				Dim Status As New DataCellStatus(False)
+				Dim ClearCell As New DataBufferCell(ClearCubeCell.DataBufferCellPk, 0, Status)
+				ClearCubeData.SetCell(si, ClearCell)
+			Next
+	
+			Dim ClearInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
+			api.Data.SetDataBuffer(ClearCubeData, ClearInfo)
+		End If
 		
+	End Sub
+	
+	Private Sub CopyLocal()
+		Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")
+		Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,api.Pov.Entity.Name)
+		Dim src_DataBuffer As New DataBuffer()
+		Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData(V#Periodic),[F#{entityLevel}_Dist_Balance.Base])")
+		Dim destBuffer As DataBuffer = New DataBuffer()
+		Dim ClearCubeData As DataBuffer = New DataBuffer()
+		Dim consMbr As String = "Local"
+				
+		Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk, api.Pov.Entity.MemberId)
+		If Ent_Base Then
+			consMbr = "Aggregated"
+		End If
+		
+		Dim Src_Data As String = $"E#{api.pov.Entity.name}:S#{api.pov.scenario.name}:C#{consMbr}:V#Periodic"
+
+		Src_DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData({Src_Data}),[F#{entityLevel}_Dist_Balance.Base])")
+		For Each Src_DataCell As DataBufferCell In Src_DataBuffer.DataBufferCells.Values
+			Dim Destcell As New DataBufferCell(UpdateCellDefinition(Src_DataCell))
+			UpdateValue(Destcell, CurrCubeBuffer, destBuffer, Destcell.CellAmount)
+			CurrCubeBuffer.DataBufferCells.Remove(Destcell.DataBufferCellPk)
+		Next
+		
+		Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
+		api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,,True)
+		destBuffer.DataBufferCells.Clear()
+
+		For Each ClearCubeCell As DataBufferCell In CurrCubeBuffer.DataBufferCells.Values
+			Dim Status As New DataCellStatus(False)
+			Dim ClearCell As New DataBufferCell(ClearCubeCell.DataBufferCellPk, 0, Status)
+			ClearCubeData.SetCell(si, ClearCell)
+		Next
+
+		Dim ClearInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
+		api.Data.SetDataBuffer(ClearCubeData, ClearInfo)
 	End Sub
 		
 #Region "Helper Functions"		

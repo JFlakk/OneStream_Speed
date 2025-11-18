@@ -53,6 +53,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 		Public Function GetReviewSumTgtDist() As String
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			Dim Entity As String = args.NameValuePairs.XFGetValue("Entity","NA")
+			Dim cmd_L2FC As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetCMD_L2FC(si,wfInfoDetails("CMDName"))
 			Dim RptType As String = args.NameValuePairs("RptType")  'Dist/Dist Variance
 			Dim RowType As String = args.NameValuePairs("RowType")
 			Dim Scenario As String = args.NameValuePairs("Scenario")
@@ -77,20 +78,21 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			Dim appnList As New List(Of MemberInfo)
 			
 			Dim FilterString As String = $",[U3#Top.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
-			brapi.ErrorLog.LogMessage(si,$"Hit -{Entity}")
+BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 			If Entity = String.Empty Or Entity = "NA" Or Entity = vbNullString Then
+				BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 				Return "U1#One:U2#Top:U3#Top:U4#Top:U6#Top"
 			End If
 			Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Entity)
 			Dim Acct As String = "Target"
 			Dim Flow As String = $"{EntityLevel}_Dist_Balance"
-			Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,Entity,Time)
-			Brapi.ErrorLog.LogMessage(si,"Val_Approach: " & Val_Approach.ToString)
+			Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,cmd_L2FC,Time)
+
 			For Each pair In Val_Approach
 				If pair.Key.xfcontainsignorecase("APPN")
 					If pair.Value <> "APPN"
-						FilterString &= $",[U1#APPN.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
-						appnList = BRApi.Finance.Members.GetMembersUsingFilter(si, u1DimPk, $"U1#APPN", True)
+						FilterString &= $",[U1#{u1Mbr}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
+						appnList = BRApi.Finance.Members.GetMembersUsingFilter(si, u1DimPk, $"U1#{u1Mbr}", True)
 					Else
 						appnList = BRApi.Finance.Members.GetMembersUsingFilter(si, u1DimPk, $"U1#{u1Mbr}.Base.Options(Cube=Army,ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)", True)
 					End If
@@ -141,9 +143,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				If appn.Member.Name = "APPN"
 					commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#{Acct}:V#Periodic:O#Top:I#Top:F#{Flow}:{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#Top"
 				Else
-					commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#{Acct}:V#Periodic:O#Top:I#Top:F#{Flow}:U1#{appn.Member.Name}:{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#Top"
+					commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#{Acct}:V#Periodic:O#Top:I#Top:F#{Flow}:{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#Top"
 				End If
-				BRAPI.ErrorLog.LogMessage(si,$"FilterMembers(REMOVENODATA({commDims}){FilterString})")
+				
 				globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({commDims}){FilterString})")
 		
 				GetDataBuffer(si,globals,api,args)
@@ -162,7 +164,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				   If Val_Approach("CMD_Val_APPN_Approach") = "APPN" Then
 					   msb.UD1 = appn.Member.Name
 				   Else
-					   msb.UD1 = dict_FundCodeAPPN1Map(msb.UD1.Substring(0,7))
+					   msb.UD1 = dict_FundCodeAPPN1Map.XFGetValue(msb.UD1.Substring(0,7),"NA")
 				   End If
 				   If u2commDims = "U2#Top:"
 				   		msb.UD2 = "Top"
@@ -198,12 +200,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			End If
 		Next
 	
-		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+		Dim sorted As Dictionary(Of String, String) = toSort.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
 	
 		For Each item In sorted
 			output &= item.key & ","
 		Next
-	brapi.ErrorLog.LogMessage(si,"output:" & output)
 		
 		If output = "" Then
 		output = "U5#One"
@@ -546,13 +547,17 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 	#Region "Get Modify TGT DIST/WH"
 		Public Function GetModify_DistWH() As Object
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			Dim Entity As String = args.NameValuePairs("Entity")
-			Dim Appn As String = args.NameValuePairs("APPN")
-			Dim Mdep As String = args.NameValuePairs("MDEP")
-			Dim SagApe As String = args.NameValuePairs("SAGAPE")
-			Dim DollarType As String = args.NameValuePairs("DollarType")
-			Dim Scenario As String = args.NameValuePairs("Scenario")
-			Dim Time As String = args.NameValuePairs("Time")
+			Dim Entity As String = args.NameValuePairs.XFGetValue("Entity","NA")
+			If Entity = "NA" Or Entity = String.Empty Then
+				BRAPI.ErrorLog.LogMessage(si,$"Hit: {Entity}")
+				Return "U6#One"
+			End If
+			Dim Appn As String = args.NameValuePairs.XFGetValue("APPN","NA")
+			Dim Mdep As String = args.NameValuePairs.XFGetValue("MDEP","NA")
+			Dim SagApe As String = args.NameValuePairs.XFGetValue("SAGAPE","NA")
+			Dim DollarType As String = args.NameValuePairs.XFGetValue("DollarType","NA")
+			Dim Scenario As String = args.NameValuePairs.XFGetValue("Scenario","NA")
+			Dim Time As String = args.NameValuePairs.XFGetValue("Time","NA")
 			Dim Acct As String = "TGT_WH"
 			Dim Flow As String = "L2_Control"
 			Dim mbr_Expansion As String = ".ChildrenInclusive"
