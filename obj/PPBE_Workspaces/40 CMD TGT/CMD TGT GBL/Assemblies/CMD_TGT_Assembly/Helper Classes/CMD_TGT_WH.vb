@@ -33,7 +33,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			ColumnMaps.Add(fundcode)
             Dim mdep As New GBL_ColumnMap("MDEP","MDEP",GetType(String),True,"Member","U2_MDEP","U2#",100)
 			ColumnMaps.Add(mdep)
-            Dim ape9 As New GBL_ColumnMap("APE(9)","APE9",GetType(String),True,"Member","U3_All_APE","U3#",100)
+            Dim ape9 As New GBL_ColumnMap("APE(9)","APE9",GetType(String),True,"U3_Member","U3_All_APE","U3#",100)
 			ColumnMaps.Add(ape9)
             Dim dollarType As New GBL_ColumnMap("DollarType","DollarType",GetType(String),True,"U4_Member","U4_DollarType","U4#",100)
 			ColumnMaps.Add(dollarType)

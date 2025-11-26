@@ -6,6 +6,7 @@ Imports System.Globalization
 Imports System.IO
 Imports System.Linq
 Imports Microsoft.VisualBasic
+Imports Microsoft.Data.SqlClient
 Imports OneStream.Finance.Database
 Imports OneStream.Finance.Engine
 Imports OneStream.Shared.Common
@@ -14,6 +15,10 @@ Imports OneStream.Shared.Engine
 Imports OneStream.Shared.Wcf
 Imports OneStream.Stage.Database
 Imports OneStream.Stage.Engine
+Imports System.Text.RegularExpressions
+Imports OneStreamWorkspacesApi
+Imports OneStreamWorkspacesApi.V800
+Imports System.IO.Compression
 
 Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.GBL_Helper
 	Public Class MainClass
@@ -78,7 +83,13 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				If args.FunctionName.XFEqualsIgnoreCase("ResetParameters") Then
 					Return Me.ResetParameters(si, globals, api, args)
 				End If
-#End Region			
+#End Region	
+
+#Region "Send Email"
+'				If args.FunctionName.XFEqualsIgnoreCase("SendStatusChangeEmail") Then
+'					Return Me.SendStatusChangeEmail(si, globals, api, args)
+'				End If
+#End Region	
 			Return Nothing	
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
@@ -108,24 +119,26 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Dim objXFSelectionChangedUIActionInfo As New XFSelectionChangedUIActionInfo()
 				objXFSelectionChangedUIActionInfo.DashboardsToRedraw = currDashboard.Name
 				objXFSelectionChangedUIActionInfo.SelectionChangedUIActionType = objXFSelectionChangedUIActionType
-				
+			
 				'Lock Sub CMD WF Steps
 				If sWFLevel.XFEqualsIgnoreCase("SubCMD") Then
-					Dim sWorkflowProfile As String = curProfile.Name.Replace(" CMD","")
+#Region "Lock Sub CMD"				
+					Dim sWorkflowProfile As String = curProfile.Name.Replace(" CMD"," Sub CMD")
 					sWorkflowProfile = sWorkflowProfile.substring(0, sWorkflowProfile.IndexOf("."))
-					
 					'Lock Parent Sub CMD WF step
 					wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, sWorkflowProfile, sScenario, sTime)
 					'Variable used to format message 
 					Dim wfClusterDesc As String = BRApi.Workflow.General.GetWorkflowUnitClusterPkDescription(si, wfClusterPK)
 					'BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.Completed, StringHelper.FormatMessage("", wfClusterDesc), "", "", Guid.Empty)					
-					
+				
 					'Lock Chidlren Sub CMD WF steps
 					Dim sWFTargetProfileInfo As List (Of workflowprofileinfo) = brapi.Workflow.Metadata.GetRelatives(si,brapi.Workflow.General.GetWorkflowUnitClusterPk(si,sWorkflowProfile,sScenario,sTime),WorkflowProfileRelativeTypes.Descendants,workflowprofiletypes.AllProfiles).OrderBy(Function(x)  x.Name).reverse.ToList()
-							
-					For Each WFTargetProfile In sWFTargetProfileInfo
+					
+					For Each WFTargetProfile In sWFTargetProfileInfo			
+
+'Brapi.ErrorLog.LogMessage(si,"WFTargetProfile.Name: " & WFTargetProfile.Name)								
 						Dim sWFTargetProfileName As String	= WFTargetProfile.Name
-						If sWFTargetProfileName.EndsWith("Target Distribution.Adj") Or sWFTargetProfileName.EndsWith("Target Distribution.Import") Or sWFTargetProfileName.EndsWith("Target Distribution.Forms") Then Continue For
+						'If sWFTargetProfileName.EndsWith("Sub CMD Dist Review (CMD TGT).Import") Then Continue For
 						wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, sWFTargetProfileName, sScenario, sTime)
 						BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.Completed, StringHelper.FormatMessage("", wfClusterDesc), "", "", Guid.Empty)										
 					Next
@@ -137,9 +150,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = objXFSelectionChangedUIActionInfo
 					selectionChangedTaskResult.ShowMessageBox = True	
 					selectionChangedTaskResult.Message = "Sub-CMD workflows have been locked."
-				
+#End Region		
 				'Lock CMD WF Steps	
-					ElseIf sWFLevel.XFEqualsIgnoreCase("CMDHQ") Then
+				ElseIf sWFLevel.XFEqualsIgnoreCase("CMDHQ") Then
+#Region "Lock CMD"					
 					Dim sWorkflowProfile As String = curProfile.Name
 					sWorkflowProfile = sWorkflowProfile.substring(0, sWorkflowProfile.IndexOf("."))
 					
@@ -150,10 +164,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					
 					'Lock Chidlren CMD WF steps
 					Dim sWFTargetProfileInfo As List (Of workflowprofileinfo) = brapi.Workflow.Metadata.GetRelatives(si,brapi.Workflow.General.GetWorkflowUnitClusterPk(si,sWorkflowProfile,sScenario,sTime),WorkflowProfileRelativeTypes.Descendants,workflowprofiletypes.AllProfiles).OrderBy(Function(x)  x.Name).reverse.ToList()
-							
+'For Each WFTargetProfile In sWFTargetProfileInfo
+'brapi.ErrorLog.LogMessage(si,"WFTargetProfile.Name: " & WFTargetProfile.Name)		
+'Next
 					For Each WFTargetProfile In sWFTargetProfileInfo
 						Dim sWFTargetProfileName As String	= WFTargetProfile.Name
-						If sWFTargetProfileName.EndsWith("Target Distribution CMD.Adj") Or sWFTargetProfileName.EndsWith("Target Distribution CMD.Import") Or sWFTargetProfileName.EndsWith("Target Distribution CMD.Forms")Then Continue For
+						If sWFTargetProfileName.EndsWith("CMD Dist Review (CMD TGT).Import") Then Continue For
 						wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, sWFTargetProfileName, sScenario, sTime)
 						BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.Completed, StringHelper.FormatMessage("", wfClusterDesc), "", "", Guid.Empty)										
 					Next					
@@ -164,9 +180,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
 					selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = objXFSelectionChangedUIActionInfo
 					selectionChangedTaskResult.ShowMessageBox = True	
-					selectionChangedTaskResult.Message = "CMD workflows have been locked."							
+					selectionChangedTaskResult.Message = "CMD workflows have been locked."	
+#End Region
 				End If 
-				
+			
 				Return selectionChangedTaskResult
 							
 			Catch ex As Exception
@@ -201,7 +218,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				
 				'Unlock Sub CMD WF steps
 				If sWFLevel.XFEqualsIgnoreCase("SubCMD") Then
-					Dim sWorkflowProfile As String = curProfile.Name.Replace(" CMD","")
+#Region "Unlock Sub CMD"					
+					Dim sWorkflowProfile As String = curProfile.Name.Replace(" CMD"," Sub CMD")
 					sWorkflowProfile = sWorkflowProfile.substring(0, sWorkflowProfile.IndexOf("."))
 					
 					'Unlock Parent Sub CMD WF step
@@ -212,10 +230,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					
 					'Unlock Chidlren Sub CMD WF steps
 					Dim sWFTargetProfileInfo As List (Of workflowprofileinfo) = brapi.Workflow.Metadata.GetRelatives(si,brapi.Workflow.General.GetWorkflowUnitClusterPk(si,sWorkflowProfile,sScenario,sTime),WorkflowProfileRelativeTypes.Descendants,workflowprofiletypes.AllProfiles).OrderBy(Function(x)  x.Name).reverse.ToList()
-							
+'For Each WFTargetProfile In sWFTargetProfileInfo
+'brapi.ErrorLog.LogMessage(si,"WFTargetProfile.Name: " & WFTargetProfile.Name)		
+'Next							
 					For Each WFTargetProfile In sWFTargetProfileInfo
 						Dim sWFTargetProfileName As String	= WFTargetProfile.Name
-						If sWFTargetProfileName.EndsWith("Target Distribution.Adj") Or sWFTargetProfileName.EndsWith("Target Distribution.Import") Or sWFTargetProfileName.EndsWith("Target Distribution.Forms") Then Continue For
+						If sWFTargetProfileName.EndsWith("CMD Dist Review (CMD TGT).Import") Then Continue For
 						wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, sWFTargetProfileName, sScenario, sTime)
 						BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.InProcess, StringHelper.FormatMessage("", wfClusterDesc), "", "", Guid.Empty)										
 					Next
@@ -227,9 +247,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = objXFSelectionChangedUIActionInfo
 					selectionChangedTaskResult.ShowMessageBox = True	
 					selectionChangedTaskResult.Message = "Sub-CMD workflows have been unlocked."
-				
+#End Region			
 				'Unlock CMD WF Steps	
 				 ElseIf sWFLevel.XFEqualsIgnoreCase("CMDHQ") Then
+#Region "Unlock CMD"									 
 					Dim sWorkflowProfile As String = curProfile.Name
 					sWorkflowProfile = sWorkflowProfile.substring(0, sWorkflowProfile.IndexOf("."))
 					
@@ -243,7 +264,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							
 					For Each WFTargetProfile In sWFTargetProfileInfo
 						Dim sWFTargetProfileName As String	= WFTargetProfile.Name
-						If sWFTargetProfileName.EndsWith("Target Distribution CMD.Adj") Or sWFTargetProfileName.EndsWith("Target Distribution CMD.Import") Or sWFTargetProfileName.EndsWith("Target Distribution CMD.Forms") Then Continue For
+						If sWFTargetProfileName.EndsWith("CMD Dist Review (CMD TGT).Import") Then Continue For
 						wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, sWFTargetProfileName, sScenario, sTime)
 						BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.InProcess, StringHelper.FormatMessage("", wfClusterDesc), "", "", Guid.Empty)										
 					Next					
@@ -254,7 +275,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
 					selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = objXFSelectionChangedUIActionInfo
 					selectionChangedTaskResult.ShowMessageBox = True	
-					selectionChangedTaskResult.Message = "CMD workflows have been unlocked."							
+					selectionChangedTaskResult.Message = "CMD workflows have been unlocked."			
+#End Region							
 				End If
 				
 				Return selectionChangedTaskResult				
@@ -478,7 +500,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 				'Lock Sub CMD WF Steps
 				If sWFLevel.XFEqualsIgnoreCase("SubCMD") Then
-					Dim sWorkflowProfile As String = curProfile.Name.Replace(" CMD"," Sub CMDs")
+					Dim sWorkflowProfile As String = curProfile.Name.Replace(" CMD"," Sub CMD")
 					sWorkflowProfile = sWorkflowProfile.substring(0, sWorkflowProfile.IndexOf("."))
 					'Lock Parent Sub CMD WF step
 					wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, sWorkflowProfile, sScenario, sTime)
@@ -489,7 +511,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					'Lock Sub CMD WF steps
 					Dim sWFTargetProfileInfo As List (Of workflowprofileinfo) = brapi.Workflow.Metadata.GetRelatives(si,brapi.Workflow.General.GetWorkflowUnitClusterPk(si,sWorkflowProfile,sScenario,sTime),WorkflowProfileRelativeTypes.Descendants,workflowprofiletypes.AllProfiles).OrderBy(Function(x)  x.Name).reverse.ToList()
 							
-					For Each WFTargetProfile In sWFTargetProfileInfo
+					For Each WFTargetProfile In sWFTargetProfileInfo			
 						Dim sWFTargetProfileName As String	= WFTargetProfile.Name
 						If sWFTargetProfileName.EndsWith("SPLN).Adj") Then Continue For
 						wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, sWFTargetProfileName, sScenario, sTime)
@@ -633,7 +655,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			End Try				
 		End Function
 #End Region	'Updated 09/23/2025
-	
 	
 #Region "ARWUTL_AddRowInit"
 
@@ -2447,6 +2468,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		End Function
 		
 #End Region 'Updated 09/26/2025
-	
+
+
 	End Class
 End Namespace

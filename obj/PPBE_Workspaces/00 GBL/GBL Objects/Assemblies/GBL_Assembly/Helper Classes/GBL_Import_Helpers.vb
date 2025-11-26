@@ -264,7 +264,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					Return $"Invalid_{entity}"
 				Else
 					If membList.Count > 1 Then 
-						entity = $"{entity}_General"
+						'entity = $"{entity}_General"
+						entity = $"{entity}"
 					End If	
 					globals.SetStringValue($"Valid_EntMbr_{entity}",entity)
 					Return entity
@@ -318,7 +319,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				membList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, Token & "Top.Base.Where(Name Contains " & Value & ")", True)
 				
 'BRApi.ErrorLog.LogMessage(si, "ValidateU3MbrExists script: " &  Token & "Top.Base.Where(Name Contains " & Value & "), membList count: " & membList.Count)
-				If (membList.Count <> 1 ) Then
+				If (membList.Count <> 0 ) Then
 					globals.SetStringValue($"Valid_Mbr_{Dimension}_{Token}_{Value}",$"Invalid_{Dimension}_{Token}_{Value}")
 					Return $"Invalid_{Dimension}_{Token}_{Value}"
 				Else

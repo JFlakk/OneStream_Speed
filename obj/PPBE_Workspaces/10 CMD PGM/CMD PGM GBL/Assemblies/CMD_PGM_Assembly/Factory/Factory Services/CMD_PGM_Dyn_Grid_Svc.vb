@@ -18,7 +18,7 @@ Imports OneStreamWorkspacesApi
 Imports OneStreamWorkspacesApi.V800
 Imports Workspace.GBL.GBL_Assembly
 Imports Microsoft.Data.SqlClient
-Imports Workspace.GBL
+
 
 Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 	Public Class CMD_PGM_Dyn_Grid_Svc
@@ -82,6 +82,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				    	Return dg_CMD_PGM_REQCertSummary()            
 					End If
 					
+					If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_PGM_Attachments") Then
+				    	Return dg_CMD_PGM_Attachments()            
+					End If
+					
+					If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_PGM_Create") Then
+				    	Return dg_CMD_PGM_Create()        
+					End If
+					
                 End If
 
                 Return Nothing
@@ -100,7 +108,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Me.api = api
 			
 			Try
-Brapi.ErrorLog.LogMessage(si,"In Save")
+'Brapi.ErrorLog.LogMessage(si,"In Save")
                 If (Globals IsNot Nothing) AndAlso (workspace IsNot Nothing) AndAlso (args IsNot Nothing) Then
              
 					If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_PGM_Prioritize_REQ") Then
@@ -111,7 +119,12 @@ Brapi.ErrorLog.LogMessage(si,"In Save")
 				    	Return Save_dg_CMD_PGM_REQFundingLine()            
 					End If
 				If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_PGM_REQManage") Then
+
 				    	Return Save_dg_CMD_PGM_REQManage()           
+					End If
+					
+				If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_PGM_Create") Then
+				    	Return Save_dg_CMD_PGM_Create()           
 					End If
 				End If
 				
@@ -235,7 +248,7 @@ Brapi.ErrorLog.LogMessage(si,"In Save")
 			Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition)
 #Region "columnDefinitions"			
 			Dim ValidationError As New XFDynamicGridColumnDefinition()
-			ValidationError.ColumnName = "ValidationError"
+			ValidationError.ColumnName = "Invalid Errors"
 			ValidationError.IsFromTable = True
 			ValidationError.IsVisible = True
 			ValidationError.AllowUpdates = False
@@ -258,6 +271,7 @@ Brapi.ErrorLog.LogMessage(si,"In Save")
 			
 			Dim FundCenter As New XFDynamicGridColumnDefinition()
 			FundCenter.ColumnName = "FundCenter"
+			FundCenter.Description = "FundsCenter"
 			FundCenter.IsFromTable = True
 			FundCenter.IsVisible = True
 			FundCenter.AllowUpdates = False
@@ -1084,7 +1098,13 @@ Private Function dg_CMD_PGM_REQList() As Object
 '			ctypecol.ColumnName = "Funds Center"
 '			ctypecol.IsFromTable = True
 '			ctypecol.IsVisible = True
-
+Dim Account As New XFDynamicGridColumnDefinition()
+			Account.ColumnName = "Account"
+			Account.IsFromTable = True
+			Account.IsVisible = False
+			Account.AllowUpdates = False
+			
+			columnDefinitions.Add(Account)
 Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 			CMD_PGM_ID.ColumnName = "CMD_PGM_REQ_ID"
 			CMD_PGM_ID.IsFromTable = True
@@ -1146,7 +1166,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 						dargs.FunctionType = DashboardDataSetFunctionType.GetDataSet
 						dargs.DataSetName = "REQListByEntityAndStatus"
 						dargs.NameValuePairs.XFSetValue("Entity", sEntity)
-					'Brapi.ErrorLog.LogMessage(si,"Entity" & sEntity)
+	'Brapi.ErrorLog.LogMessage(si,"Entity" & sEntity)
 						objdt = BR_CMD_PGMDataSet.Main(si, globals, api, dargs)
 
 						
@@ -1276,11 +1296,11 @@ Dim dt As New DataTable()
 									Dtl.UD4,
 									Dtl.UD5,
 									Dtl.UD6,
-									Dtl.FY_1,
-									Dtl.FY_2,
-									Dtl.FY_3,
-									Dtl.FY_4,
-									Dtl.FY_5,
+									FORMAT(Dtl.FY_1, 'N2') As FY_1,
+							         FORMAT(Dtl.FY_2, 'N2') AS FY_2,
+							         FORMAT(Dtl.FY_3, 'N2') AS FY_3,
+							          FORMAT(Dtl.FY_4, 'N2') AS FY_4,
+							          FORMAT(Dtl.FY_5, 'N2') AS FY_5,
 									Req.Title,
 									Req.Description,
 									Req.Emerging_REQ, 
@@ -1428,11 +1448,11 @@ Dim dt As New DataTable()
 									Dtl.UD4,
 									Dtl.UD5,
 									Dtl.UD6,
-									Dtl.FY_1,
-									Dtl.FY_2,
-									Dtl.FY_3,
-									Dtl.FY_4,
-									Dtl.FY_5,
+									FORMAT(Dtl.FY_1, 'N2') As FY_1,
+							         FORMAT(Dtl.FY_2, 'N2') AS FY_2,
+							         FORMAT(Dtl.FY_3, 'N2') AS FY_3,
+							          FORMAT(Dtl.FY_4, 'N2') AS FY_4,
+							          FORMAT(Dtl.FY_5, 'N2') AS FY_5
 									Req.Title,
 									Req.Description,
 									Req.Emerging_REQ, 
@@ -1573,11 +1593,11 @@ Dim dt As New DataTable()
 			
             Dim sql As String =$"SELECT 
 										 Req.Entity,Dtl.UD1,Dtl.UD2,Dtl.UD3,Dtl.UD4,Dtl.UD5,Dtl.UD6,Dtl.Unit_Of_Measure,
-										 Dtl.FY_1,
-										 Dtl.FY_2,
-										 Dtl.FY_3,
-										 Dtl.FY_4,
-										 Dtl.FY_5				
+										 FORMAT(Dtl.FY_1, 'N2') As FY_1,
+								         FORMAT(Dtl.FY_2, 'N2') AS FY_2,
+								         FORMAT(Dtl.FY_3, 'N2') AS FY_3,
+								          FORMAT(Dtl.FY_4, 'N2') AS FY_4,
+								          FORMAT(Dtl.FY_5, 'N2') AS FY_5			
 								FROM XFC_CMD_PGM_REQ_Details AS Dtl
 								LEFT JOIN XFC_CMD_PGM_REQ AS Req
 								ON Req.CMD_PGM_REQ_ID = Dtl.CMD_PGM_REQ_ID
@@ -1670,7 +1690,7 @@ Dim APPN As New XFDynamicGridColumnDefinition()
 			APE.IsFromTable = True
 			APE.IsVisible = True
 			APE.AllowUpdates = False
-			APE.Description = "APE"
+			APE.Description = "APE9"
 			columnDefinitions.Add(APE)
 	Dim DollarType As New XFDynamicGridColumnDefinition()
 			DollarType.ColumnName = "UD4"
@@ -1768,6 +1788,12 @@ Dim APPN As New XFDynamicGridColumnDefinition()
 			Rank_Override.AllowUpdates = True
 			columnDefinitions.Add(Rank_Override)
 			
+	Dim Review_Entity As New XFDynamicGridColumnDefinition()
+			Review_Entity.ColumnName = "Review_Entity"
+			Review_Entity.IsFromTable = True
+			Review_Entity.IsVisible = False
+			columnDefinitions.Add(Review_Entity)
+			
 			
 			
 			
@@ -1797,34 +1823,59 @@ Next
 							
 						' Get the data you want To put In the grid
 						
-						Dim sEntity As String  = args.CustomSubstVars.XFGetValue("BL_CMD_PGM_FundsCenter","NA")
-						'BRAPi.ErrorLog.LogMessage(si,$"Hit {sEntity}")
-					
-			Dim dtPri As New DataTable()
-			Dim WFInfoDetails As New Dictionary(Of String, String)()
-
-            Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
-            Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
-			Dim wfCubeRootInfo = BRApi.Workflow.Metadata.GetProfile(si,wfUnitInfo.ProfileName)
-            WFInfoDetails.Add("ProfileName", wfUnitInfo.ProfileName)
-            WFInfoDetails.Add("ScenarioName", wfUnitInfo.ScenarioName)
-            WFInfoDetails.Add("TimeName", wfUnitInfo.TimeName)
-			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
-			
-			
-			Dim entityLevel As String = Me.GetEntityLevel(sEntity)
-			Dim sREQWFStatus As String = entityLevel & "_Prioritize_PGM"
-            Dim sql As String =$"SELECT Req.CMD_PGM_REQ_ID, 
+		Dim sEntity As String  = args.CustomSubstVars.XFGetValue("BL_CMD_PGM_FundsCenter","NA")
+			If String.IsNullOrWhiteSpace(sEntity) Then
+				Return Nothing
+			Else
+				Dim sFundcenter As String = ""
+				'Remove _General to get the parent Entity
+				Dim wfCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+				Dim entityPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_" & wfCube)
+         		Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sEntity)
+				Dim Haschildren As Boolean = BRApi.Finance.Members.HasChildren(si,entityPk,nBaseID)
+'Brapi.ErrorLog.LogMessage(si,"**sEntity: " & sEntity)				
+'				If sEntity.Contains("_General") Then 'added
+'					sFundcenter = sEntity.Replace("_General",".Base") 'added 
+'				End If 'added														
+				If Haschildren Then 'added
+					sFundcenter = sEntity & ".DescendantsInclusive" 'added 
+				End If 'added
+				
+				Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#"& sFundcenter,True)
+				Dim allFCs As String = ""
+				If Haschildren Then allFCs = "'" & sEntity & "',"
+				For Each FundCenter As MemberInfo In LFundCenters'LFundCenters 'added
+					allFcs = allFcs  & "'" & FundCenter.Member.Name & "'," 
+				Next
+				allFCs = allFCs.Substring(0,allFCs.Length-1)
+'Brapi.ErrorLog.LogMessage(si,"AllFC" & allFCs)
+				
+				Dim dtPri As New DataTable()
+				Dim WFInfoDetails As New Dictionary(Of String, String)()
+	
+	            Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
+	            Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
+				Dim wfCubeRootInfo = BRApi.Workflow.Metadata.GetProfile(si,wfUnitInfo.ProfileName)
+	            WFInfoDetails.Add("ProfileName", wfUnitInfo.ProfileName)
+	            WFInfoDetails.Add("ScenarioName", wfUnitInfo.ScenarioName)
+	            WFInfoDetails.Add("TimeName", wfUnitInfo.TimeName)
+				WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
+				
+				
+				Dim entityLevel As String = Me.GetEntityLevel(sEntity)
+				Dim sREQWFStatus As String = entityLevel & "_Prioritize_PGM"
+	            Dim sql As String =$"SELECT Req.CMD_PGM_REQ_ID, 
 										 Req.WFScenario_Name, 
 										 Req.WFCMD_Name, Req.WFTime_Name, Req.Entity,Dtl.UD1,Dtl.UD2,Dtl.UD3,Dtl.UD4,Req.REQ_ID,Req.Title,Pri.Cat_1_Score,
 										Pri.Cat_2_Score,Pri.Cat_3_Score,Pri.Cat_4_Score,Pri.Cat_5_Score,Pri.Cat_6_Score,Pri.Cat_7_Score,
 										Pri.Cat_8_Score,Pri.Cat_9_Score,Pri.Cat_10_Score,Pri.Cat_11_Score,Pri.Cat_12_Score,Pri.Cat_13_Score,			
-										Pri.Cat_14_Score,Pri.Cat_15_Score,Pri.Score,Pri.Weighted_Score,Pri.Auto_Rank,Pri.Rank_Override,
-								Dtl.FY_1,
-								  Dtl.FY_2,
-								  Dtl.FY_3,
-								  Dtl.FY_4,
-								  Dtl.FY_5
+										Pri.Cat_14_Score,Pri.Cat_15_Score,Pri.Score,Pri.Weighted_Score,Pri.Auto_Rank,Pri.Rank_Override, 
+										Pri.Review_Entity,
+										FORMAT(Dtl.FY_1, 'N1') As FY_1,
+								        FORMAT(Dtl.FY_2, 'N1') AS FY_2,
+								        FORMAT(Dtl.FY_3, 'N1') AS FY_3,
+								        FORMAT(Dtl.FY_4, 'N1') AS FY_4,
+								        FORMAT(Dtl.FY_5, 'N1') AS FY_5
 								
 								FROM XFC_CMD_PGM_REQ_Details AS Dtl
 								LEFT JOIN XFC_CMD_PGM_REQ_Priority AS Pri
@@ -1833,6 +1884,7 @@ Next
 								AND Pri.WFCMD_Name = Dtl.WFCMD_Name
 								AND Pri.WFTime_Name = Dtl.WFTime_Name
 								AND Pri.Entity = Dtl.Entity
+								AND Pri.Review_Entity = '{sEntity}'
 								LEFT JOIN XFC_CMD_PGM_REQ AS Req
 								ON Req.CMD_PGM_REQ_ID = Dtl.CMD_PGM_REQ_ID
 								AND Req.WFScenario_Name = Dtl.WFScenario_Name
@@ -1843,19 +1895,21 @@ Next
 								AND Req.WFCMD_Name = '{wfInfoDetails("CMDName")}'
 								AND Req.WFTime_Name = '{wfInfoDetails("TimeName")}'
 								AND Dtl.Account = 'Req_Funding'
-								AND Dtl.flow = '{sREQWFStatus}'"
-			Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
-                dtPri = BRApi.Database.ExecuteSql(dbConnApp,sql,False)
-            End Using
+								AND Dtl.flow = '{sREQWFStatus}'
+								AND Req.Entity in ({allFCs})"
+				Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+	                dtPri = BRApi.Database.ExecuteSql(dbConnApp,sql,False)
+	            End Using
 
-					'Brapi.ErrorLog.LogMessage(si, "SQL" & sql )  				
-					     'Create the XFTable
-					    Dim xfTable As New xfDataTable(si,dtPri,Nothing,1000)
-					
-					     'Send the result To the Interface component
-					    Dim taskResult As New XFDynamicGridGetDataResult(xfTable,columnDefinitions,DataAccessLevel.AllAccess)
-					        
-					    Return taskResult
+'Brapi.ErrorLog.LogMessage(si, "SQL" & sql )  				
+			     'Create the XFTable
+			    Dim xfTable As New xfDataTable(si,dtPri,Nothing,1000)
+			
+			     'Send the result To the Interface component
+			    Dim taskResult As New XFDynamicGridGetDataResult(xfTable,columnDefinitions,DataAccessLevel.AllAccess)
+			        
+			    Return taskResult
+			End If
 		End Function
 #End Region
 
@@ -1864,24 +1918,52 @@ Next
 	Dim WfYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
 	
 			Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition) 		
-
-Dim Entity As New XFDynamicGridColumnDefinition()
+Dim Status As New XFDynamicGridColumnDefinition()
+			Status.ColumnName = "Flow"
+			Status.IsFromTable = True
+			Status.IsVisible = True
+			Status.Description = "Current Status"
+			Status.AllowUpdates = False
+			columnDefinitions.Add(Status)
+			
+'-------------------------------------------------------------------------------------------			
+			Dim sEntity As String  = args.CustomSubstVars("BL_CMD_PGM_FundsCenter")
+			globals.SetStringValue("Entity",sEntity)
+			
+	Dim NewStatus As New XFDynamicGridColumnDefinition()
+			NewStatus.ColumnName = "New Status"
+			NewStatus.IsFromTable = True
+			NewStatus.IsVisible = True
+			NewStatus.AllowUpdates = True
+		'	NewStatus.CustomParameters = "StatusDT"
+			'newstatus.DefaultValue = "L2_Formulate_PGM,L2_Validate_PGM"
+			NewStatus.ParameterName = "BL_CMD_PGM_StatusChange"
+			columnDefinitions.Add(NewStatus)
+			
+			
+	Dim Title As New XFDynamicGridColumnDefinition()
+			Title.ColumnName = "Title"
+			Title.IsFromTable = True
+			Title.IsVisible = True
+			Title.AllowUpdates = False
+			columnDefinitions.Add(Title)
+			
+	Dim REQ_ID As New XFDynamicGridColumnDefinition()
+			REQ_ID.ColumnName = "REQ_ID"
+			REQ_ID.IsFromTable = True
+			REQ_ID.IsVisible = True
+			REQ_ID.AllowUpdates = False
+			REQ_ID.Description = "REQ_ID"
+			columnDefinitions.Add(REQ_ID)
+			
+	Dim Entity As New XFDynamicGridColumnDefinition()
 			Entity.ColumnName = "Funds Center"
 			Entity.IsFromTable = True
 			Entity.IsVisible = True
 			Entity.AllowUpdates = False
 			Entity.Description = "Funds Center"
 			columnDefinitions.Add(Entity)
-			
-			
-Dim REQ_ID As New XFDynamicGridColumnDefinition()
-			REQ_ID.ColumnName = "REQ_ID"
-			REQ_ID.IsFromTable = True
-			REQ_ID.IsVisible = True
-			REQ_ID.AllowUpdates = False
-			REQ_ID.Description = "REQ_ID"
-			columnDefinitions.Add(REQ_ID)	
-			
+	
 Dim APPN As New XFDynamicGridColumnDefinition()
 			APPN.ColumnName = "APPN"
 			APPN.IsFromTable = True
@@ -1898,11 +1980,11 @@ Dim APPN As New XFDynamicGridColumnDefinition()
 			
 			columnDefinitions.Add(MDEP)
 	Dim APE As New XFDynamicGridColumnDefinition()
-			APE.ColumnName = "APE"
+			APE.ColumnName = "APE9"
 			APE.IsFromTable = True
 			APE.IsVisible = True
 			APE.AllowUpdates = False
-			APE.Description = "APE"
+			APE.Description = "APE9"
 			columnDefinitions.Add(APE)
 	Dim DollarType As New XFDynamicGridColumnDefinition()
 			DollarType.ColumnName = "DollarType"
@@ -1935,37 +2017,8 @@ Dim APPN As New XFDynamicGridColumnDefinition()
 			
 			columnDefinitions.Add(Account)		
 		
-			
-	Dim Title As New XFDynamicGridColumnDefinition()
-			Title.ColumnName = "Title"
-			Title.IsFromTable = True
-			Title.IsVisible = True
-			Title.AllowUpdates = False
-			columnDefinitions.Add(Title)
-			
-	Dim Status As New XFDynamicGridColumnDefinition()
-			Status.ColumnName = "Flow"
-			Status.IsFromTable = True
-			Status.IsVisible = True
-			Status.Description = "Current Status"
-			Status.AllowUpdates = False
-			columnDefinitions.Add(Status)
-			
-'-------------------------------------------------------------------------------------------			
-			Dim sEntity As String  = args.CustomSubstVars("BL_CMD_PGM_FundsCenter")
-			globals.SetStringValue("Entity",sEntity)
-			
-	Dim NewStatus As New XFDynamicGridColumnDefinition()
-			NewStatus.ColumnName = "New Status"
-			NewStatus.IsFromTable = True
-			NewStatus.IsVisible = True
-			NewStatus.AllowUpdates = True
-		'	NewStatus.CustomParameters = "StatusDT"
-			'newstatus.DefaultValue = "L2_Formulate_PGM,L2_Validate_PGM"
-			NewStatus.ParameterName = "BL_CMD_PGM_StatusChange"
-			columnDefinitions.Add(NewStatus)
-								
-			
+	
+	
 
     Dim FY_1 As New XFDynamicGridColumnDefinition()
 			FY_1.ColumnName = "FY_1"
@@ -2083,11 +2136,11 @@ Dim APPN As New XFDynamicGridColumnDefinition()
 			
 			columnDefinitions.Add(MDEP)
 	Dim APE As New XFDynamicGridColumnDefinition()
-			APE.ColumnName = "APE"
+			APE.ColumnName = "APE9"
 			APE.IsFromTable = True
 			APE.IsVisible = True
 			APE.AllowUpdates = False
-			APE.Description = "APE"
+			APE.Description = "APE9"
 			columnDefinitions.Add(APE)
 	Dim DollarType As New XFDynamicGridColumnDefinition()
 			DollarType.ColumnName = "DollarType"
@@ -2219,13 +2272,13 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
     If saveDataArgs Is Nothing Then
         Return Nothing
     End If
-Brapi.ErrorLog.LogMessage(si, "HERE 1")
+'Brapi.ErrorLog.LogMessage(si, "HERE 1")
     ' Get the edited rows
     Dim editedDataRows As List(Of XFEditedDataRow) = saveDataArgs.EditedDataRows
     If editedDataRows Is Nothing OrElse editedDataRows.Count = 0 Then
         Return Nothing
     End If
-	Brapi.ErrorLog.LogMessage(si, "HERE 2")
+	'Brapi.ErrorLog.LogMessage(si, "HERE 2")
 		Dim WFInfoDetails As New Dictionary(Of String, String)()
             Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
             Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
@@ -2235,7 +2288,7 @@ Brapi.ErrorLog.LogMessage(si, "HERE 1")
             WFInfoDetails.Add("TimeName", wfUnitInfo.TimeName)
 			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			
-		Brapi.ErrorLog.LogMessage(si, "HERE 3")	
+		'Brapi.ErrorLog.LogMessage(si, "HERE 3")	
 		 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
         Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
             sqlConn.Open()
@@ -2255,7 +2308,7 @@ Brapi.ErrorLog.LogMessage(si, "HERE 1")
 						}
               sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa, dt, sqlMain, sqlParams)
 			  
-		Brapi.ErrorLog.LogMessage(si, "HERE 4")	
+		'Brapi.ErrorLog.LogMessage(si, "HERE 4")	
 
             ' --- Details Table (XFC_CMD_PGM_REQ_Details) ---
             Dim dt_Details As New DataTable()
@@ -2275,19 +2328,22 @@ Brapi.ErrorLog.LogMessage(si, "HERE 1")
             ' ************************************
           
 	 For Each editedDataRow As XFEditedDataRow In editedDataRows
+	Dim sEntity As String  = args.CustomSubstVars.XFGetValue("BL_CMD_PGM_FundsCenter","NA")	
+'Brapi.ErrorLog.LogMessage(si, "Pri Entity" & sEntity & " : " & editedDataRow.ModifiedDataRow.Item("REQ_ID"))
 		
-		
+	
     Dim targetRow As DataRow 											
 	Dim req_ID_Val As Guid
 	req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_PGM_REQ_ID")
+	Dim REQIDrow As DataRow =  dt.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
 	Dim isInsert As Boolean = False		
-	targetRow = dt_Priority.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
+	targetRow = dt_Priority.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' And Review_Entity = '{sEntity}'").FirstOrDefault()
 	
 If targetRow Is Nothing Then
 	 isInsert = True
     targetRow = dt_Priority.NewRow() 
-	Dim req_ID As String = editedDataRow.ModifiedDataRow.Item("REQ_ID").ToString()
-    Dim mainRow As DataRow = dt.Select($"REQ_ID = '{req_ID}'").FirstOrDefault()
+	Dim req_ID As Guid = editedDataRow.ModifiedDataRow.Item("CMD_PGM_REQ_ID")
+    Dim mainRow As DataRow = dt.Select($"CMD_PGM_REQ_ID = '{req_ID}'").FirstOrDefault()
 
     If mainRow IsNot Nothing Then
         targetRow("CMD_PGM_REQ_ID") = mainRow("CMD_PGM_REQ_ID")
@@ -2298,30 +2354,29 @@ If targetRow Is Nothing Then
 Else
    
     isInsert = False
-	targetRow = dt_Priority.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
+	targetRow = dt_Priority.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'And Review_Entity = '{sEntity}'").FirstOrDefault()
     End If
 		targetRow("WFScenario_Name") = wfInfoDetails("ScenarioName")
 		targetRow("WFCMD_Name") = wfInfoDetails("CMDName")
 		targetRow("WFTime_Name") = wfInfoDetails("TimeName")
 		targetRow("Entity") = editedDataRow.ModifiedDataRow.Item("Entity").ToString()
-		 targetRow("Review_Entity") = editedDataRow.ModifiedDataRow.Item("Entity").ToString()
-		 
-			Dim Cat1 As Decimal =  editedDataRow.ModifiedDataRow.Item("Cat_1_Score")
-							 
+		 targetRow("Review_Entity") = sEntity
+		targetRow("REQ_ID") = REQIDrow.Item("REQ_ID")
+			Dim Cat1 As Decimal =  editedDataRow.ModifiedDataRow.Item("Cat_1_Score")				 
 			Dim Cat2 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_2_Score")
-			 Dim Cat3 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_3_Score")
-		     Dim Cat4 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_4_Score")
-		 	 Dim Cat5 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_5_Score")
-			 Dim Cat6 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_6_Score")
-			 Dim Cat7 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_7_Score")
+			Dim Cat3 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_3_Score")
+			Dim Cat4 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_4_Score")
+			Dim Cat5 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_5_Score")
+			Dim Cat6 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_6_Score")
+			Dim Cat7 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_7_Score")
 			Dim Cat8 As Decimal= editedDataRow.ModifiedDataRow.Item("Cat_8_Score")
-			 Dim Cat9 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_9_Score")
-			  Dim Cat10 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_10_Score")
-			  Dim Cat11 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_11_Score")
-			    Dim Cat12 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_12_Score")
-			   Dim Cat13 As Decimal= editedDataRow.ModifiedDataRow.Item("Cat_13_Score")
-			   Dim Cat14 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_14_Score")
-		  Dim Cat15 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_15_Score")
+			Dim Cat9 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_9_Score")
+			Dim Cat10 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_10_Score")
+			Dim Cat11 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_11_Score")
+			Dim Cat12 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_12_Score")
+			Dim Cat13 As Decimal= editedDataRow.ModifiedDataRow.Item("Cat_13_Score")
+			Dim Cat14 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_14_Score")
+			Dim Cat15 As Decimal = editedDataRow.ModifiedDataRow.Item("Cat_15_Score")
 
 		 
 		 
@@ -2342,15 +2397,24 @@ Else
 		targetRow("Cat_14_Score") = Cat14
 		targetRow("Cat_15_Score") = Cat15
 		targetRow("Score") = Cat1 + Cat2 + Cat3 + Cat4 + Cat5 + Cat6 + Cat7 + Cat8 + Cat9 + Cat10 + Cat11 + Cat12 + Cat13 + Cat14 + Cat15
-		targetRow("Auto_Rank") = editedDataRow.ModifiedDataRow.Item("Auto_Rank").ToString()
 		targetRow("Rank_Override") = editedDataRow.ModifiedDataRow.Item("Rank_Override").ToString()
 		
+		Dim editedOverride As String = editedDataRow.ModifiedDataRow.Item("Rank_Override").ToString()
+		Dim targetOverride As String = targetRow("Rank_Override").ToString()
+		If (editedOverride = "0") Or (targetOverride = "0") Then
+    	targetRow("Auto_Rank") = editedDataRow.ModifiedDataRow.Item("Auto_Rank").ToString()
+
+		Else
+   		targetRow("Auto_Rank") = targetRow("Rank_Override").ToString()
+
+		End If
+
 		targetRow("Create_Date") = DateTime.Now
 		targetRow("Create_User") = si.UserName
 		targetRow("Update_Date") = DateTime.Now
 		targetRow("Update_User") = si.UserName
 
-Brapi.ErrorLog.LogMessage(si, "HERE 8") 
+'Brapi.ErrorLog.LogMessage(si, "HERE 8") 
 	  ' Iterate each column/cell in the XFTV row and apply dirty changes to the DataRow
 		                    ' Make a copy of the keys to avoid collection modification issues
 '		                    Dim dirtyColList As List(Of String) = Workspace.GBL.GBL_Assembly.GBL_XFTV_Helpers.Dirty_Column_List(si,editedDataRow)
@@ -2361,20 +2425,19 @@ Brapi.ErrorLog.LogMessage(si, "HERE 8")
 
 		                    ' If this is an insert, add the new row to the DataTable
 		                    If isInsert Then
-								
 								dt_Priority.Rows.Add(targetRow)
 		                    End If
 		                Next
 	
 		                ' Persist changes back to the DB using the configured adapter
-		                Brapi.ErrorLog.LogMessage(si, "HERE 10") 
+		               ' Brapi.ErrorLog.LogMessage(si, "HERE 10") 
 		                sqaReaderPriority.Update_XFC_CMD_PGM_REQ_Priority(si,dt_Priority,sqa3)
 						
 						
 						
 		                End Using
 		            End Using
-Brapi.ErrorLog.LogMessage(si, "HERE 11") 
+'Brapi.ErrorLog.LogMessage(si, "HERE 11") 
             Return Nothing
 		
 End Function		
@@ -2501,7 +2564,7 @@ End Function
 			Dim sEntity As String  = args.CustomSubstVars("BL_CMD_PGM_FundsCenter")
 			Dim WFCube = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
 			Dim entityDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_" & WFCube)
-			Dim baseMbrs As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si,entityDimPk,"E#" & sEntity.Replace("_General","") & ".Base",True)
+			Dim baseMbrs As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si,entityDimPk,"E#" & sEntity.Replace("_General","") & ".DescendantsInclusive",True)
 'Brapi.ErrorLog.LogMessage(si,"basMbrs: " & baseMbrs.Count)	
 			Dim FCList As String = String.Empty
 			For Each mbr In baseMbrs
@@ -2631,6 +2694,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 			FY_1.IsFromTable = True
 			FY_1.IsVisible = True
 			FY_1.Description = WFYear
+			FY_1.DataFormatString = "N0"
 			columnDefinitions.Add(FY_1)
 			
 	  Dim FY_2 As New XFDynamicGridColumnDefinition()
@@ -2638,6 +2702,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 			FY_2.IsFromTable = True
 			FY_2.IsVisible = True
 			FY_2.Description = WFYear + 1
+			FY_2.DataFormatString = "N0"
 			columnDefinitions.Add(FY_2)
 			
    Dim FY_3 As New XFDynamicGridColumnDefinition()
@@ -2645,6 +2710,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 			FY_3.IsFromTable = True
 			FY_3.IsVisible = True
 			FY_3.Description = WFYear + 2
+			FY_3.DataFormatString = "N0"
 			columnDefinitions.Add(FY_3)
 			
     Dim FY_4 As New XFDynamicGridColumnDefinition()
@@ -2652,6 +2718,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 			FY_4.IsFromTable = True
 			FY_4.IsVisible = True
 			FY_4.Description = WFYear + 3
+			FY_4.DataFormatString = "N0"
 			columnDefinitions.Add(FY_4)
 			
     Dim FY_5 As New XFDynamicGridColumnDefinition()
@@ -2659,6 +2726,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 			FY_5.IsFromTable = True
 			FY_5.IsVisible = True
 			FY_5.Description = WFYear + 4
+			FY_5.DataFormatString = "N0"
 			columnDefinitions.Add(FY_5)
 			
 	 Dim Status As New XFDynamicGridColumnDefinition()
@@ -2667,149 +2735,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 			Status.IsVisible = False
 			Status.Description = "Status"
 			columnDefinitions.Add(Status)
-			
-'		Else 
-	
-'	Dim Scenario As New XFDynamicGridColumnDefinition()
-'			Scenario.ColumnName = "WFScenario_Name"
-'			Scenario.IsFromTable = True
-'			Scenario.IsVisible = False
-'			Scenario.AllowUpdates = False
-'			columnDefinitions.Add(Scenario)
-			
-'	Dim Time As New XFDynamicGridColumnDefinition()
-'			Time.ColumnName = "WFTime_Name"
-'			Time.IsFromTable = True
-'			Time.IsVisible = False
-'			Time.AllowUpdates = False
-'			columnDefinitions.Add(Time)
-			
-'	Dim CMD As New XFDynamicGridColumnDefinition()
-'			CMD.ColumnName = "WFCMD_Name"
-'			CMD.IsFromTable = True
-'			CMD.IsVisible = False
-'			CMD.AllowUpdates = False
-'			columnDefinitions.Add(CMD)
-			
-'	Dim sEntity As New XFDynamicGridColumnDefinition()
-'			sEntity.ColumnName = "Entity"
-'			sEntity.IsFromTable = True
-'			sEntity.IsVisible = True
-'			sEntity.AllowUpdates = False
-'			sEntity.Description = "Funds Center"
-'			columnDefinitions.Add(sEntity)		
-'	Dim REQ_ID As New XFDynamicGridColumnDefinition()
-'			REQ_ID.ColumnName = "REQ_ID"
-'			REQ_ID.IsFromTable = True
-'			REQ_ID.IsVisible = True
-'			REQ_ID.AllowUpdates = False
-'			REQ_ID.Description = "REQ_ID"
-'			columnDefinitions.Add(REQ_ID)		
-				
-		
-				
 
-'   Dim APPN As New XFDynamicGridColumnDefinition()
-'			APPN.ColumnName = "UD1"
-'			APPN.IsFromTable = True
-'			APPN.IsVisible = True
-'			APPN.AllowUpdates = True
-'			APPN.Description = "APPN"
-'			APPN.ParameterName = "ML_CMD_PGM_FormulateAPPN"
-'			columnDefinitions.Add(APPN)
-'   Dim MDEP As New XFDynamicGridColumnDefinition()
-'			MDEP.ColumnName = "UD2"
-'			MDEP.IsFromTable = True
-'			MDEP.IsVisible = True
-'			MDEP.AllowUpdates = True
-'			MDEP.Description = "MDEP"
-'			MDEP.ParameterName = "ML_CMD_PGM_FormulateMDEP"
-'			columnDefinitions.Add(MDEP)
-			
-'	Dim APE As New XFDynamicGridColumnDefinition()
-'			APE.ColumnName = "UD3"
-'			APE.IsFromTable = True
-'			APE.IsVisible = True
-'			APE.AllowUpdates = True
-'			APE.Description = "APE9"
-'			APE.ParameterName = "ML_CMD_PGM_FormulateAPEPT"
-'			columnDefinitions.Add(APE)
-'	Dim DollarType As New XFDynamicGridColumnDefinition()
-'			DollarType.ColumnName = "UD4"
-'			DollarType.IsFromTable = True
-'			DollarType.IsVisible = True
-'			DollarType.AllowUpdates = True
-'			DollarType.Description = "Dollar Type"
-'			DollarType.ParameterName = "ML_CMD_PGM_FormulateDollarType"
-'			columnDefinitions.Add(DollarType)
-'   Dim ObjectClass As New XFDynamicGridColumnDefinition()
-'			ObjectClass.ColumnName = "UD6"
-'			ObjectClass.IsFromTable = True
-'			ObjectClass.IsVisible = True
-'			ObjectClass.AllowUpdates = True
-'			ObjectClass.Description = "Object Class"
-'			ObjectClass.ParameterName = "ML_CMD_PGM_FormulateObjectClass"
-'			columnDefinitions.Add(ObjectClass)
-			
-'    Dim ctypecol As New XFDynamicGridColumnDefinition()
-'			ctypecol.ColumnName = "UD5"
-'			ctypecol.IsFromTable = True
-'			ctypecol.IsVisible = True
-'			ctypecol.AllowUpdates = True
-'			ctypecol.Description = "cType"
-'			ctypecol.ParameterName = "ML_CMD_PGM_FormulateCType"
-'			columnDefinitions.Add(ctypecol)
-
-'Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
-'			CMD_PGM_ID.ColumnName = "CMD_PGM_REQ_ID"
-'			CMD_PGM_ID.IsFromTable = True
-'			CMD_PGM_ID.IsVisible = False
-'			CMD_PGM_ID.AllowUpdates = False
-			
-'			columnDefinitions.Add(CMD_PGM_ID)
-    
-'    Dim FY_1 As New XFDynamicGridColumnDefinition()
-'			FY_1.ColumnName = "FY_1"
-'			FY_1.IsFromTable = True
-'			FY_1.IsVisible = True
-'			FY_1.Description = WFYear
-'			columnDefinitions.Add(FY_1)
-			
-'	  Dim FY_2 As New XFDynamicGridColumnDefinition()
-'			FY_2.ColumnName = "FY_2"
-'			FY_2.IsFromTable = True
-'			FY_2.IsVisible = True
-'			FY_2.Description = WFYear + 1
-'			columnDefinitions.Add(FY_2)
-			
-'   Dim FY_3 As New XFDynamicGridColumnDefinition()
-'			FY_3.ColumnName = "FY_3"
-'			FY_3.IsFromTable = True
-'			FY_3.IsVisible = True
-'			FY_3.Description = WFYear + 2
-'			columnDefinitions.Add(FY_3)
-			
-'    Dim FY_4 As New XFDynamicGridColumnDefinition()
-'			FY_4.ColumnName = "FY_4"
-'			FY_4.IsFromTable = True
-'			FY_4.IsVisible = True
-'			FY_4.Description = WFYear + 3
-'			columnDefinitions.Add(FY_4)
-			
-'    Dim FY_5 As New XFDynamicGridColumnDefinition()
-'			FY_5.ColumnName = "FY_5"
-'			FY_5.IsFromTable = True
-'			FY_5.IsVisible = True
-'			FY_5.Description = WFYear + 4
-'			columnDefinitions.Add(FY_5)
-			
-'	 Dim Status As New XFDynamicGridColumnDefinition()
-'			Status.ColumnName = "Flow"
-'			Status.IsFromTable = True
-'			Status.IsVisible = False
-'			Status.Description = "Status"
-'			columnDefinitions.Add(Status)
-'		End If 			
 							
 						' Get the data you want To put In the grid
 						
@@ -2842,11 +2768,11 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 								  Dtl.UD4,
 								  Dtl.UD5,
 								  Dtl.UD6,
-								  Dtl.FY_1,
-								  Dtl.FY_2,
-								  Dtl.FY_3,
-								  Dtl.FY_4,
-								  Dtl.FY_5
+								Dtl.FY_1 As FY_1,
+						         Dtl.FY_2 AS FY_2,
+						         Dtl.FY_3 AS FY_3,
+						         Dtl.FY_4 AS FY_4,
+						         Dtl.FY_5 AS FY_5
 					
 								FROM XFC_CMD_PGM_REQ AS Req
 								LEFT JOIN XFC_CMD_PGM_REQ_Details AS Dtl
@@ -2932,6 +2858,19 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_PGM_REQ_ID  = @CMD_PGM_REQ_ID"
             sqaReaderdetail.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
 
+			Dim sqa_xfc_cmd_pgm_req_details_audit = New SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT(sqlConn)
+			Dim SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT = New DataTable()
+
+			Dim SQL_Audit As String = $"SELECT * 
+								FROM XFC_CMD_PGM_REQ_Details_Audit
+								WHERE WFScenario_Name = @WFScenario_Name
+								AND WFCMD_Name = @WFCMD_Name
+								AND WFTime_Name = @WFTime_Name
+								AND CMD_PGM_REQ_ID  = @CMD_PGM_REQ_ID"
+		sqa_xfc_cmd_pgm_req_details_audit.Fill_XFC_CMD_PGM_REQ_DETAILS_Audit_DT(sqa, SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT, SQL_Audit, sqlParams)
+			
+			
+			
             ' ************************************
             ' ************************************
           
@@ -2965,27 +2904,91 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 			Dim FY3 As Decimal = editedDataRow.ModifiedDataRow.Item("FY_3")
 		    Dim FY4 As Decimal = editedDataRow.ModifiedDataRow.Item("FY_4")
 		 	Dim FY5 As Decimal = editedDataRow.ModifiedDataRow.Item("FY_5")
-				
-	
+
+			'Added Audit update before funding line updates are written to the table			
+					If SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Rows.Count > 0 Then
+								Dim drow As DataRow
+									drow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+									drow("Orig_FY1") = targetRowFunding("FY_1")
+									drow("Updated_FY1") = FY1
+									drow("Orig_FY2") = targetRowFunding("FY_2")
+									drow("Updated_FY2") = FY2
+									drow("Orig_FY3") = targetRowFunding("FY_3")
+									drow("Updated_FY3") = FY3
+									drow("Orig_FY4") = targetRowFunding("FY_4")
+									drow("Updated_FY4") = FY4
+									drow("Orig_FY5") = targetRowFunding("FY_5")
+									drow("Updated_FY5") =  FY5
+									
+						Else
+										
+								Dim newrow As datarow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.NewRow()
+									newrow("CMD_PGM_REQ_ID") = targetRow("CMD_PGM_REQ_ID")
+									newrow("WFScenario_Name") = targetRow("WFScenario_Name")
+									newrow("WFCMD_Name") = targetRow("WFCMD_Name")
+									newrow("WFTime_Name") = targetRow("WFTime_Name")
+									newrow("Entity") = targetRow("Entity")
+									newrow("Account") = "Req_Funding"
+									newrow("Start_Year") = targetRow("WFTime_Name")
+									newrow("Orig_IC") = "None"
+									newrow("Updated_IC") = "None"
+									newrow("Orig_Flow") =  targetRow("Status")
+									newrow("Updated_Flow") = targetRow("Status")
+									newrow("Orig_UD1") = targetRow("APPN")
+									newrow("Updated_UD1") = targetRow("APPN")
+									newrow("Orig_UD2") = targetRow("MDEP")
+									newrow("Updated_UD2") = targetRow("MDEP")
+									newrow("Orig_UD3") = targetRow("APE9")
+									newrow("Updated_UD3") = targetRow("APE9")
+									newrow("Orig_UD4") = targetRow("Dollar_Type")
+									newrow("Updated_UD4") = targetRow("Dollar_Type")
+									If String.IsNullOrWhiteSpace(targetRow("CType").ToString()) Then
+										
+									newrow("Orig_UD5") = "None"
+									newrow("Updated_UD5") = "None"
+									Else 
+									newrow("Orig_UD5") = targetRow("CType")
+									newrow("Updated_UD5") = targetRow("CType")
+								End if
+									newrow("Orig_UD6") = targetRow("Obj_Class")
+									newrow("Updated_UD6") = targetRow("Obj_Class")
+									newrow("Orig_UD7") = "None"
+									newrow("Updated_UD7") = "None"
+									newrow("Orig_UD8") = "None"
+									newrow("Updated_UD8") = "None"
+									newrow("Create_Date") = DateTime.Now
+									newrow("Create_User") = si.UserName
+									newrow("Orig_FY1") = targetRowFunding("FY_1")
+									newrow("Updated_FY1") = FY1
+									newrow("Orig_FY2") = targetRowFunding("FY_2")
+									newrow("Updated_FY2") = FY2
+									newrow("Orig_FY3") = targetRowFunding("FY_3")
+									newrow("Updated_FY3") = FY3
+									newrow("Orig_FY4") = targetRowFunding("FY_4")
+									newrow("Updated_FY4") = FY4
+									newrow("Orig_FY5") = targetRowFunding("FY_5")
+									newrow("Updated_FY5") =  FY5
+										
+								SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.rows.add(newrow)	
+										
+						End If		
 							targetRowFunding("FY_1") = FY1
 							targetRowFunding("FY_2") = FY2
 							targetRowFunding("FY_3") = FY3
 							targetRowFunding("FY_4") = FY4
 							targetRowFunding("FY_5") = FY5
-						
-						
-							
 							targetRowFunding("Update_Date") = DateTime.Now
 	                        targetRowFunding("Update_User") = si.UserName  
-						End if      
+						
+						End If      
 					Next	   
 		                
 	
 		                ' Persist changes back to the DB using the configured adapter
 		               
-		               sqaReaderdetail.Update_XFC_CMD_PGM_REQ_Details(dt_Details,sqa2)
+		               	sqaReaderdetail.Update_XFC_CMD_PGM_REQ_Details(dt_Details,sqa2)
 		                sqaReader.Update_XFC_CMD_PGM_REQ(dt,sqa)
-						
+						sqa_xfc_cmd_pgm_req_details_audit.Update_XFC_CMD_PGM_REQ_DETAILS_AUDIT(SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT, sqa)
 						
 						
 		                End Using
@@ -3002,7 +3005,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
     If saveDataArgs Is Nothing Then
         Return Nothing
     End If
-'Brapi.ErrorLog.LogMessage(si, "HERE 1")
+'Brapi.ErrorLog.LogMessage(si, "HERE 1 CM")
     ' Get the edited rows
     Dim editedDataRows As List(Of XFEditedDataRow) = saveDataArgs.EditedDataRows
     If editedDataRows Is Nothing OrElse editedDataRows.Count = 0 Then
@@ -3019,8 +3022,8 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			
 'Brapi.ErrorLog.LogMessage(si, "HERE 3")	
-		 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
-        Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+		    Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+      		Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
             sqlConn.Open()
 
             ' ************************************
@@ -3042,74 +3045,507 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 
             ' --- Details Table (XFC_CMD_PGM_REQ_Details) ---
             Dim dt_Details As New DataTable()
-			 Dim sqa2 As New SqlDataAdapter()
+			Dim sqa2 As New SqlDataAdapter()
             Dim sqaReaderdetail As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
             Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name"
             sqaReaderdetail.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
-
+'Brapi.ErrorLog.LogMessage(si, "dt_Details = " & dt_Details.Rows.Count)	
             ' ************************************
-            ' ************************************
-     Dim sEntity As String = ""
-	 Dim old_status As String = ""
-	 Dim New_Status As String = ""
-	 Dim tm As String = wfInfoDetails("TimeName")
-	 Dim sScenario As String = wfInfoDetails("ScenarioName")
-	 Dim workspaceid As guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
-
-	 For Each editedDataRow As XFEditedDataRow In editedDataRows
-'Brapi.ErrorLog.LogMessage(si, "HERE 5")	
-		
-	Dim isInsert As Boolean = "false"	
-    Dim targetRow As DataRow 											
-	Dim req_ID_Val As Guid
-	req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_PGM_REQ_ID")
-	
+             ' --- Details Audit Table (XFC_CMD_PGM_REQ_Details_Audit) ---
+            Dim dt_Details_Audit As New DataTable()
+			Dim sqa3 As New SqlDataAdapter()
+            Dim sqaReaderdetailAudit As New SQA_XFC_CMD_PGM_REQ_Details_Audit(sqlConn)
+            Dim sqlAudit As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Details_Audit WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name"
+            sqaReaderdetailAudit.Fill_XFC_CMD_PGM_REQ_Details_Audit_DT(sqa3, dt_Details_Audit, sqlAudit, sqlParams)
+'Brapi.ErrorLog.LogMessage(si, "dt_Details = " & dt_Details.Rows.Count)	
 			
-	targetRow = dt.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
-'Brapi.ErrorLog.LogMessage(si, "HERE 6")	
-			old_Status = targetRow.Item("Status")
-
-			 New_Status = editedDataRow.ModifiedDataRow.Item("New Status")
+			
+			' ************************************
+		     Dim sEntity As String = ""
+			 Dim old_status As String = ""
+			 Dim New_Status As String = ""
+			 Dim tm As String = wfInfoDetails("TimeName")
+			 Dim sScenario As String = wfInfoDetails("ScenarioName")
+			 Dim workspaceid As guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
+			  Dim targetRow As DataRow 
+			  Dim req_ID_Val As Guid
+			  Dim StatustoPass As String = ""
+'Brapi.ErrorLog.LogMessage(si, "editedDataRows = " & editedDataRows.Count)		
+			 For Each editedDataRow As XFEditedDataRow In editedDataRows
+		'Brapi.ErrorLog.LogMessage(si, "HERE 5")	
+				
+					Dim isInsert As Boolean = "false"
+				   											
+					
+					req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_PGM_REQ_ID")
+'Brapi.ErrorLog.LogMessage(si, "req_ID_Val CMKL = " & req_ID_Val.ToString)					
+							
+					targetRow = dt.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
+		'Brapi.ErrorLog.LogMessage(si, "HERE 6")	
+					old_Status = targetRow.Item("Status")
+					
+					New_Status = editedDataRow.ModifiedDataRow.Item("New Status")
+					
+					If StatustoPass.XFEqualsIgnoreCase("") Then 
+						statustopass = old_Status & "|" & New_Status
+					Else  
+						statustopass += "|" & old_Status & "|" & New_Status 
+					End If 
 'brapi.ErrorLog.LogMessage(si,"CM new stat=" & New_Status & ": Old Stat=" & old_Status)
-		  	 sEntity = editedDataRow.ModifiedDataRow.Item("Funds Center")
-				targetRow("Update_Date") = DateTime.Now	
-				targetRow("Update_User") = si.UserName
-				targetRow("Status") = New_Status
+				  	sEntity = editedDataRow.ModifiedDataRow.Item("Funds Center")
+					targetRow("Update_Date") = DateTime.Now	
+					targetRow("Update_User") = si.UserName
+					targetRow("Status") = New_Status
+		
+					Dim targetRowFunding As DataRow()
+					targetRowFunding = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'")
+					For Each dr As DataRow In targetRowFunding
+						dr("Flow") = New_Status
+						dr("Update_Date") = DateTime.Now
+	                	dr("Update_User") = si.UserName
+					Next
+		'Brapi.ErrorLog.LogMessage(si, "Row Count " &  dt_Details.Rows.Count )
+					Dim targetRowAudit As DataRow()
+					targetRowAudit = dt_Details_Audit.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'")
+												
+						If targetRowAudit.Length > 0 Then
+							For Each drow As DataRow In targetRowAudit
+								Dim currentHistory As String = If(drow("Orig_Flow") Is DBNull.Value, _
+												 String.Empty, _
+												 drow("Orig_Flow").ToString())
+								If String.IsNullOrEmpty(currentHistory) Then
+									drow("Orig_Flow") = old_Status
+								Else
+									drow("Orig_Flow") = currentHistory + ", " + old_Status
+								End If
+									drow("Updated_Flow") = New_Status
+							Next
+						Else
+											Dim newrow As datarow = dt_Details_Audit.NewRow()
+											newrow("CMD_PGM_REQ_ID") = targetRow("CMD_PGM_REQ_ID")
+											newrow("WFScenario_Name") = targetRow("WFScenario_Name")
+											newrow("WFCMD_Name") = targetRow("WFCMD_Name")
+											newrow("WFTime_Name") = targetRow("WFTime_Name")
+											newrow("Entity") = targetRow("Entity")
+											newrow("Account") = "Req_Funding"
+											newrow("Start_Year") = targetRow("WFTime_Name")
+											newrow("Orig_IC") = "None"
+											newrow("Updated_IC") = "None"
+											newrow("Orig_Flow") =  old_Status
+											newrow("Updated_Flow") = New_Status
+											newrow("Orig_UD1") = targetRow("APPN")
+											newrow("Updated_UD1") = targetRow("APPN")
+											newrow("Orig_UD2") = targetRow("MDEP")
+											newrow("Updated_UD2") = targetRow("MDEP")
+											newrow("Orig_UD3") = targetRow("APE9")
+											newrow("Updated_UD3") = targetRow("APE9")
+											newrow("Orig_UD4") = targetRow("Dollar_Type")
+											newrow("Updated_UD4") = targetRow("Dollar_Type")
+											newrow("Orig_UD5") = "None"
+											newrow("Updated_UD5") = "None"
+											newrow("Orig_UD6") = targetRow("Obj_Class")
+											newrow("Updated_UD6") = targetRow("Obj_Class")
+											newrow("Orig_UD7") = "None"
+											newrow("Updated_UD7") = "None"
+											newrow("Orig_UD8") = "None"
+											newrow("Updated_UD8") = "None"
+											newrow("Create_Date") = DateTime.Now
+											newrow("Create_User") = si.UserName
+										
+										
+										
+											dt_Details_Audit.rows.add(newrow)
+									
+									
+						End If
 
-			Dim targetRowFunding As DataRow
-			targetRowFunding = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
-
-'Brapi.ErrorLog.LogMessage(si, "Row Count " &  dt_Details.Rows.Count )
-
-				targetRowFunding("Flow") = targetRow("Status")
-				targetRowFunding("Update_Date") = DateTime.Now
-                targetRowFunding("Update_User") = si.UserName  
- 
 'Brapi.ErrorLog.LogMessage(si, "Row Count End" &  dt_Details.Rows.Count )
-		    Next
+		    	Next
 
                 ' Persist changes back to the DB using the configured adapter
                
                sqaReaderdetail.Update_XFC_CMD_PGM_REQ_Details(dt_Details,sqa2)
                sqaReader.Update_XFC_CMD_PGM_REQ(dt,sqa)
+			   sqaReaderdetailAudit.Update_XFC_CMD_PGM_REQ_Details_Audit(dt_Details_Audit,sqa3)
 'brapi.ErrorLog.LogMessage(si,"Here CM 1 Status = " & New_Status)
 
 			   'Writing to cube
+
+'brapi.ErrorLog.LogMessage(si,"Here CM 1" & statustopass)
 						Dim customSubstVars As New Dictionary(Of String, String) 
 'brapi.ErrorLog.LogMessage(si,"Here CM 1")
-						globals.SetStringValue("FundsCenterStatusUpdates - " & sEntity, old_status & "|" & New_Status)
+						globals.SetStringValue("FundsCenterStatusUpdates - " & sEntity, statustopass)
 						customSubstVars.Add("EntList","E#" & sEntity)
 						customSubstVars.Add("WFScen",sScenario)
 						Dim currentYear As Integer = Convert.ToInt32(tm)
 						customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
 						BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
-						
+				'Next	
 		                End Using
 		            End Using
 
             Return Nothing
 		
 End Function		
+#End Region
+
+#Region "Req Attachment"
+Private Function dg_CMD_PGM_Attachments() As Object
+Dim dt As New DataTable()
+Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition) 	
+
+Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
+			CMD_PGM_ID.ColumnName = "CMD_PGM_REQ_ID"
+			CMD_PGM_ID.IsFromTable = True
+			CMD_PGM_ID.IsVisible = False
+			CMD_PGM_ID.AllowUpdates = False
+			columnDefinitions.Add(CMD_PGM_ID)
+			
+Dim FileName As New XFDynamicGridColumnDefinition()
+			FileName.ColumnName = "Attach_File_Name"
+			FileName.IsFromTable = True
+			FileName.IsVisible = True
+			FileName.AllowUpdates = False
+			FileName.Description = "File Name"
+			columnDefinitions.Add(FileName)
+			
+Dim FileBytes As New XFDynamicGridColumnDefinition()
+			FileBytes.ColumnName = "Attach_File_Bytes"
+			FileBytes.IsFromTable = True
+			FileBytes.IsVisible = False
+			FileBytes.AllowUpdates = False
+			
+			columnDefinitions.Add(FileBytes)
+			
+			
+	Dim sREQ As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ","")		
+	Dim REQ_ID_Split As List(Of String) = StringHelper.SplitString(sREQ, " ")	
+	Dim RequirementID As String  = REQ_ID_Split(1)
+	
+	   Dim sql As String = $"SELECT Att.CMD_PGM_REQ_ID, Att.Attach_File_Name 
+	   						From XFC_CMD_PGM_REQ_Attachment as Att
+	   						LEFT JOIN XFC_CMD_PGM_REQ AS Req
+							ON Req.CMD_PGM_REQ_ID = Att.CMD_PGM_REQ_ID
+							WHERE 
+	  					 Req.REQ_ID = '{RequirementID}'"
+	   
+	   
+	    Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+                dt = BRApi.Database.ExecuteSql(dbConnApp,sql,False)
+            End Using
+			
+				     'Create the XFTable
+					    Dim xfTable As New xfDataTable(si,dt,Nothing,1000)
+						
+					
+					     'Send the result To the Interface component
+					    Dim taskResult As New XFDynamicGridGetDataResult(xfTable,columnDefinitions,DataAccessLevel.AllAccess)
+					        
+					    Return taskResult
+					
+		End Function
+	   
+	   
+#End Region	
+
+#Region "Create New REQ"
+Private Function dg_CMD_PGM_Create() As Object
+Dim WfYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
+Dim dt As New DataTable()
+Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition) 	
+Dim createrow As DataRow = dt.NewRow()
+dt.Columns.Add("Title")
+dt.Columns.Add("FY_1")
+dt.Columns.Add("FY_2")
+dt.Columns.Add("FY_3")
+dt.Columns.Add("FY_4")
+dt.Columns.Add("FY_5")
+
+
+			
+Dim Title As New XFDynamicGridColumnDefinition()
+			Title.ColumnName = "Title"
+			Title.IsFromTable = True
+			Title.IsVisible = True
+			Title.AllowUpdates = True
+			Title.Width = "600"
+			columnDefinitions.Add(Title)
+			
+ Dim FY_1 As New XFDynamicGridColumnDefinition()
+			FY_1.ColumnName = "FY_1"
+			FY_1.IsFromTable = True
+			FY_1.IsVisible = True
+			FY_1.Description = WFYear
+			FY_1.DataFormatString = "N0"
+			columnDefinitions.Add(FY_1)
+			
+	  Dim FY_2 As New XFDynamicGridColumnDefinition()
+			FY_2.ColumnName = "FY_2"
+			FY_2.IsFromTable = True
+			FY_2.IsVisible = True
+			FY_2.Description = WFYear + 1
+			FY_2.DataFormatString = "N0"
+			columnDefinitions.Add(FY_2)
+			
+   Dim FY_3 As New XFDynamicGridColumnDefinition()
+			FY_3.ColumnName = "FY_3"
+			FY_3.IsFromTable = True
+			FY_3.IsVisible = True
+			FY_3.Description = WFYear + 2
+			FY_3.DataFormatString = "N0"
+			columnDefinitions.Add(FY_3)
+			
+    Dim FY_4 As New XFDynamicGridColumnDefinition()
+			FY_4.ColumnName = "FY_4"
+			FY_4.IsFromTable = True
+			FY_4.IsVisible = True
+			FY_4.Description = WFYear + 3
+			FY_4.DataFormatString = "N0"
+			columnDefinitions.Add(FY_4)
+			
+    Dim FY_5 As New XFDynamicGridColumnDefinition()
+			FY_5.ColumnName = "FY_5"
+			FY_5.IsFromTable = True
+			FY_5.IsVisible = True
+			FY_5.Description = WFYear + 4
+			FY_5.DataFormatString = "N0"
+			columnDefinitions.Add(FY_5)
+			
+			
+			dt.Rows.Add(createrow)
+
+ 'Create the XFTable
+					    Dim xfTable As New xfDataTable(si,dt,Nothing,1000)
+						
+					
+					     'Send the result To the Interface component
+					    Dim taskResult As New XFDynamicGridGetDataResult(xfTable,columnDefinitions,DataAccessLevel.AllAccess)
+					        
+					    Return taskResult
+					
+		End Function
+#End Region
+
+#Region "Save Create new req"
+Public Function Save_dg_CMD_PGM_Create() As Object
+Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
+    If saveDataArgs Is Nothing Then
+        Return Nothing
+    End If
+'Brapi.ErrorLog.LogMessage(si, "HERE 1")
+    ' Get the edited rows
+    Dim editedDataRows As List(Of XFEditedDataRow) = saveDataArgs.EditedDataRows
+    If editedDataRows Is Nothing OrElse editedDataRows.Count = 0 Then
+        Return Nothing
+    End If
+	
+	          ' Get Workflow context details
+ Dim WFInfoDetails As New Dictionary(Of String, String)()
+            Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
+            Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
+			Dim wfCubeRootInfo = BRApi.Workflow.Metadata.GetProfile(si,wfUnitInfo.ProfileName)
+           
+            WFInfoDetails.Add("ScenarioName", wfUnitInfo.ScenarioName)
+            WFInfoDetails.Add("TimeName", wfUnitInfo.TimeName)
+			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
+
+    Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+        Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+            sqlConn.Open()
+
+            ' ************************************
+            ' *** Fetch Data for BOTH tables *****
+            ' ************************************
+            ' --- Main Request Table (XFC_CMD_PGM_REQ) ---
+            Dim dt As New DataTable()
+            Dim sqa As New SqlDataAdapter()
+            Dim sqaReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
+            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_PGM_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name"
+            Dim sqlParams As SqlParameter() = New SqlParameter() {
+                New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = WFInfoDetails("ScenarioName")},
+                New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = WFInfoDetails("CMDName")},
+                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = WFInfoDetails("TimeName")}
+						}
+              sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa, dt, sqlMain, sqlParams)
+			  
+			'Brapi.ErrorLog.LogMessage(si,"In Save Create SQL")
+
+            ' --- Details Table (XFC_CMD_PGM_REQ_Details) ---
+            Dim dt_Details As New DataTable()
+            Dim sqa2 As New SqlDataAdapter()
+            Dim sqaReaderdetail As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
+            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name"
+            sqaReaderdetail.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
+
+'Brapi.ErrorLog.LogMessage(si,"In Save Create SQL 2")
+            ' ************************************
+            ' ************************************
+				Dim sU1APPNInput As String = args.CustomSubstVars.XFGetValue("ML_CMD_PGM_FormulateAPPN","")
+							Dim sU2Input As String = args.CustomSubstVars.XFGetValue("ML_CMD_PGM_FormulateMDEP","")
+							Dim sU3Input As String = args.CustomSubstVars.XFGetValue("ML_CMD_PGM_FormulateAPEPT","")
+							Dim sU4Input As String = args.CustomSubstVars.XFGetValue("ML_CMD_PGM_FormulateDollarType","")
+							Dim sU5Input As String = args.CustomSubstVars.XFGetValue("ML_CMD_PGM_FormulateCType","")
+							Dim sU6Input As String = args.CustomSubstVars.XFGetValue("ML_CMD_PGM_FormulateObjectClass","")
+
+'							Dim sU1APPNInput As String = args.NameValuePairs.XFGetValue("APPN")
+'							Dim sU2Input As String = args.NameValuePairs.XFGetValue("MDEP")
+'							Dim sU3Input As String = args.NameValuePairs.XFGetValue("APE")
+'							Dim sU4Input As String = args.NameValuePairs.XFGetValue("DollarType")
+'							Dim sU5Input As String = args.NameValuePairs.XFGetValue("CType")
+'							Dim sU6Input As String = args.NameValuePairs.XFGetValue("ObjClass")
+							
+'Brapi.ErrorLog.LogMessage(si,"Create Comboboxes" & sU1APPNInput & "," & sU2Input & "," & sU3Input & "," & sU4Input & "," & sU6Input)
+            
+						Dim sEntity As String =  args.CustomSubstVars.XFGetValue("BL_CMD_PGM_FundsCenter","")
+						Dim entityLevel As String = Me.GetEntityLevel(sEntity)
+						Dim sREQWFStatus As String = entityLevel & "_Formulate_PGM"
+						Dim NewReqID As Guid = Guid.NewGuid()
+						'BRapi.ErrorLog.LogMessage(si,"Hit")
+            		For Each editedDataRow As XFEditedDataRow In editedDataRows						
+								
+						
+							Dim requiredString As String = ""
+							If String.IsNullOrWhiteSpace(sU1APPNInput) Then
+								requiredString += "Appropriation"
+							End If	
+							
+							If String.IsNullOrWhiteSpace(sU2Input) Then
+								If Not String.IsNullOrWhiteSpace(requiredString) Then
+									requiredString += ", "
+								End If
+								requiredString += "MDEP"
+							End If	
+							
+							If String.IsNullOrWhiteSpace(sU3Input) Then
+								If Not String.IsNullOrWhiteSpace(requiredString) Then
+									requiredString += ", "
+								End If
+								requiredString += "APE9"
+							End If	
+							If String.IsNullOrWhiteSpace(sU4Input) Then
+								If Not String.IsNullOrWhiteSpace(requiredString) Then
+									requiredString += ", "
+								End If
+								requiredString += "DollarType"
+							End If	
+							If String.IsNullOrWhiteSpace(sU6Input) Then
+								If Not String.IsNullOrWhiteSpace(requiredString) Then
+									requiredString += ", "
+								End If
+								requiredString += "Object_Class"
+							End If	
+							If String.IsNullOrWhiteSpace(editedDataRow.ModifiedDataRow.Item("Title").ToString()) Then
+								If Not String.IsNullOrWhiteSpace(requiredString) Then
+									requiredString += ", "
+								End If
+								requiredString += "Title"
+							End If	
+							
+						
+							If Not String.IsNullOrWhiteSpace(requiredString) Then
+								Throw New Exception("The following fields must be populated when creating a requirement: " + requiredString + ".")
+							End If	
+						 
+                            Dim targetRowDetails As DataRow = dt_Details.NewRow()
+                         
+					
+                                
+							targetRowDetails("CMD_PGM_REQ_ID") = NewReqID
+							targetRowDetails("WFScenario_Name") = wfInfoDetails("ScenarioName")
+							targetRowDetails("WFCMD_Name") = wfInfoDetails("CMDName")
+							targetRowDetails("WFTime_Name") = wfInfoDetails("TimeName")
+							targetRowDetails("Entity") = args.CustomSubstVars.XFGetValue("BL_CMD_PGM_FundsCenter","")
+							targetRowDetails("Unit_of_Measure") = "Funding"
+							targetRowDetails("IC") = "None"
+							targetRowDetails("Account") = "Req_Funding"
+							targetRowDetails("Flow") = sREQWFStatus
+'BRApi.ErrorLog.LogMessage(si,"Hit2")
+							targetRowDetails("UD1") = sU1APPNInput
+							targetRowDetails("UD2") = sU2Input
+							targetRowDetails("UD3") = sU3Input
+							targetRowDetails("UD4") = sU4Input
+						If String.IsNullOrWhiteSpace(sU5Input)
+							targetRowDetails("UD5") = "None"
+						Else 
+							targetRowDetails("UD5") = sU5Input
+						End If
+							targetRowDetails("UD6") = sU6Input
+'BRApi.ErrorLog.LogMessage(si,"Hit3")
+							targetRowDetails("UD7") = "None"
+							targetRowDetails("UD8") = "None"
+							targetRowDetails("Start_Year") = wfInfoDetails("TimeName")
+                            Dim fy1 As Decimal = editedDataRow.ModifiedDataRow.Item("FY_1").ToString.XFConvertToDecimal
+                            Dim fy2 As Decimal = editedDataRow.ModifiedDataRow.Item("FY_2").ToString.XFConvertToDecimal
+                            Dim fy3 As Decimal = editedDataRow.ModifiedDataRow.Item("FY_3").ToString.XFConvertToDecimal
+                            Dim fy4 As Decimal = editedDataRow.ModifiedDataRow.Item("FY_4").ToString.XFConvertToDecimal
+                            Dim fy5 As Decimal = editedDataRow.ModifiedDataRow.Item("FY_5").ToString.XFConvertToDecimal
+							
+						
+'BRApi.ErrorLog.LogMessage(si,"Hit4")
+                            targetRowDetails("FY_1") = fy1
+                            targetRowDetails("FY_2") = fy2
+                            targetRowDetails("FY_3") = fy3
+                            targetRowDetails("FY_4") = fy4
+                            targetRowDetails("FY_5") = fy5
+                            targetRowDetails("FY_Total") = fy1 + fy2 + fy3 + fy4 + fy5
+							targetRowDetails("AllowUpdate") = "True"
+							targetRowDetails("Create_Date") = DateTime.Now
+							targetRowDetails("Create_User") = si.UserName
+							targetRowDetails("Update_Date") = DateTime.Now
+							targetRowDetails("Update_User") = si.UserName
+								
+					Dim targetRow As DataRow = dt.NewRow()
+                         
+								targetRow("CMD_PGM_REQ_ID") = NewReqID
+								targetRow("WFScenario_Name") = wfInfoDetails("ScenarioName")
+								targetRow("WFCMD_Name") = wfInfoDetails("CMDName")
+								targetRow("WFTime_Name") = wfInfoDetails("TimeName")
+								targetRow("Entity") = args.CustomSubstVars.XFGetValue("BL_CMD_PGM_FundsCenter","")
+								targetRow("REQ_ID") = Me.Get_FC_REQ_ID(si,sEntity)
+								targetRow("REQ_ID_Type") = "Requirement"
+								targetRow("Title") = editedDataRow.ModifiedDataRow.Item("Title").ToString()
+								targetRow("APPN") = sU1APPNInput
+								
+								targetRow("MDEP") = sU2Input
+								targetRow("APE9") = sU3Input
+								targetRow("Dollar_Type") = sU4Input
+								targetRow("Obj_Class") = sU6Input
+								If String.IsNullOrWhiteSpace(sU5Input)
+								targetRow("CType") = "None"
+							Else
+								targetRow("CType") = sU5Input
+							End If
+								targetRow("Create_Date") = DateTime.Now
+								targetRow("Create_User") = si.UserName
+								targetRow("Update_Date") = DateTime.Now
+								targetRow("Update_User") = si.UserName
+								targetRow("Status") = sREQWFStatus
+							
+								
+		                    	dt_Details.Rows.Add(targetRowDetails)
+								dt.Rows.Add(targetRow)
+		             
+		                Next
+	
+		                ' Persist changes back to the DB using the configured adapter
+		                sqaReaderdetail.Update_XFC_CMD_PGM_REQ_Details(dt_Details,sqa2)
+		                sqaReader.Update_XFC_CMD_PGM_REQ(dt,sqa)
+						
+					Dim customSubstVars As New Dictionary(Of String, String) 
+					 Dim workspaceid As guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
+						globals.SetStringValue("FundsCenterStatusUpdates - " & sEntity, sREQWFStatus)
+						customSubstVars.Add("EntList","E#" & sEntity)
+						customSubstVars.Add("WFScen",WFInfoDetails("ScenarioName"))
+						Dim currentYear As Integer = Convert.ToInt32(WFInfoDetails("TimeName"))
+						customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "CMD_PGM_Proc_Status_Updates", customSubstVars)	
+						
+		                End Using
+		            End Using
+
+            Return Nothing
+        End Function	
+
 #End Region
 
 #Region "Get Priority Categories"
@@ -3128,8 +3564,8 @@ End Function
                 Dim priCatDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "A_Admin")
                  priCatMembers = BRApi.Finance.Members.GetMembersUsingFilter(si, priCatDimPk, priFilter, True)
                 
-                Dim catNameMemScript As String   = "Cb#" & WFCube & ":E#" & sFundCenter & ":C#Local:S#" & WFScenario & ":T#" & REQTime & ":V#Annotation:A#UUUU:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-                Dim catWeightMemScript As String = "Cb#" & WFCube & ":E#" & sFundCenter & ":C#Local:S#" & WFScenario & ":T#" & REQTime & ":V#Periodic:A#UUUU:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#UUUU:U6#None:U7#None:U8#None"
+                Dim catNameMemScript As String   = "Cb#" & WFCube & ":E#" & sFundCenter & ":C#Local:S#" & WFScenario & ":T#" & REQTime & ":V#Annotation:A#UUUU:F#None:O#AdjInput:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+                Dim catWeightMemScript As String = "Cb#" & WFCube & ":E#" & sFundCenter & ":C#Local:S#" & WFScenario & ":T#" & REQTime & ":V#Periodic:A#UUUU:F#None:O#AdjInput:I#None:U1#None:U2#None:U3#None:U4#None:U5#UUUU:U6#None:U7#None:U8#None"
                 Dim priCatNameList As New List(Of String)
                 Dim priCatName As String = ""
                 'Dim priCatWeight As Decimal
@@ -3173,6 +3609,41 @@ End Function
 		
 	End Function
 #End Region
+
+#Region"Get REQID"
+        Public Function Get_FC_REQ_ID(si As SessionInfo, fundCenter As String) As String
+			Dim WFScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			
+		  ' Query to get the highest REQ_ID from both tables
+            Dim SQL As String = $"
+                SELECT MAX(CAST(SUBSTRING(REQ_ID, CHARINDEX('_', REQ_ID) + 1, LEN(REQ_ID)) AS INT)) AS MaxID
+                FROM (
+                    SELECT REQ_ID FROM XFC_CMD_PGM_REQ  WHERE ENTITY = '{fundcenter}' AND WFScenario_Name = '{WFScenario}'
+                    UNION ALL
+                    SELECT REQ_ID FROM XFC_CMD_SPLN_REQ WHERE ENTITY = '{fundcenter}' AND WFScenario_Name = '{WFScenario}'
+                ) AS Combined"
+'BRApi.ErrorLog.LogMessage(si,"SQL: " & SQL)
+			
+			Dim dtREQID As DataTable = New DataTable()
+			Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
+			 	dtREQID = BRApi.Database.ExecuteSql(dbConn,SQL,True)
+			End Using
+			
+			Dim nextID As Integer = 1
+			If (Not dtREQID Is Nothing) AndAlso (Not dtREQID.Rows.Count = 0) AndAlso (Not IsDBNull(dtREQID.Rows(0)("MaxID"))) Then
+			    Dim maxID As Integer = Convert.ToInt32(dtREQID.Rows(0)("MaxID"))
+                nextID = maxID + 1
+			End If
+			
+			Dim modifiedFC As String = fundCenter
+			modifiedFC = modifiedFC.Replace("_General", "")
+			If modifiedFC.Length = 3 Then modifiedFC = modifiedFC & "xx"
+			Dim nextREQ_ID As String = modifiedFC &"_" & nextID.ToString("D5")
+'BRApi.ErrorLog.LogMessage(si,"nextREQ_ID: " &nextREQ_ID)				
+
+			Return nextREQ_ID
+        End Function
+#End Region	
 
 	End Class
 End Namespace

@@ -1,4 +1,3 @@
-Imports System
 Imports System.Collections.Generic
 Imports System.Data
 Imports System.Data.Common
@@ -72,7 +71,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		
 #Region "REQ Mass Import"
 		'This rule reads the imported file chcks if it is readable then parses into the REQ class
-		'*****FILL OUT MORE
 
 		Public Function	ImportREQ(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object							
 
@@ -90,75 +88,127 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	
 				Dim FilePath As String = $"{BRApi.Utilities.GetFileShareFolder(si, FileshareFolderTypes.FileShareRoot,Nothing)}/{FileName}"
 				'Confirm source file exists
-				'Dim filePath As String = args.NameValuePairs.XFGetValue("FilePath") 
-	'			Dim fullFile = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.PrepImportFile(si,filePath)
-		        
 				Dim Importreq_DT As New DataTable("Importreqs")
 				Using sr As New StreamReader(System.IO.File.OpenRead(filePath))
-					ImportREQ_DT = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.GetCsvDataReader(si, globals, sr, ",", REQ.ColumnMaps)
+					Dim numOfColumns As Integer = 93
+					ImportREQ_DT = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.GetCsvDataReader(si, globals, sr, ",", REQ.ColumnMaps, numOfColumns)
 					Importreq_DT.TableName = "Importreqs"
 					
 				End Using
-'BRApi.ErrorLog.LogMessage(si, "Returned to Import: " & ImportREQ_DT.Rows(0)("Invalid Errors").ToString)
-
+'BRApi.ErrorLog.LogMessage(si, "#Here 1")
 				'Check for errors
 				Dim validFile As Boolean = True
 				Dim errRow As DataRow = Importreq_DT.AsEnumerable().
 											FirstOrDefault(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors")) )
 											
 				If errRow IsNot Nothing Then validFile = False
-
+'BRApi.ErrorLog.LogMessage(si, "#Here 2")
 				Dim REQDataTable As New DataTable("XFC_CMD_PGM_REQ")
 				Dim REQDetailDataTable As New DataTable("XFC_CMD_PGM_REQ_Details")
+				
+				Dim existingREQs As New List(Of String)
+				Dim REQsinDB As Dictionary(Of (String, String, String), String)
+			
+				'TO DO: Validate REQ_ID is valid if exists in the file
+				If validFile Then
+					'Get current REQs for the current scenario and command
+					REQsinDB = Me.GetDbValuesIntoREQTables(Importreq_DT, REQDataTable, REQDetailDataTable)
+					validFile = REQ_IDIsValid( Importreq_DT, REQsinDB)
+				End If
+				
+				'write only error messages. If no error leave blank
+				Dim errRowsToReport As list (Of DataRow) = Importreq_DT.AsEnumerable().
+										Where(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors"))).ToList()
+				Dim errorTable As DataTable = Importreq_DT.Clone()
+				For Each errorRow As DataRow In errRowsToReport
+					errorTable.ImportRow(errorRow)
+				Next
 				
 	            If validFile Then
 					'get req_id and guid
 					UpdateColsForDatabase(Importreq_DT)
+BRApi.ErrorLog.LogMessage(si, "#Here 4")
+					'Update additional columns
 					PostProcessNewREQ(ImportREQ_DT)
+BRApi.ErrorLog.LogMessage(si, "#Here 5")
+
+					'Get existing duplicate Reqs
 					
-'BRApi.ErrorLog.LogMessage(si, "Post proc completed " & Importreq_DT.TableName)					
-					'Split fullDataTable and insert into the two tables
-					Me.SplitAndInsertIntoREQTables(Importreq_DT, REQDataTable,REQDetailDataTable)
-					
-	            'End If
-'BRApi.ErrorLog.LogMessage(si, "Post 1")				
+					existingREQs = Me.GetExistingDupREQs(Importreq_DT, REQDataTable, REQsinDB)
+BRApi.ErrorLog.LogMessage(si, "#Here 6")
+					'Call delete to delte rows
+					If existingREQs.Count > 0 Then
+						Dim deleter As New CMD_PGM_Helper.MainClass
+						Args.NameValuePairs.Add("req_IDs", String.Join(",", existingREQs))
+						'Args.NameValuePairs.Add("Entity", comd)
+						Args.NameValuePairs.Add("Action", "Delete")
+						deleter.main(si, globals, api, args)
+					End If
+BRApi.ErrorLog.LogMessage(si, "#Here 7")
+					'Spltit imported data to REQ and detail tables
+					Me.SplitAndUpdateREQTables(ImportREQ_DT, REQDataTable, REQDetailDataTable)
+BRApi.ErrorLog.LogMessage(si, "#Here 8")					
 					'write to cube
 					Dim REQ_IDs As New List(Of String)
 					For Each r As DataRow In ImportREQ_DT.Rows
 						REQ_IDs.Add(r("REQ_ID").ToString)	
 					Next
-'BRApi.ErrorLog.LogMessage(si, "Post 2")				
+BRApi.ErrorLog.LogMessage(si, "#Here 9, count: " & REQ_IDs.Count)					
 					Dim loader As New CMD_PGM_Helper.MainClass
-					Args.NameValuePairs.Add("req_IDs", String.Join(",", REQ_IDs))
+					Args.NameValuePairs("req_IDs") =  String.Join(",", REQ_IDs)
+					'Args.NameValuePairs.Add("req_IDs", String.Join(",", REQ_IDs))
 					Args.NameValuePairs.Add("new_Status", "Formulate") 'It keeps the same status
+					Args.NameValuePairs("Action") = "Insert"
 					loader.main(si, globals, api, args)
-					
+BRApi.ErrorLog.LogMessage(si, "#Here 10")					
 					'File load complete. Write file to explorer
+
 					'Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf & "Output file is located in the following folder for review:" & vbCrLf & "DOCUMENTS/USERS/" & si.UserName.ToUpper
 					Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf 
 					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", uploadStatus)
-					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_PGM_Import_" & wfInfoDetails("ScenarioName") ,  ImportREQ_DT)
-					
+					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_PGM_Import_" & wfInfoDetails("ScenarioName") ,  errorTable)
+BRApi.ErrorLog.LogMessage(si, "#Here 11")					
 					Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
 				Else 'If the validation failed, write the error out.
 					Dim sErrorLog As String = ""
 									
 					Dim stastusMsg As String = "LOAD FAILED" & vbCrLf & fileName & " has invalid data." & vbCrLf & vbCrLf & $"To view import error(s), please take look at the column titled ""ValidationError""."
 					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", stastusMsg)
-					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_PGM_Import_" & wfInfoDetails("ScenarioName"),  ImportREQ_DT)
+					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_PGM_Import_" & wfInfoDetails("ScenarioName"),  errorTable)
 					Return Nothing
 				End If
-				
-
-'BRApi.ErrorLog.LogMessage(si, "Import completed")
+BRApi.ErrorLog.LogMessage(si, "#Here 12")					
 				Return Nothing
 	        Catch ex As Exception
 	            Throw New Exception("An error occurred: " & ex.Message)
 	        End Try
 		End Function			
 #End Region
-
+		
 #Region "Import Helpers"
+
+#Region"REQ_ID is Valid"
+
+		Public Function REQ_IDIsValid(ByRef Importreq_DT As DataTable, ByRef existingREQs As Dictionary(Of (String, String, String), String)) As Boolean
+	
+	        'Identify dupliacate rows to delete based on the new data
+	        Dim rowsToDelete As New List(Of String)
+			Dim valid As Boolean = True
+	        For Each newRow As DataRow In Importreq_DT.Rows
+				Dim id As String = newRow("REQ_ID").ToString
+				If Not String.IsNullOrWhiteSpace(id) Then
+					Dim exists As Boolean = existingREQs.Keys.Any(Function (f) f.Item1.XFEqualsIgnoreCase(id))
+	
+		            If Not exists Then
+						newRow("Invalid Errors") = "REQ_ID: " & id & " does not exist."
+		                valid = False
+		            End If
+				End If
+	        Next	
+			Return valid
+		End Function
+
+#End Region
 
 #Region "GetNextREQID"
 	Dim startingREQ_IDByFC As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
@@ -166,7 +216,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		Dim currentREQID As Integer
 		Dim newREQ_ID As String
 		If startingREQ_IDByFC.TryGetValue(fundCenter, currentREQID) Then
-'BRApi.ErrorLog.LogMessage(si,"IF Fund Center: " & fundCenter & ", currentREQID: " & currentREQID )			
 			currentREQID = currentREQID + 1
 			Dim modifiedFC As String = fundCenter
 			modifiedFC = modifiedFC.Replace("_General", "")
@@ -175,24 +224,24 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			startingREQ_IDByFC(fundCenter) = currentREQID
 		Else	
 			newREQ_ID = GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,fundCenter)
-'BRApi.ErrorLog.LogMessage(si,"ELSE Fund Center: " & fundCenter & ", newREQ_ID: " & newREQ_ID.Split("_")(1) )				
 			startingREQ_IDByFC.Add(fundCenter.Trim, newREQ_ID.Split("_")(1))
 		End If 
-			
+'BRApi.ErrorLog.LogMessage(si,"newREQ_ID: " & newREQ_ID)							
 		Return newREQ_ID
 	End Function
 #End Region	
 
+#Region "Post Process New REQ"
 	Public Function PostProcessNewREQ(ByRef dt As DataTable) As StringReader
-	    
 		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 		For Each row As DataRow In dt.Rows
-			
-			Dim fundCenter As String = row("FundCenter").ToString
-			'If 
-			Dim REQ_D As String = GetNextREQID(fundCenter)
-			row("REQ_ID") = REQ_D
-			
+			Dim fundCenter As String = row("FundsCenter").ToString
+			Dim REQ_ID As String = row("REQ_ID")
+			If String.IsNullOrWhiteSpace(REQ_ID) Then 
+				REQ_ID  = GetNextREQID(fundCenter)
+			End If
+			row("REQ_ID") = REQ_ID
+
 			row("CMD_PGM_REQ_ID") = Guid.NewGuid()
 			row("WFScenario_Name") =  wfInfoDetails("ScenarioName")
 			row("WFTime_Name") =  wfInfoDetails("TimeName")
@@ -203,7 +252,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
 			row("UD7") = "None"
 			row("UD8") = "None"			
-			row("FundCenter") = fundCenter
+			row("FundsCenter") = fundCenter
 			row("APE9") =  row("APPN") & "_" & row("APE9") 'CMD_PGM_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
 			row("REQ_ID_Type") = "Requirement"
 			row("Create_Date") = DateTime.Now
@@ -215,8 +264,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
        
         Return Nothing
 	
-	End Function	
-
+	End Function
+#End Region	
+	
+#Region "Update Cols For Database"
 	Public Function UpdateColsForDatabase(ByRef dt As DataTable) As StringReader
 	    
 		
@@ -225,7 +276,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		dt.Columns.Add("CMD_PGM_REQ_ID",GetType(Guid))
 		'dt.PrimaryKey = New DataColumn() {dt.Columns("CMD_PGM_REQ_ID")}
 		dt.Columns.Add("REQ_ID_Type")
-		dt.Columns.Add("REQ_ID")
+		'dt.Columns.Add("REQ_ID")
 		dt.Columns.Add("Status")
         ' Assuming the first line contains headers
 
@@ -253,27 +304,24 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
        
         Return Nothing
 	
-	End Function			
+	End Function	
+#End Region
+
+#Region "Get Existing Row"
+
+		Public Function GetExistingDupREQs(ByRef Importreq_DT As DataTable, ByRef REQDataTable As DataTable, ByRef existingREQs As Dictionary(Of (String, String, String), String)) As List(Of String)
 	
-	Public Function GetExistingRow(ByRef dt As DataTable, ByRef account As String) As DataRow
-'		Dim existingRow As System.Data.DataRow = ( From r As System.Data.DataRow In dt.AsEnumerable()
-'									   Where r.Field(Of String)("CMD_PGM_REQ_ID").ToString().XFContainsIgnoreCase(row("CMD_PGM_REQ_ID").ToString) AndAlso
-'											 r.Field(Of String)("Cycle").ToString().XFContainsIgnoreCase(row("Cycle").ToString) AndAlso
-'											 r.Field(Of String)("UNIT_OF_MEASURE").ToString().XFContainsIgnoreCase(row("UNIT_OF_MEASURE").ToString) AndAlso
-'											 r.Field(Of String)("Account").ToString().XFContainsIgnoreCase(account) 
-'										Select r
-'										).FirstOrDefault()
-		For Each row In dt.Rows 
-			If (row("CMD_PGM_REQ_ID").ToString().XFContainsIgnoreCase(row("CMD_PGM_REQ_ID").ToString) AndAlso
-				row("Start_Year").ToString().XFContainsIgnoreCase(row("Start_Year").ToString) AndAlso
-				row("UNIT_OF_MEASURE").ToString().XFContainsIgnoreCase(row("UNIT_OF_MEASURE").ToString) AndAlso
-				row("Account").ToString().XFContainsIgnoreCase(account) )
-				Return row
-			End If
-		Next
-		Return Nothing
-	End Function
-		
+	        'Identify dupliacate rows to delete based on the new data
+	        Dim rowsToDelete As New List(Of String)
+	        For Each newRow As DataRow In Importreq_DT.Rows
+	            Dim key = ((newRow("REQ_ID").ToString, newRow("WFScenario_Name").ToString(), newRow("FundsCenter").ToString()))
+	            If existingREQs.ContainsKey(key) Then
+	                rowsToDelete.Add(existingREQs(key))
+	            End If
+	        Next	
+			Return rowsToDelete
+		End Function
+#End Region
 
 #Region "Get Entity Level"	
 
@@ -334,7 +382,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 #Region "setup Split And Insert Into REQ Tables"	
 
-	Function SplitAndInsertIntoREQTables(ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable )
+	Function GetDbValuesIntoREQTables(ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable ) As Dictionary(Of (String, String, String), String)
 
 		Dim sqa As New SqlDataAdapter()
 		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
@@ -366,25 +414,31 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 				Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
                 sqaREQDetailReader.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa, REQDTDetail, SqlREQDetail, sqlparamsREQDetails)
-				'Define PKs to match the table
-'				REQDTDetail.PrimaryKey = New DataColumn() {
-'					 REQDTDetail.Columns("CMD_PGM_REQ_ID"),
-'					 REQDTDetail.Columns("Start_Year"),
-'			         REQDTDetail.Columns("Unit_of_Measure"),
-'					 REQDTDetail.Columns("Account")
-'					 }
-				'REQDTDetail.PrimaryKey = primaryKeyColumns
-				
-'Brapi.ErrorLog.LogMessage(si,"here * 1")			 				
+			End Using
+		End Using				
+
+		'Put it in a dictionary for faster access
+		Dim existingREQs As New Dictionary(Of (String, String, String), String)
+		For Each row As DataRow In REQDT.Rows
+            existingREQs.Add((row("REQ_ID").ToString, row("WFScenario_Name").ToString(), row("Entity").ToString()), row("REQ_ID"))
+        Next
+		Return existingREQs
+	End Function
+	
+	Function SplitAndUpdateREQTables(ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable )
+
+'Brapi.ErrorLog.LogMessage(si,"here * 1")	
+		Dim sqa As New SqlDataAdapter()
+        Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+            Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+                sqlConn.Open()
+				Dim sqaREQReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
+				Dim sqaREQDetailReader As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
+				 
 				Me.SplitFullDataTable(fullDT, REQDT, REQDTDetail)
 			
-'Brapi.ErrorLog.LogMessage(si,"here * 2 ")	
-
-'BRApi.ErrorLog.LogMessage(si, l)
 				sqaREQReader.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
-'Brapi.ErrorLog.LogMessage(si,"here * 3")			 							
 				sqaREQDetailReader.Update_XFC_CMD_PGM_REQ_Details(REQDTDetail,sqa)
-'Brapi.ErrorLog.LogMessage(si,"here * 4")			 								
 
 			End Using
 		End Using
@@ -397,39 +451,29 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 #Region"Split dataset"
 	Public Function SplitFullDataTable (ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable) As Object
 		' Split and translate data per row
-'BRApi.ErrorLog.LogMessage(si,"In Split* 1")		
 		For Each row As DataRow In fullDT.Rows
 			
-'BRApi.ErrorLog.LogMessage(si,"In Spli`t 2* GUID: " & row("CMD_PGM_REQ_ID").ToString & ", start_year: " & row("Cycle").ToString &  " ,Unit Of measure: " & row("UNIT_OF_MEASURE").ToString & " ,Acc: " & row("Account").ToString )
-		   
 			' Handle REQDT translation and insertion/update
-			Dim REQExists As Boolean = False
-			Dim existingREQ_ID As String
-			Dim existingCMD_PGM_REQ_ID As String
 			Dim MappingForREQ As New Dictionary(Of String, String)
 			MappingForREQ = GetMappingForREQ()
 		    Dim existingRowREQDT As DataRow = REQDT.Rows.Find(row("CMD_PGM_REQ_ID")) '***DEV NOTE: TO DO this will have to be modified to match on other fields
-		    
-			If existingRowREQDT IsNot Nothing Then
-				REQExists = True
-				existingCMD_PGM_REQ_ID = existingRowREQDT("CMD_PGM_REQ_ID")
-				existingREQ_ID = existingRowREQDT("REQ_ID")
-			End If
-		      
-		    ' Create a new row
+
+			' Create a new row
 	        Dim newRowREQDT As DataRow = REQDT.NewRow()
-	        For Each fullCol As String In MappingForREQ.Keys
-	            newRowREQDT(MappingForREQ(fullCol)) = row(fullCol)
-		
-	        Next
-			'If it is an existing row we will keep the original REC_ID. All the data will be from the file
-			If REQExists Then
-				 Me.UpdateExistingREQIDs(newRowREQDT, existingCMD_PGM_REQ_ID, existingREQ_ID)					 
-			End If
+	        For Each fullCol As KeyValuePair (Of String, String) In MappingForREQ
+				If REQDT.Columns(fullCol.Value).DataType Is GetType(DateTime) Then
+                    Dim tempDate As DateTime
+                    If DateTime.TryParse(row(fullCol.Key), tempDate) Then
+                        newRowREQDT(MappingForREQ(fullCol.Key)) = row(fullCol.Key)
+                    Else
+                        newRowREQDT(MappingForREQ(fullCol.Key)) = DBNull.Value
+                    End If
+                Else
+					newRowREQDT(MappingForREQ(fullCol.Key)) = row(fullCol.Key)
+				End If 
+	        Next		
 		    
 			REQDT.Rows.Add(newRowREQDT)
-'BRApi.ErrorLog.LogMessage(si,"In REQ GUID       : " & newRowREQDT("CMD_PGM_REQ_ID").ToString )						
-			
 			
 		    ' Handle REQDTDetail Base FYDP
 	        ' Create a new row
@@ -439,13 +483,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	        For Each fullCol As String In MappingForREQDetails.Keys
 	            newRowREQDTDetail(MappingForREQDetails(fullCol)) = row(fullCol)
 	        Next
-			'Map funding to the regular FYDEP
-'BRApi.ErrorLog.LogMessage(si,"In REQ Detail Main GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & row("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
 			
 			newRowREQDTDetail("UNIT_OF_MEASURE") = "Funding"
-			If REQExists Then
-				Me.UpdateExistingREQIDs(newRowREQDTDetail, existingCMD_PGM_REQ_ID, existingREQ_ID)	 				 
-			End If
 			REQDTDetail.Rows.Add(newRowREQDTDetail)
 		   
 			
@@ -458,12 +497,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		        For Each fullCol As String In MappingForREQDetailsItems.Keys
 		            newRowREQDTDetailItem(MappingForREQDetailsItems(fullCol)) = row(fullCol)
 		        Next
-	'BRApi.ErrorLog.LogMessage(si,"In REQ Detail item GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & newRowREQDTDetail("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
 				
-				newRowREQDTDetailItem("Account") = row("UNIT_OF_MEASURE")
-			    If REQExists Then
-					Me.UpdateExistingREQIDs(newRowREQDTDetailItem, existingCMD_PGM_REQ_ID, existingREQ_ID)	 
-				End If
+				newRowREQDTDetailItem("Account") = "DD_PEG_Item"
+				'row("UNIT_OF_MEASURE")
 				REQDTDetail.Rows.Add(newRowREQDTDetailItem)
 			End If
 			
@@ -476,13 +512,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		        For Each fullCol As String In MappingForREQDetailsCost.Keys
 		            newRowREQDTDetailCost(MappingForREQDetailsCost(fullCol)) = row(fullCol)
 		        Next
-	'BRApi.ErrorLog.LogMessage(si,"In REQ Detail item GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & newRowREQDTDetail("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
 				
-				newRowREQDTDetailCost("Account") = row("UNIT_OF_MEASURE") & "_Cost"
+				newRowREQDTDetailCost("Account") = "DD_PEG_Cost"
+				'row("UNIT_OF_MEASURE") & "_Cost"
 				
-				 If REQExists Then
-					Me.UpdateExistingREQIDs(newRowREQDTDetailCost, existingCMD_PGM_REQ_ID, existingREQ_ID)	 
-				End If		
 				REQDTDetail.Rows.Add(newRowREQDTDetailCost)
 			End If
 			
@@ -496,20 +529,15 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		        For Each fullCol As String In MappingForREQDetailsQTY.Keys
 		            newRowREQDTDetailQTY(MappingForREQDetailsQTY(fullCol)) = row(fullCol)
 		        Next
-'BRApi.ErrorLog.LogMessage(si,"In REQ Detail item GUID: " & newRowREQDTDetail("CMD_PGM_REQ_ID").ToString & ", start_year: " & newRowREQDTDetail("Start_Year").ToString &  " , Unit Of measure: " & newRowREQDTDetail("UNIT_OF_MEASURE").ToString & " , Acc: " & newRowREQDTDetail("Account").ToString )
 					
 				newRowREQDTDetailQTY("Account") = "Quantity"
 				
-				 If REQExists Then
-					 Me.UpdateExistingREQIDs(newRowREQDTDetailQTY, existingCMD_PGM_REQ_ID, existingREQ_ID)
-				End If			
 				REQDTDetail.Rows.Add(newRowREQDTDetailQTY)
 				
 			End If						
 			
 			
 		Next
-'BRApi.ErrorLog.LogMessage(si,"In Split* 7")
 
 	End Function
 	
@@ -527,7 +555,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{"WFCMD_Name", "WFCMD_Name"},
 				{"WFTime_Name", "WFTime_Name"},	
 				{"UNIT_OF_MEASURE","Unit_of_Measure"},
-				{"FundCenter","Entity"},
+				{"FundsCenter","Entity"},
 				{"IC","IC"},
 				{"Account","Account"},
 				{"Flow","Flow"},
@@ -563,7 +591,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{"WFCMD_Name", "WFCMD_Name"},
 				{"WFTime_Name", "WFTime_Name"},	
 				{"UNIT_OF_MEASURE","Unit_of_Measure"},
-				{"FundCenter","Entity"},
+				{"FundsCenter","Entity"},
 				{"IC","IC"},
 				{"Account","Account"},
 				{"Flow","Flow"},
@@ -599,7 +627,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{"WFCMD_Name", "WFCMD_Name"},
 				{"WFTime_Name", "WFTime_Name"},	
 				{"UNIT_OF_MEASURE","Unit_of_Measure"},
-				{"FundCenter","Entity"},
+				{"FundsCenter","Entity"},
 				{"IC","IC"},
 				{"Account","Account"},
 				{"Flow","Flow"},
@@ -635,7 +663,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{"WFCMD_Name", "WFCMD_Name"},
 				{"WFTime_Name", "WFTime_Name"},	
 				{"UNIT_OF_MEASURE","Unit_of_Measure"},
-				{"FundCenter","Entity"},
+				{"FundsCenter","Entity"},
 				{"IC","IC"},
 				{"Account","Account"},
 				{"Flow","Flow"},
@@ -677,7 +705,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{"Title","Title"},
 				{"Description","Description"},
 				{"Justification","Justification"},
-				{"FundCenter","Entity"},
+				{"FundsCenter","Entity"},
 				{"APPN","APPN"},
 				{"MDEP","MDEP"},
 				{"APE9","APE9"},
@@ -716,7 +744,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{"JUON","JUON"},
 				{"ISR_Flag","ISR_Flag"},
 				{"Cost_Model","Cost_Model"},
-				{"Combat_Lost","Combat_Loss"},
+				{"Combat_Loss","Combat_Loss"},
 				{"Cost_Location","Cost_Location"},
 				{"Category_A_Code","Cat_A_Code"},
 				{"CBS_Code","CBS_Code"},

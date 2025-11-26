@@ -78,6 +78,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			
 			
 			Dim CMD_PGM_REQ_IDs As String = args.NameValuePairs("rolloverREQs")
+			'if no REQs to roll over simply end
+			If String.IsNullOrWhiteSpace(CMD_PGM_REQ_IDs) Then
+				Return Nothing
+			End If
+			
 'BRApi.ErrorLog.LogMessage(si, "rolloverREQs: " & CMD_PGM_REQ_IDs)				
 			CMD_PGM_REQ_IDs = CMD_PGM_REQ_IDs.Replace(" ","")
 			If CMD_PGM_REQ_IDs.Length > 0 Then
@@ -121,11 +126,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					Dim newREQDetailRows As New List(Of DataRow)
 					For Each row As DataRow In REQDT.Rows
 						Dim newREQRow As datarow = CMD_PGM_Utilities.GetCopiedRow(si, row)
+
 						Me.UpdateREQColumns(newREQRow)
-						CMD_PGM_Utilities.UpdateAuditColumns(si, row)
+
+						CMD_PGM_Utilities.UpdateAuditColumns(si, newREQRow)
 						
 						newREQRows.Add(newREQRow)
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 1 " & row("CMD_PGM_REQ_ID").ToString)							
 						'create details
 						Dim foundDetailRows As DataRow() = REQDetailDT.Select(String.Format("CMD_PGM_REQ_ID = '{0}'", row("CMD_PGM_REQ_ID").ToString))
 						For Each dtRow In foundDetailRows
@@ -136,23 +142,38 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						Next
 'BRApi.ErrorLog.LogMessage(si, "rollover update: 2")							
 					Next
+					
 					'update SQL Adapter and update
 					Dim REQ_IDs As New List(Of String)
 					For Each row In newREQRows
 						REQDT.Rows.Add(row)
 						REQ_IDs.Add(row("REQ_ID").ToString)
 					Next
+					
 					For Each row In newREQDetailRows
 						REQDetailDT.Rows.Add(row)
 					Next
+					
+					'Call delete to delte rows
+					Dim existingREQs As New List(Of String)
+					existingREQs = Me.GetExistingDupREQs(REQ_IDs)
+					
+					If existingREQs.Count > 0 Then
+						Dim deleter As New CMD_PGM_Helper.MainClass
+						Args.NameValuePairs.Add("req_IDs", String.Join(",", existingREQs))
+						Args.NameValuePairs.Add("Action", "Delete")
+						deleter.main(si, globals, api, args)
+					End If
+					
 'BRApi.ErrorLog.LogMessage(si, "rollover update: 3")					
 					sqaREQReader.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
 					sqaREQDetailReader.Update_XFC_CMD_PGM_REQ_Details(REQDetailDT, sqa)
 'BRApi.ErrorLog.LogMessage(si, "rollover update: 4")					
 					'Load to the cube
 					Dim loader As New CMD_PGM_Helper.MainClass
-					Args.NameValuePairs.Add("req_IDs", String.Join(",", REQ_IDs))
-					Args.NameValuePairs.Add("new_Status", "Formulate") '*** HARD CODE FOR TEST ***
+					Args.NameValuePairs("req_IDs") =  String.Join(",", REQ_IDs)
+					Args.NameValuePairs("Action") = "Insert"
+					Args.NameValuePairs.Add("new_Status", "Formulate") 
 					loader.main(si, globals, api, args)	
 'BRApi.ErrorLog.LogMessage(si, "rollover update: 5")						
 				End Using
@@ -160,12 +181,37 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 		End Function
 
+#Region "GetNextREQID"
+
+	Dim startingREQ_IDByFC As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
+	Function GetNextREQID (fundCenter As String) As String
+		Dim currentREQID As Integer
+		Dim newREQ_ID As String
+		If startingREQ_IDByFC.TryGetValue(fundCenter, currentREQID) Then
+'BRApi.ErrorLog.LogMessage(si,"IF Fund Center: " & fundCenter & ", currentREQID: " & currentREQID )			
+			currentREQID = currentREQID + 1
+			Dim modifiedFC As String = fundCenter
+			modifiedFC = modifiedFC.Replace("_General", "")
+			If modifiedFC.Length = 3 Then modifiedFC = modifiedFC & "xx"
+			newREQ_ID =  modifiedFC &"_" & currentREQID.ToString("D5")
+			startingREQ_IDByFC(fundCenter) = currentREQID
+		Else	
+			newREQ_ID = GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,fundCenter)
+'BRApi.ErrorLog.LogMessage(si,"ELSE Fund Center: " & fundCenter & ", newREQ_ID: " & newREQ_ID.Split("_")(1) )				
+			startingREQ_IDByFC.Add(fundCenter.Trim, newREQ_ID.Split("_")(1))
+		End If 
+			
+		Return newREQ_ID
+	End Function
+#End Region	
+
 		Public Sub UpdateREQColumns(ByRef newRow As DataRow) 
 			'update the columns
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			Dim trgtfundCenter = newRow("Entity").ToString
-			Dim newREQ_ID As String= GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si, trgtfundCenter)
-			newRow("REQ_ID") = newREQ_ID
+			'Dim newREQ_ID As String= GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si, trgtfundCenter)
+			'Dim newREQ_ID As String= GetNextREQID(trgtfundCenter)
+			'newRow("REQ_ID") = newREQ_ID
 			newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
 			newRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, trgtfundCenter) & "_Formulate_PGM"
 			newRow("Entity") = trgtfundCenter
@@ -191,10 +237,52 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			newRow("FY_4") = newRow("FY_5").ToString
 			
 			Dim currFY5Amt As Decimal = Convert.ToDecimal(newRow("FY_5").ToString)
-			newRow("FY_5") = currFY5Amt + (currFY5Amt * .03)
+			
+			Dim inflationRate As Decimal  = GetInflationRate(newRow("UD1"))
+			newRow("FY_5") = currFY5Amt + (currFY5Amt * inflationRate)
 			
 		End Sub
 		
+#Region "Get Existing Row"
+		
+	Function GetExistingDupREQs(ByRef REQsToRollover As List(Of String)) As List(Of String)
+
+		Dim sqa As New SqlDataAdapter()
+		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+		Dim scName As String = wfInfoDetails("ScenarioName")
+		Dim cmd As String = wfInfoDetails("CMDName")
+		Dim tm As String = wfInfoDetails("TimeName")
+		
+		Dim REQDT As  New DataTable()
+		Dim existingREQs As New List(Of String)
+
+       Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+            Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+                sqlConn.Open()
+                Dim sqaREQReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
+                Dim SqlREQ As String = $"SELECT * 
+									FROM XFC_CMD_PGM_REQ
+									WHERE WFScenario_Name = '{scName}'
+									And WFCMD_Name = '{cmd}'
+									AND WFTime_Name = '{tm}'"
+
+				Dim sqlparamsREQ As SqlParameter() = New SqlParameter() {}
+                sqaREQReader.Fill_XFC_CMD_PGM_REQ_DT(sqa, REQDT, SqlREQ, sqlparamsREQ)
+
+			End Using
+		End Using				
+
+		For Each row In REQDT.Rows
+			Dim REQinDB As String = row("REQ_ID").ToString
+			If REQsToRollover.Contains(REQinDB) Then
+				existingREQs.Add(REQinDB)
+			End If
+		Next
+		Return existingREQs
+	End Function
+	
+#End Region
+
 		Public Function getGUID(ByRef REQ As DataTable) As String
 			
 			Dim GUIDs As String = "'"
@@ -202,9 +290,39 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				GUIDs = GUIDs & r("CMD_PGM_REQ_ID").ToString & "',"
 			Next
 			GUIDs = GUIDs.Substring(0,GUIDs.Length-1)
-'BRApi.ErrorLog.LogMessage(si, "Guids: " & GUIDs)			
+			
 			Return GUIDs
 
+		End Function
+		
+		Public Function GetCmdFundCenterFromCube() As String
+			
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			Dim profileName = wfInfoDetails("ScenarioName")
+			Dim cubeName As String = wfInfoDetails("CMDName")
+			Dim entityMem As Member =  BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, cubeName).Member
+			Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
+			Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si,DimType.Time.Id,wfTime)
+
+			Dim fundCenter As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 1, wfScenarioTypeID, wfTimeId)
+			
+			Return fundCenter			
+		End Function
+		
+		Public Function GetInflationRate(ByRef UD1 As String) As Decimal
+			
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			Dim cubeName As String = wfInfoDetails("CMDName")
+			Dim entity As String = GetCmdFundCenterFromCube()
+			Dim scenario As String = wfInfoDetails("ScenarioName")
+			Dim tm As String = wfInfoDetails("TimeName")
+			Dim mbrScript = $"Cb#{cubeName}:E#{entity}:C#Local:S#{scenario}:T#{tm}:V#Periodic:A#Inflation_Rate:F#None:O#AdjInput:I#None:U1#{UD1}:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+			Dim inflationRate As Decimal = 0
+			inflationRate = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, cubeName, mbrScript).DataCellEx.DataCell.CellAmount
+			inflationRate = inflationRate/100
+			Return inflationRate
+			
 		End Function
 		
 	End Class

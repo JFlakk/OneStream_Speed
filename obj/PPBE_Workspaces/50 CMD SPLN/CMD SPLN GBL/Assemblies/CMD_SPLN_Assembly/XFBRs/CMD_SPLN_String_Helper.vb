@@ -19,40 +19,58 @@ Imports Workspace.GBL.GBL_Assembly
 Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardStringFunction.CMD_SPLN_String_Helper
 	Public Class MainClass
 		Public si As SessionInfo
-		Public globals As BRGlobals
-		Public api As Object
-		Public args As DashboardStringFunctionArgs
-		
+        Public globals As BRGlobals
+        Public api As Object
+        Public args As DashboardStringFunctionArgs
 		Public Function Main(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As Object
 			Try
-				'brapi.ErrorLog.LogMessage(si,"inside string helper")
+'brapi.ErrorLog.LogMessage(si,"inside string helper")
 				Me.si = si
 				Me.globals = globals
 				Me.api = api
 				Me.args = args
 
 				Select Case args.FunctionName.ToLower()
-					Case "displayapprovereqbtn"
-						Return Me.DisplayApproveREQBtn(si, globals, api, args)
-					Case "getsortedappnlist"
-						Return Me.GetSortedAppnList()
-					Case "displaydashboard"
-						Return Me.displaydashboard()
-					Case "DisplayRollFwdREQBtn"
-					Case "CreateLblText"
-					Case "GetFileGuidance"
-					Case "dynflowmember"
-						Return Me.DynFlowMember(si, globals, api, args)
-					Case "dynaccountvalidations"
-						Return Me.DynAccountValidations(si, globals, api, args)
-					Case "packagesubmit"
-						Return Me.PackageSubmit(si, globals, api, args)
-					Case "getfcappnforsubmission"
-						Return Me.GetFCAPPNforSubmission(si, globals, api, args)
-					Case "getpaynonpaymembers"
-						Return Me.GetPayNonPayMembers(si, globals, api, args)
-				End Select
+				Case "displayapprovereqbtn"
+					Return Me.DisplayApproveREQBtn(si, globals, api, args)
+				Case "getsortedappnlist"
+					Return Me.GetSortedAppnList()
+				Case "displaydashboard"
+					Return Me.displaydashboard()
+				Case "DisplayRollFwdREQBtn"
+				Case "CreateLblText"
+				Case "GetFileGuidance"
+				Case "dynflowmember"
+					Return Me.DynFlowMember(si, globals, api, args)
+				Case "dynaccountvalidations"
+					Return Me.DynAccountValidations(si, globals, api, args)
+				Case "getpaynonpaymembers"
+					Return Me.GetPayNonPayMembers(si, globals, api, args)
+				Case "packagevalidations"
+					Return Me.PackageValidations(si, globals, api, args)					
+				Case "retrievepbposition"
+						Return Me.RetrievePBPosition()	
+				Case "reviewreqnotice"
+						Return Me.ReviewREQNotice()
+				Case "createlbltext"
+					Return Me.createlbltext()						
+				Case "showhide"
+					Return Me.ShowHide()
+				Case "showhidemulti"			
+					Return Me.ShowHideMulti()						
+				Case "showhidelabel"
+						Return Me.ShowHideLabel()		
+				Case "showhidelabelmulti"				
+					Return Me.ShowHideLabelMulti()
+				Case "procctrllblmsg"
+					Return Me.ProcCtrlLblMsg()						
+				Case "procctrllblmsgmulti"						
+					Return Me.ProcCtrlLblMsgMulti()
+			End Select
+			
 				
+				
+			
 
 #Region "DisplayRollFwdREQBtn"
 				If args.FunctionName.XFEqualsIgnoreCase("DisplayRollFwdREQBtn") Then		
@@ -64,25 +82,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				If args.FunctionName.XFEqualsIgnoreCase("CreateLblText") Then		
 					Return Me.CreateLblText(si, globals, api, args)
 				End If				
-#End Region	'Updated 09/25/2025		
+#End Region	'Updated 09/25/2025			
 
-#Region "ShowHide"
-				If args.FunctionName.XFEqualsIgnoreCase("ShowHide") Then		
-					Return Me.ShowHide()
-				End If				
-#End Region	'Updated 09/25/2025	
-
-#Region "ShowHideLabel"
-				If args.FunctionName.XFEqualsIgnoreCase("ShowHideLabel") Then		
-					Return Me.ShowHideLabel(si, globals, api, args)
-				End If				
-#End Region	'Updated 10/22/2025		
-
-#Region "ProcCtrlLblMsg"
-				If args.FunctionName.XFEqualsIgnoreCase("ProcCtrlLblMsg") Then			
-					Return Me.ProcCtrlLblMsg(si, globals, api, args)
-				End If				
-#End Region	'Updated 10/22/2025	
 
 #Region "Get File For CMD PGM Guidance"
 	'Get File For CMD PGM Guidance
@@ -151,6 +152,22 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				If args.FunctionName.XFEqualsIgnoreCase("GetStakeholdersEmail") Then
 					Return Me.GetStakeholdersEmail(si, globals, api, args)
 
+				End If
+#End Region
+
+#Region "Get REQ Annotation"
+				'Get REQ Annotation using Dim infos
+				If args.FunctionName.XFEqualsIgnoreCase("getREQAnnotation") Then 
+					Dim sAccount As String = args.NameValuePairs.XFGetValue("REQAccount")
+					Dim sFlow As String = args.NameValuePairs.XFGetValue("REQFlow")
+					Dim sEntity As String = args.NameValuePairs.XFGetValue("REQEntity")
+					Dim sCube As String = args.NameValuePairs.XFGetValue("Cube")		
+					Dim sScenario As String = args.NameValuePairs.XFGetValue("REQScenario")
+					Dim sTime As String = args.NameValuePairs.XFGetValue("REQTime")
+					Dim sIC As String = args.NameValuePairs.XFGetValue("IC")
+					Dim sU5 As String = args.NameValuePairs.XFGetValue("U5","None")
+
+					Return Me.getREQAnnotation(si, globals, api, args, sAccount, sFlow, sEntity, sCube, sScenario, sTime, sIC, sU5)
 				End If
 #End Region
 
@@ -357,38 +374,73 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			End Try
 		End Function
 
-		#Region "Constants"
-		Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtender.GBL_Helper.MainClass
-		Public GBL_DataSet As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardDataSet.GBL_DB_DataSet.MainClass()
-		#End Region	'Updated 09/24/202525
+#Region "Constants"
+Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtender.GBL_Helper.MainClass
+Public GBL_DataSet As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardDataSet.GBL_DB_DataSet.MainClass()
+#End Region	'Updated 09/24/2025		
 
-		#Region "DisplayDashboard"
-		Public Function displaydashboard() As String
-			Dim reqTitle = args.NameValuePairs.XFGetValue("REQTitle")
-			If reqTitle <> String.Empty Or Not String.IsNullOrEmpty(reqTitle) Then
+#Region "DisplayDashboard"
+Public Function displaydashboard() As String
+	Dim reqTitle = args.NameValuePairs.XFGetValue("REQTitle")
+	Dim reqType = args.NameValuePairs.XFGetValue("REQType")
+	If reqTitle <> String.Empty Or Not String.IsNullOrEmpty(reqTitle)
+		Select Case reqType
+			Case "REQ"
 				Return "CMD_SPLN_0_Body_REQDetailsMain"
-			Else
-				Return "CMD_SPLN_0_Body_REQDetailsHide"
-			End If
-		End Function
-		#End Region
+			Case "Civ"
+				Return "CMD_SPLN_1_Body_REQCivDetailsMain"
+			Case "WH"
+				Return "CMD_SPLN_2_Body_REQWHDetailsMain"
+		End Select
+	Else			
+		Return "CMD_SPLN_0_Body_REQDetailsHide"
+	End If
+End Function
+#End Region
 
-		#Region "ShowHide"
-		'Purpose: Any component, cv, object etc., add a case statment
-		Public Function ShowHide() As String
-			Dim sEntity = args.NameValuePairs.XFGetValue("entity")
-			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
-			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-			Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-			'brapi.ErrorLog.LogMessage(si, $"wfProfileName: {wfProfileName}")
-			Dim sComponentName As String = args.NameValuePairs.XFGetValue("ComponentName")
-			'Manpower Specific
-			Dim sREQ_ID As String = args.NameValuePairs.XFGetValue("REQ_ID")
-			'brapi.ErrorLog.LogMessage(si, $"sComponentName: {sComponentName}")
+#Region "CreateLblText"
+		Public Function CreateLblText() As String
+	'brapi.ErrorLog.LogMessage(si, $"inside create lable")	
+			Dim sLabelName As String = args.NameValuePairs.XFGetValue("LabelName")
+			'============Used for confirm rollforward============================
+			Dim sLabelType As String = args.NameValuePairs.XFGetValue("LabelType")
+			'=====================================================================
+			Dim sREQTitle As String = args.NameValuePairs.XFGetValue("REQTitle")
+			Dim iWFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
+			Dim iWfYearPrior As Integer = iWFYear - 1
+			Dim wFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
+	'brapi.ErrorLog.LogMessage(si, $"sREQTitle {sREQTitle}")		
+	
+	'brapi.ErrorLog.LogMessage(si, $"sLabelName {sLabelName}")		
+			Select Case sLabelName
+			Case "ConfirmRollForward"
+				If sLabelType.XFContainsIgnoreCase("warning")
+					Return $"!!!!! WARNING !!!!!{vbCrLf}{vbCrLf}{iWFYear} requirements already exist.{vbCrLf} {vbCrLf}If you continue, any {iWfYearPrior} requirements that were selected and already exist in {iWFYear} will be overwritten.{vbCrLf}"
+				Else
+					Return Nothing
+				End If
+			Case "DemoteREQ"	
+				Return $"Are you sure you wish to DELETE: {sREQTitle}"
+			End Select	
 			
-			#Region "Workflow complete and revert buttons"
-			Select Case sComponentName				
+		End Function
+#End Region
+
+#Region "ShowHide"
+'Purpose: show or hide a component based on if a full or specific workflow is locked; or show and hide a label based on a specific condition i.e., only shown at the CMD level
+	Public Function ShowHide() As String	
+		Dim sEntity = args.NameValuePairs.XFGetValue("entity")
+		Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+		Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+		Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+		Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+'brapi.ErrorLog.LogMessage(si, $"sEntity: {sEntity}")		
+		Dim sComponentName As String = args.NameValuePairs.XFGetValue("ComponentName")
+		'Manpower Specific
+		Dim sREQ_ID As String = args.NameValuePairs.XFGetValue("REQ_ID")
+'brapi.ErrorLog.LogMessage(si, $"sComponentName: {sComponentName}")		
+		#Region "Workflow complete and revert buttons"		
+				Select Case sComponentName				
 				Case "WorkflowAccess"
 					If wfProfileFullName.XFContainsIgnoreCase("Manage CMD Requirements") Then 
 						Return "True"
@@ -403,8 +455,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 		Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
 		
 		'Grab process control value for an entity + workflow profile
+'brapi.ErrorLog.LogMessage(si, $"429: hERE")			
 		Dim sProcCtrlVal As String = CMD_SPLN_Utilities.GetProcCtrlVal(si,sEntity)
-		
+'brapi.ErrorLog.LogMessage(si, $"4321: {sProcCtrlVal}")		
 		If sProcCtrlVal.XFContainsIgnoreCase("no") Or sWFStatus.XFEqualsIgnoreCase("locked") Then 
 			Return "False"
 		Else
@@ -452,20 +505,48 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 						Return "True"
 					Else 
 						Return "False"
-						End If
-					#End Region
-					Case Else
-						Return "True"
-				End Select
-			End If
-		End Function
-		#End Region 'Updated 10/07/2025
+					End If 						
+				#End Region
+			Case Else
+				Return "True"
+			End Select		
+		End If	
+	End Function
+#End Region
 
-		#Region "ShowHideLabel"
-		'Purpose: Any component, cv, object etc., add a case statment
-		'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")
-		Public Function ShowHideLabel(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
-			Dim sEntity = args.NameValuePairs.XFGetValue("entity")		'Grab workflow status (locked or unlocked)
+#Region "ShowHideMulti"
+'Purpose: Any component, cv, object etc., add a case statment 	
+		Public Function ShowHideMulti() As String	
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+	'brapi.ErrorLog.LogMessage(si, $"wfProfileName: {wfProfileName}")		
+	
+			'Grab workflow status (locked or unlocked)
+			Dim deArgs As New DashboardExtenderArgs
+			deArgs.FunctionName = "Check_WF_Complete_Lock"
+			Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
+			
+			'Grab process control value for an entity + workflow profile
+			Dim sProcCtrlVal As String = CMD_SPLN_Utilities.GetProcCtrlValMulti(si)
+			
+			If sProcCtrlVal.XFContainsIgnoreCase("no") Or sWFStatus.XFEqualsIgnoreCase("locked") Then 
+				Return "False"
+			Else
+				Return "True"
+		
+			End If	
+		End Function
+#End Region
+
+#Region "ShowHideLabel"
+'Purpose: after a manager locks an entire workflow or restricts a specifc one, a label message will appear.
+'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
+	Public Function ShowHideLabel() As String				
+		Dim sEntity = args.NameValuePairs.XFGetValue("entity")		
+		
+		'Grab workflow status (locked or unlocked)
 		Dim deArgs As New DashboardExtenderArgs
 		deArgs.FunctionName = "Check_WF_Complete_Lock"
 		Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
@@ -481,107 +562,209 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			Return "False"
 		End If
 	End Function
-#End Region 
+#End Region
+
+#Region "ShowHideLabelMulti"
+'Purpose: after a manager locks an entire workflow or restricts a specifc one, a label message will appear. **This appears when more than one funds center is taken into account
+'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
+		Public Function ShowHideLabelMulti() As String				
+			'Grab workflow status (locked or unlocked)
+			Dim deArgs As New DashboardExtenderArgs
+			deArgs.FunctionName = "Check_WF_Complete_Lock"
+			Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
+			
+			'Grab process control value for an entity + workflow profile
+			Dim sProcCtrlValMulti As String = CMD_SPLN_Utilities.GetProcCtrlValMulti(si)
+	'brapi.ErrorLog.LogMessage(si, $"sProcCtrlValMulti {sProcCtrlValMulti}")			
+			If sWFStatus.XFEqualsIgnoreCase("locked") Then			
+				Return "True"
+			Else If sProcCtrlValMulti.XFContainsIgnoreCase("no") Then 
+	'brapi.ErrorLog.LogMessage(si, $"inside no condition {sProcCtrlValMulti}")				
+				Return "True"
+			Else	
+				Return "False"
+			End If
+		End Function
+#End Region
 
 #Region "ProcCtrlLblMsg"
-'Purpose: Any component, cv, object etc., add a case statment 
+'Purpose: messsage displayed based on whether a full workflow or a specific workflow is locked
 'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
-	Public Function ProcCtrlLblMsg(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String	
+	Public Function ProcCtrlLblMsg() As String	
 		Dim sEntity = args.NameValuePairs.XFGetValue("entity")
 		Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
 		Dim wfProfileName As String = If(wfProfileFullName.Contains("."), wfProfileFullName.Substring(wfProfileFullName.IndexOf(".") + 1).Trim().Split(" "c)(0), String.Empty)
 				
+		Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+		Dim deArgs As New DashboardExtenderArgs
+		deArgs.FunctionName = "Check_WF_Complete_Lock"
+		Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
+		
+		'Grab process control value for an entity + workflow profile
+		Dim sProcCtrlVal As String = CMD_SPLN_Utilities.GetProcCtrlVal(si,sEntity)
+		sEntity = If(sEntity.Contains("_"), sEntity.Substring(0, sEntity.IndexOf("_")), sEntity)
+				
+		If sWFStatus.XFEqualsIgnoreCase("locked") Then
+			Return $"The CMD manager locked all workflow steps for {sCube}. {vbCrLf}No further work can be completed at this time."
+		
+		Else If sProcCtrlVal.XFContainsIgnoreCase("no") Then 
+			Select Case wfProfileName	
+				Case "Formulate"
+					Return $"Your manager locked the {wfProfileName} step for {sEntity}. {vbCrLf}Requirements cannot be formulated or modified at this time. {vbCrLf}Please contact your manager to allow access."
+								
+				Case "Validate"
+					Return $"Your manager locked the {wfProfileName} step for {sEntity}. {vbCrLf}Requirements cannot be validated or modified at this time. {vbCrLf}Please contact your manager to allow access."
+								
+				Case "Rollover"
+					Return $""
+			End Select
+		End If
+	End Function
+#End Region
+
+#Region "ProcCtrlLblMsgMulti"
+'Purpose: messsage displayed based on whether a full workflow or a specific workflow is locked. **This appears when more than one funds center is taken into account
+'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
+		Public Function ProcCtrlLblMsgMulti() As String	
+			Dim sEntity = String.Empty
+			Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			Dim wfProfileName As String = If(wfProfileFullName.Contains("."), wfProfileFullName.Substring(wfProfileFullName.IndexOf(".") + 1).Trim().Split(" "c)(0), String.Empty)
+					
 			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
 			Dim deArgs As New DashboardExtenderArgs
 			deArgs.FunctionName = "Check_WF_Complete_Lock"
 			Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
 			
 			'Grab process control value for an entity + workflow profile
-			Dim sProcCtrlVal As String = CMD_SPLN_Utilities.GetProcCtrlVal(si,sEntity)
-			sEntity = If(sEntity.Contains("_"), sEntity.Substring(0, sEntity.IndexOf("_")), sEntity)
+			Dim sProcCtrlVal As String = CMD_SPLN_Utilities.GetProcCtrlValMulti(si)
 			
+			Dim userSecGroup As DataSet = brapi.Dashboards.Process.GetAdoDataSetForAdapter(si,False,"da_CMD_PGM_GetUserSec","FundsCenterByWF",Nothing)	
+			Dim userSecGroup_dt As DataTable = userSecGroup.Tables(0)
+	
+'brapi.ErrorLog.LogMessage(si, "777: " &  userSecGroup_dt.Rows.Count)
+					
 			If sWFStatus.XFEqualsIgnoreCase("locked") Then
 				Return $"The CMD manager locked all workflow steps for {sCube}. {vbCrLf}No further work can be completed at this time."
-			ElseIf sProcCtrlVal.XFContainsIgnoreCase("no") Then
+			
+			Else If sProcCtrlVal.XFContainsIgnoreCase("no") Then 
+				'Build list of entities a user is assigned to and diaplay them in the label message.
+				For Each row As DataRow In userSecGroup_dt.Rows
+					Dim sUserSecEntity = row("Value").ToString
+					sUserSecEntity = If(sUserSecEntity.Contains("_"), sUserSecEntity.Substring(0, sUserSecEntity.IndexOf("_")), sUserSecEntity)		
+					If String.IsNullOrEmpty(sEntity) Then
+						sEntity = sUserSecEntity 				
+					Else
+						sEntity = sEntity & ", " & sUserSecEntity
+					End If				
+				Next		
+				
 				Select Case wfProfileName
-					Case "Formulate"
-						Return $"Your manager locked the {wfProfileName} step for {sEntity}. {vbCrLf}Requirements cannot be formulated or modified at this time. {vbCrLf}Please contact your manager to allow access."
-					'Case "Import"
-					'	Return $"Your manager locked requirement uploads for {sEntity}. {vbCrLf}Please contact your manager to allow access."
-					Case "Prioritize"
-						Return $"Your manager locked the {wfProfileName} step for {sEntity}. {vbCrLf}Requirements cannot be prioritized or modified at this time. {vbCrLf}Please contact your manager to allow access."
-					Case "Validate"
-						Return $"Your manager locked the {wfProfileName} step for {sEntity}. {vbCrLf}Requirements cannot be validated or modified at this time. {vbCrLf}Please contact your manager to allow access."
-					Case "Rollover"
-						Return $""
+				Case "Formulate"
+					Return $"Your manager locked the {wfProfileName} step for {sEntity}. {vbCrLf}Requirements cannot be formulated or modified at this time. {vbCrLf}Please contact your manager to allow access."
+					
+				Case "Import"					
+					Return $"Your manager locked requirement imports for {sEntity}. {vbCrLf}Please contact your manager to allow access."
+	
+				Case "Validate"
+					Return $"Your manager locked the {wfProfileName} step for {sEntity}. {vbCrLf}Requirements cannot be validated or modified at this time. {vbCrLf}Please contact your manager to allow access."
 				End Select
 			End If
 		End Function
-		#End Region
-		
-		#Region "zShowHide"
-		'Purpose: Any component, cv, object etc., add a case statment 
-		'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
-		Public Function zShowHide(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String	
-			Dim sEntity = args.NameValuePairs.XFGetValue("entity")
-			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
-			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+#End Region 
+
+#Region "RetrievePBPosition"
+		Public Function RetrievePBPosition() As String
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName			
+	  		Dim sAllowAccountMbrScript As String = $"Cb#Army:E#Army:C#Local:S#|WFScenario|:T#|WFTime|M1:V#Annotation:A#Var_Selected_Position:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+			Dim sPBPosition As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation		
+			If String.IsNullOrEmpty(sPBPosition) Then
+				Return "A PB Position has not be defined for |WFScenario|. Please contact your manager."
+			Else 
+				Return sPBPosition
+			End If
+		End Function
+#End Region
+
+#Region "ReviewREQNotice"
+ 		Public Function ReviewREQNotice() As String
 			Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-			'brapi.ErrorLog.LogMessage(si, $"wfProfileName: {wfProfileName}")		
 			Dim wfProfileName As String = If(wfProfileFullName.Contains("."), wfProfileFullName.Substring(wfProfileFullName.IndexOf(".") + 1).Trim().Split(" "c)(0), String.Empty)
-			Dim sComponentName As String = args.NameValuePairs.XFGetValue("ComponentName")
-			'Manpower Specific
-			Dim sREQ_ID As String = args.NameValuePairs.XFGetValue("REQ_ID")
-			
-			#Region "Workflow complete and revert buttons"
-			Select Case sComponentName
-				Case "WorkflowAccess"
-					If wfProfileFullName.XFContainsIgnoreCase("Manage CMD Requirements") Then
-						Return "True"
-					Else
+			Dim counter As Integer = 0
+			Dim dWFUser As New Dictionary(Of String, String) From {
+			{"Formulate","Formulator's"},
+			{"Validate","Validator's"},
+			{"Approve","Approver's"}
+			}
+			If dWFUser.ContainsKey(wfProfileName) Then
+				Dim sWFUser As String = dWFUser(wfProfileName)
+				Return $"Note: Only requirements in the {sWFUser} queue are displayed."
+			End If
+		End Function
+#End Region
+
+#Region "zShowHide"
+'Purpose: Any component, cv, object etc., add a case statment 
+'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
+	Public Function zShowHide(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String	
+		
+		Dim sEntity = args.NameValuePairs.XFGetValue("entity")
+		Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+		Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+		Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+		Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+'brapi.ErrorLog.LogMessage(si, $"wfProfileName: {wfProfileName}")		
+		Dim wfProfileName As String = If(wfProfileFullName.Contains("."), wfProfileFullName.Substring(wfProfileFullName.IndexOf(".") + 1).Trim().Split(" "c)(0), String.Empty)
+		Dim sComponentName As String = args.NameValuePairs.XFGetValue("ComponentName")
+		'Manpower Specific
+		Dim sREQ_ID As String = args.NameValuePairs.XFGetValue("REQ_ID")
+	
+		
+#Region "Workflow complete and revert buttons"		
+		Select Case sComponentName				
+		Case "WorkflowAccess"
+			If wfProfileFullName.XFContainsIgnoreCase("Manage CMD Requirements") Then 
+				Return "True"
+			Else
+				Return "False"
+			End If
+		End Select	
+#End Region		
+
+'brapi.ErrorLog.LogMessage(si, $"Manual: {sCube} Sub CMD Review (CMD PGM)")
+'brapi.ErrorLog.LogMessage(si, $"outside")
+		'Process control & workflow lock/unlocked verification
+		Dim WF_ProcCtrl_Account As New Dictionary(Of String, String) From {
+			{"Formulate","CMD_SPLN_Allow_Req_Creation"},
+			{"Import","CMD_SPLN_Allow_Req_Creation"},
+			{"Validate","CMD_SPLN_Allow_Req_Validation"},
+			{"Prioritize","CMD_SPLN_Allow_Req_Priority"},
+			{"Rollover","CMD_SPLN_Allow_Req_Rollover"}
+			}	
+		If WF_ProcCtrl_Account.ContainsKey(wfProfileName) Then
+'brapi.ErrorLog.Logmessage(si, $"wfPrfoileName: {wfProfileName}")
+
+			'Grab workflow status (locked or unlocked)
+			Dim deArgs As New DashboardExtenderArgs
+			deArgs.FunctionName = "Check_WF_Complete_Lock"
+			Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
+
+			'If on the Import workflow step - need retrieve the user's security permissions to grab the entity to pass through the member script
+			Dim dsArgs As New DashboardDataSetArgs
+			dsArgs.FunctionType = DashboardDataSetFunctionType.GetDataSet
+			dsargs.DataSetName = "GetUserFundsCenterByWF"
+			Dim userSecurity_dt = GBL_DataSet.Main(si, globals, api, dsArgs)
+		
+			If wfProfileName.XFContainsIgnoreCase("import")
+			#Region "Import workflow step condition"				
+				For Each row As DataRow In userSecurity_dt.Rows
+					Dim Entity = row("Value").ToString		
+			    	Dim sAllowAccount As String = WF_ProcCtrl_Account(wfProfileName)
+			  		Dim sAllowAccountMbrScript As String = $"Cb#{sCube}:E#{sEntity}:C#Local:S#RMW_Cycle_Config_Annual:T#{sREQTime}:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+					Dim sAllowAccountValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation			
+					
+					If sAllowAccountValue.XFContainsIgnoreCase("no") Or sWFStatus.XFEqualsIgnoreCase("locked") Then 
 						Return "False"
 					End If
-			End Select
-			#End Region
-			
-			'brapi.ErrorLog.LogMessage(si, $"Manual: {sCube} Sub CMD Review (CMD PGM)")
-			'brapi.ErrorLog.LogMessage(si, $"outside")
-			
-			'Process control & workflow lock/unlocked verification
-			Dim WF_ProcCtrl_Account As New Dictionary(Of String, String) From {
-				{"Formulate","CMD_SPLN_Allow_Req_Creation"},
-				{"Import","CMD_SPLN_Allow_Req_Creation"},
-				{"Validate","CMD_SPLN_Allow_Req_Validation"},
-				{"Prioritize","CMD_SPLN_Allow_Req_Priority"},
-				{"Rollover","CMD_SPLN_Allow_Req_Rollover"}
-			}
-			
-			If WF_ProcCtrl_Account.ContainsKey(wfProfileName) Then
-				'brapi.ErrorLog.Logmessage(si, $"wfPrfoileName: {wfProfileName}")
-				
-				'Grab workflow status (locked or unlocked)
-				Dim deArgs As New DashboardExtenderArgs
-				deArgs.FunctionName = "Check_WF_Complete_Lock"
-				Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
-				
-				'If on the Import workflow step - need retrieve the user's security permissions to grab the entity to pass through the member script
-				Dim dsArgs As New DashboardDataSetArgs
-				dsArgs.FunctionType = DashboardDataSetFunctionType.GetDataSet
-				dsargs.DataSetName = "GetUserFundsCenterByWF"
-				Dim userSecurity_dt = GBL_DataSet.Main(si, globals, api, dsArgs)
-				
-				If wfProfileName.XFContainsIgnoreCase("import")
-					#Region "Import workflow step condition"				
-					For Each row As DataRow In userSecurity_dt.Rows
-						Dim Entity = row("Value").ToString		
-						Dim sAllowAccount As String = WF_ProcCtrl_Account(wfProfileName)
-						Dim sAllowAccountMbrScript As String = $"Cb#{sCube}:E#{sEntity}:C#Local:S#RMW_Cycle_Config_Annual:T#{sREQTime}:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-						Dim sAllowAccountValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation			
-						
-						If sAllowAccountValue.XFContainsIgnoreCase("no") Or sWFStatus.XFEqualsIgnoreCase("locked") Then 
-							Return "False"
-						End If
 				Next 
 			#End Region
 			Else
@@ -591,68 +774,67 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				Dim sAllowAccountValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation			
 'brapi.ErrorLog.Logmessage(si, $"sAllowAccount: {sAllowAccount} | sAllowAccountValue: {sAllowAccountValue}")	
 				If sAllowAccountValue.XFContainsIgnoreCase("no") Or sWFStatus.XFEqualsIgnoreCase("locked") Then			
-						Return "False"
-					Else 		
-						Select Case sComponentName							
-							#Region "Manpower approve and revert buttons"
-							Case "ManpowerApprove"
-								Dim sql As String = String.empty
-								SQL = $"Select distinct Flow
-									FROM XFC_CMD_SPLN_REQ_Details
-									where Entity = '{sEntity}'
-									and WFScenario_Name = '{sScenario}'
-									and Unit_of_Measure = 'CIV_COST'"
-								
-								Dim dtAll As New DataTable
-								Dim sStatus As String = ""
-								Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-									dtAll = BRApi.Database.ExecuteSql(dbConn,SQL,True)
-								End Using
-								For Each row As DataRow In dtAll.rows
-									sStatus = row.Item(0)
-								Next
-								If sStatus.XFContainsIgnoreCase("Formulate") Then 
-									Return "True"
-								Else 
-									Return "False"
-								End If 
+					Return "False"
+				Else 		
+					Select Case sComponentName							
+						#Region "Manpower approve and revert buttons"
+						Case "ManpowerApprove"
+							Dim sql As String = String.empty
+							SQL = $"Select distinct Flow
+								FROM XFC_CMD_SPLN_REQ_Details
+								where Entity = '{sEntity}'
+								and WFScenario_Name = '{sScenario}'
+								and Unit_of_Measure = 'CIV_COST'"
 							
-							Case "ManpowerRevert"
-								Dim sql As String = String.empty
-								SQL = $"Select distinct Flow
-									FROM XFC_CMD_SPLN_REQ_Details
-									where Entity = '{sEntity}'
-									and WFScenario_Name = '{sScenario}'
-									and Unit_of_Measure = 'CIV_COST'"
-								
-								Dim dtAll As New DataTable
-								Dim sStatus As String = ""
-								Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-									dtAll = BRApi.Database.ExecuteSql(dbConn,SQL,True)
-								End Using
-								For Each row As DataRow In dtAll.rows
-									sStatus = row.Item(0)
-								Next
-								If sStatus.XFContainsIgnoreCase("Final") Then 
-									Return "True"
-								Else 
-									Return "False"
-								End If 						
-							#End Region
-							Case Else
+							Dim dtAll As New DataTable
+							Dim sStatus As String = ""
+							Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
+							 dtAll = BRApi.Database.ExecuteSql(dbConn,SQL,True)
+							End Using
+							For Each row As DataRow In dtAll.rows
+								sStatus = row.Item(0)
+							Next
+							If sStatus.XFContainsIgnoreCase("Formulate") Then 
 								Return "True"
-						End Select		
-					End If
+							Else 
+								Return "False"
+							End If 
+						
+						Case "ManpowerRevert"
+							Dim sql As String = String.empty
+							SQL = $"Select distinct Flow
+								FROM XFC_CMD_SPLN_REQ_Details
+								where Entity = '{sEntity}'
+								and WFScenario_Name = '{sScenario}'
+								and Unit_of_Measure = 'CIV_COST'"
+													
+							Dim dtAll As New DataTable
+							Dim sStatus As String = ""
+							Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
+							 dtAll = BRApi.Database.ExecuteSql(dbConn,SQL,True)
+							End Using
+							For Each row As DataRow In dtAll.rows
+								sStatus = row.Item(0)
+							Next
+							If sStatus.XFContainsIgnoreCase("Final") Then 
+								Return "True"
+							Else 
+								Return "False"
+							End If 						
+						#End Region
+						Case Else
+							Return "True"
+					End Select		
 				End If
-				
-			'Used for the review step	
-			ElseIf String.IsNullOrEmpty(wfProfileName) Then
-				Return "False"
-			End If	
-		End Function
-		#End Region 'Updated 10/07/2025
-		
-		#Region "Get File For CMD PGM Guidance" 
+			End If
+		'Used for the review step	
+		Else If String.IsNullOrEmpty(wfProfileName) 
+			Return "False"
+		End If	
+	End Function
+#End Region 'Updated 10/07/2025
+
+#Region "Get File For CMD PGM Guidance" 
 		Public Function GetFileGuidance(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String	
 			Dim sFileName As String = args.NameValuePairs.XFGetValue("FileName")	
 			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
@@ -660,22 +842,30 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			Dim sFilePath As String = "Documents/Public/CMD_Programming"
 			
 			'returns files under its CMD
-			If sFileNameLower.StartsWith(sCube.ToLower) Then		
+			If sFileNameLower.StartsWith(sCube.ToLower)  Then		
+				
 				sFilePath = $"{sFilePath}/{sCube}/{sFileName}"
+				
 				Return sFilePath
+				
 			'returns files under its CMD	
-			ElseIf sFileNameLower.StartsWith("ARMY".ToLower) Then				
+			Else If sFileNameLower.StartsWith("ARMY".ToLower) Then				
+				
 				sFilePath = $"{sFilePath}/ARMY/{sFileName}"
+				
 				Return sFilePath
+				
 			'returns files if cbx is empty
-			ElseIf sFileNameLower Is Nothing Then
+			Else If	sFileNameLower Is Nothing Then
 				Return Nothing	
 			End If
+			
 		End Function
-		#End Region 'Updated 09/25/2025
-		
-		#Region "Mbr Lists"
+#End Region 'Updated 09/25/2025
+
+#Region "Mbr Lists"
 		Public Function GetSortedAppnList() As String
+			
 			Dim u1DimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "U1_APPN")		
 			Dim appn_List As New List(Of MemberInfo) 
 			appn_List = BRApi.Finance.Members.GetMembersUsingFilter(si, u1DimPk, "U1#Appn.Base.Options(Cube=Army,ScenarioType=LongTerm,MergeMembersFromReferencedCubes=False)", True)
@@ -690,6 +880,159 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 		End Function
 		
 #End Region 'Update 10/16/2025
+		
+#Region "GetCascadingMbrFilter"
+		Public Function GetCascadingMbrFilter() As String
+			Try
+				' Read incoming args
+				Dim cmd As String = args.NameValuePairs.XFGetValue("cmd", "NA")
+				Dim entity As String = args.NameValuePairs.XFGetValue("entity", "NA")
+				Dim appn As String = args.NameValuePairs.XFGetValue("appn", String.Empty)
+				Dim mdep As String = args.NameValuePairs.XFGetValue("mdep", "NA")
+				Dim sag As String = args.NameValuePairs.XFGetValue("sag", "NA")
+				Dim ape As String = args.NameValuePairs.XFGetValue("ape", "NA")
+				Dim dollarType As String = args.NameValuePairs.XFGetValue("dollarType", "NA")
+				Dim status As String = args.NameValuePairs.XFGetValue("status", "NA")
+				Dim returnType As String = args.NameValuePairs.XFGetValue("returnType", "NA")
+				Dim cvName As String = args.NameValuePairs.XFGetValue("cvName", "NA") '"CMD_SPLN_cPROBE_FDX_CV"
+
+				' Build a compact signature for Entity + Appn only
+				Dim currRebuildparams As String = String.Concat(entity, "|", appn, "|", status, "|", returnType)
+				
+				' Use workspace session settings to persist last seen signatures per user/workspace
+				Dim cacheCat As String = "CMD_SPLN_CascadingFilterCache"
+				Dim filterDTparams As String = "CMD_SPLN_FilterDTparams"
+				Dim rebuildparams As String = "CMD_SPLN_rebuildparams"
+
+				Dim prevRebuildParams As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, "")
+				Dim needsRebuild As Boolean = Not String.Equals(prevRebuildParams, currRebuildparams, StringComparison.Ordinal)
+
+				Dim dt As New DataTable 
+'BRApi.Errorlog.LogMessage(si,$"Hit here - {entity} - {returnType} - {appn}")
+
+				If needsRebuild Then
+					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, currRebuildparams)
+					dt = GetFDXCascadingMbrFilter(cvName,cmd,appn)
+				Else
+					dt = BRApi.Utilities.GetSessionDataTable(si, si.UserName, "CMD_SPLN_CascadingFilter")
+				End If
+				If Not dt Is Nothing Then
+
+					' Build a deterministic signature of the inputs (full)
+					Dim currFilterDTparams As String = String.Concat(entity, "|", appn, "|", status, "|", returnType, "|", mdep, "|", sag, "|", ape, "|", dollarType)
+	
+					Dim prevFilterDTparams As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, filterDTparams, "")
+	
+	
+					Dim filterParts As New List(Of String)
+	
+					' Only add filters when parameter is provided and not "NA"
+					If Not String.IsNullOrWhiteSpace(mdep) AndAlso Not mdep.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+						filterParts.Add("[UD2] = '" & mdep.Replace("'", "''") & "'")
+					End If
+	
+					If Not String.IsNullOrWhiteSpace(ape) AndAlso Not ape.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+						filterParts.Add("[UD3] = '" & ape.Replace("'", "''") & "'")
+					End If
+	
+					If Not String.IsNullOrWhiteSpace(dollarType) AndAlso Not dollarType.Equals("NA", StringComparison.OrdinalIgnoreCase) Then
+						filterParts.Add("[UD4] = '" & dollarType.Replace("'", "''") & "'")
+					End If
+	
+	
+					Dim filterExpr As String = If(filterParts.Count > 0, String.Join(" AND ", filterParts), String.Empty)
+					' Filter dt into a DataTable so it can be converted to a DataView
+					Dim filteredDt As DataTable
+					If String.IsNullOrEmpty(filterExpr) Then
+						filteredDt = dt.Copy()
+					Else
+						filteredDt = dt.Clone()
+						Dim selectedRows() As DataRow = dt.Select(filterExpr)
+						For Each row As DataRow In selectedRows
+							filteredDt.ImportRow(row)
+						Next
+					End If
+					BRApi.Utilities.SetSessionDataTable(si, si.UserName, "CMD_SPLN_CascadingFilter",filteredDt)
+	
+					Dim dv As DataView = New DataView(filteredDt)
+					' Map returnType values to column keys (case-insensitive)
+					Dim returnTypeMap As New Dictionary(Of String, String)(StringComparer.OrdinalIgnoreCase) From {
+						{"APPN", "UD1"},
+						{"MDEP", "UD2"},
+						{"SAG",  "UD3"},
+						{"APE",  "UD3"},
+						{"DollarType",  "UD4"}
+					}
+	
+					' Determine which physical column (if any) corresponds to the requested returnType
+					Dim selectedColumn = String.Empty
+					selectedColumn = returnTypeMap.XFGetValue(returnType,"Not Found")
+					If selectedColumn <> "Not Found"
+	
+						dv.RowFilter = $"{selectedColumn} IS NOT NULL AND {selectedColumn} <> ''"
+						dv.Sort = selectedColumn & " ASC"
+						Dim mlDT = dv.ToTable(True, selectedColumn) ' Distinct values only
+		
+						Dim result As String = String.Empty
+						For Each dr As DataRow In mlDT.Rows
+							Dim val As String = dr(selectedColumn).ToString()
+							If Not String.IsNullOrWhiteSpace(val) Then
+								If String.IsNullOrEmpty(result) Then
+									result = $"{selectedColumn}#{val}"
+								Else
+									result &= $",{selectedColumn}#{val}"
+								End If
+							End If
+						Next
+'BRapi.ErrorLog.LogMessage(si,$"Hit result: {selectedColumn} - {result}")
+						Return result
+					Else
+						Return String.Empty
+					End If
+				Else
+'BRapi.ErrorLog.LogMessage(si,"Hit Empty")
+					Return String.Empty
+				End If					
+
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try
+		End Function
+#End Region 'Updated 10/16/2025
+		
+#Region "Helper Functions"
+	
+		Private Function GetFDXCascadingMbrFilter(ByVal cvName As String,ByVal entFilter As String,ByVal appn As String) As DataTable
+			Dim dt As New DataTable()
+			Dim wsName As String = "00 GBL"
+			Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim CprobeScen As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetSrccPROBEScen(si,sScenario)
+
+			Dim entDim = $"E_{wfInfoDetails("CMDName")}"
+			Dim scenDim = "S_RMW"
+			Dim scenFilter = $"S#{CprobeScen}"
+			Dim timeFilter = String.Empty '$"T#{wfInfoDetails("TimeName")}"
+			Dim NameValuePairs = New Dictionary(Of String,String)
+'			If appn = String.Empty
+'				appn = "OMA"
+'			End If
+			NameValuePairs.Add("ML_GBL_APPN",appn)
+			
+			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
+
+			'dt = BRApi.Import.Data.FdxExecuteCubeView(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 1, False)
+
+			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 1, False)
+'If dt Is Nothing
+'	BRAPI.ErrorLog.LogMessage(si,"Hit NOthing")
+'End If
+			Return dt
+		End Function
+		
+	
+	#End Region 'Update 10/16/2025
 
 #Region "DisplayApproveREQBtn"
 	Public Function DisplayApproveREQBtn(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
@@ -703,38 +1046,41 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			Return "False"
 		End If 
 		Return Nothing
-		End Function
-		#End Region 'Updated 09/24/2025
+	End Function
+#End Region 'Updated 09/24/2025
+
+#Region "CreateLblText"
+	Public Function CreateLblText(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
+'brapi.ErrorLog.LogMessage(si, $"inside create lable")	
+		Dim sLabelName As String = args.NameValuePairs.XFGetValue("LabelName")
+		'============Used for confirm rollforward============================
+		Dim sLabelType As String = args.NameValuePairs.XFGetValue("LabelType")
+		'=====================================================================
+		Dim sREQTitle As String = args.NameValuePairs.XFGetValue("REQTitle")
+		Dim iWFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
+		Dim iWfYearPrior As Integer = iWFYear - 1
+		Dim wFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
+'brapi.ErrorLog.LogMessage(si, $"sREQTitle {sREQTitle}")		
+
+'brapi.ErrorLog.LogMessage(si, $"sLabelName {sLabelName}")		
+		Select Case sLabelName
+		Case "ConfirmRollForward"
+			If sLabelType.XFContainsIgnoreCase("warning")
+				Return $"!!!!! WARNING !!!!!{vbCrLf}{vbCrLf}{iWFYear} requirements already exist.{vbCrLf} {vbCrLf}If you continue, any {iWfYearPrior} requirements that were selected and already exist in {iWFYear} will be overwritten.{vbCrLf}"
+			Else If	sLabelType.XFContainsIgnoreCase("info")
+				'this should be a gv where they can select or unselect requirement they want to roll foward
+				Return  $"All requirements for the ENTIRE command will be rolled over except for the ones marked as ""No"" - not just the displayed requirements from the left screen.{vbCrLf}"
+			Else
+				Return Nothing
+			End If
+		Case "DemoteREQ"	
+			Return $"Are you sure you wish to DELETE: {sREQTitle}"
+		End Select	
 		
-		#Region "CreateLblText"
-		Public Function CreateLblText(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
-			'brapi.ErrorLog.LogMessage(si, $"inside create lable")	
-			Dim sLabelName As String = args.NameValuePairs.XFGetValue("LabelName")
-			'============Used for confirm rollforward============================
-			Dim sLabelType As String = args.NameValuePairs.XFGetValue("LabelType")
-			'=====================================================================
-			Dim sREQTitle As String = args.NameValuePairs.XFGetValue("REQTitle")
-			Dim iWFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
-			Dim iWfYearPrior As Integer = iWFYear - 1
-			Dim wFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
-			'brapi.ErrorLog.LogMessage(si, $"sREQTitle {sREQTitle}")		
-			'brapi.ErrorLog.LogMessage(si, $"sLabelName {sLabelName}")		
-			
-			Select Case sLabelName
-				Case "ConfirmRollForward"
-					If sLabelType.XFContainsIgnoreCase("warning")
-						Return $"!!!!! WARNING !!!!!{vbCrLf}{vbCrLf}{iWFYear} requirements already exist.{vbCrLf} {vbCrLf}If you continue, any {iWfYearPrior} requirements that were selected and already exist in {iWFYear} will be overwritten.{vbCrLf}"
-					ElseIf sLabelType.XFContainsIgnoreCase("info")
-						'this should be a gv where they can select or unselect requirement they want to roll foward
-						Return  $"All requirements for the ENTIRE command will be rolled over except for the ones marked as ""No"" - not just the displayed requirements from the left screen.{vbCrLf}"
-					Else
-						Return Nothing
-					End If
-				Case "DemoteREQ"	
-					Return $"Are you sure you wish to DELETE: {sREQTitle}"
-			End Select	
-		End Function
-		#End Region 'Updated 10/2/2025#Region "ExportReportMDEPFilterList"
+	End Function
+#End Region 'Updated 10/2/2025
+
+#Region "ExportReportMDEPFilterList"
 		Public Function ExportReportMDEPFilterList(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
 			Try
 				Dim sPEGFilteredList As String = args.NameValuePairs.XFGetValue("PEGFilteredList")
@@ -834,6 +1180,32 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
 		End Function
+#End Region ' DELETE?
+
+#Region "Get REQ Annotation Function"
+	'Get UFR Annotation using Dim infos
+	Public Function getREQAnnotation(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs, _
+									 ByVal sAccount As String, ByVal sFlow As String, ByVal sEntity As String, ByVal sCube As String, ByVal sScenario As String, ByVal sTime As String, ByVal sIC As String, Optional sU5 As String = "None") As String
+		Try
+			Dim sMemberScript As String = ""
+			If sAccount.XFContainsIgnoreCase("Stkhldr")	Then
+				sMemberScript = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sTime & ":V#Annotation:A#" & sAccount & ":F#" & sFlow & ":O#BeforeAdj:I#" & sIC & ":U1#None:U2#None:U3#None:U4#None:U5#" & sU5 & ":U6#None:U7#None:U8#None"
+		
+			Else
+			'Get annotations to return
+				sMemberScript = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#" & sScenario & ":T#" & sTime & ":V#Annotation:A#" & sAccount & ":F#" & sFlow & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#" & sU5 & ":U6#None:U7#None:U8#None"
+			End If
+'brapi.ErrorLog.LogMessage(si,"memberscript = " & sMemberScript)
+			Dim reqAnnotationCell As DataCellInfoUsingMemberScript = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sMemberScript)
+			Dim reqAnnotation As String = reqAnnotationCell.DataCellEx.DataCellAnnotation
+'BRApi.ErrorLog.LogMessage(si,$"sAccount = {sAccount} || sFlow = {sFlow} || sEntity = {sEntity} || sCube = {sCube} || sScenario = {sScenario} || sTime = {sTime} || sIC = {sIC} || sU5 = {sU5} || reqAnnotation = {reqAnnotation}")			
+		
+			Return reqAnnotation
+			
+		Catch ex As Exception
+			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+		End Try
+	End Function
 #End Region ' DELETE?
 
 #Region "Get Account Translated Value Function"
@@ -1131,24 +1503,27 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			PrctLimit = Math.Round(PrctLimit, 1)
 			
 			Return PrctLimit & "%"
-		End Function
-		#End Region ' I think we keep 
+			
 		
-		#Region "YOYLimitColorCode"
-		Public Function YOYLimitColorCode(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
+	End Function
+#End Region ' I think we keep 
+
+#Region "YOYLimitColorCode"
+	Public Function YOYLimitColorCode(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
+	
 			Dim wfCube = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
 			Dim wfScenarioName As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
 			Dim iWFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)	
 			
 			Dim Account As String = args.NameValuePairs.XFGetValue("Account").Trim
-			
+
 			Dim sACOM As String = BRapi.Finance.Entity.Text(si, BRapi.Finance.Members.GetMemberId(si,dimtype.Entity.Id, wfCube), 1, 0, 0)
 			Dim sYOYPctLimitMbrScript As String  = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & iWFYear & ":C#USD:E#" & sACOM & "_General"
 			sYOYPctLimitMbrScript &= ":V#Periodic:A#" & Account & ":O#Forms:I#None:F#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 			
 			Dim PrctLimit As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, sYOYPctLimitMbrScript).DataCellEx.DataCell.CellAmount
 			PrctLimit = Math.Round(PrctLimit, 1)
-			
+
 			Return "If (CellAmount < 2) Then 
     NumberFormat = [0.0\%] 
 End if
@@ -1158,60 +1533,64 @@ End if
 If (CellAmount >= " & PrctLimit & ") Then 
     BackgroundColor = LightPink, NumberFormat = [0.0\%] 
 End if"
-		End Function
-		#End Region ' I think we keep 
 		
-		#Region "Display Complete or Revert PGM WF Steps Components"
-		Public Function DisplayWFComponentsCMDPGM(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
-			Dim curProfile As WorkflowProfileInfo = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey)
-			Dim sWFProfile As String = curProfile.Name
-			If sWFProfile.Contains("CMD") Then		
-				Return "True"
-				'brapi.ErrorLog.LogMessage(si, "True")
-			Else
-				Return "False"
+	End Function
+#End Region ' I think we keep 
+
+#Region "Display Complete or Revert PGM WF Steps Components"
+	Public Function DisplayWFComponentsCMDPGM(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
+		Dim curProfile As WorkflowProfileInfo = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey)
+		Dim sWFProfile As String = curProfile.Name
+		If  sWFProfile.Contains("CMD") Then		
+			Return "True"
+'brapi.ErrorLog.LogMessage(si, "True")
+		Else
+			Return "False"
+		End If
+	End Function
+#End Region ' DELETE
+
+#Region "Display Upload Guidance Btn"
+'Created 09/26/2024 by Fronz - this is called by the btn_REQPRO_AAAAAA_0Cb__Guidance_FileUpload__Shared IsVisible Display Format
+'Purpose: If the WF is marked "Completed" then the btn hides from the user
+	Public Function DisplayUploadGuidanceBtn(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String	
+		If (BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Completed") And Not BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Load Completed")) Or BRApi.Workflow.Status.GetWorkflowStatus(si, si.WorkflowClusterPk, True).Locked Then
+			Return "False"
+		Else
+			Return "True"
+		End If			
+		
+	End Function
+#End Region ' DELETE?
+
+#Region "DynamicU8"
+	'======================================================================================================================================================================
+	' Return U8# according to passed in Cube View name and wf profile name
+	'======================================================================================================================================================================
+	' Usage: 
+	'	- CV: REQ_Funding_Month_Amt
+	'	- Monthly Or Year Requested Amount, Row Overrides
+	'	- In this instance, the method is used to return U8#Top to make the cell read-only for the Review Requirements workflow instead of having to create a separate CV
+	'======================================================================================================================================================================
+	
+	Public Function DynamicU8 (ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
+		Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+		Dim sCV As String = args.NameValuePairs.XFGetValue("CV")
+		Dim sAccount As String = args.NameValuePairs.XFGetValue("Account")
+		
+		Select Case sCV
+		Case "REQ_Funding_Month_Amt"
+			If wfProfileName.XFContainsIgnoreCase("Review Requirements") 
+				Return "U8#Top"
 			End If
-		End Function
-		#End Region ' DELETE
-		
-		#Region "Display Upload Guidance Btn"
-		'Created 09/26/2024 by Fronz - this is called by the btn_REQPRO_AAAAAA_0Cb__Guidance_FileUpload__Shared IsVisible Display Format
-		'Purpose: If the WF is marked "Completed" then the btn hides from the user
-		Public Function DisplayUploadGuidanceBtn(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String	
-			If (BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Completed") And Not BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Load Completed")) Or BRApi.Workflow.Status.GetWorkflowStatus(si, si.WorkflowClusterPk, True).Locked Then
-				Return "False"
-			Else
-				Return "True"
+			If (wfProfileName.XFContainsIgnoreCase("Formulate Req") And sAccount = "REQ_Validated_Amt")
+				Return "U8#Top"
 			End If
-		End Function
-		#End Region ' DELETE?
-		
-		#Region "DynamicU8"
-		'======================================================================================================================================================================
-		' Return U8# according to passed in Cube View name and wf profile name
-		'======================================================================================================================================================================
-		' Usage: 
-		'	- CV: REQ_Funding_Month_Amt
-		'	- Monthly Or Year Requested Amount, Row Overrides
-		'	- In this instance, the method is used to return U8#Top to make the cell read-only for the Review Requirements workflow instead of having to create a separate CV
-		'======================================================================================================================================================================
-		Public Function DynamicU8 (ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
-			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-			Dim sCV As String = args.NameValuePairs.XFGetValue("CV")
-			Dim sAccount As String = args.NameValuePairs.XFGetValue("Account")
+			If wfProfileName.XFContainsIgnoreCase("Validate Req") And sAccount = "REQ_Validated_Amt" Then Return Nothing
+			If Not (wfProfileName.XFContainsIgnoreCase("Formulate") Or wfProfileName.XFContainsIgnoreCase("Approve") Or wfProfileName.XFContainsIgnoreCase("Validate"))Then Return "U8#Top"
 			
-			Select Case sCV
-				Case "REQ_Funding_Month_Amt"
-					If wfProfileName.XFContainsIgnoreCase("Review Requirements") 
-						Return "U8#Top"
-					End If
-					If (wfProfileName.XFContainsIgnoreCase("Formulate Req") And sAccount = "REQ_Validated_Amt")
-						Return "U8#Top"
-					End If
-					If wfProfileName.XFContainsIgnoreCase("Validate Req") And sAccount = "REQ_Validated_Amt" Then Return Nothing
-					If Not (wfProfileName.XFContainsIgnoreCase("Formulate") Or wfProfileName.XFContainsIgnoreCase("Approve") Or wfProfileName.XFContainsIgnoreCase("Validate"))Then Return "U8#Top"
-				Case "REQ_Base_Info_RO_ALT"
-					If wfProfileName.XFContainsIgnoreCase("Review Financials") 
+		Case "REQ_Base_Info_RO_ALT"
+			If wfProfileName.XFContainsIgnoreCase("Review Financials") 
 				Return "None"
 			Else
 				Return "ReadOnlyAnnotation"
@@ -1572,7 +1951,7 @@ End if"
 				Dim sFlowMbr As String = args.NameValuePairs("FlowMbr")
 				Dim sFlowMbrAdj As String = sFlowMbr.Split("_"c)(0) & "_Dist_Final"
 				Dim OverrideRow As String = "S#CMD_TGT_C" & wfYear & ":F#" & sFlowMbrAdj
-'				Brapi.Errorlog.LogMessage(si, "OverrideRow: " & OverrideRow)
+'Brapi.Errorlog.LogMessage(si, "OverrideRow: " & OverrideRow)
 				Return OverrideRow
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
@@ -1591,27 +1970,27 @@ End if"
 				Select Case ValidationSelected
 					Case "Target"
 						If sField = "TGT_WH"
-							Result = "T#|WFYear|:A#Target:Name(Target |WFYear|)"
+							Result = "T#|WFYear|:A#Target:Name(Target)"
 						Else If sField = "Commitments" Then
-							Result = "GetDataCell(T#|WFYear|:A#Commitments + T#|WFYearNext|:A#Commitments):Name(Commitments |WFYear|)"
+							Result = "GetDataCell(T#|WFYear|:A#Commitments + T#|WFYearNext|:A#Commitments):Name(Commitments)"
 						Else If sField = "Obligations" Then
-							Result = "GetDataCell(T#|WFYear|:A#Obligations + T#|WFYearNext|:A#Obligations):Name(Obligations |WFYear|)"
+							Result = "GetDataCell(T#|WFYear|:A#Obligations + T#|WFYearNext|:A#Obligations):Name(Obligations)"
 						End If
 					Case "Withholds"
 						If sField = "TGT_WH"
-							Result = "T#2026:A#TGT_WH:Name(Withholds |WFYear|)"
+							Result = "T#2026:A#TGT_WH:Name(Withholds)"
 						Else If sField = "Commitments" Then
-							Result = "GetDataCell(T#|WFYear|:A#WH_Commitments + T#|WFYearNext|:A#WH_Commitments):Name(WH Commitments |WFYear|)"
+							Result = "GetDataCell(T#|WFYear|:A#WH_Commitments + T#|WFYearNext|:A#WH_Commitments):Name(Withhold Commitments)"
 						Else If sField = "Obligations" Then
-							Result = "GetDataCell(T#|WFYear|:A#WH_Obligations + T#|WFYearNext|:A#WH_Obligations):Name(WH Obligations |WFYear|)"
+							Result = "GetDataCell(T#|WFYear|:A#WH_Obligations + T#|WFYearNext|:A#WH_Obligations):Name(Withhold Obligations)"
 						End If
 					Case "Total"
 						If sField = "TGT_WH"
-							Result = "GetDataCell(T#|WFYear|:A#Target + T#|WFYear|:A#TGT_WH):Name(Total |WFYear|)"
+							Result = "GetDataCell(T#|WFYear|:A#Target + T#|WFYear|:A#TGT_WH):Name(Total)"
 						Else If sField = "Commitments" Then
-							Result = "GetDataCell(T#|WFYear|:A#Commitments + T#|WFYearNext|:A#Commitments + T#|WFYear|:A#WH_Commitments + T#|WFYearNext|:A#WH_Commitments):Name(Tot Commitments |WFYear|)"
+							Result = "GetDataCell(T#|WFYear|:A#Commitments + T#|WFYearNext|:A#Commitments + T#|WFYear|:A#WH_Commitments + T#|WFYearNext|:A#WH_Commitments):Name(Total Commitments)"
 						Else If sField = "Obligations" Then
-							Result = "GetDataCell(T#|WFYear|:A#Obligations + T#|WFYearNext|:A#Obligations + T#|WFYear|:A#WH_Obligations + T#|WFYearNext|:A#WH_Obligations):Name(Tot Obligations |WFYear|)"
+							Result = "GetDataCell(T#|WFYear|:A#Obligations + T#|WFYearNext|:A#Obligations + T#|WFYear|:A#WH_Obligations + T#|WFYearNext|:A#WH_Obligations):Name(Total Obligations)"
 						End If		
 				End Select
 				
@@ -1648,104 +2027,65 @@ End if"
 		
 #End Region
 
-Public Function GetFCAPPNforSubmission(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As DataTable
-	brapi.ErrorLog.LogMessage(si,"inside getfcappn")
-'------------------------------Prior Code-------------------------------------
-			Dim dt As New DataTable()
-			dt.TableName = "PackageForSubmission"
-			Dim scenFilter As String = String.empty
-			Dim cvname As String = "CMD_SPLN_Package_Summary_FDX"
-			Dim wsName As String = "50 CMD SPLN"
-			Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
-			Dim timeFilter = "T#2026" '$"T#{wfInfoDetails("TimeName")}"
-			Dim NameValuePairs = New Dictionary(Of String,String)
-			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
-			Dim entityMemFilter As String = args.NameValuePairs.XFGetValue("entityMemFilter")
-			dt = BRApi.Import.Data.FdxExecuteCubeView(si, wsID, cvName, String.Empty, String.Empty,String.Empty,String.Empty, timeFilter, nvbParams, False, True, String.Empty, 8, False)
-			'dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, String.Empty, String.Empty,String.Empty,String.Empty, timeFilter, nvbParams, False, True, String.Empty, 8, False)
-'---------------------------------- Prior Code End---------------------------------------------------
-	For Each column As DataColumn In dt.Columns
-		If column.Namespace Then
-			
-		end if 
-	Next
 
-
-
-
-Return dt
-		End Function
-		
-#Region "Package Submit"
-	Public Function PackageSubmit(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As Object
-brapi.errorlog.Logmessage(si,"inside Submit")
-		Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
-		Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-		Dim wfProfileNameAdj As String = wfProfileName.Split("."c)(1).Split(" "c)(0)
-		Dim lEntity As List(Of String) = stringhelper.splitstring(Me.GetUserFundsCenterByWF(si,globals,api,args),",")
-		Dim Scenario As String = args.NameValuePairs("Scenario")
-		Dim lScenario As List(Of String) = StringHelper.SplitString(Scenario,",")
-		Dim Time As String = args.NameValuePairs("Time")
-		Dim toSort As New Dictionary(Of String, String)
-		Dim output = ""
-		Dim FilterString As String
-		Dim sLevel As String = "EntityLevel=" & args.NameValuePairs("Level")
-		For Each e As String In lEntity			
-			FilterString = String.Empty
-	
-			Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, e).Member
-			Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
-			Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si,DimType.Time.Id,Time)
-			Dim entityText3 As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 3, wfScenarioTypeID, wfTimeId)
-			If Not sLevel =  entityText3 Then Continue For
-			FilterString = $"Cb#{sCube}:C#Local:S#CMD_SPLN_C{Time}:T#{Time}:E#[{e}]:V#Periodic:O#Top:I#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#None:U8#None"					
-
-			globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({FilterString}))")
-			GetDataBuffer(si,globals,api,args)
-	
-			If Not globals.GetObject("Results") Is Nothing
-	
-			Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
-	
-			Dim objU1DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U1_FundCode")
-	
-			For Each msb In results.Keys
-			   msb.Scenario = vbNullString
-			   msb.Entity =  e	   
-			   msb.Account = vbNullString
-			   msb.Origin = vbNullString
-			   msb.IC = vbNullString
-			   Dim lsAncestorList As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU1DimPK, "U1#" &  msb.UD1 & ".Ancestors.Where(MemberDim = U1_APPN)", True,,)
-			   msb.UD1 = lsAncestorList(0).Member.Name
-			   msb.UD2 = vbNullString   
-			   msb.UD3 = vbNullString
-			   msb.UD4 = vbNullString
-			   msb.UD5 = vbNullString
-			   msb.UD6 = vbNullString
-			   msb.UD7 = vbNullString
-			   msb.UD8 = vbNullString	 
-			   
-						
-						If Not toSort.ContainsKey(msb.GetMemberScript) Then 
-							toSort.Add(msb.GetMemberScript, $"E#{msb.Entity}F#{msb.flow}")
-						End If
+#Region "Package Validations"
+Public Function PackageValidations(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As Boolean
+'brapi.ErrorLog.LogMessage(si,"here CM 1 woohoo")
+				Dim WFYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)	
+				Dim WFMonth As Integer = TimeDimHelper.GetMonthIdFromId(si.WorkflowClusterPk.TimeKey)
+				Dim reqTime As String = WFYear & "M12"
+				Dim Entity_APPN As String = args.NameValuePairs.XFGetValue("Entity_APPN")
+				'Dim lEntity_APPN As List (Of String) =  StringHelper.SplitString(Entity_APPN, ",")
+				Dim Entity As String 
+				Dim APPN As String
+				Dim isvalid As Boolean = True
+				Dim packagerror = New Dictionary(Of String,String)
+				Dim dt As New DataTable()
+				dt.TableName = "PackageForSubmission"
+				Dim scenFilter As String = String.empty
+				Dim cvname As String = "CMD_SPLN_Package_Detail_FDX"
+				Dim wsName As String = "50 CMD SPLN"
+				Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
+				Dim timeFilter = "T#" & WfYear '$"T#{wfInfoDetails("TimeName")}"
+				Dim NameValuePairs = New Dictionary(Of String,String)
+				Entity = Entity_APPN.Split(":")(0)
+				APPN = Entity_APPN.Split(":")(1)
+				NameValuePairs.Add("U1_CMD_SPLN",APPN)
+				NameValuePairs.Add("Entity_CMD_SPLN",Entity)
+				Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
+brapi.ErrorLog.LogMessage(si,"entity_APPN - " & Entity_APPN)				
+				dt = BRApi.Import.Data.FdxExecuteCubeView(si, wsID, cvName, String.Empty, String.Empty,String.Empty,String.Empty, timeFilter, nvbParams, False, False, String.Empty, 8, False)
+				
+				If dt Is Nothing Then
+					isvalid = False
+					Return isvalid
+				End If 
+				For Each row As DataRow In dt.Rows
+					Dim U1 As String = row.Item("RowHdr0_UD1").ToString
+					Dim U2 As String = row.Item("RowHdr1_UD2").ToString
+					Dim U3 As String = row.Item("RowHdr2_UD3").ToString
+					Dim U4 As String = row.Item("RowHdr3_UD4").ToString
+					Dim U6 As String = row.Item("RowHdr4_UD6").ToString
+					Dim intersection As String = $"{U1} - {U2} - {U3} - {U4} - {U6}"
+					Dim DODRate As Integer = row.Item("ColVal0_JulyDODRate").ToString
+					Dim BurnRate As Integer = row.Item("ColVal1_BurnRate").ToString * 100
+					Dim CommitVar As Integer = row.Item("ColVal4_CommitmentVar").ToString
+					Dim ObligVar As Integer = row.Item("ColVal6_ObligationVar").ToString
+				
+					If BurnRate < DODRate Then
+						isvalid = False
+					ElseIf Not CommitVar = 0 Then
+						isvalid = False
+					ElseIf Not ObligVar = 0 Then 
+						isvalid = False
+					End If 
 					
-			Next
-			End If
-			Next
-		
-		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-		For Each item In sorted
-			output &= item.key & ","
-		Next
-	'brapi.ErrorLog.LogMessage(si, "PackageSubmit ouput: " & output)	
-		If output = "" Then
-		output = "U8#None"
-		End If
-		
-		Return output
-	End Function
-#End Region
+					
+				Next
+'brapi.ErrorLog.LogMessage(si,"isvalid = " & isvalid)					
+				Return isvalid
+		End Function
+#End Region	
 
 #Region "Get Pay and Non Pay Members"
 	'XFBR(Workspace.CMD_SPLN.CMD_SPLN_Assembly.CMD_SPLN_String_Helper,getpaynonpaymembers,Entity=[|!LR_Entity_CMD_SPLN_Package_Summary!|],Time=[|WFTime|])

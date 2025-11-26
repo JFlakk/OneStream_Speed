@@ -50,11 +50,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				End If				
 #End Region
 
-#Region "Package Summary"
-				If args.FunctionName.XFEqualsIgnoreCase("PackageSummary") Then				
-					Return Me.PackageSummary(si,globals,api,args)
-				End If				
-#End Region
+'#Region "Package Summary"
+'				If args.FunctionName.XFEqualsIgnoreCase("PackageSummary") Then				
+'					Return Me.PackageSummary(si,globals,api,args)
+'				End If				
+'#End Region
 
 #Region "Package Detail"
 				If args.FunctionName.XFEqualsIgnoreCase("PackageDetail") Then				
@@ -65,6 +65,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 #Region "PackageEntityFlow"
 				If args.FunctionName.XFEqualsIgnoreCase("PackageEntityFlow") Then				
 					Return Me.PackageEntityFlow(si,globals,api,args)
+				End If				
+#End Region
+
+#Region "Package Submit"
+				If args.FunctionName.XFEqualsIgnoreCase("PackageSubmit") Then				
+					Return Me.PackageSubmit(si,globals,api,args)
 				End If				
 #End Region
 
@@ -351,266 +357,292 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 		Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
 		Dim wfProfileNameAdj As String = wfProfileName.Split("."c)(1).Split(" "c)(0)
 		Dim lEntity As List(Of String) = stringhelper.splitstring(Me.GetUserFundsCenterByWF(si,globals,api,args),",")
-		
-'		Brapi.ErrorLog.LogMessage(si, "lEntity = " & lEntity(1).ToString)
-		
 		Dim Time As String = args.NameValuePairs("Time")
 		Dim toSort As New Dictionary(Of String, String)
 		Dim output = ""
-		Dim FilterString As String
+		
+		Dim FilterString As String = String.Empty
+		Dim Filters As String = String.Empty
+				
 		If lEntity.Count = 0 Then Return "E#None"
-		Dim sLevel As String = "EntityLevel=" & args.NameValuePairs("Level")
-		Dim sLevelVal As String = args.NameValuePairs("Level")
-'		Brapi.ErrorLog.LogMessage(si, "Here")
+		
 		'Grab each entity based on WF and User security
 		For Each e As String In lEntity		
-'		Brapi.ErrorLog.LogMessage(si, "Here2")
 			FilterString = String.Empty
 			Dim entityMbrName As String = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, e).Member.Name
 			Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, e).Member
 			Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
 			Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si,DimType.Time.Id,Time)
 			Dim entityText3 As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 3, wfScenarioTypeID, wfTimeId)
-			'If Entity is not in the level for the row do not loop
-			If Not sLevel = entityText3 Then Continue For
-			Dim Filters As String
 			
+			'Get each Entity user has security to and grab text 3
+			'Subtring based on what level the entity is and get the children to pass into a list
 			Dim objEntityDimPk As DimPk = BRapi.Finance.Dim.GetDimPk(si, "E_Army")
-			
 			Dim lsEntityChildren As List(Of MemberInfo)
-			
-			If sLevel = "EntityLevel=L2" Then		
-				lsEntityChildren= BRApi.Finance.Members.GetMembersUsingFilter(si, objEntityDimPk, "E#" & e.Substring(0,3) & ".ChildrenInclusive, E#" & e, True)
+			Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,e)
+						
+			If EntityLevel = "L2" Then		
+				lsEntityChildren= BRApi.Finance.Members.GetMembersUsingFilter(si, objEntityDimPk, "E#" & e.Substring(0,3) & ".ChildrenInclusive", True)
 			Else
-				Brapi.ErrorLog.LogMessage(si, "e = " & e)
-				lsEntityChildren= BRApi.Finance.Members.GetMembersUsingFilter(si, objEntityDimPk, "E#" & e.Substring(0,5) & ".ChildrenInclusive, E#" & e, True)
+				lsEntityChildren= BRApi.Finance.Members.GetMembersUsingFilter(si, objEntityDimPk, "E#" & e.Substring(0,5) & ".ChildrenInclusive", True)
 			End If
 			
-'			If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
+'			Next
+			
+			Dim SPLNTGTresults As Dictionary(Of MemberScriptBuilder, DataBufferCell)
+			Dim TGTResults As Dictionary(Of MemberScriptBuilder, DataBufferCell)
+			Dim SPLNStatusResults As Dictionary(Of MemberScriptBuilder, DataBufferCell)
+			Dim SPLNTotResults As Dictionary(Of MemberScriptBuilder, DataBufferCell)
+			Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell)
+			
+			'Get each entity and child entity through filter string
 			For Each ChildMbr As MemberInfo In lsEntityChildren
-'				If String.IsNullOrWhiteSpace(ChildMbr.Member.Name) Then Return "E#None:U1#None:U3#None"
-				FilterString = $"Cb#{sCube}:C#Aggregated:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:V#Periodic:O#Top:I#None:U1#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
-								$"+ Cb#{sCube}:C#Aggregated:S#CMD_TGT_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:V#Periodic:O#Top:I#None:U1#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" 
-		
+				Dim FlowCommDims As String = $"F#{EntityLevel}"
+				'Data Buffer 1 - SPLN + TGT: Get all of Spend Plan and Target, for each entity grab the entity level in the correct workflow
+				FilterString = $"Cb#{sCube}:C#Aggregated:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:{FlowCommDims}_{wfProfileNameAdj}_SPLN:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+								$"+ Cb#{sCube}:C#Aggregated:S#CMD_TGT_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:F#Tot_Dist_Final:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+								$"+ Cb#{sCube}:C#Aggregated:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:{FlowCommDims}_{wfProfileNameAdj}_SPLN:V#Periodic:O#AdjInput:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+								$"+ Cb#{sCube}:C#Local:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:{FlowCommDims}_{wfProfileNameAdj}_SPLN:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+								$"+ Cb#{sCube}:C#Local:S#CMD_TGT_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:F#Tot_Dist_Final:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+								$"+ Cb#{sCube}:C#Local:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:{FlowCommDims}_{wfProfileNameAdj}_SPLN:V#Periodic:O#AdjInput:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
 				globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({FilterString}))")
 				If Not globals.GetObject("Filter") Is Nothing
 					GetDataBuffer(si,globals,api,args)
 				End If
 				If Not globals.GetObject("Results") Is Nothing
-		
-					Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
-						'Build msb
-						For Each msb In results.Keys
+				SPLNTGTresults = globals.GetObject("Results")
+				End If
+				
+				'Data Buffer 2 - TGT: Get all Target members under Tot Dist Final for each entity
+				FilterString = $"Cb#{sCube}:C#Aggregated:S#CMD_TGT_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:F#Tot_Dist_Final:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+								$"+ Cb#{sCube}:C#Local:S#CMD_TGT_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:F#Tot_Dist_Final:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
+				globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({FilterString}))")
+				If Not globals.GetObject("Filter") Is Nothing
+					GetDataBuffer(si,globals,api,args)
+				End If
+				If Not globals.GetObject("Results") Is Nothing
+				TGTResults = globals.GetObject("Results")
+				End If
+				
+				'Data Buffer 3 - SPLN: Get Each entity with level as status associated to the entity in Spend Plan
+				FilterString = $"Cb#{sCube}:C#Aggregated:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:{FlowCommDims}_{wfProfileNameAdj}_SPLN:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+								$"+ Cb#{sCube}:C#Local:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:{FlowCommDims}_{wfProfileNameAdj}_SPLN:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
+				globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({FilterString}))")
+				If Not globals.GetObject("Filter") Is Nothing
+					GetDataBuffer(si,globals,api,args)
+				End If
+				If Not globals.GetObject("Results") Is Nothing
+				SPLNStatusResults = globals.GetObject("Results")
+				End If
+				
+				'Data Buffer 4 - Get all of Spend Plan Members
+				FilterString = $"Cb#{sCube}:C#Aggregated:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:F#CMD_Requirements:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+								$"+ Cb#{sCube}:C#Local:S#CMD_SPLN_C{Time}:T#{Time}:E#[{ChildMbr.Member.Name}]:F#CMD_Requirements:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
+				globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({FilterString}))")
+				If Not globals.GetObject("Filter") Is Nothing
+					GetDataBuffer(si,globals,api,args)
+				End If
+				If Not globals.GetObject("Results") Is Nothing
+				SPLNTotResults = globals.GetObject("Results")
+				End If
+				
+				'Loop through dictionary / buffer 1
+				For Each kvp As KeyValuePair(Of MemberScriptBuilder, DataBufferCell) In SPLNTGTresults
+					Dim msb As MemberScriptBuilder = kvp.Key
+					Dim cell As DataBufferCell = kvp.Value
+					Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+					Dim lsAncestorListU1 As List(Of MemberInfo)
+					'Check if exists in dictionary / buffer 3
+					If SPLNStatusResults IsNot Nothing AndAlso SPLNStatusResults.ContainsKey(msb) Then
+						
 						   msb.Scenario = vbNullString
-		'				   msb.Entity = e
 						   msb.Entity = ChildMbr.Member.name
+						   msb.Flow = $"{EntityLevel}_{wfProfileNameAdj}_SPLN"
 						   msb.Account = vbNullString
 						   msb.Origin = vbNullString
 						   msb.IC = vbNullString
-						   msb.UD1 = vbNullString
+						   lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & msb.UD1 & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+						   msb.UD1 = lsAncestorListU1(0).Member.Name
 						   msb.UD2 = vbNullString   
 						   msb.UD3 = vbNullString
 						   msb.UD4 = vbNullString
 						   msb.UD5 = vbNullString
 						   msb.UD6 = vbNullString
 						   msb.UD7 = vbNullString
-						   msb.UD8 = vbNullString	   
-						   
-							Dim CommitSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{e}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Commitments"
-							Dim CommitSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, CommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
-							Dim ObligSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{e}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Obligations"
-							Dim ObligSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, ObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
-						   	Dim WHCommitSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{e}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Commitments"
-							Dim WHCommitSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHCommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
-							Dim WHObligSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{e}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Obligations"
-							Dim WHObligSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
-							Dim Target As String = $"Cb#{sCube}:E#[{e}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#Target"
-							Dim TargetAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, Target).DataCellEx.DataCell.CellAmount
-							Dim WHTarget As String = $"Cb#{sCube}:E#[{e}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#TGT_WH"
-							Dim WHTargetAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHTarget).DataCellEx.DataCell.CellAmount
-							Dim ValidationSelected As String = args.NameValuePairs("ValidationSelected")		
-		
-							Select Case ValidationSelected 
-								Case "Target"
-								If msb.Flow.XFContainsIgnoreCase($"{sLevelVal}_{wfProfileNameAdj}_SPLN") 
-									If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									Else If TargetAmount = 0 And ObligSPLNAmount + CommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									Else If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									End If
-								Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
-									If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									End If
+						   msb.UD8 = vbNullString	
+						If Not toSort.ContainsKey(msb.GetMemberScript)
+							toSort.Add(msb.GetMemberScript, $"F#{msb.Flow},E#{msb.Entity}")
+						End If
+						Continue For
+					
+					'Check if exists in dictionary / buffer 2
+					ElseIf TGTResults.ContainsKey(msb) Then
+						'Check if also exists in dictionary / buffer 4
+						'If entity is base, switch from Child to entity level
+						Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")		
+						Dim EntBase = Not BRApi.Finance.Members.HasChildren(si, entDimPk, ChildMbr.Member.MemberId)
+						If EntBase = True Then
+'							If SPLNTotResults IsNot Nothing AndAlso SPLNTotResults.ContainsKey(msb) Then 'Fixed for submitting the package to the next status
+							If SPLNTotResults IsNot Nothing Then
+								Continue For
+							ElseIf wfProfileNameAdj.XFContainsIgnoreCase("Formulate")
+								   msb.Scenario = vbNullString
+								   msb.Entity = e
+								   msb.Flow = $"{EntityLevel}_{wfProfileNameAdj}_SPLN"
+								   msb.Account = vbNullString
+								   msb.Origin = vbNullString
+								   msb.IC = vbNullString
+								   lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & msb.UD1 & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+								   msb.UD1 = lsAncestorListU1(0).Member.Name
+								   msb.UD2 = vbNullString   
+								   msb.UD3 = vbNullString
+								   msb.UD4 = vbNullString
+								   msb.UD5 = vbNullString
+								   msb.UD6 = vbNullString
+								   msb.UD7 = vbNullString
+								   msb.UD8 = vbNullString	
+								If Not toSort.ContainsKey(msb.GetMemberScript)
+									toSort.Add(msb.GetMemberScript, $"F#{msb.Flow},E#{msb.Entity}")
 								End If
-								Case "Withholds"
-								If msb.Flow.XFContainsIgnoreCase($"{sLevelVal}_{wfProfileNameAdj}_SPLN") 
-									If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									Else If WHTargetAmount = 0 And WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									Else If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									End If
-								Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
-									If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									End If
-								End If
-								Case "Total"
-								If msb.Flow.XFContainsIgnoreCase($"{sLevelVal}_{wfProfileNameAdj}_SPLN") 
-									If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									Else If TargetAmount + WHTargetAmount = 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									Else If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									End If
-								Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
-									If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-									End If
-								End If
-							End Select
-						Next
-	'				Next
-				End If
+							End If
+							Continue For
+						End If
+					End If
+				Next
+						
 			Next
 		Next
 	
-		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+		Dim sorted As Dictionary(Of String, String) = toSort.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
 		For Each item In sorted
 			output = output & item.key & ","
 		Next
-		
 		If output = "" Then
 			output = "U8#None"
 		End If
-		
+Brapi.ErrorLog.LogMessage(si, "output = " & output)
 		Return output
 	
 	End Function
 #End Region
 
-#Region "Package Summary"
-	Public Function PackageSummary(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As Object
-		Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
-		Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-		Dim wfProfileNameAdj As String = wfProfileName.Split("."c)(1).Split(" "c)(0)
-		Dim Entity As String = args.NameValuePairs.XFGetValue("Entity")
-		Dim Type As String = args.NameValuePairs.XFGetValue("Type")
-		Dim Scenario As String = args.NameValuePairs("Scenario")
-		Dim lScenario As List(Of String) = StringHelper.SplitString(Scenario,",")
-		Dim Time As String = args.NameValuePairs("Time")
-		Dim toSort As New Dictionary(Of String, String)
-		Dim output = ""
-		Dim FilterString As String
-		If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
+#Region "Package Summary" 
+'	Public Function PackageSummary(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As Object
+'		Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
+'		Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+'		Dim wfProfileNameAdj As String = wfProfileName.Split("."c)(1).Split(" "c)(0)
+'		Dim Entity As String = args.NameValuePairs.XFGetValue("Entity")
+'		Dim Type As String = args.NameValuePairs.XFGetValue("Type")
+'		Dim Scenario As String = args.NameValuePairs("Scenario")
+'		Dim lScenario As List(Of String) = StringHelper.SplitString(Scenario,",")
+'		Dim Time As String = args.NameValuePairs("Time")
+'		Dim toSort As New Dictionary(Of String, String)
+'		Dim output = ""
+'		Dim FilterString As String
+'		If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
 			
-			FilterString = String.Empty			
-			FilterString = $"Cb#{sCube}:C#Local:S#CMD_SPLN_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#None:U8#None" & _
-							$" + Cb#{sCube}:C#Local:S#CMD_TGT_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#None:U8#None"					
+'			FilterString = String.Empty			
+'			FilterString = $"Cb#{sCube}:C#Aggregated:S#CMD_SPLN_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None" & _
+'							$" + Cb#{sCube}:C#Aggregated:S#CMD_TGT_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#None:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"					
 
-			globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({FilterString}))")
-			GetDataBuffer(si,globals,api,args)
+'			globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({FilterString}))")
+'			GetDataBuffer(si,globals,api,args)
 	
-			If Not globals.GetObject("Results") Is Nothing
+'			If Not globals.GetObject("Results") Is Nothing
 	
-			Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
+'			Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
 	
-			Dim objU1DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U1_FundCode")
+'			Dim objU1DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U1_FundCode")
 	
-			For Each msb In results.Keys
-			   msb.Scenario = vbNullString
-			   msb.Entity =  Entity		   
-			   msb.Account = vbNullString
-			   msb.Origin = vbNullString
-			   msb.IC = vbNullString
-			   Dim lsAncestorList As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU1DimPK, "U1#" &  msb.UD1 & ".Ancestors.Where(MemberDim = U1_APPN)", True,,)
-			   msb.UD1 = lsAncestorList(0).Member.Name
-			   msb.UD2 = vbNullString   
-			   msb.UD3 = vbNullString
-			   msb.UD4 = vbNullString
-			   msb.UD5 = vbNullString
-			   msb.UD6 = vbNullString
-			   msb.UD7 = vbNullString
-			   msb.UD8 = vbNullString	 
+'			For Each msb In results.Keys
+'			   msb.Scenario = vbNullString
+'			   msb.Entity =  Entity		   
+'			   msb.Account = vbNullString
+'			   msb.Origin = vbNullString
+'			   msb.IC = vbNullString
+'			   Dim lsAncestorList As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU1DimPK, "U1#" &  msb.UD1 & ".Ancestors.Where(MemberDim = U1_APPN)", True,,)
+'			   msb.UD1 = lsAncestorList(0).Member.Name
+'			   msb.UD2 = vbNullString   
+'			   msb.UD3 = vbNullString
+'			   msb.UD4 = vbNullString
+'			   msb.UD5 = vbNullString
+'			   msb.UD6 = vbNullString
+'			   msb.UD7 = vbNullString
+'			   msb.UD8 = vbNullString	 
 			   
-					Dim CommitSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Commitments"
-					Dim CommitSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, CommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
-					Dim ObligSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Obligations"
-					Dim ObligSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, ObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
-				   	Dim WHCommitSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Commitments"
-					Dim WHCommitSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHCommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
-					Dim WHObligSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Obligations"
-					Dim WHObligSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
-					Dim Target As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#Target"
-					Dim TargetAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, Target).DataCellEx.DataCell.CellAmount
-					Dim WHTarget As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#TGT_WH"
-					Dim WHTargetAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHTarget).DataCellEx.DataCell.CellAmount
-					Dim ValidationSelected As String = args.NameValuePairs("ValidationSelected")		
+'					Dim CommitSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Commitments"
+'					Dim CommitSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, CommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+'					Dim ObligSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Obligations"
+'					Dim ObligSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, ObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+'				   	Dim WHCommitSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Commitments"
+'					Dim WHCommitSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHCommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+'					Dim WHObligSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Obligations"
+'					Dim WHObligSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+'					Dim Target As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#Target"
+'					Dim TargetAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, Target).DataCellEx.DataCell.CellAmount
+'					Dim WHTarget As String = $"Cb#{sCube}:E#[{Entity}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#TGT_WH"
+'					Dim WHTargetAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHTarget).DataCellEx.DataCell.CellAmount
+'					Dim ValidationSelected As String = args.NameValuePairs("ValidationSelected")		
 
-					Select Case ValidationSelected 
-					Case "Target"
-						If msb.Flow.XFContainsIgnoreCase($"{wfProfileNameAdj}_SPLN") 
-							If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							Else If TargetAmount = 0 And ObligSPLNAmount + CommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							Else If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							End If
-						Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
-							If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							End If
-						End If
-					Case "Withholds"
-						If msb.Flow.XFContainsIgnoreCase($"{wfProfileNameAdj}_SPLN") 
-							If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							Else If WHTargetAmount = 0 And WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							Else If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							End If
-						Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
-							If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							End If
-						End If
-					Case "Total"
-						If msb.Flow.XFContainsIgnoreCase($"{wfProfileNameAdj}_SPLN") 
-							If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							Else If TargetAmount + WHTargetAmount = 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							Else If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							End If
-						Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
-							If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
-								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
-							End If
-						End If
-					End Select
-			Next
-			End If
+'					Select Case ValidationSelected 
+'					Case "Target"
+'						If msb.Flow.XFContainsIgnoreCase($"{wfProfileNameAdj}_SPLN") 
+'							If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							Else If TargetAmount = 0 And ObligSPLNAmount + CommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							Else If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							End If
+'						Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
+'							If TargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							End If
+'						End If
+'					Case "Withholds"
+'						If msb.Flow.XFContainsIgnoreCase($"{wfProfileNameAdj}_SPLN") 
+'							If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							Else If WHTargetAmount = 0 And WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							Else If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							End If
+'						Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
+'							If WHTargetAmount <> 0 And WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							End If
+'						End If
+'					Case "Total"
+'						If msb.Flow.XFContainsIgnoreCase($"{wfProfileNameAdj}_SPLN") 
+'							If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							Else If TargetAmount + WHTargetAmount = 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							Else If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							End If
+'						Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
+'							If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+'								toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+'							End If
+'						End If
+'					End Select
+'			Next
+'			End If
 	
-		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-		For Each item In sorted
-			output &= item.key & ","
-		Next
+'		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+'		For Each item In sorted
+'			output &= item.key & ","
+'		Next
 		
-		If output = "" Then
-		output = "U8#None"
-		End If
+'		If output = "" Then
+'		output = "U8#None"
+'		End If
 		
-		Return output
-	End Function
-#End Region
+'		Return output
+'	End Function
+#End Region 'no longer used
 
 #Region "Package Detail"
 	Public Function PackageDetail(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As Object
@@ -633,20 +665,20 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 		Dim output = ""
 		Dim FilterString As String = String.Empty
 		Dim Filters As String = String.Empty
-		
-'		If Entity = String.Empty Or Entity = "NA" Or Entity = vbNullString Or APPN = String.Empty Or APPN = "NA" Or APPN = vbNullString Then
-'			Return "U1#Top:U2#Top:U3#Top:U4#Top:U6#Top"
-'		End If
-
+		If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None"
 		Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Entity)
-'		Dim Acct As String = "Target"
-'		Dim Flow As String = $"{EntityLevel}_Dist_Balance"
-		Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,Entity.Substring(0,3),Time)
+		
+		Dim Val_Entity
+		If Entity = sCube Then
+			Val_Entity = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetCMD_L2FC(si,Entity)
+		Else
+			Val_Entity = Entity.Substring(0,3)
+		End If
+		
+		Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,Val_Entity,Time)
 		For Each pair In Val_Approach
-		Brapi.ErrorLog.LogMessage(si, "Pair.Key : " & pair.key)
-			If pair.Key.xfcontainsignorecase("APPN")
+			If pair.Key.xfcontainsignorecase("APPN") 
 				If pair.Value = "Fund Code"
-					Brapi.ErrorLog.LogMessage(si, "APPN pair value: " & pair.value)
 					FilterString &= $",[U1#{APPN}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Plan,MergeMembersFromReferencedCubes=False)]"
 				Else
 					u1commDims = $"U1#{APPN}:"
@@ -672,19 +704,18 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 			Else If pair.Key.xfcontainsignorecase("Pay_NonPay")
 				If pair.Value = "Yes"
 					FilterString &= $",[U6#Pay_Benefits, U6#Non_Pay, U6#Pay_Benefits.Base, U6#Non_Pay.Base]"
-'					FilterString &= $",[U6#Pay_Benefits, U6#Non_Pay]"
-'					FilterString &= $",[U6#Pay_Benefits.Base, U6#Non_Pay.Base]"
 				Else
 					u6commDims = "U6#CostCat:"
 				End If
 			End If
 		Next
 		
-		If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None"
-		commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#Local:S#CMD_SPLN_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#Top:{u1commDims}{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#Top" & _
-					$" + Cb#{wfInfoDetails("CMDName")}:C#Local:S#CMD_TGT_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#None:{u1commDims}{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#Top"
-		Brapi.ErrorLog.LogMessage(si, "commDims: " & commDims)
-		Brapi.ErrorLog.LogMessage(si, "FilterString: " & FilterString)
+		commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#CMD_SPLN_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#None:{u1commDims}{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#None" & _
+					$" + Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#CMD_TGT_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#None:{u1commDims}{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#None" & _
+					$" + Cb#{wfInfoDetails("CMDName")}:C#Local:S#CMD_SPLN_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#None:{u1commDims}{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#None" & _
+					$" + Cb#{wfInfoDetails("CMDName")}:C#Local:S#CMD_TGT_C{Time}:T#{Time}:E#[{Entity}]:V#Periodic:O#Top:I#None:{u1commDims}{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#None"
+'Brapi.ErrorLog.LogMessage(si, "commDims: " & commDims)
+'Brapi.ErrorLog.LogMessage(si, "FilterString: " & FilterString)
 
 		globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({commDims}){FilterString})")
 		GetDataBuffer(si,globals,api,args)
@@ -697,14 +728,6 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 		Dim objU3DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U3_All_APE")
 		Dim objU6DimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "U6_CostCat")
 		
-'		Dim lsPayNonPayMbrs As List(Of MemberInfo)
-'		If Val_Approach("CMD_Val_Pay_NonPay_Approach") = "Yes" Then
-'			lsPayNonPayMbrs = BRApi.Finance.Members.GetMembersUsingFilter(si, objU6DimPk, "U6#Pay_Benefits, U6#Non_Pay", True)
-'		Else If Val_Approach("CMD_Val_Pay_NonPay_Approach") = "No" Then
-'			lsPayNonPayMbrs = BRApi.Finance.Members.GetMembersUsingFilter(si, objU6DimPk, "U6#CostCat", True)
-'		End If
-		
-'		For Each PayNonPayMbr As MemberInfo In lsPayNonPayMbrs
 			For Each msb In results.Keys
 				msb.Scenario = vbNullString
 				msb.Entity =  Entity		   
@@ -742,7 +765,6 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 				End If
 	
 				'Get Member base on validation selection for UD4
-	'			Brapi.ErrorLog.LogMessage(si, "msb.UD4 = " & msb.UD4)
 				If Val_Approach("CMD_Val_DollarType_Approach") = "Yes" Then
 					msb.UD4 = msb.UD4
 				Else
@@ -750,34 +772,22 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 				End If
 				
 				msb.UD5 = vbNullString
-					
-				'Get Member base on validation selection for UD6
-'				If Val_Approach("CMD_Val_Pay_NonPay_Approach") = "Yes" Then
-'					msb.UD6 = PayNonPayMbr.Member.Name
-'				Else
-'					msb.UD6 = "CostCat"
-'				End If
 				msb.UD6 = vbNullString
-'				msb.UD6 = PayNonPayMbr.Member.Name
-	'				msb.UD6 = vbNullString
-	'			Else
-	'				msb.UD6 = "Top"
-	'			End If
 				msb.UD7 = vbNullString
 				msb.UD8 = vbNullString	  
 			   
 						Dim CommitSPLNMbrScrpt As String = $"Cb#{wfInfoDetails("CMDName")}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Commitments"
-						Dim CommitSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), CommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+						Dim CommitSPLNAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), CommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
 						Dim ObligSPLNMbrScrpt As String = $"Cb#{wfInfoDetails("CMDName")}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Obligations"
-						Dim ObligSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), ObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+						Dim ObligSPLNAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), ObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
 					   	Dim WHCommitSPLNMbrScrpt As String = $"Cb#{wfInfoDetails("CMDName")}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Commitments"
-						Dim WHCommitSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), WHCommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+						Dim WHCommitSPLNAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), WHCommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
 						Dim WHObligSPLNMbrScrpt As String = $"Cb#{wfInfoDetails("CMDName")}:E#[{Entity}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Obligations"
-						Dim WHObligSPLNAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), WHObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+						Dim WHObligSPLNAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), WHObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
 						Dim Target As String = $"Cb#{wfInfoDetails("CMDName")}:E#[{Entity}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#Target"
-						Dim TargetAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), Target).DataCellEx.DataCell.CellAmount
+						Dim TargetAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), Target).DataCellEx.DataCell.CellAmount
 						Dim WHTarget As String = $"Cb#{wfInfoDetails("CMDName")}:E#[{Entity}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#TGT_WH"
-						Dim WHTargetAmount As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), WHTarget).DataCellEx.DataCell.CellAmount
+						Dim WHTargetAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), WHTarget).DataCellEx.DataCell.CellAmount
 						Dim ValidationSelected As String = args.NameValuePairs("ValidationSelected")		
 	
 						Select Case ValidationSelected 
@@ -833,14 +843,111 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 	For Each item In sorted
 		output &= item.key & ","
 	Next
-'brapi.ErrorLog.LogMessage(si,"output:" & output)
+brapi.ErrorLog.LogMessage(si,"output:" & output)
 	
 	If output = "" Then
-	output = "U8#None"
+	output = "E#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None"
 	End If
 	
 	Return output
 
+	End Function
+#End Region
+
+#Region "Package Submit"
+	Public Function PackageSubmit(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As Object
+'brapi.errorlog.Logmessage(si,"inside Submit CM DB")
+		Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
+		Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+		Dim wfProfileNameAdj As String = wfProfileName.Split("."c)(1).Split(" "c)(0)
+		Dim lEntity As List(Of String) = stringhelper.splitstring(Me.GetUserFundsCenterByWF(si,globals,api,args),",")
+		Dim Scenario As String = args.NameValuePairs("Scenario")
+		Dim lScenario As List(Of String) = StringHelper.SplitString(Scenario,",")
+		Dim Time As String = args.NameValuePairs("Time")
+		Dim toSort As New Dictionary(Of String, String)
+		Dim output = ""
+		Dim FilterString As String
+		Dim sLevel As String = "EntityLevel=" & args.NameValuePairs("Level")
+		Dim slevelval As String = args.NameValuePairs("Level")
+		For Each e As String In lEntity			
+			FilterString = String.Empty
+	
+			Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, e).Member
+			Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
+			Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si,DimType.Time.Id,Time)
+			Dim entityText3 As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 3, wfScenarioTypeID, wfTimeId)
+			If Not sLevel =  entityText3 Then Continue For
+			FilterString = $"Cb#{sCube}:C#Aggregated:S#CMD_SPLN_C{Time}:T#{Time}:E#[{e}]:V#Periodic:O#Top:I#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#None:U8#None"					
+
+			globals.SetStringValue("Filter", $"FilterMembers(REMOVEZEROS({FilterString}))")
+			GetDataBuffer(si,globals,api,args)
+	
+			If Not globals.GetObject("Results") Is Nothing
+	
+			Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
+	
+			Dim objU1DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U1_FundCode")
+	
+			For Each msb In results.Keys
+			   msb.Scenario = vbNullString
+			   msb.Entity =  e	   
+			   msb.Account = vbNullString
+			   msb.Origin = vbNullString
+			   msb.IC = vbNullString
+			   Dim lsAncestorList As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU1DimPK, "U1#" &  msb.UD1 & ".Ancestors.Where(MemberDim = U1_APPN)", True,,)
+			   msb.UD1 = lsAncestorList(0).Member.Name
+			   msb.UD2 = vbNullString   
+			   msb.UD3 = vbNullString
+			   msb.UD4 = vbNullString
+			   msb.UD5 = vbNullString
+			   msb.UD6 = vbNullString
+			   msb.UD7 = vbNullString
+			   msb.UD8 = vbNullString	 
+			   
+						
+						Dim CommitSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{e}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Commitments"
+							Dim CommitSPLNAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, CommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+							Dim ObligSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{e}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#Obligations"
+							Dim ObligSPLNAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, ObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+						   	Dim WHCommitSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{e}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Commitments"
+							Dim WHCommitSPLNAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHCommitSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+							Dim WHObligSPLNMbrScrpt As String = $"Cb#{sCube}:E#[{e}]:S#CMD_SPLN_C{Time}:T#{Time}:V#Periodic:A#WH_Obligations"
+							Dim WHObligSPLNAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHObligSPLNMbrScrpt).DataCellEx.DataCell.CellAmount
+							Dim Target As String = $"Cb#{sCube}:E#[{e}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#Target"
+							Dim TargetAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, Target).DataCellEx.DataCell.CellAmount
+							Dim WHTarget As String = $"Cb#{sCube}:E#[{e}]:S#CMD_TGT_C{Time}:T#{Time}:V#Periodic:A#TGT_WH"
+							Dim WHTargetAmount As Long = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, WHTarget).DataCellEx.DataCell.CellAmount	
+		
+						
+								If msb.Flow.XFContainsIgnoreCase($"{slevelval}_{wfProfileNameAdj}_SPLN") 
+									If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+									Else If TargetAmount + WHTargetAmount = 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+									Else If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount <> 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+									End If
+								Else If msb.Flow.XFContainsIgnoreCase("Dist_Final")
+									If TargetAmount + WHTargetAmount <> 0 And ObligSPLNAmount + CommitSPLNAmount + WHObligSPLNAmount + WHCommitSPLNAmount = 0 And Not toSort.ContainsKey(msb.GetMemberScript) Then
+										toSort.Add(msb.GetMemberScript, $"E#{msb.entity}F#{msb.flow}")
+									End If
+								End If
+							
+					
+			Next
+			End If
+			Next
+		
+		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+		For Each item In sorted
+			output &= item.key & ","
+		Next
+'brapi.ErrorLog.LogMessage(si, "PackageSubmit ouput: " & output)	
+		If output = "" Then
+		output = "U8#None"
+		End If
+		
+		Return output
 	End Function
 #End Region
 
@@ -849,7 +956,7 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 		Public Function GetUserFundsCenterByWF(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As Object
 			Try
 				Dim output As String = String.Empty
-				Dim userSecGroup As DataSet = brapi.Dashboards.Process.GetAdoDataSetForAdapter(si,False,"da_GetUserSec","FundsCenterByWF",Nothing)	
+				Dim userSecGroup As DataSet = brapi.Dashboards.Process.GetAdoDataSetForAdapter(si,False,"da_CMD_SPLN_GetUserSec","FundsCenterByWF",Nothing)	
 				Dim userSecGroup_dt As DataTable = userSecGroup.Tables(0)
 				For Each FC As datarow In userSecGroup_dt.rows
 'brapi.ErrorLog.LogMessage(si,"FC CM KL = " & FC.Item("Value"))
@@ -959,7 +1066,7 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 					AND Req.WFTime_Name = '{tm}'
 					AND Req.Status = '{finalStatus}'
 					Order By Req.Entity"
-BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)			
+'BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)			
 			Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
 				 dt = BRApi.Database.ExecuteSql(dbConn,SQL.ToString(),True)
 			End Using
@@ -978,7 +1085,7 @@ BRApi.ErrorLog.LogMessage(si, "SQL: " & SQL.ToString)
 					End If	
 				End If
 			Next
-BRApi.ErrorLog.LogMessage(si, "FilterString: " & FilterString)	
+'BRApi.ErrorLog.LogMessage(si, "FilterString: " & FilterString)	
 Return FilterString' "E#A97AA_General"
 			globals.SetStringValue("Filter", $"REMOVENODATA({FilterString})")
 

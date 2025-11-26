@@ -64,8 +64,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							
 							
 							
-						Else If args.FunctionName.XFEqualsIgnoreCase("ImportCivPayREQ") Then
-							Return Me.ImportCivPayREQ(si, globals,api,args)
+'						Else If args.FunctionName.XFEqualsIgnoreCase("ImportCivPayREQ") Then
+'							Return Me.ImportCivPayREQ(si, globals,api,args)
 							
 							
 							
@@ -80,23 +80,412 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		End Function
 		
 
-#Region "Import Civ Pay Requirements"
-		Public Function	ImportCivPayREQ(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object							
+'#Region "REQ CivPay Mass Import"
+'		Public Function	ImportCivPayREQ(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object							
+'			Try
+				
+'				'Get the file and send to the proper location
+'				Dim CivPayREQ As New CMD_SPLN_REQ()
+'				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+				
+'				Dim timeStart As DateTime = System.DateTime.Now
+'				Dim sScenario As String = "" 'Scenario will be determined from the Cycle.
+	
+'				Dim mbrComd = BRApi.Finance.Metadata.GetMember(si, dimTypeId.Entity, wfInfoDetails("CMDName")).Member
+'				Dim comd As String = BRApi.Finance.Entity.Text(si, mbrComd.MemberId, 1, 0, 0)
+				
+'				Dim fileName As String = args.NameValuePairs.XFGetValue("FileName") 
+	
+'				Dim FilePath As String = $"{BRApi.Utilities.GetFileShareFolder(si, FileshareFolderTypes.FileShareRoot,Nothing)}/{FileName}"
+				
+'				Dim CivPayImportreq_DT As New DataTable("CivPayImportreqs")
+'					Using sr As New StreamReader(System.IO.File.OpenRead(filePath))
+'						CivPayImportreq_DT = Workspace.GBL.GBL_Assembly.GBL_Import_Helpers.GetCsvDataReader(si, globals, sr, ",", CivPayREQ.ColumnMaps)
+'						CivPayImportreq_DT.TableName = "CivPayImportreqs"
+						
+'					End Using				
+				
+'				'Check for errors
+'				Dim validFile As Boolean = True
+'				Dim errRow As DataRow = CivPayImportreq_DT.AsEnumerable().
+'											FirstOrDefault(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors")) )
+											
+'				If errRow IsNot Nothing Then validFile = False
 
-			Try
+'				Dim CivPayREQDataTable As New DataTable("XFC_CMD_SPLN_REQ")
+'				Dim CivPayREQDetailDataTable As New DataTable("XFC_CMD_SPLN_REQ_Details")
+'	            If validFile Then
+'					'get req_id and guid
+'					CivPayUpdateColsForDatabase(CivPayImportreq_DT)
+
+'					'In the Post process New Req function, get the ancestors of each fund code to get the appropriation, for each new appropriation fund center combination create a new unique requirement id, requirement id's need to then have a type of CivPay
+'					CivPayPostProcessNewREQ(CivPayImportreq_DT)
+
+'					'Split fullDataTable and insert into the two tables
+'					Me.CivPaySplitAndInsertIntoREQTables(CivPayImportreq_DT, CivPayREQDataTable,CivPayREQDetailDataTable)
+					
+'					Dim CivPayREQ_IDs As New List(Of String)
+'					For Each r As DataRow In CivPayImportreq_DT.Rows
+'						CivPayREQ_IDs.Add(r("REQ_ID").ToString)	
+'					Next
+'					Dim loader As New CMD_SPLN_Helper.MainClass
+'					Args.NameValuePairs.Add("req_IDs", String.Join(",", CivPayREQ_IDs))
+'					Args.NameValuePairs.Add("new_Status", "Formulate") 'It keeps the same status
+'					loader.main(si, globals, api, args)
+					
+'					'File load complete. Write file to explorer
+'					'Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf & "Output file is located in the following folder for review:" & vbCrLf & "DOCUMENTS/USERS/" & si.UserName.ToUpper
+'					Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf 
+'					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", uploadStatus)
+'					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName") ,  CivPayImportREQ_DT)
+					
+'					Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
+'				Else 'If the validation failed, write the error out.
+'					Dim sErrorLog As String = ""
+									
+'					Dim stastusMsg As String = "LOAD FAILED" & vbCrLf & fileName & " has invalid data." & vbCrLf & vbCrLf & $"To view import error(s), please take look at the column titled ""ValidationError""."
+'					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", stastusMsg)
+'					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName"),  CivPayImportREQ_DT)
+'					Return Nothing
+'				End If
+					
+					
+'				'Make and Get both Req and Req detail table
+'				'Update the columns for the database based on the file, adding addtional fields 
+'				'Split and instert the new requirements into to the proper tables
+				
+				
+				
+				
+'				Return Nothing
+'	        Catch ex As Exception
+'	            Throw New Exception("An error occurred: " & ex.Message)
+'	        End Try
+'		End Function			
+'#End Region		
 		
+'#Region "Import Civ Pay Helpers"
+
+'#Region "Call Function CivPayUpdateColsForDatabase"
+'	Public Function CivPayUpdateColsForDatabase(ByRef dt As DataTable) As StringReader
+'		'Add columns in database but not in file records
+'		dt.Columns.Add("ValidationError")
+'		dt.Columns.Add("CMD_SPLN_REQ_ID",GetType(Guid))
+'		dt.Columns.Add("REQ_ID_Type")
+'		dt.Columns.Add("REQ_ID")
+'		dt.Columns.Add("Status")
+'        ' Assuming the first line contains headers
+
+'		'Add audit columns for narrative
+'		'table updates will delete once confirmed.
+'		dt.Columns.Add("Invalid",GetType(String))
+'		dt.Columns.Add("Create_Date", GetType(DateTime))
+'		dt.Columns.Add("Create_User",GetType(String))
+'		dt.Columns.Add("Update_Date", GetType(DateTime))
+'		dt.Columns.Add("Update_User",GetType(String))
+'		dt.Columns.Add("WFScenario_Name",GetType(String))
+'		dt.Columns.Add("WFCMD_Name",GetType(String))
+'		dt.Columns.Add("WFTime_Name",GetType(String))
 		
+'		'Add columns for detail
+'		dt.Columns.Add("IC",GetType(String))
+'		dt.Columns.Add("Account",GetType(String))
+'		dt.Columns.Add("Flow",GetType(String))
+'		dt.Columns.Add("UD5",GetType(String))
+'		dt.Columns.Add("UD7",GetType(String))
+'		dt.Columns.Add("UD8",GetType(String))
+'		dt.Columns.Add("Quarter1",GetType(String))
+'		dt.Columns.Add("Quarter2",GetType(String))
+'		dt.Columns.Add("Quarter3",GetType(String))
+'		dt.Columns.Add("Quarter4",GetType(String))
+'		dt.Columns.Add("Yearly",GetType(String))
+'		dt.Columns.Add("AllowUpdate",GetType(Boolean))
+'        dt.Columns.Add("Unit_Of_Measure",GetType(String))
+'        Return Nothing
+'	End Function			
+
+
+'#End Region
+
+'#Region "Call Function CivPayPostProcessNewREQ"
+'	Public Function CivPayPostProcessNewREQ(ByRef dt As DataTable) As StringReader
+'		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+'		For Each row As DataRow In dt.Rows
+'			Dim objU1DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U1_FundCode")
+'			Dim lsAncestorListUD1 As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU1DimPK, "U1#" &  row("FundCode") & ".Ancestors.Where(MemberDim = U1_APPN)", True,,)	
+'			Dim fundCenter As String = row("FundCenter").ToString
+'			Dim APPN As String = row("APE9") = lsAncestorListUD1(0).Member.Name & "_" & row("APE9") 
+'			Dim CivPayREQIDKey As String = fundCenter & "_" & APPN
+'			Dim modFC As String = fundCenter.Replace("_General","")
+			
+'			'If 
+			
+'			Dim REQ_ID As String = CivPayGetNextREQID(CivPayREQIDKey)
+''			Dim REQ_ID As String = $"{fundCenter}_CP_{APPN}_0001"
+'			row("REQ_ID") = REQ_ID			
+'			row("CMD_SPLN_REQ_ID") = Guid.NewGuid()
+'			row("WFScenario_Name") =  wfInfoDetails("ScenarioName")
+'			row("WFTime_Name") =  wfInfoDetails("TimeName")
+'			row("WFCMD_Name") =  wfInfoDetails("CMDName")
+'			row("IC") = "None"
+'			row("Account") = "Req_Funding"	
+'			row("Flow") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_SPLN"
+'			row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_SPLN"
+'			row("UD5") = "None"
+'			row("UD7") = "None"
+'			row("UD8") = "None"			
+'			row("FundCenter") = fundCenter		
+'			row("APE9") = lsAncestorListUD1(0).Member.Name & "_" & row("APE9")         '"OMA_111011000"'row("FundCode") & "_" & row("APE9") 'CMD_SPLN_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
+'			row("REQ_ID_Type") = "CivPay" 'Temp import for Civpay
+'			row("Create_Date") = DateTime.Now
+'			row("Create_User") = si.UserName
+'			row("Update_Date") = DateTime.Now
+'			row("Update_User") = si.UserName
+'		Next
+'        Return Nothing
+'	End Function	
+	
+	
+'#Region "Call Function CivPayGetNexREQID"
+'	Dim CivPaystartingREQ_IDByFC As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
+'	Function CivPayGetNextREQID(CivPayREQIDKey As String) As String
+'		Dim CivPaycurrentREQID As Integer
+'		Dim CivPaynewREQ_ID As String
+'		Dim fundCenter As String = String.Empty
+'			'If the Key (FundsCenter & APPN combination) doesnt exist then split fund center to make the Requirement ID
+'			If CivPaystartingREQ_IDByFC.TryGetValue(CivPayREQIDKey, CivPaycurrentREQID) = False Then
+'				fundCenter = CivPayREQIDKey.Split("_"c)(0)
+			
+''			If CivPaystartingREQ_IDByFC.TryGetValue(fundCenter, CivPaycurrentREQID) Then
+'				CivPaycurrentREQID = CivPaycurrentREQID + 1
+'				Dim modifiedFC As String = fundCenter
+'				modifiedFC = modifiedFC.Replace("_General", "")
+'				If modifiedFC.Length = 3 Then 
+'					modifiedFC = modifiedFC & "xx"
+'					CivPaynewREQ_ID =  modifiedFC &"_" & CivPaycurrentREQID.ToString("D5")
+'					CivPaystartingREQ_IDByFC(fundCenter) = CivPaycurrentREQID
+'				Else
+'					CivPaynewREQ_ID = GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,fundCenter)
+'					CivPaystartingREQ_IDByFC.Add(fundCenter.Trim, CivPaynewREQ_ID.Split("_")(1))
+'				End If 
+				
+'			Else If CivPaystartingREQ_IDByFC.TryGetValue(CivPayREQIDKey, CivPaycurrentREQID) = True Then
+'					CivPaynewREQ_ID = CivPaycurrentREQID
+'			End If
+'		Return CivPaynewREQ_ID
+'	End Function
+'#End Region
+
+'#End Region
+
+'#Region "Call Function CivPaySplitAndInsertIntoREQTables to setup split into tables"
+'	Function CivPaySplitAndInsertIntoREQTables(ByRef CivPayfullDT As DataTable, ByRef CivPayREQDT As DataTable, ByRef CivPayREQDTDetail As DataTable )
+
+'		Dim sqa As New SqlDataAdapter()
+'		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+'		Dim scName As String = wfInfoDetails("ScenarioName")
+'		Dim cmd As String = wfInfoDetails("CMDName")
+'		Dim tm As String = wfInfoDetails("TimeName")
+
+'       Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+'            Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+'                sqlConn.Open()
+'                Dim sqaREQReader As New SQA_XFC_CMD_SPLN_REQ(sqlConn)
+'                Dim SqlREQ As String = $"SELECT * 
+'									FROM XFC_CMD_SPLN_REQ
+'									WHERE WFScenario_Name = '{scName}'
+'									And WFCMD_Name = '{cmd}'
+'									AND WFTime_Name = '{tm}'"
+
+'				Dim sqlparamsREQ As SqlParameter() = New SqlParameter() {}
+'                sqaREQReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, CivPayREQDT, SqlREQ, sqlparamsREQ)
+'				CivPayREQDT.PrimaryKey = New DataColumn() {CivPayREQDT.Columns("CMD_SPLN_REQ_ID")}
+
+'				'Prepare Detail	
+'				 Dim sqaREQDetailReader As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
+'				 Dim SqlREQDetail As String = $"SELECT * 
+'									FROM XFC_CMD_SPLN_REQ_Details
+'									WHERE WFScenario_Name = '{scName}'
+'									And WFCMD_Name = '{cmd}'
+'									AND WFTime_Name = '{tm}'"
+
+'				Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
+'                sqaREQDetailReader.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa, CivPayREQDTDetail, SqlREQDetail, sqlparamsREQDetails)
+'				'Define PKs to match the table
+''				REQDTDetail.PrimaryKey = New DataColumn() {
+''					 REQDTDetail.Columns("CMD_SPLN_REQ_ID"),
+''					 REQDTDetail.Columns("Start_Year"),
+''			         REQDTDetail.Columns("Unit_of_Measure"),
+''					 REQDTDetail.Columns("Account")
+''					 }
+'				'REQDTDetail.PrimaryKey = primaryKeyColumns
+		 				
+''				Me.CivPaySplitFullDataTable(CivPayfullDT, CivPayREQDT, CivPayREQDTDetail)
+
+'				sqaREQReader.Update_XFC_CMD_SPLN_REQ(CivPayREQDT, sqa)
+			 							
+'				sqaREQDetailReader.Update_XFC_CMD_SPLN_REQ_Details(CivPayREQDTDetail,sqa)
+		 								
+
+'			End Using
+'		End Using
 		
+'''BRApi.ErrorLog.LogMessage(si, "setupXFC_CMD_SPLN_REQ_Details. 1" & detailDT.Columns(0).ColumnName)		
+       
+'	End Function
+
+'	#Region"Call Function CivPaySplitFullDataTable to Split dataset"
+'	Public Function CivPaySplitFullDataTable (ByRef CivPayfullDT As DataTable, ByRef CivPayREQDT As DataTable, ByRef CivPayREQDTDetail As DataTable) As Object
+'		' Split and translate data per row
 		
+'		For Each row As DataRow In CivPayfullDT.Rows
+	   
+'			'Handle CivPayREQDT translation and insertion/update
+'			Dim REQExists As Boolean = False
+'			Dim existingREQ_ID As String
+'			Dim existingCMD_SPLN_REQ_ID As String
+'			Dim MappingForREQ As New Dictionary(Of String, String)
+'			MappingForREQ = GetMappingForREQ()
+''		    Dim existingRowREQDT As DataRow = REQDT.Rows.Find(row("CMD_SPLN_REQ_ID")) '***DEV NOTE: TO DO this will have to be modified to match on other fields
+			    
+''			If existingRowREQDT IsNot Nothing Then
+''				REQExists = True
+''				existingCMD_SPLN_REQ_ID = existingRowREQDT("CMD_SPLN_REQ_ID")
+''				existingREQ_ID = existingRowREQDT("REQ_ID")
+''			End If
+		      
+''		    ' Create a new row
+''	        Dim newRowREQDT As DataRow = REQDT.NewRow()
+			
+''	        For Each fullCol As KeyValuePair (Of String, String) In MappingForREQ
+''				If REQDT.Columns(fullCol.Value).DataType Is GetType(DateTime) Then
+''                    Dim tempDate As DateTime
+''                    If DateTime.TryParse(row(fullCol.Key), tempDate) Then
+''                        newRowREQDT(MappingForREQ(fullCol.Key)) = row(fullCol.Key)
+''                    Else
+''                        newRowREQDT(MappingForREQ(fullCol.Key)) = DBNull.Value
+''                    End If
+''                Else
+''					newRowREQDT(MappingForREQ(fullCol.Key)) = row(fullCol.Key)
+''				End If 
+
+''	        Next
+
+''			'If it is an existing row we will keep the original REC_ID. All the data will be from the file
+''			If REQExists Then
+''				 Me.UpdateExistingREQIDs(newRowREQDT, existingCMD_SPLN_REQ_ID, existingREQ_ID)					 
+''			End If
+		    
+''			REQDT.Rows.Add(newRowREQDT)
+
+''	        ' Create a new row
+''			Dim MappingForREQDetailsObligation As New Dictionary(Of String, String)
+''			MappingForREQDetailsObligation = GetMappingForREQDetailsObligation()
+''	        Dim newRowREQDTDetailObligation As DataRow = REQDTDetail.NewRow()
+''	        For Each fullCol As String In GetMappingForREQDetailsObligation.Keys
+''	            newRowREQDTDetailObligation(GetMappingForREQDetailsObligation(fullCol)) = row(fullCol)
+''	        Next
+''			'Map funding to the regular FYDEP
+	
+''			newRowREQDTDetailObligation("Account") = "Obligations"
+''			newRowREQDTDetailObligation("UNIT_OF_MEASURE") = "Funding"
+''			newRowREQDTDetailObligation("Quarter1") = convert.ToInt32(row("OBL_M1")) + convert.ToInt32(row("OBL_M2")) + convert.ToInt32(row("OBL_M3"))
+''			newRowREQDTDetailObligation("Quarter2") = convert.ToInt32(row("OBL_M4")) + convert.ToInt32(row("OBL_M5")) + convert.ToInt32(row("OBL_M6"))
+''			newRowREQDTDetailObligation("Quarter3") = convert.ToInt32(row("OBL_M7")) + convert.ToInt32(row("OBL_M8")) + convert.ToInt32(row("OBL_M9"))
+''			newRowREQDTDetailObligation("Quarter4") = convert.ToInt32(row("OBL_M10")) + convert.ToInt32(row("OBL_M11")) + convert.ToInt32(row("OBL_M12"))
+''			If REQExists Then
+''				Me.UpdateExistingREQIDs(newRowREQDTDetailObligation, existingCMD_SPLN_REQ_ID, existingREQ_ID)	 				 
+''			End If
+''			REQDTDetail.Rows.Add(newRowREQDTDetailObligation)
+		   
+			
+''			' Handle REQDTDetail Items 
+
+''			Dim MappingForREQDetailsCommitment As New Dictionary(Of String, String)
+''			MappingForREQDetailsCommitment = GetMappingForREQDetailsCommitment()
+''	        ' Create a new row
+''	        Dim newRowREQDTDetailCommitment As DataRow = REQDTDetail.NewRow()
+''	        For Each fullCol As String In MappingForREQDetailsCommitment.Keys
+''	            newRowREQDTDetailCommitment(MappingForREQDetailsCommitment(fullCol)) = row(fullCol)
+''	        Next
 		
-				Return Nothing
-	        Catch ex As Exception
-	            Throw New Exception("An error occurred: " & ex.Message)
-	        End Try
-		End Function			
-#End Region		
-		
-		
+''			newRowREQDTDetailCommitment("Account") = "Commitments"
+''			newRowREQDTDetailCommitment("UNIT_OF_MEASURE") = "Funding"
+''			newRowREQDTDetailCommitment("Quarter1") = convert.ToInt32(row("COM_M1")) + convert.ToInt32(row("COM_M2")) + convert.ToInt32(row("COM_M3"))
+''			newRowREQDTDetailCommitment("Quarter2") = convert.ToInt32(row("COM_M4")) + convert.ToInt32(row("COM_M5")) + convert.ToInt32(row("COM_M6"))
+''			newRowREQDTDetailCommitment("Quarter3") = convert.ToInt32(row("COM_M7")) + convert.ToInt32(row("COM_M8")) + convert.ToInt32(row("COM_M9"))
+''			newRowREQDTDetailCommitment("Quarter4") = convert.ToInt32(row("COM_M10")) + convert.ToInt32(row("COM_M11")) + convert.ToInt32(row("COM_M12"))
+			
+''		    If REQExists Then
+''				Me.UpdateExistingREQIDs(newRowREQDTDetailCommitment, existingCMD_SPLN_REQ_ID, existingREQ_ID)	 
+''			End If
+''			REQDTDetail.Rows.Add(newRowREQDTDetailCommitment)
+			
+''			If CheckComCarryover(row) Then 
+
+''				Dim MappingForREQDetailsCommitmentCarryover As New Dictionary(Of String, String)
+''				MappingForREQDetailsCommitmentCarryover = GetMappingForREQDetailsCarryoverCommitment()
+''		        ' Create a new row
+''		        Dim newRowREQDTDetailCommitmentCarryover As DataRow = REQDTDetail.NewRow()
+''		        For Each fullCol As String In MappingForREQDetailsCommitmentCarryover.Keys
+''		            newRowREQDTDetailCommitmentCarryover(MappingForREQDetailsCommitmentCarryover(fullCol)) = row(fullCol)
+''		        Next
+
+''				newRowREQDTDetailCommitmentCarryover("Account") = "Commitments"
+''				newRowREQDTDetailCommitmentCarryover("UNIT_OF_MEASURE") = "Funding"
+''				newRowREQDTDetailCommitmentCarryover("Fiscal_Year") = row("Cycle") + 1
+'''brapi.ErrorLog.LogMessage(si,"CM: " & row("Cycle") & " - " & row("Cycle") + 1)
+''				newRowREQDTDetailCommitmentCarryover("Yearly") = row("COM_Carryover")
+				
+''			    If REQExists Then
+''					Me.UpdateExistingREQIDs(newRowREQDTDetailCommitmentCarryover, existingCMD_SPLN_REQ_ID, existingREQ_ID)	 
+''				End If
+''				REQDTDetail.Rows.Add(newRowREQDTDetailCommitmentCarryover)
+''			End If 
+			
+			
+''			If CheckOblCarryover(row) Then
+'''brapi.ErrorLog.LogMessage(si,"inside Oblig Carryover if")
+''				Dim MappingForREQDetailsObligationCarryover As New Dictionary(Of String, String)
+''				MappingForREQDetailsObligationCarryover = GetMappingForREQDetailsCarryoverObligation()
+''		        ' Create a new row
+''		        Dim newRowREQDTDetailObligationCarryover As DataRow = REQDTDetail.NewRow()
+''		        For Each fullCol As String In MappingForREQDetailsObligationCarryover.Keys
+''		            newRowREQDTDetailObligationCarryover(MappingForREQDetailsObligationCarryover(fullCol)) = row(fullCol)
+''		        Next
+
+''				newRowREQDTDetailObligationCarryover("Account") = "Obligations"
+''				newRowREQDTDetailObligationCarryover("UNIT_OF_MEASURE") = "Funding"
+''				newRowREQDTDetailObligationCarryover("Fiscal_Year") = row("Cycle") + 1
+''				newRowREQDTDetailObligationCarryover("Yearly") = row("OBL_Carryover")
+''			    If REQExists Then
+''					Me.UpdateExistingREQIDs(newRowREQDTDetailObligationCarryover, existingCMD_SPLN_REQ_ID, existingREQ_ID)	 
+''				End If
+''				REQDTDetail.Rows.Add(newRowREQDTDetailObligationCarryover)
+''			End If 
+
+			
+
+			
+''			' Handle REQDTDetail Quantity
+					
+			
+			
+'		Next
+'''BRApi.ErrorLog.LogMessage(si,"In Split* 7")
+
+'	End Function
+	
+''	Public Sub UpdateExistingREQIDs(ByRef dr As DataRow, ByVal existingCMD_SPLN_REQ_ID As String, ByVal existingREQ_ID As String )
+''		dr("CMD_SPLN_REQ_ID") = existingCMD_SPLN_REQ_ID
+''		dr("REQ_ID") = existingREQ_ID
+''	End Sub
+'#End Region
+
+
+'#End Region
+
+'#End Region
 		
 		
 		
@@ -225,7 +614,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		For Each row As DataRow In dt.Rows
 'brapi.ErrorLog.LogMessage(si,"Hit Post Process 1")			
 			Dim objU1DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U1_FundCode")
+			Dim objU6DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U6_CommitItem")
+brapi.ErrorLog.LogMessage(si,"ObjectClass = " & row("ObjectClass"))
 			Dim lsAncestorListUD1 As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU1DimPK, "U1#" &  row("FundCode") & ".Ancestors.Where(MemberDim = U1_APPN)", True,,)	
+			Dim lsAncestorListUD6 As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU6DimPK, "U6#" &  row("ObjectClass") & ".Ancestors.Where(MemberDim = U6_CostCat)", True,,)	
 			Dim fundCenter As String = row("FundCenter").ToString
 			'If 
 			Dim REQ_D As String = GetNextREQID(fundCenter)
@@ -243,8 +635,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			row("UD8") = "None"			
 			row("FundCenter") = fundCenter		
 'brapi.ErrorLog.LogMessage(si,"lsAncestorListUD1=" & lsAncestorListUD1(0).Member.Name)
-			row("APE9") =   lsAncestorListUD1(0).Member.Name & "_" & row("APE9")         '"OMA_111011000"'row("FundCode") & "_" & row("APE9") 'CMD_SPLN_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
-			row("REQ_ID_Type") = "Requirement"
+			row("APE9") =   lsAncestorListUD1(0).Member.Name & "_" & row("APE9") '"OMA_111011000"'row("FundCode") & "_" & row("APE9") 'CMD_SPLN_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
+			
+brapi.ErrorLog.LogMessage(si,"ancestors = " & lsAncestorListUD6(0).Member.Name)
+			If lsAncestorListUD6(0).Member.Name = "Pay_Benefits" Then
+				row("REQ_ID_Type") = "CivPay" 'Temp import for Civpay
+			Else
+				row("REQ_ID_Type") = "Requirement"
+			End If
 'row("REQ_ID_Type") = "CivPay" 'Temp import for Civpay
 'row("REQ_ID_Type") = "Withhold" 'Temp import for Withhold
 			row("Create_Date") = DateTime.Now

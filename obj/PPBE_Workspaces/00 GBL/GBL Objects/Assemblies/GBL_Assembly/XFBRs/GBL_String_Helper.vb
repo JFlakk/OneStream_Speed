@@ -535,13 +535,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 					rebuildparams = $"{app_module}_rebuildparams_Other"
 				End If
 
+'Brapi.ErrorLog.LogMessage(si,"RebuildParams" & currRebuildparams)
 				Dim prevRebuildParams As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, "")
 				Dim needsRebuild As Boolean = Not String.Equals(prevRebuildParams, currRebuildparams, StringComparison.Ordinal)
-
+'Brapi.ErrorLog.LogMessage(si,"PREVRebuildParams" & prevRebuildParams)
 				Dim dt As New DataTable 
 			'If String.IsNullOrEmpty(prevRebuildParams)
 				If needsRebuild Then
-					Brapi.ErrorLog.LogMessage(si,"In needs rebuild")
+'Brapi.ErrorLog.LogMessage(si,"In needs rebuild")
 					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, cacheCat, rebuildparams, currRebuildparams)
 					If cvName.XFContainsIgnoreCase("cPROBE") And Not app_module.XFContainsIgnoreCase("cPROBE")
 						dt = GetFDXcPROBESrcData(cvName,cmd,appn)
@@ -716,13 +717,13 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			If cvName.XFEqualsIgnoreCase("GBL_cPROBE_FDX_CV")
 				NameValuePairs.Add("ML_GBL_APPN",appn)
 			End If
-			Brapi.ErrorLog.LogMessage(si,"Scenario" & scenFilter)
-			Brapi.ErrorLog.LogMessage(si,"timeFilter" & timeFilter)
+'Brapi.ErrorLog.LogMessage(si,"Scenario" & scenFilter)
+'Brapi.ErrorLog.LogMessage(si,"timeFilter" & timeFilter)
 			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
 
 			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 8, False)
 If dt Is Nothing
-			BRAPI.ErrorLog.LogMessage(si,$"Hit FDX {EntFilter} - {cvName}")
+'BRAPI.ErrorLog.LogMessage(si,$"Hit FDX {EntFilter} - {cvName}")
 		End If
 			Return dt
 		End Function
@@ -741,13 +742,13 @@ If dt Is Nothing
 			End If
 			NameValuePairs.Add("ML_GBL_Scenario",scenFilter)
 			NameValuePairs.Add("ML_GBL_AllYears","2026")
-			BRAPI.ErrorLog.LogMessage(si,$"Hit Scen: {scenFilter}")
+'BRAPI.ErrorLog.LogMessage(si,$"Hit Scen: {scenFilter}")
 			
 			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
 
 			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}",String.Empty,String.Empty, timeFilter, nvbParams, False, True, True, String.Empty, 8, False)
 If dt Is Nothing
-			BRAPI.ErrorLog.LogMessage(si,$"Hit FDX {EntFilter} - {cvName}")
+'BRAPI.ErrorLog.LogMessage(si,$"Hit FDX {EntFilter} - {cvName}")
 		End If
 			Return dt
 		End Function
@@ -898,7 +899,7 @@ Public Function GetcPROBEFDXAPPNRows() As String
 			FilterString = $",[U1#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
 			
 			Dim bufferFilter = $"FilterMembers(REMOVENODATA({commDims}){FilterString})"
-			BRAPI.ErrorLog.LogMessage(si,bufferFilter)
+'BRAPI.ErrorLog.LogMessage(si,bufferFilter)
 			globals.SetStringValue("Filter", bufferFilter)
 			
 			GetDataBuffer(si,globals,api,args)
@@ -932,7 +933,7 @@ Public Function GetcPROBEFDXAPPNRows() As String
 					output &= item.Script & ","
 				Next
 			End If
-			BRAPI.ErrorLog.LogMessage(si,$"Output: {output}")
+'BRAPI.ErrorLog.LogMessage(si,$"Output: {output}")
 			Return output
 			
 		End Function

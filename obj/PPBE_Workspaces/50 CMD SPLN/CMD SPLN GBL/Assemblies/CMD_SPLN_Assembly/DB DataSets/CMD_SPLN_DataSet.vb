@@ -573,7 +573,7 @@ Public Function REQListByEntityAndStatus() As Object
 					FC = FC.Replace("_General","").Trim
 					Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " &  FC & ")"
 					Dim cbMembers As List (Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_" & sCube, mbrScrpt, True  )
-					'Brapi.ErrorLog.LogMessage(si, "FC:" & FC)
+'Brapi.ErrorLog.LogMessage(si, "FC:" & FC)
 	'
 					If Not cbMembers.Count > 0 Then
 						Return dt
@@ -589,8 +589,11 @@ Public Function REQListByEntityAndStatus() As Object
 					Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, FC.Replace("_General",""))	
 					
 					Dim isBase As Boolean = BRApi.Finance.Members.IsBase(si,entityPk, nAncestorID, nBaseID)
-					'Brapi.ErrorLog.LogMessage(si,"Here 2.4")	
-					If Not isBase Then FC = FC & ".Base"
+'Brapi.ErrorLog.LogMessage(si,"Here 2.4")	
+					If Not isBase Then
+						FCMulti.Append($"'{FC}'")
+						FC = FC & ".Base"
+					End If
 		
 					Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#" & FC,True)
 						For Each FundCenter As MemberInfo In LFundCenters
@@ -599,7 +602,7 @@ Public Function REQListByEntityAndStatus() As Object
 							End If
 							FCMulti.Append($"'{FundCenter.Member.Name}'")
 						Next
-						'Brapi.ErrorLog.LogMessage(si,"Here 2.6")
+'Brapi.ErrorLog.LogMessage(si,"Here 2.6")
 					'--------- get Entity Text3 --------- 
 					Dim sFC As String = FC.Replace(".Base","")
 					Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sFC).Member
@@ -617,8 +620,8 @@ Public Function REQListByEntityAndStatus() As Object
 					Dim newWFLevel As String = "L" & newText3Num
 					Dim prevWFLevel As String = "L" & (icurrText3Num + 1)
 					Dim curWFLevel As String = entityText3
-								'Brapi.ErrorLog.LogMessage(si,"Text3" & curWFLevel)	
-				'Brapi.ErrorLog.LogMessage(si,"Here 3")
+'Brapi.ErrorLog.LogMessage(si,"Text3" & curWFLevel)	
+'Brapi.ErrorLog.LogMessage(si,"Here 3")
 				
 					'========================================================================== Define Targeted Status based on WF and Dashboard's FC selection ==========================================================================
 					
@@ -660,7 +663,7 @@ Public Function REQListByEntityAndStatus() As Object
 						
 						
 						Case wfProfileName.XFContainsIgnoreCase("(CMD SPLN)")
-						'	Brapi.ErrorLog.LogMessage(si,"HERE 4")
+'	Brapi.ErrorLog.LogMessage(si,"HERE 4")
 							uniqueStatuses.Add($"'{curWFLevel}_Formulate_SPLN'")
 							uniqueStatuses.Add($"'{curWFLevel}_Validate_SPLN'")
 							uniqueStatuses.Add($"'{curWFLevel}_Prioritize_SPLN'")
@@ -914,7 +917,7 @@ Next
 		Public Function GetPackagesForSubmission() As DataTable
 			Try
 
-	brapi.ErrorLog.LogMessage(si,"GetPackagesForSubmission")
+'brapi.ErrorLog.LogMessage(si,"GetPackagesForSubmission")
 			Dim dt As New DataTable()
 			dt.TableName = "PackageForSubmission"
 			Dim scenFilter As String = String.empty
@@ -1171,7 +1174,7 @@ Public Function GetReqStatus() As Object
 				End If 
 				Dim DimPK As DimPk = brapi.Finance.Dim.GetDimPk(si, "E_" & wfCube) 
 				Dim bHasChildren As Boolean = Nothing
-				'Brapi.ErrorLog.LogMessage(si, "Entity CMJM = " & sEntity)
+'Brapi.ErrorLog.LogMessage(si, "Entity CMJM = " & sEntity)
 				
 				
 				
@@ -1180,7 +1183,7 @@ Public Function GetReqStatus() As Object
 				End If
 				Dim x As Integer = InStr(wfProfileName, ".")
 				Dim sProfileName As String = wfProfileName.Substring(x + 0)	
-				'Brapi.ErrorLog.LogMessage(si, "Entity" & sEntityGeneral)
+'Brapi.ErrorLog.LogMessage(si, "Entity" & sEntityGeneral)
 						'--------- Get Entity Text3 --------- 							
 				Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sEntity).Member
 				Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
@@ -1283,7 +1286,7 @@ Public Function GetDemoteStatusList() As Object
 				End If 
 				Dim DimPK As DimPk = brapi.Finance.Dim.GetDimPk(si, "E_" & wfCube) 
 				Dim bHasChildren As Boolean = Nothing
-				'Brapi.ErrorLog.LogMessage(si, "Entity CMJM = " & sEntity)
+'Brapi.ErrorLog.LogMessage(si, "Entity CMJM = " & sEntity)
 				
 				If  Not String.IsNullOrWhiteSpace(sEntity) Then
 					bHasChildren = brapi.Finance.Members.HasChildren(si,DimPk,brapi.Finance.Members.GetMemberId(si,dimtype.Entity.Id,sEntity))
@@ -1404,7 +1407,7 @@ Public Function FullREQList() As DataTable
 
 								Dim memberid As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sFundCenter)					
 								Dim parent As Boolean = BRApi.Finance.Members.HasChildren(si, pk, memberid)	
-								'Brapi.ErrorLog.LogMessage(si, "parent" & parent.ToString())	
+'Brapi.ErrorLog.LogMessage(si, "parent" & parent.ToString())	
 								If parent Then sFundCenter = sFundCenter & "_General"
 								
 								Dim SQL As String

@@ -57,6 +57,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 						Return Me.GetEntFlow()
 					Case "GetNewTGTDist_EntAcctList"
 						Return Me.GetNewTGTDist_EntAcctList()
+					Case "ShowHide"						
+						Return Me.ShowHide()							
+					Case "ShowHideLabel"
+						Return Me.ShowHideLabel()	
+					Case "ProcCtrlLblMsg"
+						Return Me.ProcCtrlLblMsg()	
+					Case "GetEntityList"
+						Return Me.GetEntityList()
 				End Select				
 
 #Region "GetProfileEntity"
@@ -123,16 +131,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				End If
 #End Region
 
-
 #Region "TargetLockCheck"
 				If args.FunctionName.XFEqualsIgnoreCase("TargetLockCheck") Then
 					Return Me.TargetLockCheck(si,api,args)
 				End If
 #End Region
-
-
-
-
 
 '++++++++++
 				
@@ -267,8 +270,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 					Return Me.DisplayWFComponentsCMDDST(si, globals, api, args)
 				End If
 #End Region
-
-				
+	
 #Region "Get Validation Status"
 			
 			If args.FunctionName.XFEqualsIgnoreCase("GetValidationStatusMsg") Then
@@ -294,7 +296,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				Dim mbrInfo As MemberInfo = BRApi.Finance.Members.GetMemberInfo(si, dimType.Entity.Id, Entity)
 				Entity = BRApi.Finance.Entity.Text(si, mbrInfo.Member.MemberId, 1, DimConstants.Unknown, DimConstants.Unknown)
 			End If
-			BRAPI.ErrorLog.LogMessage(si,"Hit {Entity}")
+'BRAPI.ErrorLog.LogMessage(si,"Hit {Entity}")
 			Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,Entity,wfInfoDetails("TimeName"))
 			If Val_Approach("CMD_Val_Pay_NonPay_Approach") = "Yes"
 				If PayNonPayType = "cPROBEBO5"
@@ -326,14 +328,22 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			Else
 				entityLevel = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Entity)
 			End If
+			BRAPI.Errorlog.LogMessage(si,"Hit: " & entityLevel)
+			If entityLevel = String.Empty
+				entityLevel = "L2"
+			End If
 			If flowType = "Control Target"
 				Return $"A#Target:F#{entityLevel}_Ctrl_Intermediate:Name(Control Target)"
+			ElseIf flowType = "Dist Balance"
+				Return $"A#TGT_Target_WH:F#{entityLevel}_Dist_Balance:Name(Total WH + Distributed)"
 			ElseIf flowType = "Total Out"
 				Return $"A#TGT_Target_WH:F#{entityLevel}_Dist_Out:Name(Total WH + Distributed)"
 			ElseIf flowType = "Control Target Out"
 				Return $"A#Target:F#{entityLevel}_Dist_Intermediate_Out:Name(Total Distributed)"
 			ElseIf flowType = "WithHold"
 				Return $"A#TGT_WH:F#{entityLevel}_Dist_Final:Name(Total Withhold)"
+			ElseIf flowType = "Net Intermediate Dist"
+				Return $"A#Target:F#{entityLevel}_Net_Intermediate:Name(Net Intermediate)"
 			End If
 			
 			
@@ -357,15 +367,19 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 					Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk, Ent.Member.MemberId)
 					Select Case EntityLevel
 				    	Case "L2"
-							entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L2_Ctrl_Intermediate:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
-							entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L2_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:2")
+							entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L2_Dist_Balance:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
+							entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L2_Ctrl_Intermediate:O#Top:C#Aggregated:A#Target",$"E#{Ent.Member.Name}:2")
+							entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L2_Dist_Final:O#AdjInput:C#Local:A#Target",$"E#{Ent.Member.Name}:3")
+							entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L2_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:4")
 						Case "L3"
 							If ent.Member.Name = Entity Then
 								If Ent_Base = True
 									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Dist_Final:O#Forms:C#Aggregated",$"E#{Ent.Member.Name}:F#L3_Dist_Final")
 								Else
-									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Ctrl_Intermediate:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
-									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:2")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Dist_Balance:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Ctrl_Intermediate:O#Top:C#Aggregated:A#Target",$"E#{Ent.Member.Name}:2")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Dist_Final:O#AdjInput:C#Local:A#Target",$"E#{Ent.Member.Name}:3")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L3_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:4")
 								End If
 							Else
 								If Ent_Base = True
@@ -380,8 +394,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 								If Ent_Base = True
 									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Dist_Final:O#Forms:C#Aggregated",$"E#{Ent.Member.Name}:F#L4_Dist_Final")
 								Else
-									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Ctrl_Intermediate:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
-									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:2")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Dist_Balance:O#Top:C#Aggregated:A#TGT_Target_WH",$"E#{Ent.Member.Name}:1")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Ctrl_Intermediate:O#Top:C#Aggregated:A#Target",$"E#{Ent.Member.Name}:2")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Dist_Final:O#AdjInput:C#Local:A#Target",$"E#{Ent.Member.Name}:3")
+									entMbrFilterList.Add($"E#{Ent.Member.Name}:F#L4_Dist_Final:O#AdjInput:C#Local:A#TGT_WH",$"E#{Ent.Member.Name}:4")
 								End If
 							Else
 								If Ent_Base = True
@@ -396,7 +412,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 							End If
 					End Select
 				Next
-				BRApi.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
+'BRApi.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 				Return String.Join(",",entMbrFilterList.Select(Function(kvp) kvp.Key))
 			Else
 			End If
@@ -552,7 +568,51 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			
 		End Function
 		
-		
+		Public Function GetEntityList() As String
+			Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity","")
+			Dim sType As String = args.NameValuePairs.XFGetValue("Type","")
+			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")		
+			Dim ent_List As New List(Of MemberInfo) 
+			Dim entMbrScript As String = String.Empty
+			Dim sReturnValue As String = String.Empty
+			
+			'Return nothing if no enity is selected from the Funds Center cbx
+			If String.IsNullOrEmpty(sEntity)
+				sReturnValue = $"E#None"
+				Return sReturnValue
+			Else
+				Select Case sType
+					Case "CMD Parent"
+						Dim mbr As Member = BRApi.Finance.Members.GetMember(si, dimType.Entity.Id, sEntity)
+						Dim MbrName = BRApi.Finance.Entity.Text(si, Mbr.MemberId, 1, SharedConstants.Unknown, SharedConstants.Unknown)
+						entMbrScript = $"E#{MbrName}"
+					Case "CMD Children"
+						Dim mbr As Member = BRApi.Finance.Members.GetMember(si, dimType.Entity.Id, sEntity)
+						Dim MbrName = BRApi.Finance.Entity.Text(si, Mbr.MemberId, 1, SharedConstants.Unknown, SharedConstants.Unknown)
+						entMbrScript = $"E#{MbrName}.Children.Where(Name DoesNotContain _General)"						
+					Case "Sub CMD Parent"
+						entMbrScript = $"E#{sEntity}"
+					Case "Sub CMD Children"
+						entMbrScript = $"E#{sEntity}.Children.Where(Name DoesNotContain _General)"	
+						
+				End Select
+				
+				BRAPI.ErrorLog.LogMessage(si,$"{sType} - {entMbrScript}")
+	
+				ent_List = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, entMbrScript, True)
+				If ent_List.Count > 0 Then
+					For Each Ent As MemberInfo In ent_List
+						BRAPI.ErrorLog.LogMessage(si,$"{sReturnValue}")
+						Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Ent.Member.Name)
+						sReturnValue = $"{sReturnValue}E#{Ent.Member.Name}:O#Top:F#{entityLevel}_Dist_Balance,"
+					Next
+				End If				
+			
+				Return sReturnValue				
+			End If
+			
+		End Function
+			
 		Public Function ReturnModifyFlow() As String
 			Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity","")
 			Dim sType As String = args.NameValuePairs.XFGetValue("Type","")
@@ -688,8 +748,73 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			
 		End Function
 
+#Region "ShowHide"
+'Purpose: Any component, cv, object etc., add a case statment 
+'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
+		Public Function ShowHide() As String	
+'brapi.ErrorLog.LogMessage(si,"695")				
+			Dim sEntity = args.NameValuePairs.XFGetValue("entity")
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			Dim sComponentName As String = args.NameValuePairs.XFGetValue("ComponentName")
+			
+			'Grab workflow status (locked or unlocked)
+			Dim deArgs As New DashboardExtenderArgs
+			deArgs.FunctionName = "Check_WF_Complete_Lock"
+			Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
+		
+			If sWFStatus.XFEqualsIgnoreCase("locked") Then
+				Return "False"
+			End If
+			
+			Select Case sComponentName				
+				Case Else				
+					Return "True"
+			End Select		
+		End Function
+#End Region		
+		
+#Region "ShowHideLabel"
+'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
+		Public Function ShowHideLabel() As String				
+			Dim sEntity = args.NameValuePairs.XFGetValue("entity")		
+			
+			'Grab workflow status (locked or unlocked)
+			Dim deArgs As New DashboardExtenderArgs
+			deArgs.FunctionName = "Check_WF_Complete_Lock"
+			Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
+			
+			If sWFStatus.XFEqualsIgnoreCase("locked") Then			
+				Return "True"
+			Else	
+				Return "False"
+			End If
+		End Function
+#End Region
+
+#Region "ProcCtrlLblMsg"
+'Purpose: Any component, cv, object etc., add a case statment 
+'brapi.ErrorLog.LogMessage(si, $"sComponentName {sComponentName}")		
+		Public Function ProcCtrlLblMsg() As String	
+			Dim sEntity = args.NameValuePairs.XFGetValue("entity")
+			Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			Dim wfProfileName As String = If(wfProfileFullName.Contains("."), wfProfileFullName.Substring(wfProfileFullName.IndexOf(".") + 1).Trim().Split(" "c)(0), String.Empty)
+					
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+			Dim deArgs As New DashboardExtenderArgs
+			deArgs.FunctionName = "Check_WF_Complete_Lock"
+			Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, deArgs)
+			If sWFStatus.XFEqualsIgnoreCase("locked") Then
+				Return $"The CMD manager locked all workflow steps for {sCube}. {vbCrLf}No further work can be completed at this time."
+			End If
+		End Function
+#End Region 
+
 #Region "Constants"
-	Public BRName = "TGT_String_Helper" 
+		Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtender.GBL_Helper.MainClass
+		Public BRName = "TGT_String_Helper" 
 #End Region
 	End Class
 End Namespace

@@ -22,7 +22,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     Public Class SQA_XFC_CMD_PGM_REQ_Priority
         Private ReadOnly _connection As SqlConnection
 
-        Public Sub New(ByVal si As SessionInfo, ByVal connection As SqlConnection)
+        Public Sub New(connection As SqlConnection)
             _connection = connection
         End Sub
 
@@ -53,7 +53,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Cat_5_Weighted_Score, Cat_6_Weighted_Score, Cat_7_Weighted_Score, Cat_8_Weighted_Score,
                         Cat_9_Weighted_Score, Cat_10_Weighted_Score, Cat_11_Weighted_Score, Cat_12_Weighted_Score,
                         Cat_13_Weighted_Score, Cat_14_Weighted_Score, Cat_15_Weighted_Score, Weighted_Score,
-                        Auto_Rank, Rank_Override, Create_Date, Create_User, Update_Date, Update_User, Title
+                        Auto_Rank, Rank_Override, Create_Date, Create_User, Update_Date, Update_User, REQ_ID
                     ) VALUES (
                         @CMD_PGM_REQ_ID, @WFScenario_Name, @WFCMD_Name, @WFTime_Name, @Entity, @Review_Entity,
                         @Cat_1_Score, @Cat_2_Score, @Cat_3_Score, @Cat_4_Score, @Cat_5_Score, @Cat_6_Score, @Cat_7_Score,
@@ -63,7 +63,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         @Cat_5_Weighted_Score, @Cat_6_Weighted_Score, @Cat_7_Weighted_Score, @Cat_8_Weighted_Score,
                         @Cat_9_Weighted_Score, @Cat_10_Weighted_Score, @Cat_11_Weighted_Score, @Cat_12_Weighted_Score,
                         @Cat_13_Weighted_Score, @Cat_14_Weighted_Score, @Cat_15_Weighted_Score, @Weighted_Score,
-                        @Auto_Rank, @Rank_Override, @Create_Date, @Create_User, @Update_Date, @Update_User, @Title
+                        @Auto_Rank, @Rank_Override, @Create_Date, @Create_User, @Update_Date, @Update_User, @REQ_ID
                     );"
 
                 sqa.InsertCommand = New SqlCommand(insertQuery, _connection, transaction)
@@ -111,7 +111,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Rank_Override = @Rank_Override,
                         Update_Date = @Update_Date,
                         Update_User = @Update_User,
-                        Title = @Title
+						REQ_ID = @REQ_ID
+                        
                     WHERE CMD_PGM_REQ_ID = @CMD_PGM_REQ_ID AND Entity = @Entity AND Review_Entity = @Review_Entity;"
 
                 sqa.UpdateCommand = New SqlCommand(updateQuery, _connection, transaction)
@@ -206,7 +207,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 .Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User"
                 .Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date"
                 .Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User"
-                .Add("@Title", SqlDbType.NVarChar, 1000).SourceColumn = "Title"
+				.Add("@REQ_ID", SqlDbType.NVarChar, 100).SourceColumn = "REQ_ID"
+                
             End With
 
             If isUpdate Then

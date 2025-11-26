@@ -6,6 +6,7 @@ Imports System.Globalization
 Imports System.IO
 Imports System.Linq
 Imports Microsoft.VisualBasic
+Imports Microsoft.Data.SqlClient
 Imports OneStream.Finance.Database
 Imports OneStream.Finance.Engine
 Imports OneStream.Shared.Common
@@ -68,7 +69,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				For Each acct As String In acctList
 					Dim memberScript As String = $"cb#{wfInfoDetails("CMDName")}:E#{CMD}:C#Local:S#RMW_Cycle_Config_Annual:T#{Year}:V#Periodic:A#{acct}:F#None:O#AdjInput:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 					Dim Val_Approach As Integer = BRApi.Finance.Data.GetDataCellUsingMemberScript(si,wfInfoDetails("CMDName"), memberScript).DataCellEx.DataCell.CellAmount
-					BRAPI.ErrorLog.LogMessage(si,$"{CMD} - {acct}|{Val_Approach.XFToString}")
 					If cmd_Validations.XFGetValue($"{acct}|{Val_Approach.XFToString}","NA") <> "NA"
 						cmd_ValidationApproaches.Add(acct,cmd_Validations.XFGetValue($"{acct}|{Val_Approach.XFToString()}","NA"))
 					End If
@@ -153,6 +153,18 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Return level
 			
 		End Function	
+		
+		Public Shared Function GetCMD_L2FC(ByRef si As SessionInfo, sEntity As String) As String
+			Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sEntity).Member
+
+			Dim entityText1 As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 1, Dimconstants.Unknown,DimConstants.Unknown)
+			If Not String.IsNullOrWhiteSpace(entityText1) AndAlso entityText1.StartsWith("A") Then
+				Return entityText1
+			Else
+				Return "None"
+			End If
+			
+		End Function	
 	
 		Public Shared Function GetDistinctValues(ByVal sourceTable As DataTable, ByVal columnName As String) As List(Of Object)
 		    
@@ -169,133 +181,122 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		    Return distinctValues
 		    
 		End Function
-
-'Public Function Send_Status_Change_Email(Optional ByVal REQ As String =  "", Optional ByVal Entity As String =  "")
-'		'Usage: {UFR_SolutionHelper}{SendStkhldrEmail}{FundCenter=[|!prompt_cbx_UFRPRO_AAAAAA_0CaAa_UserFundCenters__Shared!|],UFR=[|!prompt_cbx_UFRPRO_AAAAAA_UFRListByEntity__Shared!|],StakeHolderEmails=[|!prompt_cbx_UFRPRO_AAAAAA_0CaAa_StakeholderEmailList__Shared!|]}
-'		Try
-'			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
-'			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-'			'Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey) & "M12"
-'			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-'			Dim sFundCenter As String = args.NameValuePairs.XFGetValue("reqEntity", Entity)
-'			Dim sREQid As String = args.NameValuePairs.XFGetValue("reqFlow", REQ)	
-'			Dim userName As String = si.UserName
-
-'			'Title Member Script
-'			Dim REQEntityTitleMemberScript As String = "Cb#" & sCube & ":E#" & sFundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Title:F#" & sREQid & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-'            Dim sREQTitle As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQEntityTitleMemberScript).DataCellEx.DataCellAnnotation
-			
-'			'Status Member Script
-'			Dim REQStatusMemberScript As String = "Cb#" & sCube & ":E#" & sFundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Rqmt_Status:F#" & sREQid & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-'            Dim sREQStatus As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQStatusMemberScript).DataCellEx.DataCellAnnotation
-			
-'			'Creator Name Member Script
-'			Dim REQEntityCreatorNameMemberScript As String = "Cb#" & sCube & ":E#" & sFundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Creator_Name:F#" & sREQid & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-'            Dim sREQCreatorName As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQEntityCreatorNameMemberScript).DataCellEx.DataCellAnnotation
-			
-'			'Creation Data Member Script
-'			Dim REQEntityCreationDateMemberScript As String = "Cb#" & sCube & ":E#" & sFundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Creation_Date_Time:F#" & sREQid & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-'            Dim sREQCreationDate As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQEntityCreationDateMemberScript).DataCellEx.DataCellAnnotation	
-
-'			'Creation Data Member Script
-'			Dim REQEmailNotificationMemberScript As String = "Cb#" & sCube & ":E#" & sFundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Notification_Email_List:F#" & sREQid & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-'            Dim REQStatusEmailList As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, REQEmailNotificationMemberScript).DataCellEx.DataCellAnnotation	
-''Brapi.ErrorLog.LogMessage(si, "REQStatusEmailList: " & REQStatusEmailList)
-
-'			'Variables to set up email functionality 
-'			Dim EmailConnectorStr As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "Var_Email_Connector_String")
-'			Dim BodyDisclaimerBody As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "varEmailDisclaimer")
-'			Dim StatusChangeEmails  As New List(Of String) 
-'			StatusChangeEmails.AddRange(REQStatusEmailList.Split(","))
-'			'//Status Change Email\\
-'			Dim statusChangeSubject As String = "Requirement Status Change"
-'			'Build Body
-'			Dim statusChangeBody As String = "A Requirement Request for Fund Center: " & sFundCenter & " with Requirement Title: "  & sREQid & " - " & sREQTitle &  " has changed status to '" & sREQStatus & "' " & vbCrLf & "Submitted by: " & userName & " - " & sREQCreationDate  & vbCrLf & vbCrLf & vbCrLf & vbCrLf & vbCrLf & BodyDisclaimerBody
-'			'Send email			
-'			If Not String.IsNullOrWhiteSpace(REQStatusEmailList) Then
-''Brapi.ErrorLog.LogMessage(si, "hits the send: " & EmailConnectorStr)
-'				BRApi.Utilities.SendMail(si, EmailConnectorStr, StatusChangeEmails, statusChangeSubject, statusChangeBody, Nothing)	
-'			End If
-'			'Executes the "SendReviewRequestEmail" function and sends an email to the resepective CMD roles within it
-'			If sREQStatus = "Ready for Financial Review" Or sREQStatus = "Ready for Validation"
-'				Me.SendReviewRequestEmail(si, globals, api, sFundCenter, sREQid, sREQTitle, sREQCreatorName, sREQCreationDate)
-'			End If			
-'		Return Nothing
-'		Catch ex As Exception
-'			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-'		End Try                       
-'	End Function
-
-'#End Region  'update here
-
-'#Region "Send Review Request Email"
-''------------------------------------------------------------------------------------------------------------
-''Creator(04/08/2024): Kenny, Connor, Fronz
-''
-''Description: Sends a request-for-review email to the CMD role that is next in the Requirements life cycle
-''
-''Usage: SendReviewRequestEmail is called from the SendStatusChangeEmail function
-'	   'SendReviewRequestEmail uses REQDataSet.GetAllUsers to return dt of user emails.			
-'	Public Function SendReviewRequestEmail(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal FundCenter As String, ByVal REQid As String, ByVal REQTitle As String, ByVal REQCreatorName As String, ByVal REQCreationDate As String ) As Object
-'		Try
-'			BRApi.Utilities.SetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity",FundCenter)
-'			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name.Split(".")(1)
-'			Dim bodyDisclaimerBody As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "varEmailDisclaimer")
-'			Dim EmailConnectorStr As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "Var_Email_Connector_String")
-'			Dim DataSetArgs As New DashboardDataSetArgs
-'			Dim requestEmailSubject As String = ""
-'			Dim requestEmailBody As String = ""
-'			Dim validatorEmailsScript As String = ""
-'			Dim validatorEmails As String = ""
-
-'			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
-'			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-'			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey) & "M12"
-			
-'			'Set args to return all user emails assigned to the resepective Fund Center & "Review Financials" security group 
-'			'Create email subject and body
-'			If wfProfileName = "Formulate Requirement" Then
-'				DataSetArgs.NameValuePairs.XFSetValue("mode","FC_RF")
-'				'requestEmailSubject = "Request for Requirement Financial Review"
-'				'requestEmailBody = "A requirement has been submitted for financial review for Fund Center: " & FundCenter & vbCrLf & " Requirement: " & REQid & " - " & REQTitle & vbCrLf & "Created: " & REQCreatorName & " - " & REQCreationDate  & vbCrLf & vbCrLf & vbCrLf & vbCrLf & vbCrLf & bodyDisclaimerBody
-'				requestEmailSubject = "Request for Requirement Validation"
-'				requestEmailBody = "A requirement has been submitted to be reviewed and validated for prioritization for Fund Center: " & FundCenter & vbCrLf & " Requirement: " & REQid & " - " & REQTitle & vbCrLf & "Created: " & REQCreatorName & " - " & REQCreationDate  & vbCrLf & vbCrLf & vbCrLf & vbCrLf & vbCrLf & bodyDisclaimerBody
-				
-'			End If
-'			'Set args to return all user emails assigned to the resepective Fund Center & "Validate Requirements" security group  (Commented out for now RMW-1283) 
-'			'Create email subject and body
-'			If wfProfileName = "Review Financials" Then
-'				validatorEmailsScript = "Cb#" & sCube & ":E#" & FundCenter & ":C#Local:S#" & sScenario & ":T#" & sREQTime & ":V#Annotation:A#REQ_Validation_Email_List:F#" & REQid & ":O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-'				validatorEmails  = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, validatorEmailsScript).DataCellEx.DataCellAnnotation
-'				requestEmailSubject = "Request for Requirement Validation"
-'				requestEmailBody = "A requirement has been submitted to be reviewed and validated for prioritization for Fund Center: " & FundCenter & vbCrLf & " Requirement: " & REQid & " - " & REQTitle & vbCrLf & "Created: " & REQCreatorName & " - " & REQCreationDate  & vbCrLf & vbCrLf & vbCrLf & vbCrLf & vbCrLf & bodyDisclaimerBody
-'			End If
-			
-'			'Call the REQDataSet and return a datetable (dt) of users' emails
-'			Dim dtReviewUserEmails  As DataTable =  BR_REQDataSet.GetAllUsers(si, globals ,api , DataSetArgs)
-'			'Create new list of users' emails from datatable
-'			Dim lReviewEmails As New List(Of String)
-'			Dim vaReviewEmails As New List(Of String)
-			
-'			For Each row As DataRow In dtReviewUserEmails.Rows
-'				lReviewEmails.Add(CStr(row("Value")))		
-'			Next
-			
-'			'Build and send email
-'			BRApi.Utilities.SendMail(si, EmailConnectorStr, lReviewEmails, requestEmailSubject, requestEmailBody, Nothing)	
-
-'			If wfProfileName = "Review Financials" Then
-'				vaReviewEmails = validatorEmails.Split(",").ToList()
-'				BRApi.Utilities.SendMail(si, EmailConnectorStr, vaReviewEmails, requestEmailSubject, requestEmailBody, Nothing)	
-'			End If
-			
-'			Return Nothing	
-'		Catch ex As Exception
-'			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-'		End Try                       
-'End Function	
 		
-'#End Region 'update here
+		Public Shared Function GetEntityLists(ByRef si As SessionInfo, rawEntList As List(Of String)) As Tuple(Of List(Of String), List(Of String), List(Of String))
+			Dim ParentEntityList As New List(Of String)
+			Dim BaseEntityList As New List(Of String)
+			Dim targetLevelForEntity As New Dictionary(Of String, Integer)
+			Dim ConsolEntityList As New List(Of String)
+			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")
+			
+			For Each entityName As String In rawEntList
+				Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, entityName)
+				Dim EntityID As Integer = BRApi.Finance.Members.GetMemberId(si, dimType.Entity.ID, entityName)
+				
+				Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk, EntityID)
+				If Not Ent_Base Then
+					If Not ParentEntityList.Contains(EntityName)
+						ParentEntityList.Add(entityName)
+					End If
+				Else
+					If Not BaseEntityList.Contains(EntityName)
+						BaseEntityList.Add(entityName)
+					End If
+				End If
+				
+				' Get the immediate parent
+				Dim parentMember As Member = BRApi.Finance.Members.GetParents(si, entDimPk, EntityID, False).FirstOrDefault()
+				If parentMember IsNot Nothing Then
+					
+					' Determine the target level based on EntityLevel
+					Dim targetLevel As Integer = 0
+					If EntityLevel = "L4" Then
+						targetLevel = 3
+					ElseIf EntityLevel = "L3" Then
+						targetLevel = 2
+					ElseIf EntityLevel = "L2" Then
+						targetLevel = 1
+					End If
+					' Track the minimum target level across all entities
+					If Not targetLevelForEntity.ContainsKey(parentMember.Name) And targetLevel < targetLevelForEntity.GetValueOrDefault(parentMember.Name, Integer.MaxValue) Then
+						' Remove entities with higher target levels
+						If targetLevel < targetLevelForEntity.Values.DefaultIfEmpty(Integer.MaxValue).Min() Then
+							targetLevelForEntity.Clear()
+						End If
+						
+						targetLevelForEntity.Add(parentMember.Name, targetLevel)
+					End If
+
+				End If
+			Next
+			
+			If ParentEntityList.Count = 0
+				ParentEntityList.Add("None")
+			End If
+			
+			If BaseEntityList.Count = 0
+				BaseEntityList.Add("None")
+			End If
+			
+			ConsolEntityList = targetLevelForEntity.Keys.ToList()
+			If ConsolEntityList.Count = 0
+				ConsolEntityList.Add("None")
+			End If
+			
+			Return Tuple.Create(ParentEntityList, BaseEntityList,ConsolEntityList)
+		End Function		
+#Region "Set Parameter"
+		'Set a parameter with passed in value using selectionChangedTaskResult
+		Public Shared Function SetParameter(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal dKeyVal As Dictionary(Of String, String), Optional ByVal selectionChangedTaskResult As XFSelectionChangedTaskResult = Nothing )As Object				
+			If selectionChangedTaskResult Is Nothing Then
+				selectionChangedTaskResult = New XFSelectionChangedTaskResult()
+			End If
+			
+			selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True			
+			selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
+			
+			For Each KeyVal As KeyValuePair(Of String, String) In dKeyVal
+				If selectionChangedTaskResult.ModifiedCustomSubstVars.ContainsKey(KeyVal.Key)
+					selectionChangedTaskResult.ModifiedCustomSubstVars.XFSetValue(KeyVal.Key, KeyVal.Value)
+				Else
+					selectionChangedTaskResult.ModifiedCustomSubstVars.Add(KeyVal.Key, KeyVal.Value)
+				End If
+			
+				selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard.Add(KeyVal.Key, KeyVal.Value)			
+			Next
+			
+			Return selectionChangedTaskResult
+		End Function
+#End Region	
+		
+		Public Shared Function ClearSelections(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs, ByVal ParamsToClear As String)As Object
+			Dim objDictionary = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues
+			For i As Integer = 0 To objDictionary.Count -1
+				'Clear only prompts that are passed in as parameters
+				Dim thisKey = objDictionary.ElementAt(i).Key
+				Dim thisValue = objDictionary.ElementAt(i).Value
+				If(ParamsToClear.XFContainsIgnoreCase(thisKey)) Then
+					objDictionary.Remove(thisKey)
+					objDictionary.Add(thisKey,"")
+					
+				End If 
+			Next
+			
+			Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+			selectionChangedTaskResult.IsOK = True
+			selectionChangedTaskResult.ShowMessageBox = False
+			selectionChangedTaskResult.Message = ""
+			selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = False
+			selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = Nothing 'objXFSelectionChangedUIActionInfo
+			selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
+			selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
+			selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True
+			selectionChangedTaskResult.ModifiedCustomSubstVars = objDictionary
+			selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
+			selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = objDictionary
+			
+			Return selectionChangedTaskResult
+		End Function
 
 '	Public Function GetEntityLevel(sEntity As String) As String
 '		Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sEntity).Member
@@ -312,6 +313,187 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 '		Return level
 		
 '	End Function
+
+#Region "Send Email"
+Public Shared Function SendStatusChangeEmail(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs,  Optional ByVal Status As String = "",Optional ByVal ReqID As String = "")
+    Try
+        ' Get Workflow Details for the SQL Query
+        Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+        Dim UserName As String = si.UserName
+
+        ' Initialize DataTable to hold results
+        Dim DataEmail As New DataTable()
+        
+        'Brapi.ErrorLog.LogMessage(si,"Status" & Status)
+		' Brapi.ErrorLog.LogMessage(si,"ID" & ReqID)
+        ' --- 2. DATABASE CONNECTION & QUERY EXECUTION ---
+        Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+            Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+                sqlConn.Open()
+            	Dim TableName As String =  ""
+				Dim wfScenarioName As String = wfInfoDetails("ScenarioName").ToString()
+				Dim WF As String() = wfScenarioName.Split("_")
+				Dim sScerario As String = WF(1)
+				'Brapi.ErrorLog.LogMessage(si,"HERE")
+       			 Select Case sScerario
+            		Case "PGM"
+               		 	TableName = "XFC_CMD_PGM_REQ"
+						'Brapi.ErrorLog.LogMessage(si,"HERE" & TableName)
+           			 Case "SPLN"
+                		TableName = "XFC_CMD_SPLN_REQ"
+            		Case Else
+                		Return Nothing
+       			End Select
+				
+                Dim SqlString As String = "Select Title, Status, Create_User, Create_Date, Notification_List_Emails,Entity, Validation_List_Emails
+                                          From " & TableName & "
+                                          Where WFScenario_Name = @WFScenario_Name 
+                                          And WFCMD_Name = @WFCMD_Name 
+                                          And WFTime_Name = @WFTime_Name
+										  And REQ_ID = @REQ_ID"
+                'Brapi.ErrorLog.LogMessage(si,"HERE" & SqlString)
+               Dim paramlist As New List(Of SqlParameter)()
+                
+                paramlist.Add(New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")})
+                paramlist.Add(New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")})
+                paramlist.Add(New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")})
+				paramlist.Add(New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = ReqID})
+                
+               
+                
+                ' Execute the Query and fill the DataTable
+                Using sqlCommand As New SqlCommand(SqlString, sqlConn)
+                    sqlCommand.Parameters.AddRange(paramlist.ToArray())
+                    
+                    Using sqa As New SqlDataAdapter(sqlCommand)
+                        sqa.Fill(DataEmail)
+                    End Using
+                End Using
+            End Using 
+        End Using 
+        
+        
+        ' --- 3. PROCESS DATA & SEND EMAIL ---
+        
+        ' Get Email Parameters
+        Dim EmailConnectorStr As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "Var_Email_Connector_String")
+        Dim BodyDisclaimerBody As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "varEmailDisclaimer")
+        
+        For Each drow As DataRow In DataEmail.Rows 
+            
+            Dim ReqTitle As String = drow("Title").ToString()
+            Dim ReqStatus As String = Status
+            Dim CreateDate As String = drow("Create_Date").ToString()
+            Dim FundCenter As String = drow("Entity").ToString()
+            Dim StatusChangeEmailIs As New List(Of String)
+			Dim ValidationEmailIs As New List(Of String)
+            Dim EmailIs As String = drow("Notification_List_Emails").ToString()
+			Dim VEmailIs As String = drow("Validation_List_Emails").ToString()
+			    If Not String.IsNullOrWhiteSpace(EmailIs) Then
+
+			        ' Define the potential delimiters to check 
+			        Dim potentialDelimiters As Char() = {","c, ";"c, "|"c, " "c}
+			       
+			        Dim emailDelimiter As Char = DetectDelimiter(EmailIs, potentialDelimiters)
+			        
+			        ' Split the string using the detected delimiter
+			        Dim emailArray As String() = EmailIs.Split(emailDelimiter, StringSplitOptions.RemoveEmptyEntries)
+			        
+					' Trim whitespace from each email address and add it to the List(Of String)
+			        For Each singleEmail As String In emailArray
+			            Dim trimmedEmail As String = singleEmail.Trim()
+			            If Not String.IsNullOrWhiteSpace(trimmedEmail) Then
+			                StatusChangeEmailIs.Add(trimmedEmail)
+			            End If
+			        Next
+			    End If
+            
+            Dim StatusChangeSubject As String = "Requirement Status Change"
+            
+            ' Build Body
+            Dim StatusChangeBody As String = "A Requirement Request for Funds Center: " & FundCenter & _
+                                             " with Requirement Title: " & ReqTitle & _
+                                             " has changed status to **" & ReqStatus & "**." & _
+                                             " Submitted by: " & UserName & " - " & CreateDate & vbCrLf & BodyDisclaimerBody
+            
+            ' Send email
+            If StatusChangeEmailIs.Count > 0 AndAlso Not String.IsNullOrWhiteSpace(EmailConnectorStr) Then
+               Brapi.Errorlog.LogMessage(si, "Attempting to send status change email to: " & EmailIs)
+                
+                ' Call the utility function to send the email
+               ' Brapi.Utilities.SendMail(si, EmailConnectorStr, StatusChangeEmailIs, StatusChangeSubject, StatusChangeBody, Nothing)
+                
+               Brapi.Errorlog.LogMessage(si, "Successfully triggered email for Request Title: " & ReqTitle)
+            End If
+			
+        'Validation Email List    
+			If Not String.IsNullOrWhiteSpace(VEmailIs) And ReqStatus.XFContainsIgnoreCase("Validate") Then
+				
+			        ' Split the string using the detected delimiter
+			        Dim VemailArray As String() = VEmailIs.Split(",")
+			        
+					' Trim whitespace from each email address and add it to the List(Of String)
+			        For Each vsingleEmail As String In vemailArray
+			            Dim vtrimmedEmail As String = vsingleEmail.Trim()
+			            If Not String.IsNullOrWhiteSpace(vtrimmedEmail) Then
+			                ValidationEmailIs.Add(vtrimmedEmail)
+			            End If
+			        Next
+			    End If
+            
+            Dim ValidationSubject As String = "Request for Requirement Validation"
+            
+            ' Build Body
+            Dim ValidationBody As String = "A requirement has been submitted to be reviewed and validated for prioritization or approval for Fund Center:" & FundCenter & _
+                                             " with Requirement Title: " & ReqTitle & _
+                                             " Submitted by: " & UserName & " - " & CreateDate & vbCrLf & BodyDisclaimerBody
+            
+            ' Send email
+            If ValidationEmailIs.Count > 0 AndAlso Not String.IsNullOrWhiteSpace(EmailConnectorStr) Then
+                Brapi.Errorlog.LogMessage(si, "Attempting to send Validate change email to: " & VEmailIs)
+                
+                ' Call the utility function to send the email
+               ' Brapi.Utilities.SendMail(si, EmailConnectorStr, StatusChangeEmailIs, StatusChangeSubject, StatusChangeBody, Nothing)
+                
+               Brapi.Errorlog.LogMessage(si, "Successfully triggered validate email for Request Title: " & ReqTitle)
+            End If
+			
+        Next
+        
+        Return Nothing 
+        
+   Catch ex As Exception
+			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+		End Try            
+    
+End Function
+#End Region
+
+#Region "Helper Fnctions"
+' Helper function to find the delimiter used in a string
+Public Shared Function DetectDelimiter(ByVal inputString As String, ByVal potentialDelimiters As Char()) As Char
+    ' Default to the first potential delimiter if none are found, or a comma if the list is empty
+    Dim defaultDelimiter As Char = If(potentialDelimiters IsNot Nothing AndAlso potentialDelimiters.Length > 0, potentialDelimiters(0), ","c)
+
+    If String.IsNullOrWhiteSpace(inputString) Then
+        Return defaultDelimiter
+    End If
+
+    For Each delimiter As Char In potentialDelimiters
+        ' Check if the string contains the delimiter
+        If inputString.Contains(delimiter) Then
+            ' Check if splitting yields more than one non-empty entry
+            If inputString.Split(delimiter).Length > 1 Then
+                Return delimiter
+            End If
+        End If
+    Next
+
+    Return defaultDelimiter
+End Function
+#End Region	
+
+
 
 	End Class
 End Namespace

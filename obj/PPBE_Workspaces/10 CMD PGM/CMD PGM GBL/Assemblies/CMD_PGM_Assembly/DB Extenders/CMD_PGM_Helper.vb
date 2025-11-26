@@ -1,4 +1,3 @@
-Imports System
 Imports System.Data
 Imports System.Data.Common
 Imports System.IO
@@ -20,6 +19,7 @@ Imports System.Text.RegularExpressions
 Imports OneStreamWorkspacesApi
 Imports OneStreamWorkspacesApi.V800
 Imports Workspace.GBL.GBL_Assembly
+Imports System.IO.Compression
 
 
 
@@ -42,7 +42,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						Dim dbExt_LoadResult As New XFLoadDashboardTaskResult()
 						Select Case args.FunctionName.ToLower()
 								Case "load_req_detailsdashboard"
-bRApi.ErrorLog.LogMessage(si,$"Hit this {args.FunctionName.ToLower()}")
+'bRApi.ErrorLog.LogMessage(si,$"Hit this {args.FunctionName.ToLower()}")
 									dbExt_LoadResult = Me.load_req_detailsdashboard()
 									Return dbExt_LoadResult	
 '								Case "load_cmd_pgm_header"
@@ -99,13 +99,27 @@ bRApi.ErrorLog.LogMessage(si,$"Hit this {args.FunctionName.ToLower()}")
 								End If
 								dbExt_ChangedResult = Me.Attach_Doc()
 								Return dbExt_ChangedResult
-							Case "submit_reqs", "importreq", "rollfwdreq","manage_req_status"
+							Case "submit_reqs", "manage_req_status"
 								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
 								If dbExt_ChangedResult.ShowMessageBox = True Then
 									Return dbExt_ChangedResult
 								End If
 								dbExt_ChangedResult = Me.Update_Status()
 								Return dbExt_ChangedResult
+							Case "importreq" , "rollfwdreq"
+								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
+								If dbExt_ChangedResult.ShowMessageBox = True Then
+									Return dbExt_ChangedResult
+								End If
+								If args.NameValuePairs.XFGetValue("Action").XFEqualsIgnoreCase("Insert")
+									dbExt_ChangedResult = Me.Update_Status()
+								End If
+								If args.NameValuePairs.XFGetValue("Action").XFEqualsIgnoreCase("Delete")
+									dbExt_ChangedResult = Me.DeleteRequirementID()
+								End If
+								
+								Return dbExt_ChangedResult	
+
 							Case "validate_reqs"
 								dbExt_ChangedResult = Workspace.GBL.GBL_Assembly.GBL_Helpers.Check_WF_Complete_Lock(si, globals, api, args)
 								If dbExt_ChangedResult.ShowMessageBox = True Then
@@ -168,6 +182,24 @@ bRApi.ErrorLog.LogMessage(si,$"Hit this {args.FunctionName.ToLower()}")
 							Case "attachdocument"
 								dbExt_ChangedResult = Me.AttachDocument()
 								Return dbExt_ChangedResult
+								
+								Case "downloaddocument"
+								dbExt_ChangedResult = Me.DownloadDocument()
+								Return dbExt_ChangedResult
+								
+								Case "clearkey5param"
+								dbExt_ChangedResult = Me.ClearKey5param()
+								Return dbExt_ChangedResult
+								
+								Case "clearkey5params_nofcappn"
+								dbExt_ChangedResult = Me.ClearKey5params_NoFCAPPN()
+								Return dbExt_ChangedResult
+								
+							Case "setdeafultappnparam"
+								dbExt_ChangedResult = Me.SetDeafultAPPNParam()
+								Return dbExt_ChangedResult
+								
+								
 						End Select					
 
 #Region "Cache Prompts"
@@ -350,7 +382,8 @@ Dim tStart As DateTime =  Date.Now()
 			
 			Dim stakeholderEmailList As String() = notificationEmails.split(",")
 			Dim validatorEmailList As String() = vNotificationEmails.split(",")
-			
+			'Brapi.ErrorLog.LogMessage(si,"Valid" & validatorEmailList.count)
+			'Brapi.ErrorLog.LogMessage(si,"All" & stakeholderEmailList.count)
 			
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			
@@ -382,31 +415,35 @@ Dim tStart As DateTime =  Date.Now()
 			
 			Dim REQ_ID As String  = sREQ.Split(" "c)(1)
 			Dim Mainreqrow As DataRow = SQA_XFC_CMD_PGM_REQ_DT.Select($"REQ_ID ='{REQ_ID}'" ).FirstOrDefault()
-			Dim stakeholderEmails As String = Mainreqrow("Notification_List_Emails")
 			
-			'loop through all stakeholders
-			For Each email As String In stakeholderEmailList
-				If (Not stakeholderEmails.XFContainsIgnoreCase(email)) Then
-					If (String.IsNullOrWhiteSpace(stakeholderEmails)) Then
-						Mainreqrow("Notification_List_Emails") = email
-					Else
-						Mainreqrow("Notification_List_Emails") = stakeholderEmails & "," & email	
-					End If
-				End If
-				
-			Next
-			Dim validatorEmails As String  = Mainreqrow("Validation_List_Emails")
-			'loop through validators
-			For Each vemail As String In validatorEmailList
-				If (Not validatorEmails.XFContainsIgnoreCase(vemail)) Then
-					If (String.IsNullOrWhiteSpace(validatorEmails)) Then
-						 Mainreqrow("Validation_List_Emails") = vemail
-					Else
-						 Mainreqrow("Validation_List_Emails") = validatorEmails & "," & vemail	
-					End If
-				End If
-			Next
+			Dim Existingstakeholders As String = Mainreqrow("Notification_List_Emails").ToString()
 			
+			
+			Dim stakeholderlist As New List(Of String)(existingStakeholders.Split(","c, StringSplitOptions.RemoveEmptyEntries).Select(Function(e) e.Trim())
+                )
+			For Each newEmail As String In stakeholderEmailList
+                   
+                    If Not stakeholderList.Any(Function(e) e.Equals(newEmail.Trim(), StringComparison.OrdinalIgnoreCase)) Then
+                        stakeholderList.Add(newEmail.Trim()) 
+                    End If
+                Next
+                
+                Mainreqrow("Notification_List_Emails") = String.Join(",", stakeholderList)
+
+                
+                Dim existingValidators As String = Mainreqrow("Validation_List_Emails").ToString()
+                Dim validatorList As New List(Of String)(
+                    existingValidators.Split(","c, StringSplitOptions.RemoveEmptyEntries).Select(Function(e) e.Trim())
+                )
+
+                For Each newEmail As String In validatorEmailList
+                    If Not validatorList.Any(Function(e) e.Equals(newEmail.Trim(), StringComparison.OrdinalIgnoreCase)) Then
+                        validatorList.Add(newEmail.Trim())
+                    End If
+                Next
+                Mainreqrow("Validation_List_Emails") = String.Join(",", validatorList)
+			
+		sqa_xfc_cmd_pgm_req.Update_XFC_CMD_PGM_REQ(SQA_XFC_CMD_PGM_REQ_DT, sqa)
 		
 			Return Nothing
 		End Using 
@@ -440,9 +477,9 @@ Dim tStart As DateTime =  Date.Now()
 				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Rollover") Then
 					Me.Update_REQ_Status("Formulate")
 				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Approve CMD Requirements") Then
-					Me.Update_REQ_Status("Approve CMD")
+					Me.Update_REQ_Status("Approve")
 				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Formulate CMD Requirements") And Dashboard.XFContainsIgnoreCase("Mpr") Then
-					Me.Update_REQ_Status("Formulate CMD")
+					Me.Update_REQ_Status("Formulate")
 				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Approve Requirements") Then
 					Me.Update_REQ_Status("Approve")
 				ElseIf req_IDs <> "NA" And wfProfileName.XFContainsIgnoreCase("Manage") Then
@@ -519,6 +556,7 @@ Dim tStart As DateTime =  Date.Now()
 					Status_manager.Add("L4_Approve_PGM|L5_Formulate_PGM","L5_Formulate_PGM")
 					
 					'Validate
+					Status_manager.Add("L2_Validate_PGM|L2_Formulate_PGM","L2_Formulate_PGM")
 					Status_manager.Add("L2_Validate_PGM|L3_Approve_PGM","L3_Approve_PGM")
 					Status_manager.Add("L2_Validate_PGM|L3_Prioritize_PGM","L3_Prioritize_PGM")
 					Status_manager.Add("L2_Validate_PGM|L3_Validate_PGM","L3_Validate_PGM")
@@ -544,185 +582,266 @@ Dim tStart As DateTime =  Date.Now()
 				
 				Dim dbExt_ChangedResult As New XFSelectionChangedTaskResult()
 				Dim req_IDs As String = args.NameValuePairs.XFGetValue("req_IDs")
-				
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+				Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
 				Dim Mode As String = args.NameValuePairs.XFGetValue("Mode")
-			If Mode.XFEqualsIgnoreCase("Single") Then 
-'Brapi.ErrorLog.LogMessage(si, "Here")
-				req_IDs = req_IDs.Split(" ").Last()
-			Else 
-				req_IDs = req_IDs
-				
-			End If 
-				
-			Dim Req_ID_List As List (Of String) =  StringHelper.SplitString(req_IDs, ",")
-'Brapi.ErrorLog.LogMessage(si, "Req_ID_List = " & Req_ID_List.Count)
-			
-			Dim new_Status As String = args.NameValuePairs.XFGetValue("new_Status")
-			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			
-			If String.IsNullOrWhiteSpace(new_Status) Then 
-
-				Return dbExt_ChangedResult
-			Else
-				Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
-				Using connection As New SqlConnection(dbConnApp.ConnectionString)
-					connection.Open()
-					Dim sqa_xfc_cmd_pgm_req = New SQA_XFC_CMD_PGM_REQ(connection)
-					Dim SQA_XFC_CMD_PGM_REQ_DT = New DataTable()
-					Dim sqa_xfc_cmd_pgm_req_details = New SQA_XFC_CMD_PGM_REQ_DETAILS(connection)
-					Dim SQA_XFC_CMD_PGM_REQ_DETAILS_DT = New DataTable()
-					Dim sqa = New SqlDataAdapter()
-
-				'Fill the DataTable With the current data From FMM_Dest_Cell
-				Dim sql As String = $"SELECT * 
-									FROM XFC_CMD_PGM_REQ 
-									WHERE WFScenario_Name = @WFScenario_Name
-									AND WFCMD_Name = @WFCMD_Name
-									AND WFTime_Name = @WFTime_Name"
-				
-		
-	    ' 2. Create a list to hold the parameters
-	    Dim paramList As New List(Of SqlParameter) From {
-        New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
-        New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-        New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
-   		}
-
-    ' 3. Dynamically build the rest of the query and parameters
-    If Req_ID_List.Count > 1 Then
-        Dim paramNames As New List(Of String)
-        For i As Integer = 0 To Req_ID_List.Count - 1
-            Dim paramName As String = "@REQ_ID" & i
-            paramNames.Add(paramName)
-            paramList.Add(New SqlParameter(paramName, SqlDbType.NVarChar) With {.Value = Req_ID_List(i)})
-        Next
-        sql &= $" AND REQ_ID IN ({String.Join(",", paramNames)})"
-    ElseIf Req_ID_List.Count = 1 Then
-        sql &= " AND REQ_ID = @REQ_ID"
-        paramList.Add(New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = Req_ID_List(0)})
-    End If
-'Brapi.ErrorLog.LogMessage(si,"SQL: " & sql)
-    ' 4. Convert the list to the array your method expects
-    Dim sqlparams As SqlParameter() = paramList.ToArray()
-	
-					sqa_xfc_cmd_pgm_req.Fill_XFC_CMD_PGM_REQ_DT(sqa, SQA_XFC_CMD_PGM_REQ_DT, sql, sqlparams)
-
-					' --- get list of parent IDs and select all detail rows in one query ---
-					Dim parentIds As New List(Of String)()
+				If Mode.XFEqualsIgnoreCase("Single") Then 
+	'Brapi.ErrorLog.LogMessage(si, "Here")
+					req_IDs = req_IDs.Split(" ").Last()
+				Else 
+					req_IDs = req_IDs
 					
-					For Each parentRow As DataRow In SQA_XFC_CMD_PGM_REQ_DT.Rows
-						
-						If Not IsDBNull(parentRow("CMD_PGM_REQ_ID")) Then
-							Dim columnValue As Object = parentRow("CMD_PGM_REQ_ID")
-            				Dim reqIdAsGuid As Guid = Guid.Parse(columnValue.ToString())
-							
-							parentIds.Add(reqIdAsGuid.ToString())
-							
-						End If
-					Next
+				End If 
+				
+				If String.IsNullOrWhiteSpace(req_IDs) Then
+						Return Nothing
+				Else 
 
-					If parentIds.Count > 0 Then
-						' Build a comma separated list of ints and query details table with IN (...)
-						' NOTE: parentIds are integers sourced from DB so this string concatenation is safe in this context.
-						Dim idsCsv As String = String.Join(",", parentIds)
-						sql = $"SELECT * 
-								FROM XFC_CMD_PGM_REQ_Details 
-								WHERE WFScenario_Name = @WFScenario_Name
-								AND WFCMD_Name = @WFCMD_Name
-								AND WFTime_Name = @WFTime_Name
-								AND CMD_PGM_REQ_ID IN  ({String.Join(",", parentIds.Select(Function(id, idx) $"@ID{idx}"))})"
+					Dim full_Req_ID_List As List (Of String) =  StringHelper.SplitString(req_IDs, ",")
+'Brapi.ErrorLog.LogMessage(si, "Req_ID_List = " & Req_ID_List.Count)
 
-					  Dim detailsParams As New List(Of SqlParameter) From {
-							New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
-							New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-							New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
-						}
+					'SQL has a parameter limit of 2100. To work around that if REQ list is more than 200 we chunk it
+					Dim size As Integer = 2000
+					Dim reqListChuncks = Me.ChuckREQList(full_Req_ID_List, size)
+					For Each Req_ID_List As List(Of String) In reqListChuncks
+						Dim new_Status As String = args.NameValuePairs.XFGetValue("new_Status")
 						
-						For i As Integer = 0 To parentIds.Count - 1
-                        detailsParams.Add(New SqlParameter($"@ID{i}", SqlDbType.NVarChar) With {.Value = parentIds(i)})
-                    Next
-						sqa_xfc_cmd_pgm_req_details.Fill_XFC_CMD_PGM_REQ_DETAILS_DT(sqa, SQA_XFC_CMD_PGM_REQ_DETAILS_DT, sql, detailsParams.ToArray())
 						
-					End If
-'Brapi.ErrorLog.LogMessage(si, "SQL: " & sql)
-					' At this point detailsAllDT contains all matching XFC_CMD_PGM_REQ_Details rows (if any).
-					' Update all returned parent rows
-					For Each row As DataRow In SQA_XFC_CMD_PGM_REQ_DT.Rows
-						Dim wfStepAllowed = Workspace.GBL.GBL_Assembly.GBL_Helpers.Is_Step_Allowed(si, args, curr_Status, row("Entity"))
-						If wfStepAllowed = False Then
-							dbExt_ChangedResult.ShowMessageBox = True
-							If Not String.IsNullOrWhiteSpace(dbExt_ChangedResult.Message) Then
-								dbExt_ChangedResult.Message &= Environment.NewLine
-							End If
-							dbExt_ChangedResult.Message &= $"Cannot change status of REQ_ID '{row("REQ_ID")}' at this time. Contact requirements manager."
+						If String.IsNullOrWhiteSpace(new_Status) Then 
+	
+							Return dbExt_ChangedResult
 						Else
-
-							Dim existingStatus As String = ""
-							If Not IsDBNull(row("Status")) Then existingStatus = row("Status").ToString().Trim()
-
-							Dim lookupKey As String = existingStatus & "|" & new_Status
-'brapi.ErrorLog.LogMessage(si,"lookupKey: " & lookupKey)
-							Dim resolvedStatus As String
-							If Status_manager.ContainsKey(lookupKey) Then
-								resolvedStatus = Status_manager(lookupKey)
-							Else
-								resolvedStatus = existingStatus
-								dbExt_ChangedResult.ShowMessageBox = True
-								dbExt_ChangedResult.Message &= $"REQ_ID '{row("REQ_ID")}' has an incorrect status, can't be updated."
-							End If
-							If Not String.IsNullOrEmpty(demote_comment) Then
-								row("Demotion_Comment") = demote_comment
-							End If 
-							row("Status") = resolvedStatus
-							row("Update_User") = si.UserName
-							row("Update_Date") = DateTime.Now
-'Brapi.ErrorLog.LogMessage(si, "existingStatus | new_Status  |  resolvedStatus: " & existingStatus & "|" & new_Status &  " | " & resolvedStatus)
-							' If we have details loaded, update the detail rows that belong to this parent now
-							If SQA_XFC_CMD_PGM_REQ_DETAILS_DT IsNot Nothing AndAlso SQA_XFC_CMD_PGM_REQ_DETAILS_DT.Rows.Count > 0 AndAlso Not IsDBNull(row("CMD_PGM_REQ_ID")) Then
+							Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+							Using connection As New SqlConnection(dbConnApp.ConnectionString)
+								connection.Open()
+								Dim sqa_xfc_cmd_pgm_req = New SQA_XFC_CMD_PGM_REQ(connection)
+								Dim SQA_XFC_CMD_PGM_REQ_DT = New DataTable()
+								Dim sqa_xfc_cmd_pgm_req_details = New SQA_XFC_CMD_PGM_REQ_DETAILS(connection)
+								Dim SQA_XFC_CMD_PGM_REQ_DETAILS_DT = New DataTable()
+								Dim sqa_xfc_cmd_pgm_req_details_audit = New SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT(connection)
+								Dim SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT = New DataTable()
 								
-								Dim pid As String = ""
-								pid = row("CMD_PGM_REQ_ID").ToString()
-									Dim filterExpr As String = String.Format("CMD_PGM_REQ_ID = '{0}'", pid)
-									Dim matchingDetails() As DataRow = SQA_XFC_CMD_PGM_REQ_DETAILS_DT.Select(filterExpr)
-									
-									For Each drow As DataRow In matchingDetails
-						
-										If Not FCList.Contains($"E#{drow("Entity")}")
-											FCList.Add($"E#{drow("Entity")}")
-										End If
-										globals.SetStringValue($"FundsCenterStatusUpdates - {drow("Entity")}", $"{existingStatus}|{resolvedStatus}")
-
-										drow("Flow") = resolvedStatus
-										drow("Update_User") = si.UserName
-										drow("Update_Date") = DateTime.Now
-									Next
-								'End If
-							End If
+								Dim sqa = New SqlDataAdapter()
+	
+								'Fill the DataTable With the current data From FMM_Dest_Cell
+								Dim sql As String = $"SELECT * 
+												FROM XFC_CMD_PGM_REQ 
+												WHERE WFScenario_Name = @WFScenario_Name
+												AND WFCMD_Name = @WFCMD_Name
+												AND WFTime_Name = @WFTime_Name"
 							
-'Brapi.ErrorLog.LogMessage(si, "Resolved Status" & resolvedStatus)
-
-							'Me.UpdateStatusHistory(si, globals, api, args, newREQStatus, reqFlow, reqEntity)
-							'Me.Send_Status_Change_Email(reqFlow, reqEntity)
-						End If
-					Next
-
+										
+								' 2. Create a list to hold the parameters
+								Dim paramList As New List(Of SqlParameter) From {
+								New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+								New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+								New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
+								}
+	
+								' 3. Dynamically build the rest of the query and parameters
+								If Req_ID_List.Count > 1 Then
+									Dim paramNames As New List(Of String)
+									For i As Integer = 0 To Req_ID_List.Count - 1
+										Dim paramName As String = "@REQ_ID" & i
+										paramNames.Add(paramName)
+										paramList.Add(New SqlParameter(paramName, SqlDbType.NVarChar) With {.Value = Req_ID_List(i)})
+									Next
+									sql &= $" AND REQ_ID IN ({String.Join(",", paramNames)})"
+								ElseIf Req_ID_List.Count = 1 Then
+									sql &= " AND REQ_ID = @REQ_ID"
+									paramList.Add(New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = Req_ID_List(0)})
+								End If
+	'Brapi.ErrorLog.LogMessage(si,"SQL: " & sql)
+								' 4. Convert the list to the array your method expects
+								Dim sqlparams As SqlParameter() = paramList.ToArray()
+		
+								sqa_xfc_cmd_pgm_req.Fill_XFC_CMD_PGM_REQ_DT(sqa, SQA_XFC_CMD_PGM_REQ_DT, sql, sqlparams)
+	
+								' --- get list of parent IDs and select all detail rows in one query ---
+								Dim parentIds As New List(Of String)()
+								
+								For Each parentRow As DataRow In SQA_XFC_CMD_PGM_REQ_DT.Rows
+									
+									If Not IsDBNull(parentRow("CMD_PGM_REQ_ID")) Then
+										Dim columnValue As Object = parentRow("CMD_PGM_REQ_ID")
+										Dim reqIdAsGuid As Guid = Guid.Parse(columnValue.ToString())
+										
+										parentIds.Add(reqIdAsGuid.ToString())
+										
+									End If
+								Next
+	
+								If parentIds.Count > 0 Then
+									' Build a comma separated list of ints and query details table with IN (...)
+									' NOTE: parentIds are integers sourced from DB so this string concatenation is safe in this context.
+									Dim idsCsv As String = String.Join(",", parentIds)
+									Dim SQL_Audit As String = $"SELECT * 
+											FROM XFC_CMD_PGM_REQ_Details_Audit
+											WHERE WFScenario_Name = @WFScenario_Name
+											AND WFCMD_Name = @WFCMD_Name
+											AND WFTime_Name = @WFTime_Name
+											AND CMD_PGM_REQ_ID IN  ({String.Join(",", parentIds.Select(Function(id, idx) $"@ID{idx}"))})"
+									
+									
+									sql = $"SELECT * 
+											FROM XFC_CMD_PGM_REQ_Details 
+											WHERE WFScenario_Name = @WFScenario_Name
+											AND WFCMD_Name = @WFCMD_Name
+											AND WFTime_Name = @WFTime_Name
+											AND CMD_PGM_REQ_ID IN  ({String.Join(",", parentIds.Select(Function(id, idx) $"@ID{idx}"))})"
+	
+								  Dim detailsParams As New List(Of SqlParameter) From {
+										New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+										New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+										New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
+									}
+									
+									For i As Integer = 0 To parentIds.Count - 1
+									detailsParams.Add(New SqlParameter($"@ID{i}", SqlDbType.NVarChar) With {.Value = parentIds(i)})
+								Next
+									sqa_xfc_cmd_pgm_req_details.Fill_XFC_CMD_PGM_REQ_DETAILS_DT(sqa, SQA_XFC_CMD_PGM_REQ_DETAILS_DT, sql, detailsParams.ToArray())
+									sqa_xfc_cmd_pgm_req_details_audit.Fill_XFC_CMD_PGM_REQ_DETAILS_Audit_DT(sqa, SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT, SQL_Audit, detailsParams.ToArray())
+								End If
+	'Brapi.ErrorLog.LogMessage(si, "SQL: " & sql)
+								' At this point detailsAllDT contains all matching XFC_CMD_PGM_REQ_Details rows (if any).
+								' Update all returned parent rows
+								For Each row As DataRow In SQA_XFC_CMD_PGM_REQ_DT.Rows
+									Dim wfStepAllowed = Workspace.GBL.GBL_Assembly.GBL_Helpers.Is_Step_Allowed(si, args, curr_Status, row("Entity"))
+									If wfStepAllowed = False Then
+										dbExt_ChangedResult.ShowMessageBox = True
+										If Not String.IsNullOrWhiteSpace(dbExt_ChangedResult.Message) Then
+											dbExt_ChangedResult.Message &= Environment.NewLine
+										End If
+										dbExt_ChangedResult.Message &= $"Cannot change status of REQ_ID '{row("REQ_ID")}' at this time. Contact requirements manager."
+									Else
+	
+										Dim existingStatus As String = ""
+										If Not IsDBNull(row("Status")) Then existingStatus = row("Status").ToString().Trim()
+	
+										Dim lookupKey As String = existingStatus & "|" & new_Status
+			'brapi.ErrorLog.LogMessage(si,"lookupKey: " & lookupKey)
+										Dim resolvedStatus As String
+										If Status_manager.ContainsKey(lookupKey) Then
+											resolvedStatus = Status_manager(lookupKey)
+										Else
+											resolvedStatus = existingStatus
+											dbExt_ChangedResult.ShowMessageBox = True
+											dbExt_ChangedResult.Message &= $"REQ_ID '{row("REQ_ID")}' has an incorrect status, can't be updated."
+										End If
+										If Not String.IsNullOrEmpty(demote_comment) Then
+											row("Demotion_Comment") = demote_comment
+										End If 
+										row("Status") = resolvedStatus
+										row("Update_User") = si.UserName
+										row("Update_Date") = DateTime.Now
+			'Brapi.ErrorLog.LogMessage(si, "existingStatus | new_Status  |  resolvedStatus: " & existingStatus & "|" & new_Status &  " | " & resolvedStatus)
+										' If we have details loaded, update the detail rows that belong to this parent now
+										
+										Dim pid As String = ""
+											pid = row("CMD_PGM_REQ_ID").ToString()
+										Dim filterExpr As String = String.Format("CMD_PGM_REQ_ID = '{0}'", pid)
+										
+										If SQA_XFC_CMD_PGM_REQ_DETAILS_DT IsNot Nothing AndAlso SQA_XFC_CMD_PGM_REQ_DETAILS_DT.Rows.Count > 0 AndAlso Not IsDBNull(row("CMD_PGM_REQ_ID")) Then
+											
+											
+											Dim matchingDetails() As DataRow = SQA_XFC_CMD_PGM_REQ_DETAILS_DT.Select(filterExpr)
+											
+											For Each drow As DataRow In matchingDetails
+								
+												If Not FCList.Contains($"E#{drow("Entity")}")
+													FCList.Add($"E#{drow("Entity")}")
+												End If
+												globals.SetStringValue($"FundsCenterStatusUpdates - {drow("Entity")}", $"{existingStatus}|{resolvedStatus}")
+	
+												drow("Flow") = resolvedStatus
+												drow("Update_User") = si.UserName
+												drow("Update_Date") = DateTime.Now
+											Next
+											'End If
+										End If
+										
+										
+											
+										Dim matchingAuditDetails() As DataRow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Select(filterExpr)
+												
+										If matchingAuditDetails.Length > 0 Then
+											For Each drow As DataRow In matchingAuditDetails
+												Dim currentHistory As String = If(drow("Orig_Flow") Is DBNull.Value, _
+												 String.Empty, _
+												 drow("Orig_Flow").ToString())
+													If String.IsNullOrEmpty(currentHistory) Then
+														drow("Orig_Flow") = existingStatus
+													Else
+														drow("Orig_Flow") = currentHistory + ", " + existingStatus
+													End If
+													drow("Updated_Flow") = resolvedStatus
+											Next
+										Else
+											Dim newrow As datarow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.NewRow()
+											newrow("CMD_PGM_REQ_ID") = row("CMD_PGM_REQ_ID")
+											newrow("WFScenario_Name") = row("WFScenario_Name")
+											newrow("WFCMD_Name") = row("WFCMD_Name")
+											newrow("WFTime_Name") = row("WFTime_Name")
+											newrow("Entity") = row("Entity")
+											newrow("Account") = "Req_Funding"
+											newrow("Start_Year") = row("WFTime_Name")
+											newrow("Orig_IC") = "None"
+											newrow("Updated_IC") = "None"
+											newrow("Orig_Flow") =  existingStatus
+											newrow("Updated_Flow") = resolvedStatus
+											newrow("Orig_UD1") = row("APPN")
+											newrow("Updated_UD1") = row("APPN")
+											newrow("Orig_UD2") = row("MDEP")
+											newrow("Updated_UD2") = row("MDEP")
+											newrow("Orig_UD3") = row("APE9")
+											newrow("Updated_UD3") = row("APE9")
+											newrow("Orig_UD4") = row("Dollar_Type")
+											newrow("Updated_UD4") = row("Dollar_Type")
+											newrow("Orig_UD5") = "None"
+											newrow("Updated_UD5") = "None"
+											newrow("Orig_UD6") = row("Obj_Class")
+											newrow("Updated_UD6") = row("Obj_Class")
+											newrow("Orig_UD7") = "None"
+											newrow("Updated_UD7") = "None"
+											newrow("Orig_UD8") = "None"
+											newrow("Updated_UD8") = "None"
+											newrow("Create_Date") = DateTime.Now
+											newrow("Create_User") = si.UserName
+										
+										
+										
+											SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.rows.add(newrow)
+									
+									
+										End If
+										
+					
+								If  Not wfProfileName.XFContainsIgnoreCase("Import")
+								 Workspace.GBL.GBL_Assembly.GBL_Helpers.SendStatusChangeEmail(si, globals,api,args,resolvedStatus, row("Req_ID"))
+								End If 
+									End If
+								Next
+	
 					' Persist all changes back to the database
 					
-					sqa_xfc_cmd_pgm_req.Update_XFC_CMD_PGM_REQ(SQA_XFC_CMD_PGM_REQ_DT, sqa)
-					sqa_xfc_cmd_pgm_req_details.Update_XFC_CMD_PGM_REQ_DETAILS(SQA_XFC_CMD_PGM_REQ_DETAILS_DT, sqa)
-					End Using
-				End If
+								sqa_xfc_cmd_pgm_req.Update_XFC_CMD_PGM_REQ(SQA_XFC_CMD_PGM_REQ_DT, sqa)
+								sqa_xfc_cmd_pgm_req_details.Update_XFC_CMD_PGM_REQ_DETAILS(SQA_XFC_CMD_PGM_REQ_DETAILS_DT, sqa)
+								sqa_xfc_cmd_pgm_req_details_audit.Update_XFC_CMD_PGM_REQ_DETAILS_AUDIT(SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT, sqa)
+							End Using
+						End If
+					Next 'Looping through the REQ chuncks
 
-				Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
-'Brapi.ErrorLog.LogMessage(si,"@HERE1" &String.Join(",",FCList))
-				Dim customSubstVars As New Dictionary(Of String, String) 
-				customSubstVars.Add("EntList",String.Join(",",FCList))
-				customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
-				Dim currentYear As Integer = Convert.ToInt32(wfInfoDetails("TimeName"))
-				customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
-				BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
-'Brapi.ErrorLog.LogMessage(si,"HERE2")
-				Return dbExt_ChangedResult
+					Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
+	'Brapi.ErrorLog.LogMessage(si,"@HERE1" &String.Join(",",FCList))
+					Dim customSubstVars As New Dictionary(Of String, String) 
+					customSubstVars.Add("EntList",String.Join(",",FCList))
+					customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
+					Dim currentYear As Integer = Convert.ToInt32(wfInfoDetails("TimeName"))
+					customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
+					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
+	'Brapi.ErrorLog.LogMessage(si,"HERE2")
+					Return dbExt_ChangedResult
+				End If
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
@@ -786,6 +905,15 @@ Dim tStart As DateTime =  Date.Now()
 		End Function 
 
 		
+#End Region
+#Region "Chunck REQ List"
+		Public Function ChuckREQList(reqList As List(Of String), size As Integer) As List(Of List(Of String))
+			Dim chuncks As New List(Of List(Of String))()
+			For i As Integer = 0 To reqList.Count - 1 Step size
+				chuncks.Add(reqList.Skip(i).Take(size).ToList())
+			Next
+			Return chuncks
+		End Function
 #End Region
 
 #Region "Manage Requirements"
@@ -1256,7 +1384,27 @@ Dim tStart As DateTime =  Date.Now()
 
 #End Region
 
-#Region "Helper Methods"	
+#Region "Helper Methods"
+
+
+
+#Region "Set Default APPN Parameter"
+Public Function SetDeafultAPPNParam() As Object
+
+	Dim dKeyVal As New Dictionary(Of String, String)
+							
+	dKeyVal.Add("ML_CMD_PGM_FormulateAPPN","OMA")
+	
+	If args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_CMD_PGM_RelatedREQList","NA") <> "NA" Then
+		dKeyVal.Add("BL_CMD_PGM_RelatedREQList",args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_CMD_PGM_RelatedREQList","NA"))
+	End If	
+'Added 2 line to clear user cache before launching getcascadingfilters
+		BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName,$"CMD_PGM_CascadingFilterCache",$"CMD_PGM_rebuildparams_APPN","")
+		BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName,$"CMD_PGM_CascadingFilterCache",$"CMD_PGM_rebuildparams_Other","")	
+	Return Me.SetParameter(si, globals, api, dKeyVal)
+		
+End Function
+#End Region
 
 #Region "Is REQ Title Blank"
 		'Updated: EH 8/28/2024 - Ticket 1565 Title member script updated to REQ_Shared scenario
@@ -1548,11 +1696,10 @@ Public Function SetRelatedREQs()
 			Dim sREQTime As String = args.NameValuePairs.XFGetValue("REQTime")
 
 			Dim sRelatedREQs As String = args.NameValuePairs.XFGetValue("RelatedREQs")
-			Dim RelatedREQLength As Integer = sRelatedREQs.Length
-			Dim REQList As String() = sRelatedREQs.Split(","c).Select(Function(REQ) REQ.Trim()).ToArray()
-			
-			If RelatedREQLength = 0 Then 
-				Return Nothing
+			Dim REQList As New List(Of String)
+			If Not String.IsNullOrWhiteSpace(sRelatedREQs) Then
+    
+    			REQList = sRelatedREQs.Split(","c).Select(Function(REQ) REQ.Trim()).ToList()
 			End If
 			
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
@@ -1580,9 +1727,6 @@ Public Function SetRelatedREQs()
         New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
         New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
    		}
-
-			
-			
 	
 				sqa_xfc_cmd_pgm_req.Fill_XFC_CMD_PGM_REQ_DT(sqa, SQA_XFC_CMD_PGM_REQ_DT, sql, sqlparams)
 			
@@ -1591,39 +1735,36 @@ Public Function SetRelatedREQs()
 			Dim Mainreqrow As DataRow = SQA_XFC_CMD_PGM_REQ_DT.Select($"REQ_ID ='{REQ_ID}'" ).FirstOrDefault()
 '			
 			Dim mainREQ As String = ""
-			If sEntity.XFContainsIgnoreCase("_General") Then 
-				mainREQ = $"{sREQ}"		
-			Else
+'			
 				mainREQ = $"{sREQ}"
-			End If
+		
 			
 				
 			Dim currentREQs As String = String.Empty
-				currentREQs = Mainreqrow("Related_REQs").ToString()
-			
+			' Get the current list of related REQs before we overwrite it.
+			Dim oldRelatedREQsString As String = Mainreqrow("Related_REQs").ToString()
+			Dim oldList As List(Of String) = oldRelatedREQsString.Split(","c).Select(Function(r) r.Trim()).Where(Function(r) Not String.IsNullOrWhiteSpace(r)).ToList()
+			Dim newList As New List(Of String)
 			For Each REQ As String In REQList
 				If REQ.XFContainsIgnoreCase(mainREQ) Then Continue For
 				Dim isGeneral As Boolean = REQ.Split(" ")(0).Trim().XFContainsIgnoreCase("_General")
 				'Brapi.ErrorLog.LogMessage()
 				If isGeneral Then REQ = REQ.Replace(REQ.Split(" ")(0).Trim(),REQ.Split(" ")(0).Trim().Replace("_General",""))
-				If (Not currentREQs.XFContainsIgnoreCase(REQ)) Then
-					If (String.IsNullOrWhiteSpace(currentREQs)) Then				
-						currentREQs = REQ
-					Else
-						currentREQs = currentREQs & ", " & REQ	
-					End If
+				If (Not newList.Any(Function(r) r.Equals(REQ, StringComparison.OrdinalIgnoreCase))) Then
+					newList.Add(REQ)
 				End If
-			
 			Next
+			
+			
 	'Set Related REQS
 			
-						Mainreqrow("Related_REQs") = currentREQs
+						Mainreqrow("Related_REQs") = String.Join(", ", newList)
 						Mainreqrow("Update_User") = si.UserName
 						Mainreqrow("Update_Date") = DateTime.Now
 				
 			
 	'Update the other side - Set the related REQs From REQ list
-			For Each relatedREQ In REQList
+			For Each relatedREQ In newList
 				'Brapi.ErrorLog.LogMessage(si, "relatedREQ" & relatedREQ)
 				If relatedREQ.XFContainsIgnoreCase(mainREQ) Then Continue For
 				Dim REQ = relatedREQ.Split(" ")(1).Trim()
@@ -1631,8 +1772,9 @@ Public Function SetRelatedREQs()
 				'Brapi.ErrorLog.LogMessage(si, "REQ" & REQ)
 				'Brapi.ErrorLog.LogMessage(si, "Entity" & sEntity)
 				Dim RelatedREQsList As DataRow = SQA_XFC_CMD_PGM_REQ_DT.Select($"REQ_ID ='{REQ}'" ).FirstOrDefault()
-				currentREQs = RelatedREQsList("Related_REQs").ToString()
-				
+				If RelatedREQsList Is Nothing Then Continue For ' Safety check
+					currentREQs = RelatedREQsList("Related_REQs").ToString()
+					
 				If (Not currentREQs.XFContainsIgnoreCase(mainREQ)) Then
 					If (String.IsNullOrWhiteSpace(currentREQs)) Then
 						currentREQs = mainREQ
@@ -1646,6 +1788,34 @@ Public Function SetRelatedREQs()
 						RelatedREQsList("Update_Date") = DateTime.Now
 				'Next
 				
+			Next
+			
+			
+			' Find REQs that were removed
+			Dim ToRemove = oldList.Except(newList, StringComparer.OrdinalIgnoreCase).ToList()
+			
+			'Update the other side - REMOVE mainREQ from old partners
+			For Each relatedREQtoRemove In ToRemove
+				If relatedREQtoRemove.XFContainsIgnoreCase(mainREQ) Then Continue For
+				Dim REQ = relatedREQtoRemove.Split(" ")(1).Trim()
+				sEntity = relatedREQtoRemove.Split(" ")(0).Trim()
+				
+				Dim RelatedREQsList As DataRow = SQA_XFC_CMD_PGM_REQ_DT.Select($"REQ_ID ='{REQ}'" ).FirstOrDefault()
+				If RelatedREQsList Is Nothing Then Continue For ' Safety check
+				
+				currentREQs = RelatedREQsList("Related_REQs").ToString()
+				
+				' If the list contains the main REQ, remove it
+				If (currentREQs.XFContainsIgnoreCase(mainREQ)) Then
+					' Rebuild the list without mainREQ
+					Dim CurrentList As List(Of String) = currentREQs.Split(","c).Select(Function(r) r.Trim()).Where(Function(r) Not String.IsNullOrWhiteSpace(r)).ToList()
+					CurrentList.RemoveAll(Function(r) r.Equals(mainREQ, StringComparison.OrdinalIgnoreCase))
+					
+					' Join it back together
+					RelatedREQsList("Related_REQs") = String.Join(", ",CurrentList)
+					RelatedREQsList("Update_User") = si.UserName
+					RelatedREQsList("Update_Date") = DateTime.Now
+				End If
 			Next
 			sqa_xfc_cmd_pgm_req.Update_XFC_CMD_PGM_REQ(SQA_XFC_CMD_PGM_REQ_DT,sqa)
 		End Using
@@ -1766,58 +1936,63 @@ Public Function SetRelatedREQs()
 
 #Region "Save Adjust Funding Line "		
 Public Function Save_AdjustFundingLine() As xfselectionchangedTaskResult
-Dim req_IDs As String = args.NameValuePairs.XFGetValue("req_IDs")
-	req_IDs = req_IDs.Split(" ").Last()
-	'Brapi.ErrorLog.LogMessage(si, "HERE 2")
+		'Dim req_IDs As String = args.NameValuePairs.XFGetValue("req_IDs")
+		Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_CMD_PGM_REQTitleList","NA")
+		'BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ","")
+'Brapi.ErrorLog.LogMessage(si, "HERE 1" & req_IDs)
+		req_IDs = req_IDs.Split(" ").Last()
+'Brapi.ErrorLog.LogMessage(si, "HERE 2: " & req_IDs)
 		Dim WFInfoDetails As New Dictionary(Of String, String)()
-            Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
-            Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
-			Dim wfCubeRootInfo = BRApi.Workflow.Metadata.GetProfile(si,wfUnitInfo.ProfileName)
-            WFInfoDetails.Add("ProfileName", wfUnitInfo.ProfileName)
-            WFInfoDetails.Add("ScenarioName", wfUnitInfo.ScenarioName)
-            WFInfoDetails.Add("TimeName", wfUnitInfo.TimeName)
-			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
+	    Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
+	    Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
+		Dim wfCubeRootInfo = BRApi.Workflow.Metadata.GetProfile(si,wfUnitInfo.ProfileName)
+	    WFInfoDetails.Add("ProfileName", wfUnitInfo.ProfileName)
+	    WFInfoDetails.Add("ScenarioName", wfUnitInfo.ScenarioName)
+	    WFInfoDetails.Add("TimeName", wfUnitInfo.TimeName)
+		WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			
-		'Brapi.ErrorLog.LogMessage(si, "HERE 3")	
-		 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+		
+		Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
         Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
             sqlConn.Open()
 
-            ' ************************************
-            ' *** Fetch Data for BOTH tables *****
-            ' ************************************
-            ' --- Main Request Table (XFC_CMD_PGM_REQ) ---
-            Dim dt As New DataTable()
-            Dim sqa As New SqlDataAdapter()
-            Dim sqaReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
-            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_PGM_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND REQ_ID  = @REQ_ID"
-            Dim sqlParams As SqlParameter() = New SqlParameter() {
-                New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
-                New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
-				New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = req_IDs}
-						}
-              sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa, dt, sqlMain, sqlParams)
-			  
-			' --- Details Table (XFC_CMD_PGM_REQ_Details) ---
-            Dim dt_Details As New DataTable()
-			Dim sqa2 As New SqlDataAdapter()
-            Dim sqaReaderdetail As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
-			Dim parentIds As New List(Of String)()
-
-For Each parentRow As DataRow In dt.Rows
-   
-    If Not IsDBNull(parentRow("CMD_PGM_REQ_ID")) Then
-        ' Get the CMD_PGM_REQ_ID value and parse it as Guid
-        Dim columnValue As Object = parentRow("CMD_PGM_REQ_ID")
-        Dim reqIdAsGuid As Guid = Guid.Parse(columnValue.ToString())
-      
-        parentIds.Add(reqIdAsGuid.ToString())
-    End If
-Next	
+        ' ************************************
+        ' *** Fetch Data for BOTH tables *****
+        ' ************************************
+        ' --- Main Request Table (XFC_CMD_PGM_REQ) ---
+        Dim dt As New DataTable()
+        Dim sqa As New SqlDataAdapter()
+        Dim sqaReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
+        Dim sqlMain As String = $"SELECT * FROM XFC_CMD_PGM_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND REQ_ID  = @REQ_ID"
+        Dim sqlParams As SqlParameter() = New SqlParameter() {
+            New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+            New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+            New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
+			New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = req_IDs}
+		}
+          sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa, dt, sqlMain, sqlParams)
+		  
+		' --- Details Table (XFC_CMD_PGM_REQ_Details) ---
+        Dim dt_Details As New DataTable()
+		Dim sqa2 As New SqlDataAdapter()
+        Dim sqaReaderdetail As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
+		Dim parentIds As New List(Of String)()
+'Brapi.ErrorLog.LogMessage(si, "HERE 3:" & dt.Rows.Count)	
+		For Each parentRow As DataRow In dt.Rows
+'Brapi.ErrorLog.LogMessage(si, "HERE 4")	
+		    If Not IsDBNull(parentRow("CMD_PGM_REQ_ID")) Then
+		        ' Get the CMD_PGM_REQ_ID value and parse it as Guid
+'Brapi.ErrorLog.LogMessage(si, "HERE 5")	
+		        Dim columnValue As Object = parentRow("CMD_PGM_REQ_ID")
+'Brapi.ErrorLog.LogMessage(si, "HERE 6")	
+		        Dim reqIdAsGuid As Guid = Guid.Parse(columnValue.ToString())
+		     
+		        parentIds.Add(reqIdAsGuid.ToString())
+		    End If
+		Next	
     ' Select a single CMD_PGM_REQ_ID (assuming the requirement is only one ID for the query)
-    		Dim singleCMD_PGM_REQ_ID As String = parentIds(0)
-Dim sql As String = ""
+    	Dim singleCMD_PGM_REQ_ID As String = parentIds(0)
+		Dim sql As String = ""
     ' Build the SQL query with the single CMD_PGM_REQ_ID
     	sql = $"SELECT *
            FROM XFC_CMD_PGM_REQ_Details
@@ -1826,94 +2001,215 @@ Dim sql As String = ""
              AND WFTime_Name = @WFTime_Name
              AND CMD_PGM_REQ_ID = @SingleCMD_PGM_REQ_ID"
 
-    ' Create the list of SQL parameters
-    Dim detailsParams As SqlParameter() = New SqlParameter(){
-        New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
-        New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-        New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
-        New SqlParameter("@SingleCMD_PGM_REQ_ID", SqlDbType.NVarChar) With {.Value = singleCMD_PGM_REQ_ID}
-    }
+  	  ' Create the list of SQL parameters
+	    Dim detailsParams As SqlParameter() = New SqlParameter(){
+	        New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+	        New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+	        New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
+	        New SqlParameter("@SingleCMD_PGM_REQ_ID", SqlDbType.NVarChar) With {.Value = singleCMD_PGM_REQ_ID}
+	    }
+	
+   		' Fill the details table with the query results
+	    sqaReaderdetail.Fill_XFC_CMD_PGM_REQ_DETAILS_DT(sqa2, dt_Details, sql, detailsParams)
+	
+	
+		Dim sqa_xfc_cmd_pgm_req_details_audit = New SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT(sqlConn)
+		Dim SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT = New DataTable()
 
-    ' Fill the details table with the query results
-    sqaReaderdetail.Fill_XFC_CMD_PGM_REQ_DETAILS_DT(sqa2, dt_Details, sql, detailsParams)
-			  
+		Dim SQL_Audit As String = $"SELECT * 
+								FROM XFC_CMD_PGM_REQ_Details_Audit
+								WHERE WFScenario_Name = @WFScenario_Name
+								AND WFCMD_Name = @WFCMD_Name
+								AND WFTime_Name = @WFTime_Name
+								AND CMD_PGM_REQ_ID = @SingleCMD_PGM_REQ_ID"
 
+sqa_xfc_cmd_pgm_req_details_audit.Fill_XFC_CMD_PGM_REQ_DETAILS_Audit_DT(sqa, SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT, SQL_Audit, detailsParams)
             ' ************************************
             ' ************************************
 	
-    Dim targetRow As DataRow 											
-	
-	
-			
-			targetRow = dt.Select($"REQ_ID = '{req_IDs}'").FirstOrDefault()
-			Dim APPN As String =  args.NameValuePairs.XFGetValue("APPN")
+   		Dim targetRow As DataRow 											
+		targetRow = dt.Select($"REQ_ID = '{req_IDs}'").FirstOrDefault()
+		Dim APPN As String = args.NameValuePairs.XFGetValue("APPN")
 		
-			'Brapi.ErrorLog.LogMessage(si, "APPN " & APPN)	
+'Brapi.ErrorLog.LogMessage(si, "HERE 7: APPN " & APPN)	
 			
-			Dim Entity As String =  args.NameValuePairs.XFGetValue("Entity")
-			Dim MDEP As String =  args.NameValuePairs.XFGetValue("MDEP")
-			 Dim APE As String =  args.NameValuePairs.XFGetValue("APEPT")
-		     Dim DollarType As String =  args.NameValuePairs.XFGetValue("DollarType")
-		 	 Dim cTypecol As String =  args.NameValuePairs.XFGetValue("CType")
-			 Dim obj_class As String =  args.NameValuePairs.XFGetValue("Obj_Class")
-			Dim Status As String  = targetRow("Status")
-			Dim Create_User As String = targetRow("Create_User")
+		Dim Entity As String = args.NameValuePairs.XFGetValue("Entity")
+		Dim MDEP As String = args.NameValuePairs.XFGetValue("MDEP")
+		Dim APE As String = args.NameValuePairs.XFGetValue("APEPT")
+	    Dim DollarType As String = args.NameValuePairs.XFGetValue("DollarType")
+	 	Dim cTypecol As String = args.NameValuePairs.XFGetValue("CType")
+		Dim obj_class As String = args.NameValuePairs.XFGetValue("Obj_Class")
+		Dim Status As String  = targetRow("Status")
+		Dim Create_User As String = targetRow("Create_User")
 			
-			 If Not String.IsNullOrWhiteSpace(APPN) Then
-			 	targetRow("APPN") = APPN
-			End If 
-			If Not String.IsNullOrWhiteSpace(MDEP) Then
-			    targetRow("MDEP") = MDEP
-			End If
-			If Not String.IsNullOrWhiteSpace(APE) Then
-			    targetRow("APE9") = APE
-			End If
-			If Not String.IsNullOrWhiteSpace(DollarType) Then
-			    targetRow("Dollar_Type") = DollarType
-			End If
-			If Not String.IsNullOrWhiteSpace(obj_class) Then
-			    targetRow("Obj_Class") = obj_class
-			End If
-			If Not String.IsNullOrWhiteSpace(cTypecol) Then
-			    targetRow("CType") = cTypecol
-			End If
+		 If Not String.IsNullOrWhiteSpace(APPN) Then
+		 	targetRow("APPN") = APPN
+		End If 
+		If Not String.IsNullOrWhiteSpace(MDEP) Then
+		    targetRow("MDEP") = MDEP
+		End If
+		If Not String.IsNullOrWhiteSpace(APE) Then
+		    targetRow("APE9") = APE
+		End If
+		If Not String.IsNullOrWhiteSpace(DollarType) Then
+		    targetRow("Dollar_Type") = DollarType
+		End If
+		If Not String.IsNullOrWhiteSpace(obj_class) Then
+		    targetRow("Obj_Class") = obj_class
+		End If
+		If Not String.IsNullOrWhiteSpace(cTypecol) Then
+		    targetRow("CType") = cTypecol
+		End If
 			
-				targetRow("Update_Date") = DateTime.Now
-				targetRow("Update_User") = si.UserName																																																																																				
-Dim req_ID_Val As Guid
-	req_ID_Val = targetRow("CMD_PGM_REQ_ID") 
+		targetRow("Update_Date") = DateTime.Now
+		targetRow("Update_User") = si.UserName																																																																																				
+		Dim req_ID_Val As Guid
+		req_ID_Val = targetRow("CMD_PGM_REQ_ID") 
 	
-	Dim targetRowFYValues As DataRow
-			targetRowFYValues = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
-			Dim FY1 As Decimal =  targetRowFYValues("FY_1")		 
-			Dim FY2 As Decimal = targetRowFYValues("FY_2")	
-			Dim FY3 As Decimal = targetRowFYValues("FY_3")
-		    Dim FY4 As Decimal = targetRowFYValues("FY_4")	
-		 	Dim FY5 As Decimal = targetRowFYValues("FY_5")
+		Dim targetRowFYValues As DataRow
+		targetRowFYValues = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+		Dim FY1 As Decimal =  targetRowFYValues("FY_1")		 
+		Dim FY2 As Decimal = targetRowFYValues("FY_2")	
+		Dim FY3 As Decimal = targetRowFYValues("FY_3")
+	    Dim FY4 As Decimal = targetRowFYValues("FY_4")	
+	 	Dim FY5 As Decimal = targetRowFYValues("FY_5")
 				
 	
-							
-						
-	
+									   
+'----------------------------
+'Audit Table Updates
+'----------------------------
+		If SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Rows.Count > 0 Then
+			Dim drow As DataRow
+			drow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+			drow("Orig_UD1") = targetRow("APPN")
+			drow("Updated_UD1") = APPN
+			drow("Orig_UD2") = targetRow("MDEP")
+			drow("Updated_UD2") = MDEP
+			drow("Orig_UD3") = targetRow("APE9")
+			drow("Updated_UD3") = APE
+			drow("Orig_UD4") = targetRow("Dollar_Type")
+			drow("Updated_UD4") = DollarType
+			drow("Orig_UD5") = targetRow("CType")
+			drow("Updated_UD5") = cTypecol
+			drow("Orig_UD6") = targetRow("Obj_Class")
+			drow("Updated_UD6") = obj_class
+			drow("Orig_UD7") = "None"
+			drow("Updated_UD7") = "None"
+			drow("Orig_UD8") = "None"
+			drow("Updated_UD8") = "None"
+				
+			Else
+				Dim newrow As datarow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.NewRow()
+				newrow("CMD_PGM_REQ_ID") = targetRow("CMD_PGM_REQ_ID")
+				newrow("WFScenario_Name") = targetRow("WFScenario_Name")
+				newrow("WFCMD_Name") = targetRow("WFCMD_Name")
+				newrow("WFTime_Name") = targetRow("WFTime_Name")
+				newrow("Entity") = targetRow("Entity")
+				newrow("Account") = "Req_Funding"
+				newrow("Start_Year") = targetRow("WFTime_Name")
+				newrow("Orig_IC") = "None"
+				newrow("Updated_IC") = "None"
+				newrow("Orig_Flow") =  targetRow("Status")
+				newrow("Updated_Flow") = targetRow("Status")
+				newrow("Orig_UD1") = targetRow("APPN")
+				newrow("Updated_UD1") = APPN
+				newrow("Orig_UD2") = targetRow("MDEP")
+				newrow("Updated_UD2") = MDEP
+				newrow("Orig_UD3") = targetRow("APE9")
+				newrow("Updated_UD3") = APE
+				newrow("Orig_UD4") = targetRow("Dollar_Type")
+				newrow("Updated_UD4") = DollarType
+				newrow("Orig_UD5") = targetRow("CType")
+				newrow("Updated_UD5") = cTypecol
+				newrow("Orig_UD6") = targetRow("Obj_Class")
+				newrow("Updated_UD6") = obj_class
+				newrow("Orig_UD7") = "None"
+				newrow("Updated_UD7") = "None"
+				newrow("Orig_UD8") = "None"
+				newrow("Updated_UD8") = "None"
+				newrow("Create_Date") = DateTime.Now
+				newrow("Create_User") = si.UserName
+												
+				SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.rows.add(newrow)
+				
+			End If
 		Dim targetRowFunding As DataRow
-			targetRowFunding = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
-			
+		targetRowFunding = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+												   
+'----------------------------
+'Audit Table Updates  -Update here before removing original vlaues 
+'----------------------------
+		If SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Rows.Count > 0 Then
+			Dim drow As DataRow
+			drow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+			drow("Orig_UD1") = targetRowFunding("UD1")
+			drow("Updated_UD1") = APPN
+			drow("Orig_UD2") = targetRowFunding("UD2")
+			drow("Updated_UD2") = MDEP
+			drow("Orig_UD3") = targetRowFunding("UD3")
+			drow("Updated_UD3") = APE
+			drow("Orig_UD4") = targetRowFunding("UD4")
+			drow("Updated_UD4") = DollarType
+			drow("Orig_UD5") = targetRowFunding("UD5")
+			drow("Updated_UD5") = cTypecol
+			drow("Orig_UD6") = targetRowFunding("UD6")
+			drow("Updated_UD6") = obj_class
+			drow("Orig_UD7") = "None"
+			drow("Updated_UD7") = "None"
+			drow("Orig_UD8") = "None"
+			drow("Updated_UD8") = "None"
+				
+		Else
+			Dim newrow As datarow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.NewRow()
+			newrow("CMD_PGM_REQ_ID") = targetRowFunding("CMD_PGM_REQ_ID")
+			newrow("WFScenario_Name") = targetRowFunding("WFScenario_Name")
+			newrow("WFCMD_Name") = targetRowFunding("WFCMD_Name")
+			newrow("WFTime_Name") = targetRowFunding("WFTime_Name")
+			newrow("Entity") = targetRowFunding("Entity")
+			newrow("Account") = "Req_Funding"
+			newrow("Start_Year") = targetRowFunding("WFTime_Name")
+			newrow("Orig_IC") = "None"
+			newrow("Updated_IC") = "None"
+			newrow("Orig_Flow") =  targetRowFunding("Flow")
+			newrow("Updated_Flow") = targetRowFunding("Flow")
+			newrow("Orig_UD1") = targetRowFunding("UD1")
+			newrow("Updated_UD1") = APPN
+			newrow("Orig_UD2") = targetRowFunding("UD2")
+			newrow("Updated_UD2") = MDEP
+			newrow("Orig_UD3") = targetRowFunding("UD3")
+			newrow("Updated_UD3") = APE
+			newrow("Orig_UD4") = targetRowFunding("UD4")
+			newrow("Updated_UD4") = DollarType
+			newrow("Orig_UD5") = targetRowFunding("UD5")
+			newrow("Updated_UD5") = cTypecol
+			newrow("Orig_UD6") = targetRowFunding("UD6")
+			newrow("Updated_UD6") = obj_class
+			newrow("Orig_UD7") = "None"
+			newrow("Updated_UD7") = "None"
+			newrow("Orig_UD8") = "None"
+			newrow("Updated_UD8") = "None"
+			newrow("Create_Date") = DateTime.Now
+			newrow("Create_User") = si.UserName
+		
+			SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.rows.add(newrow)
+
+			End If
+
 			If targetRowFunding IsNot Nothing Then
 				targetRowFunding.Delete
-   				 
-				
 			End If
 		
 			Dim targetRowFundingNew As DataRow = dt_Details.NewRow()
-				targetRowFundingNew("CMD_PGM_REQ_ID") = req_ID_Val
-							targetRowFundingNew("WFScenario_Name") = wfInfoDetails("ScenarioName")
-							targetRowFundingNew("WFCMD_Name") = wfInfoDetails("CMDName")
-							targetRowFundingNew("WFTime_Name") = wfInfoDetails("TimeName")
-							targetRowFundingNew("Entity") = Entity
-							targetRowFundingNew("IC") = "None"
-							targetRowFundingNew("Account") = "Req_Funding"
-							targetRowFundingNew("Unit_of_Measure") = "Funding"
-							targetRowFundingNew("Flow") = targetRow("Status")
+			targetRowFundingNew("CMD_PGM_REQ_ID") = req_ID_Val
+			targetRowFundingNew("WFScenario_Name") = wfInfoDetails("ScenarioName")
+			targetRowFundingNew("WFCMD_Name") = wfInfoDetails("CMDName")
+			targetRowFundingNew("WFTime_Name") = wfInfoDetails("TimeName")
+			targetRowFundingNew("Entity") = Entity
+			targetRowFundingNew("IC") = "None"
+			targetRowFundingNew("Account") = "Req_Funding"
+			targetRowFundingNew("Unit_of_Measure") = "Funding"
+			targetRowFundingNew("Flow") = targetRow("Status")
 								
 			If Not String.IsNullOrWhiteSpace(APPN) Then
 			 	targetRowFundingNew("UD1") = APPN
@@ -1949,47 +2245,47 @@ Dim req_ID_Val As Guid
 			targetRowFundingNew("UD7") = "None"
 			targetRowFundingNew("UD8") = "None"
 			targetRowFundingNew("Start_Year") = wfInfoDetails("TimeName")			
-							targetRowFundingNew("FY_1") = FY1
-							targetRowFundingNew("FY_2") = FY2
-							targetRowFundingNew("FY_3") = FY3
-							targetRowFundingNew("FY_4") = FY4
-							targetRowFundingNew("FY_5") = FY5
-						
-							targetRowFundingNew("AllowUpdate") = "True"
-							targetRowFundingNew("Create_Date") = targetRow("Create_Date")
-	                        targetRowFundingNew("Create_User") = targetRow("Create_User") 
-							targetRowFundingNew("Update_Date") = DateTime.Now
-	                        targetRowFundingNew("Update_User") = si.UserName  
-		                   dt_Details.Rows.Add(targetRowFundingNew)
-						   
-		              
+			targetRowFundingNew("FY_1") = FY1
+			targetRowFundingNew("FY_2") = FY2
+			targetRowFundingNew("FY_3") = FY3
+			targetRowFundingNew("FY_4") = FY4
+			targetRowFundingNew("FY_5") = FY5
+		
+			targetRowFundingNew("AllowUpdate") = "True"
+			targetRowFundingNew("Create_Date") = targetRow("Create_Date")
+            targetRowFundingNew("Create_User") = targetRow("Create_User") 
+			targetRowFundingNew("Update_Date") = DateTime.Now
+            targetRowFundingNew("Update_User") = si.UserName  
+            dt_Details.Rows.Add(targetRowFundingNew)
+
+
 	
 		                ' Persist changes back to the DB using the configured adapter
 		               
-		               sqaReaderdetail.Update_XFC_CMD_PGM_REQ_Details(dt_Details,sqa2)
-		                sqaReader.Update_XFC_CMD_PGM_REQ(dt,sqa)
-						
+          	sqaReaderdetail.Update_XFC_CMD_PGM_REQ_Details(dt_Details,sqa2)
+            sqaReader.Update_XFC_CMD_PGM_REQ(dt,sqa)
+			sqa_xfc_cmd_pgm_req_details_audit.Update_XFC_CMD_PGM_REQ_DETAILS_AUDIT(SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT, sqa)
 						
 						
 		                End Using
 		            End Using
-Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+			Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
 
 	'Dim objXFSelectionChangedUIActionInfo As New XFSelectionChangedUIActionInfo 
-		'objXFSelectionChangedUIActionInfo.DashboardsToRedraw= ""
-				selectionChangedTaskResult.IsOK = True
-				selectionChangedTaskResult.ShowMessageBox = False
-				selectionChangedTaskResult.Message = ""
-				selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = False
-				selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = Nothing
-				selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
-				selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
-				selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = False
-				selectionChangedTaskResult.ModifiedCustomSubstVars = Nothing
-				selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = False
-				selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = Nothing
-				
-				Return selectionChangedTaskResult
+	'objXFSelectionChangedUIActionInfo.DashboardsToRedraw= ""
+			selectionChangedTaskResult.IsOK = True
+			selectionChangedTaskResult.ShowMessageBox = False
+			selectionChangedTaskResult.Message = ""
+			selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = False
+			selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = Nothing
+			selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
+			selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
+			selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = False
+			selectionChangedTaskResult.ModifiedCustomSubstVars = Nothing
+			selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = False
+			selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = Nothing
+			
+			Return selectionChangedTaskResult
 
 
 End Function
@@ -2004,7 +2300,7 @@ Public Function saveweightprioritization() As Object
 	Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
 	Dim sTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
 	Dim sEntity As String = args.NameValuePairs.XFGetValue("entity")
-    Dim sWeightPrioritizationMbrScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#RMW_Cycle_Config_Annual:T#" & sTime &":V#Periodic:A#GBL_Priority_Cat_Weight:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+    Dim sWeightPrioritizationMbrScript As String = "Cb#" & sCube & ":E#" & sEntity & ":C#Local:S#RMW_Cycle_Config_Annual:T#" & sTime &":V#Periodic:A#GBL_Priority_Cat_Weight:F#None:O#AdjInput:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 	Dim TotPct As Double = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sWeightPrioritizationMbrScript).DataCellEx.DataCell.CellAmount
 'brapi.ErrorLog.Logmessage(si, $"entity: {sEntity} | TotPct: {TotPct} | mbrscript: {sWeightPrioritizationMbrScript}")	
 	If TotPct = 100 Then 
@@ -2122,7 +2418,7 @@ End Function
 					Dim sqa As New SqlDataAdapter()
 
 					' Fill main REQ table
-					Dim sqa_xfc_cmd_pgm_req = New SQA_XFC_CMD_PGM_REQ(connection)
+					Dim sqa_xfc_CMD_PGM_req = New SQA_XFC_CMD_PGM_REQ(connection)
 					Dim sql As String = $"SELECT * 
 										FROM XFC_CMD_PGM_REQ 
 										WHERE WFScenario_Name = @WFScenario_Name
@@ -2135,7 +2431,7 @@ End Function
 						New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
 					}
 'brapi.ErrorLog.LogMessage(si,"here2")
-					Dim sqa_xfc_cmd_pgm_req_details = New SQA_XFC_CMD_PGM_REQ_Details(connection)
+					Dim sqa_xfc_CMD_PGM_req_details = New SQA_XFC_CMD_PGM_REQ_Details(connection)
 
 					' Build details SQL using CMD_PGM_REQ_ID IN (...) so both queries filter by the same parent identifiers
 					Dim detailSql As String = $"SELECT * 
@@ -2170,44 +2466,54 @@ End Function
 							detailSql &= $" AND Dtl.REQ_ID IN ({String.Join(",", paramNames)})"
 						End If
 					End If
-'brapi.ErrorLog.LogMessage(si,"here4")
-					sqa_xfc_cmd_pgm_req.Fill_XFC_CMD_PGM_REQ_DT(sqa, REQDT, sql, paramList.ToArray())
-					sqa_xfc_cmd_pgm_req_details.Fill_XFC_CMD_PGM_REQ_DETAILS_DT(sqa, REQDetailDT, detailSql, detailParamList.ToArray())
-
+					sqa_xfc_CMD_PGM_req.Fill_XFC_CMD_PGM_REQ_DT(sqa, REQDT, sql, paramList.ToArray())
+					sqa_xfc_CMD_PGM_req_details.Fill_XFC_CMD_PGM_REQ_DETAILS_DT(sqa, REQDetailDT, detailSql, detailParamList.ToArray())
 					' Mark rows for deletion in both tables
+					Dim entitiesFromReqList As New List(Of String)
 					For Each reqId As String In Req_ID_List
 						Dim rows As DataRow() = REQDT.Select($"REQ_ID = '{reqId}'")
-						Dim GUIDROW As String = rows.FirstOrDefault().Item("CMD_PGM_REQ_ID").tostring
-						Status  = rows.FirstOrDefault().Item("Status").tostring
-						If Status.XFEqualsIgnoreCase("") Then
+						Dim GUIDROW As String = rows.FirstOrDefault().Item("CMD_PGM_REQ_ID").ToString
+					
+						Dim ent As String = rows.FirstOrDefault().Item("Entity").ToString
+						entitiesFromReqList.Add(ent)
+						Status  = rows.FirstOrDefault().Item("Status").ToString
+						If StatusList.XFEqualsIgnoreCase("") Then
 							StatusList = Status
 						Else
-							statuslist += StatusList & "|" & Status
+							If Not statuslist.XFContainsIgnoreCase(Status) Then
+								statuslist += StatusList & "|" & Status
+							End If
 						End If 
 						For Each row As DataRow In rows
 							row.Delete()
 						Next
-
 						Dim detailRows As DataRow() = REQDetailDT.Select($"CMD_PGM_REQ_ID = '{GUIDROW}'")
 						For Each drow As DataRow In detailRows
 							drow.Delete()
 						Next
+						globals.SetStringValue($"FundsCenterStatusUpdates - {ent}", statuslist)
 					Next
 					' Persist changes back to DB
-					sqa_xfc_cmd_pgm_req_details.Update_XFC_CMD_PGM_REQ_Details(REQDetailDT, sqa)
-					sqa_xfc_cmd_pgm_req.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
-					
+					sqa_xfc_CMD_PGM_req_details.Update_XFC_CMD_PGM_REQ_Details(REQDetailDT, sqa)
+					sqa_xfc_CMD_PGM_req.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
 					'clear cube
 					Dim workspaceID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "10 CMD PGM")	
-					Dim customSubstVars As New Dictionary(Of String, String) 
-					globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", statuslist)
-					customSubstVars.Add("EntList","E#" & sEntity)
+					Dim customSubstVars As New Dictionary(Of String, String)
+					'globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", statuslist)
+					If Not String.IsNullOrWhiteSpace(sEntity) Then
+						customSubstVars.Add("EntList","E#" & sEntity)
+					Else
+'BRApi.ErrorLog.LogMessage(si, String.Join(",", entitiesFromReqList.Select(Function (r) "E#" & r)) & ", statuslist = " & statuslist)						
+						Dim entities As String
+						entitiesFromReqList = entitiesFromReqList.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
+						entities = String.Join(",", entitiesFromReqList.Select(Function (r) "E#" & r))
+						customSubstVars.Add("EntList", entities)
+					End If
 					customSubstVars.Add("WFScen", sScenario)
 					Dim currentYear As Integer = Convert.ToInt32(tm)
 					customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
 					BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
 					
-
 				End Using
 
 				Return Nothing
@@ -2293,14 +2599,14 @@ End If
 			 
 			  Dim Tatgetrow As DataRow
 			  
-			  If dt_Attachment.rows.count.Equals(0) Then
+			  'If dt_Attachment.rows.count.Equals(0) Then
 		
 			  Tatgetrow = dt_Attachment.NewRow()
 			  dt_Attachment.Rows.Add(Tatgetrow)
-			  Else
+'			  Else
 			  
-			  Tatgetrow = dt_Attachment.Select($"CMD_PGM_REQ_ID = '{REQ_ID_Val_guid}'").FirstOrDefault()
-			  End If
+'			  Tatgetrow = dt_Attachment.Select($"CMD_PGM_REQ_ID = '{REQ_ID_Val_guid}'").FirstOrDefault()
+'			  End If
 			  
 		Tatgetrow("CMD_PGM_REQ_ID") = REQ_ID_Val_guid
 			
@@ -2313,6 +2619,12 @@ End If
 		
 		
 		sqaReaderAttachment.Update_XFC_CMD_PGM_REQ_Attachment(dt_Attachment,sqa2)
+		
+		
+		'Delete the Loaded File
+BRApi.FileSystem.DeleteFile(si, FileSystemLocation.ApplicationDatabase, FilePath)
+		
+		
 End If
 	End Using
 End Using
@@ -2325,6 +2637,301 @@ End Using
 		End Function
 #End Region
 
+#Region "Download Document"
+Public Function DownloadDocument()
+Try
+
+
+Dim sREQ As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ","")		
+Dim REQ_ID_Split As List(Of String) = StringHelper.SplitString(sREQ, " ")	
+Dim RequirementID As String  = REQ_ID_Split(1)
+Dim FileName As String  = args.NameValuePairs.XFGetValue("File")
+Dim File_Name_List As List(Of String) = StringHelper.SplitString(FileName, ",")
+
+
+
+	 
+		 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+        Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+            sqlConn.Open()
+			Dim dt As New DataTable()
+			Dim sqa2 As New SqlDataAdapter()
+            Dim sqaReaderAttachment As New SQA_XFC_CMD_PGM_REQ_Attachment(sqlConn)
+            Dim sqlAttach As String = $"SELECT * From XFC_CMD_PGM_REQ_Attachment as Att
+	   						LEFT JOIN XFC_CMD_PGM_REQ AS Req
+							ON Req.CMD_PGM_REQ_ID = Att.CMD_PGM_REQ_ID
+							WHERE 
+	  					 	REQ_ID = @REQ_ID
+							"
+		
+			
+	Dim paramList As New List(Of SqlParameter)
+        paramList.Add(New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = RequirementID})
+		
+		If File_Name_List.Count > 1 Then
+            Dim paramNames As New List(Of String)
+            For i As Integer = 0 To File_Name_List.Count - 1
+                Dim paramName As String = "@Attach_File_Name" & i
+                paramNames.Add(paramName)
+                paramList.Add(New SqlParameter(paramName, SqlDbType.NVarChar) With {.Value = File_Name_List(i)})
+            Next
+            sqlAttach &= $" AND Att.Attach_File_Name IN ({String.Join(",", paramNames)})"
+        ElseIf File_Name_List.Count = 1 Then
+            sqlAttach &= " AND Att.Attach_File_Name = @Attach_File_Name"
+            paramList.Add(New SqlParameter("@Attach_File_Name", SqlDbType.NVarChar) With {.Value = File_Name_List(0)})
+        End If
+        
+        Dim sqlParamsAttach As SqlParameter() = paramList.ToArray()
+		sqaReaderAttachment.Fill_XFC_CMD_PGM_REQ_Attachment_DT(sqa2, dt, sqlAttach, sqlParamsAttach)
+						
+		If dt.Rows.Count = 0 Then
+            Return New XFSelectionChangedTaskResult() With {.IsOK = True, .ShowMessageBox = True, .Message = "No documents found for the selected Requirement."}
+        End If		
+
+		Dim sFolderPath As String = "Documents/Users/" & si.UserName
+        Dim sFilePath As String
+        Dim fileBytes As Byte()
+        Dim sFileName As String
+		
+		
+If dt.Rows.Count = 1 Then
+            ' --- SINGLE FILE LOGIC ---
+            Dim row As DataRow = dt.Rows(0)
+            
+           
+            sFileName = row.Field(Of String)("Attach_File_Name")
+            fileBytes = row.Field(Of Byte())("Attach_File_Bytes")
+            
+            sFilePath = $"{sFolderPath}/{sFileName}"
+
+        Else	
+				
+            ' --- MULTIPLE FILE LOGIC (ZIP) ---
+            sFileName = $"Attachments_{RequirementID}.zip"
+            sFilePath = $"{sFolderPath}/{sFileName}"
+
+            Using memStream As New MemoryStream()
+                ' Create a zip archive in memory
+                Using zip As New ZipArchive(memStream, ZipArchiveMode.Create, True)
+                    For Each row As DataRow In dt.Rows
+                        
+                        Dim entryFileName As String = row.Field(Of String)("Attach_File_Name")
+                        Dim entryFileBytes As Byte() = row.Field(Of Byte())("Attach_File_Bytes")
+
+                        ' Add the file to the zip
+                        Dim zipEntry = zip.CreateEntry(entryFileName)
+                        Using entryStream As Stream = zipEntry.Open()
+                            entryStream.Write(entryFileBytes, 0, entryFileBytes.Length)
+                        End Using
+                    Next
+                End Using 
+                
+                ' Get the complete zip file as a byte array
+                fileBytes = memStream.ToArray()
+            End Using
+        End If
+
+      ' Save the (single or zip) file to the user's temp folder
+        Dim objXFFileInfo = New XFFileInfo(FileSystemLocation.ApplicationDatabase, sFilePath)
+        Dim objXFFile As New XFFile(objXFFileInfo, String.Empty, fileBytes)
+        BRApi.FileSystem.InsertOrUpdateFile(si, objXFFile)
+
+        'Create and return the task to open/download the file
+        Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+        selectionChangedTaskResult.IsOK = True
+        selectionChangedTaskResult.ShowMessageBox = False 
+        selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = True
+        selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo.SelectionChangedNavigationType = XFSelectionChangedNavigationType.OpenFile
+        selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo.SelectionChangedNavigationArgs = $"FileSourceType=Application, UrlOrFullFileName=[{sFilePath}], OpenInXFPageIfPossible=False, PinNavPane=True, PinPOVPane=False"
+
+        Return selectionChangedTaskResult
+End Using
+End Using
+    Catch ex As Exception
+        Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+    End Try
+End Function
+#End Region	
+
+#Region "Clear Key5 params"
+Public Function ClearKey5param()
+	Try
+Dim paramsToClear As String = "ML_CMD_PGM_FormulateAPEPT," & _
+														"ML_CMD_PGM_FormulateAPPN," & _
+														"ML_CMD_PGM_FormulateCType," & _
+														"ML_CMD_PGM_FormulateMDEP," & _
+														"ML_CMD_PGM_FormulateDollarType," & _
+														"ML_CMD_PGM_FormulateObjectClass," & _
+														"ML_CMD_PGM_FormulateSAG" 
+							
+						
+							
+							
+							
+						Dim selectionChangedTaskResult As XFSelectionChangedTaskResult = Me.ClearSelections(si, globals, api, args, paramsToClear)	
+						selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True	
+						selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
+						Return selectionChangedTaskResult
+
+    Catch ex As Exception
+        Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+    End Try
+End Function
+
+Public Function ClearKey5params_NoFCAPPN()
+	Try
+Dim paramsToClear As String = "ML_CMD_PGM_FormulateAPEPT," & _
+														"ML_CMD_PGM_FormulateCType," & _
+														"ML_CMD_PGM_FormulateMDEP," & _
+														"ML_CMD_PGM_FormulateDollarType," & _
+														"ML_CMD_PGM_FormulateObjectClass," & _
+														"ML_CMD_PGM_FormulateSAG" 
+							
+
+						Dim selectionChangedTaskResult As XFSelectionChangedTaskResult = Me.ClearSelections(si, globals, api, args, paramsToClear)	
+						selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True	
+						selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
+						Return selectionChangedTaskResult
+
+    Catch ex As Exception
+        Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+    End Try
+End Function
+#End Region	
+
+#Region "Send Email"
+Public Function SendStatusChangeEmail(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs,  Optional ByVal Status As String = "",Optional ByVal ReqID As String = "")
+    Try
+        ' Get Workflow Details for the SQL Query
+        Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+        Dim UserName As String = si.UserName
+        ' Initialize DataTable to hold results
+        Dim DataEmail As New DataTable()
+        
+        'Brapi.ErrorLog.LogMessage(si,"Status" & Status)
+		' Brapi.ErrorLog.LogMessage(si,"ID" & ReqID)
+        ' --- 2. DATABASE CONNECTION & QUERY EXECUTION ---
+        Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+            Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+                sqlConn.Open()
+                
+                Dim SqlString As String = "SELECT Title, Status, Create_User, Create_Date, Notification_List_Emails, Entity 
+                                          From XFC_CMD_PGM_REQ 
+                                          Where WFScenario_Name = @WFScenario_Name 
+                                          And WFCMD_Name = @WFCMD_Name 
+                                          And WFTime_Name = @WFTime_Name
+										  AND REQ_ID = @REQ_ID"
+                
+               Dim paramlist As New List(Of SqlParameter)()
+                
+                paramlist.Add(New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")})
+                paramlist.Add(New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")})
+                paramlist.Add(New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")})
+				paramlist.Add(New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = ReqID})
+                
+               
+                
+                ' Execute the Query and fill the DataTable
+                Using sqlCommand As New SqlCommand(SqlString, sqlConn)
+                    sqlCommand.Parameters.AddRange(paramlist.ToArray())
+                    
+                    Using sqa As New SqlDataAdapter(sqlCommand)
+                        sqa.Fill(DataEmail)
+                    End Using
+                End Using
+            End Using 
+        End Using 
+        
+        
+        ' --- 3. PROCESS DATA & SEND EMAIL ---
+        
+        ' Get Email Parameters
+        Dim EmailConnectorStr As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "Var_Email_Connector_String")
+        Dim BodyDisclaimerBody As String = BRApi.Dashboards.Parameters.GetLiteralParameterValue(si, False, "varEmailDisclaimer")
+        
+        For Each drow As DataRow In DataEmail.Rows 
+            
+            Dim ReqTitle As String = drow("Title").ToString()
+            Dim ReqStatus As String = Status
+            Dim CreateDate As String = drow("Create_Date").ToString()
+            Dim FundCenter As String = drow("Entity").ToString()
+            Dim StatusChangeEmailIs As New List(Of String)
+            Dim EmailIs As String = drow("Notification_List_Emails").ToString()
+			
+			    If Not String.IsNullOrWhiteSpace(EmailIs) Then
+
+			        ' Define the potential delimiters to check 
+			        Dim potentialDelimiters As Char() = {","c, ";"c, "|"c, " "c}
+			       
+			        Dim emailDelimiter As Char = DetectDelimiter(EmailIs, potentialDelimiters)
+			        
+			        ' Split the string using the detected delimiter
+			        Dim emailArray As String() = EmailIs.Split(emailDelimiter, StringSplitOptions.RemoveEmptyEntries)
+			        
+					' Trim whitespace from each email address and add it to the List(Of String)
+			        For Each singleEmail As String In emailArray
+			            Dim trimmedEmail As String = singleEmail.Trim()
+			            If Not String.IsNullOrWhiteSpace(trimmedEmail) Then
+			                StatusChangeEmailIs.Add(trimmedEmail)
+			            End If
+			        Next
+			    End If
+            
+            Dim StatusChangeSubject As String = "Requirement Status Change"
+            
+            ' Build Body
+            Dim StatusChangeBody As String = "A Requirement Request for Funds Center: " & FundCenter & _
+                                             " with Requirement Title: " & ReqTitle & _
+                                             " has changed status to **" & ReqStatus & "**." & _
+                                             " Submitted by: " & UserName & " - " & CreateDate & vbCrLf & BodyDisclaimerBody
+            
+            ' Send email
+            If StatusChangeEmailIs.Count > 0 AndAlso Not String.IsNullOrWhiteSpace(EmailConnectorStr) Then
+               ' Brapi.Errorlog.LogMessage(si, "Attempting to send status change email to: " & EmailIs)
+                
+                ' Call the utility function to send the email
+               ' Brapi.Utilities.SendMail(si, EmailConnectorStr, StatusChangeEmailIs, StatusChangeSubject, StatusChangeBody, Nothing)
+                
+               'Brapi.Errorlog.LogMessage(si, "Successfully triggered email for Request Title: " & ReqTitle)
+            End If
+            
+        Next
+        
+        Return Nothing 
+        
+   Catch ex As Exception
+			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+		End Try            
+    
+End Function
+#End Region
+
+#Region "Helper Fnctions"
+' Helper function to find the delimiter used in a string
+Private Function DetectDelimiter(ByVal inputString As String, ByVal potentialDelimiters As Char()) As Char
+    ' Default to the first potential delimiter if none are found, or a comma if the list is empty
+    Dim defaultDelimiter As Char = If(potentialDelimiters IsNot Nothing AndAlso potentialDelimiters.Length > 0, potentialDelimiters(0), ","c)
+
+    If String.IsNullOrWhiteSpace(inputString) Then
+        Return defaultDelimiter
+    End If
+
+    For Each delimiter As Char In potentialDelimiters
+        ' Check if the string contains the delimiter
+        If inputString.Contains(delimiter) Then
+            ' Check if splitting yields more than one non-empty entry
+            If inputString.Split(delimiter).Length > 1 Then
+                Return delimiter
+            End If
+        End If
+    Next
+
+    Return defaultDelimiter
+End Function
+#End Region		
+		
+		
 	End Class
 
 End Namespace
+

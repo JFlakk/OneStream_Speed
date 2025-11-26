@@ -53,14 +53,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					Me.CalculateWeightedScoreAndRank()
 				End If
 
-            Catch ex As Exception
+            	Catch ex As Exception
                 Throw New XFException(si, ex)
             End Try
         End Sub
 
 #Region "Load_Reqs_to_Cube"
 		Public Sub Load_Reqs_to_Cube()
-Brapi.ErrorLog.LogMessage(si,"@HERE1 Load_Reqs_to_Cube")
+'Brapi.ErrorLog.LogMessage(si,"@HERE1 Load_Reqs_to_Cube")
 			'Load_Type Param - Status Updates, New Req Creation, Rollover, Mpr Req Creation, Copy
 			Dim POVPeriodNum As Integer = api.Time.GetPeriodNumFromId(api.Time.GetIdFromName(api.Pov.Time.Name))
 			Dim POVYear As Integer = api.Time.GetYearFromId(api.Time.GetIdFromName(api.Pov.Time.Name))
@@ -68,7 +68,15 @@ Brapi.ErrorLog.LogMessage(si,"@HERE1 Load_Reqs_to_Cube")
 			Dim wfStartYear As String = api.Time.GetNameFromId(wfStartTimeID)
 		    Dim table_FY = POVYear - wfStartYear.XFConvertToInt + 1
 			Dim inClause As String
-				
+			
+			Dim tgt_Origin As String = "Import"
+			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")	
+			Dim EntParent = BRApi.Finance.Members.HasChildren(si, entDimPk, api.Pov.Entity.MemberId)
+			
+			If EntParent Then
+				tgt_Origin = "AdjInput"
+			End If
+			
 			Dim StatusbyFundsCenter As String = Globals.GetStringValue($"FundsCenterStatusUpdates - {api.pov.entity.name}",String.Empty)
 			Dim appnbyFundsCenter As String = Globals.GetStringValue($"FundsCenterStatusappnUpdates - {api.pov.entity.name}",String.Empty)
 			Dim StatusList As New List(Of String) 
@@ -83,15 +91,16 @@ Brapi.ErrorLog.LogMessage(si,"@HERE1 Load_Reqs_to_Cube")
 					StatusbyFundsCenter = $",[{String.Join(", ", prefixedStatuses)}]"
 				End If
 			Else
-				
+				inClause = $"'{StatusbyFundsCenter}'"
+				StatusbyFundsCenter = $",[{StatusbyFundsCenter}]"
 			End If
 			
-			brapi.ErrorLog.LogMessage(si,$"zHit: {StatusbyFundsCenter}")
+			'brapi.ErrorLog.LogMessage(si,$"zHit: {StatusbyFundsCenter}")
 	
-			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(REMOVEZeros(V#Periodic),[O#Import]{StatusbyFundsCenter})")
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(REMOVEZeros(V#Periodic),[O#tgt_Origin]{StatusbyFundsCenter})")
 			Dim destBuffer As DataBuffer = New DataBuffer()
 			Dim ClearCubeData As DataBuffer = New DataBuffer()
-	
+
 			'Define the SQL Statement 
 			Dim sql = $"SELECT Entity, Account, IC, Flow, UD1, UD2, UD3, UD4, UD5, UD6, UD7, UD8, SUM(FY_{table_FY}) AS Tot_Annual
 						FROM XFC_CMD_PGM_REQ_Details
@@ -100,11 +109,10 @@ Brapi.ErrorLog.LogMessage(si,"@HERE1 Load_Reqs_to_Cube")
 						AND Account In ('Req_Funding')
 						AND Flow In ({inClause})
 						Group By Entity, Account, IC, Flow, UD1, UD2, UD3, UD4, UD5, UD6, UD7, UD8"
-	'brapi.ErrorLog.LogMessage(si,"Hit SQL: ")
-	brapi.ErrorLog.LogMessage(si,"Hit SQL: " & sql.ToString)
-	
+
 			Using dbConnApp As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
 				Using reader As DataTableReader = BRApi.Database.ExecuteSqlUsingReader(dbConnApp, sql, False).CreateDataReader
+
 					If reader.HasRows Then
 						While reader.Read()
 							Dim ReqDataCellpk As New DataBufferCellPk()
@@ -114,7 +122,7 @@ Brapi.ErrorLog.LogMessage(si,"@HERE1 Load_Reqs_to_Cube")
 							ReqDataCell.DataBufferCellPk.SetAccount(api, reader("Account").ToString())
 							ReqDataCell.DataBufferCellPk.SetFlow(api, reader("Flow").ToString())
 							ReqDataCell.DataBufferCellPk.SetIC(api, reader("IC").ToString())
-							ReqDataCell.DataBufferCellPk.SetOrigin(api, "Import")
+							ReqDataCell.DataBufferCellPk.SetOrigin(api, tgt_Origin)
 							ReqDataCell.DataBufferCellPk.SetUD1(api, reader("UD1").ToString())
 							ReqDataCell.DataBufferCellPk.SetUD2(api, reader("UD2").ToString())
 							ReqDataCell.DataBufferCellPk.SetUD3(api, reader("UD3").ToString())
@@ -138,7 +146,7 @@ Brapi.ErrorLog.LogMessage(si,"@HERE1 Load_Reqs_to_Cube")
 'brapi.ErrorLog.LogMessage(si,"**Hit count: " & destBuffer.DataBufferCells.Count)
 			If destBuffer.DataBufferCells.Count > 0 Then
 	
-destBuffer.LogDataBuffer(api,"@ DataBuffer: " & api.Pov.Entity.Name & " : "  & api.Pov.Time.Name ,1000)
+'destBuffer.LogDataBuffer(api,"@ DataBuffer: " & api.Pov.Entity.Name & " : "  & api.Pov.Time.Name ,1000)
 				api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,, True)
 				destBuffer.DataBufferCells.Clear()
 			End If
@@ -159,7 +167,7 @@ destBuffer.LogDataBuffer(api,"@ DataBuffer: " & api.Pov.Entity.Name & " : "  & a
 
 #Region "Copy_Manpower"
 'Updated 12/03/2024 by Fronz - changed BO5 to BOC & added the 'Clear Existing Data' lines of code
-		Public Sub Copy_Manpower(ByVal globals As BRGlobals)
+	Public Sub Copy_Manpower(ByVal globals As BRGlobals)
 			Try		
 				Dim sSourcePosition As String = args.CustomCalculateArgs.NameValuePairs.XFGetValue("SourcePB")
 				Dim req_id_val As guid = args.CustomCalculateArgs.NameValuePairs.XFGetValue("REQ_ID_VAL").XFConvertToGuid
@@ -167,28 +175,28 @@ destBuffer.LogDataBuffer(api,"@ DataBuffer: " & api.Pov.Entity.Name & " : "  & a
 				Dim sTargetYear As Integer = api.Pov.Time.Name.XFConvertToInt
 				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 
-				Dim sSrcMbrScript = $"FilterMembers(RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top +
-												  E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear+1}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top +
-												  E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear+2}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top +
-												  E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear+3}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top +
-												  E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear+4}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC])"
+				Dim sSrcMbrScript = $"FilterMembers(RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top +
+												  E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear+1}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top +
+												  E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear+2}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top +
+												  E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear+3}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top +
+												  E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear+4}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC])"
 
 				Dim dbFundingLines = api.Data.GetDataBufferUsingFormula(sSrcMbrScript)
 				
                 Dim mpr_buffers As New Dictionary(Of String,DataBuffer)
 
-                Dim BufferFY1Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
+                Dim BufferFY1Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{sTargetYear}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
                 Dim BufferFY1 = api.Data.GetDataBufferUsingFormula(BufferFY1Script)
-                Dim BufferFY2Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{(sTargetYear+1)}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
+                Dim BufferFY2Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{(sTargetYear+1)}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
                 Dim BufferFY2 = api.Data.GetDataBufferUsingFormula(BufferFY2Script)
-                Dim BufferFY3Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{(sTargetYear+2)}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
+                Dim BufferFY3Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{(sTargetYear+2)}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
                 Dim BufferFY3 = api.Data.GetDataBufferUsingFormula(BufferFY3Script)
-                Dim BufferFY4Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{(sTargetYear+3)}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
+                Dim BufferFY4Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{(sTargetYear+3)}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
                 Dim BufferFY4 = api.Data.GetDataBufferUsingFormula(BufferFY4Script)
-                Dim BufferFY5Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{(sTargetYear+4)}:C#Local:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
+                Dim BufferFY5Script As String = $"RemoveZeros(E#{wfInfoDetails("CMDName")}:S#{sSourcePosition}:T#{(sTargetYear+4)}:C#Aggregated:V#Periodic:F#Top:O#Top:I#Top:U6#Top:U7#Top:U8#Top),[A#BO6,A#BOC]"
                 Dim BufferFY5 = api.Data.GetDataBufferUsingFormula(BufferFY5Script)
 			
-						
+					
 				Dim REQDetailDT As DataTable = New DataTable("REQDetailDT")
 				 
 				Dim sqa As New SqlDataAdapter()
@@ -215,7 +223,7 @@ destBuffer.LogDataBuffer(api,"@ DataBuffer: " & api.Pov.Entity.Name & " : "  & a
 												 REQDetailDT.Columns("UD3"),
 												 REQDetailDT.Columns("UD4"),
 												 REQDetailDT.Columns("UD5")}
-
+'Brapi.ErrorLog.LogMessage(si,"SQL" & SqlREQDetail)
 'Dim logBuilder As New StringBuilder()
 'For Each drow As DataRow In REQDetailDT.Rows
 '            For Each column As DataColumn In REQDetailDT.Columns
@@ -230,8 +238,8 @@ destBuffer.LogDataBuffer(api,"@ DataBuffer: " & api.Pov.Entity.Name & " : "  & a
 												 'sSrcMbrScript log													 
 'Brapi.ErrorLog.LogMessage(si,"Mem script:" + sSrcMbrScript)				
 'buffer log								 
-dbfundinglines.LogDataBuffer(api,"manpower test",1000)
-				
+'dbfundinglines.LogDataBuffer(api,"manpower test",1000)
+	'Brapi.ErrorLog.LogMessage(si,"HERE 0")			
 				For Each FundingLineCell As DataBufferCell In dbFundingLines.DataBufferCells.values
 					Dim Acct = "CIV_FTE"
 					Dim UoM = "CIV_FTE"
@@ -243,10 +251,10 @@ dbfundinglines.LogDataBuffer(api,"manpower test",1000)
 							cPROBE_Acct = "BOC"
 					End If 
 						Dim isinsert As Boolean = False
-
+'Brapi.ErrorLog.LogMessage(si,"HERE1")
 						Dim row As DataRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
 																	AND Account = '{Acct}'
-																	AND CMD_PGM_REQ_ID = '{req_id_val}' 
+																	AND CMD_PGM_REQ_ID = '{req_id_val}'
 																	AND WFCMD_Name = '{api.pov.cube.name}' 
 																	AND Unit_of_Measure = '{UoM}' 
 																	AND Entity = '{api.pov.entity.name}'
@@ -254,7 +262,8 @@ dbfundinglines.LogDataBuffer(api,"manpower test",1000)
 																	AND UD2 = '{FundingLineCell.DataBufferCellPk.GetUD2Name(api)}'
 																	AND UD3 = '{FundingLineCell.DataBufferCellPk.GetUD3Name(api)}'
 																	AND UD4 = '{FundingLineCell.DataBufferCellPk.GetUD4Name(api)}'
-																	AND UD5 = '{FundingLineCell.DataBufferCellPk.GetUD5Name(api)}'").FirstOrDefault()
+																	AND UD5 = '{FundingLineCell.DataBufferCellPk.GetUD5Name(api)}'"
+																	).FirstOrDefault()
 				
 						If IsNothing(row) Then
 							isinsert = True
@@ -266,17 +275,17 @@ dbfundinglines.LogDataBuffer(api,"manpower test",1000)
 						row("CMD_PGM_REQ_ID") = req_id_val
 						row("WFCMD_Name") = api.Pov.Cube.Name
 						row("Unit_of_Measure") = UoM 
-						Row("Entity") = api.Pov.Entity.Name
-						Row("IC") = "None"
-						Row("Account") = Acct
-						Row("Flow") = "L2_Formulate_PGM"
-						Row("Start_Year") = api.Pov.Time.Name
-						Row("FY_1") = GetBCValue(FundingLineCell,BufferFY1,cPROBE_Acct)
-						Row("FY_2") = GetBCValue(FundingLineCell,BufferFY2,cPROBE_Acct)
-						Row("FY_3") = GetBCValue(FundingLineCell,BufferFY3,cPROBE_Acct)	
-						Row("FY_4") = GetBCValue(FundingLineCell,BufferFY4,cPROBE_Acct)	
-						Row("FY_5") = GetBCValue(FundingLineCell,BufferFY5,cPROBE_Acct)
-						Row("FY_Total") = Row("FY_1") + Row("FY_2") + Row("FY_3") + Row("FY_4") + Row("FY_5")
+						row("Entity") = api.Pov.Entity.Name
+						row("IC") = "None"
+						row("Account") = Acct
+						row("Flow") = "L2_Formulate_PGM"
+						row("Start_Year") = api.Pov.Time.Name
+						row("FY_1") = GetBCValue(FundingLineCell,BufferFY1,cPROBE_Acct)
+						row("FY_2") = GetBCValue(FundingLineCell,BufferFY2,cPROBE_Acct)
+						row("FY_3") = GetBCValue(FundingLineCell,BufferFY3,cPROBE_Acct)	
+						row("FY_4") = GetBCValue(FundingLineCell,BufferFY4,cPROBE_Acct)	
+						row("FY_5") = GetBCValue(FundingLineCell,BufferFY5,cPROBE_Acct)
+						row("FY_Total") = row("FY_1") + row("FY_2") + row("FY_3") + row("FY_4") + row("FY_5")
 						row("UD1") = FundingLineCell.DataBufferCellPk.GetUD1Name(api)
 						row("UD2") = FundingLineCell.DataBufferCellPk.GetUD2Name(api)
 						row("UD3") = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
@@ -304,6 +313,7 @@ dbfundinglines.LogDataBuffer(api,"manpower test",1000)
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try			 
 		End Sub
+    
 					
 #End Region
 
@@ -324,10 +334,20 @@ Private Function CalculateWeightedScoreAndRank() As Object
 				
 				 Dim categoryToColumnMap As Dictionary(Of String, String) = Me.GetCategoryColumnMappings()
 			
-				Dim req_IDs As String = args.CustomCalculateArgs.NameValuePairs.XFGetValue("req_IDs")
-				Brapi.ErrorLog.LogMessage(si, "REQId" & req_IDs)
-				Dim ReqID_Guid As Guid = req_IDs.XFConvertToGuid()
-      			  Dim RedID_Str As String = ReqID_Guid.ToString()
+				Dim req_IDs As Object = args.CustomCalculateArgs.NameValuePairs.XFGetValue("req_IDs")
+				'Brapi.ErrorLog.LogMessage(si, "REQ_ID" & req_IDs )
+				Dim Req_ID_List As New List(Of String)()				
+				
+				    Dim ID As String = req_IDs.ToString()
+				    If Not String.IsNullOrEmpty(ID) Then
+				       
+				        Req_ID_List = ID.Split(","c).ToList()
+				    
+				    End If
+				    
+		
+				
+				 'Brapi.ErrorLog.LogMessage(si,"HERE3")
 				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 				
 	
@@ -346,18 +366,40 @@ Private Function CalculateWeightedScoreAndRank() As Object
 										WHERE WFScenario_Name = @WFScenario_Name
 										AND WFCMD_Name = @WFCMD_Name
 										AND WFTime_Name = @WFTime_Name
+										AND Review_Entity = @Review_Entity
 					 					"
 					
 
-					Dim sqlparams As SqlParameter() = {
-						New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
-						New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-						New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}			
-					}
-					sqaReaderPriority.Fill_XFC_CMD_PGM_REQ_Priority_DT(si, sqa3, dt_Priority, sql, sqlParams)
+		Dim paramList As New List(Of SqlParameter) From {
+        New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
+        New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
+        New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
+		New SqlParameter("@Review_Entity", SqlDbType.NVarChar) With {.Value = sFundCenter}
+   		}
 
+					'Brapi.ErrorLog.LogMessage(si, "HERE Count" & Req_ID_List.Count)
+					If Req_ID_List.Count > 1 Then
+				        Dim paramNames As New List(Of String)()
+				        For i As Integer = 0 To Req_ID_List.Count - 1
+				            Dim paramName As String = "@REQ_ID" & i
+				            paramNames.Add(paramName)
+				            paramList.Add(New SqlParameter(paramName, SqlDbType.NVarChar) With {.Value = Req_ID_List(i).Trim()})
+							'Brapi.ErrorLog.LogMessage(si,"REQIDLIST" & Req_ID_List(i) )
+				        Next
+				        sql &= $" AND REQ_ID IN ({String.Join(",", paramNames)})"
+				    ElseIf Req_ID_List.Count = 1 Then
+				        sql &= " AND REQ_ID = @REQ_ID"
+				        paramList.Add(New SqlParameter("@REQ_ID", SqlDbType.NVarChar) With {.Value = Req_ID_List(0).Trim()})
+				    End If
+				'Brapi.ErrorLog.LogMessage(si,"SQL: " & sql)
+				    ' 4. Convert the list to the array your method expects
+				    Dim sqlparams As SqlParameter() = paramList.ToArray()
+					
+					
+					sqaReaderPriority.Fill_XFC_CMD_PGM_REQ_Priority_DT(si, sqa3, dt_Priority, sql, sqlparams)
+'Brapi.ErrorLog.LogMessage(si, "REQID" &  dt_Priority.Rows.Count )
                 For Each row As DataRow In dt_Priority.Rows
-                
+               ' Brapi.ErrorLog.LogMessage(si, "REQID" )
                
 				Dim Totalweightedscore As Decimal = 0
 				 ' Loop through the categories from the configuration
@@ -402,7 +444,7 @@ For Each rowView As DataRowView In dv
 
     ' Assign the final rank to the 'Rank' column.
     rowView("Auto_Rank") = rank
-    
+     rowView("Rank_Override") = 0
     ' Update the previous score for the next row's comparison.
     previousScore = currentScore
 Next			
@@ -432,8 +474,8 @@ End Function
                 Dim priCatDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "A_Admin")
                  priCatMembers = BRApi.Finance.Members.GetMembersUsingFilter(si, priCatDimPk, priFilter, True)
                 
-                Dim catNameMemScript As String   = "Cb#" & WFCube & ":E#" & sFundCenter & ":C#Local:S#" & WFScenario & ":T#" & REQTime & ":V#Annotation:A#UUUU:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-                Dim catWeightMemScript As String = "Cb#" & WFCube & ":E#" & sFundCenter & ":C#Local:S#" & WFScenario & ":T#" & REQTime & ":V#Periodic:A#UUUU:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+                Dim catNameMemScript As String   = "Cb#" & WFCube & ":E#" & sFundCenter & ":C#Local:S#" & WFScenario & ":T#" & REQTime & ":V#Annotation:A#UUUU:F#None:O#AdjInput:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+                Dim catWeightMemScript As String = "Cb#" & WFCube & ":E#" & sFundCenter & ":C#Local:S#" & WFScenario & ":T#" & REQTime & ":V#Periodic:A#UUUU:F#None:O#AdjInput:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
                 Dim priCatNameList As New List(Of String)
                 Dim priCatName As String = ""
                 Dim priCatWeight As Decimal
@@ -504,7 +546,24 @@ End Function
 			Global_Functions.UpdateValue(srccell,currCellDB,destDB,value)
 
 		End Sub
-		
+	''---------------------------------------------------------------------------------------------------
+		 Private Function GetBufferValue(ByVal db As DataBuffer, ByVal targetPk As DataBufferCellPk) As Decimal
+        
+        For Each cell As DataBufferCell In db.DataBufferCells.Values
+            If cell.DataBufferCellPk.AccountId = targetPk.AccountId AndAlso
+               cell.DataBufferCellPk.UD1Id = targetPk.UD1Id AndAlso
+               cell.DataBufferCellPk.UD2Id = targetPk.UD2Id AndAlso
+               cell.DataBufferCellPk.UD3Id = targetPk.UD3Id AndAlso
+               cell.DataBufferCellPk.UD4Id = targetPk.UD4Id AndAlso
+               cell.DataBufferCellPk.UD5Id = targetPk.UD5Id Then
+               
+               Return cell.CellAmount
+            End If
+        Next
+        
+        
+        Return 0
+    End Function
 #End Region
 			
 				

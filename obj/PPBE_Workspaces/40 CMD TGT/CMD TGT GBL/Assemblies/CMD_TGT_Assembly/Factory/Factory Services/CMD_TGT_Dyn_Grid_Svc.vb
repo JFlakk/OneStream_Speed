@@ -43,6 +43,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 						Return dg_CMD_TGT_ImportDist()
 					End If
 					
+					If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_TGT_ImportWH") Then
+						Return dg_CMD_TGT_ImportWH()
+					End If
+					
 '					If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_PGM_REQList") Then
 '				    	Return dg_CMD_PGM_REQList()            
 '					End If
@@ -80,7 +84,69 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			'Dim sScenario As String = wfInfoDetails("ScenarioName")
 			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
 			
-			Dim tableName As String = "CMD_TGT_Import_" & sScenario
+			Dim tableName As String = "CMD_TGT_Import_TGT_Dist_" & sScenario
+			Dim dt As DataTable = BRApi.Utilities.GetSessionDataTable(si, si.UserName,tableName)
+			If dt Is Nothing Then Return Nothing
+			Dim skp As New Dictionary(Of String, Object)
+			
+			Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition)
+			Dim ValidationError As New XFDynamicGridColumnDefinition()
+			ValidationError.ColumnName = "ValidationError"
+			ValidationError.IsFromTable = True
+			ValidationError.IsVisible = True
+			ValidationError.AllowUpdates = False
+			columnDefinitions.Add(ValidationError)
+			
+						
+			Dim FiscalYear As New XFDynamicGridColumnDefinition()
+			FiscalYear.ColumnName = "FiscalYear"
+			FiscalYear.IsFromTable = True
+			FiscalYear.IsVisible = True
+			FiscalYear.AllowUpdates = False
+			columnDefinitions.Add(FiscalYear)
+			
+			
+			Dim FundCenter As New XFDynamicGridColumnDefinition()
+			FundCenter.ColumnName = "FundCenter"
+			FundCenter.IsFromTable = True
+			FundCenter.IsVisible = True
+			FundCenter.AllowUpdates = False
+			columnDefinitions.Add(FundCenter)
+			
+			Dim APPN As New XFDynamicGridColumnDefinition()
+			APPN.ColumnName = "FundCode"
+			APPN.IsFromTable = True
+			APPN.IsVisible = True
+			APPN.AllowUpdates = False
+			columnDefinitions.Add(APPN)
+			
+			Dim MDEP As New XFDynamicGridColumnDefinition()
+			MDEP.ColumnName = "MDEP"
+			MDEP.IsFromTable = True
+			MDEP.IsVisible = True
+			MDEP.AllowUpdates = False
+			columnDefinitions.Add(MDEP)
+			
+			Dim APE9 As New XFDynamicGridColumnDefinition()
+			APE9.ColumnName = "APE9"
+			APE9.IsFromTable = True
+			APE9.IsVisible = True
+			APE9.AllowUpdates = False
+			columnDefinitions.Add(APE9)
+			Dim xfdt As New XFDataTable(si,dt,Nothing,10000)
+			Dim rslt As New XFDynamicGridGetDataResult(xfdt,columnDefinitions,DataAccessLevel.AllAccess)
+'BRApi.ErrorLog.LogMessage(si, "row count: " & rslt.DataTable.Rows.Count )
+			Return rslt
+
+		End Function
+
+			
+		Private Function dg_CMD_TGT_ImportWH() As XFDynamicGridGetDataResult
+			'Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			'Dim sScenario As String = wfInfoDetails("ScenarioName")
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			
+			Dim tableName As String = "CMD_TGT_Import_TGT_WH_" & sScenario
 			Dim dt As DataTable = BRApi.Utilities.GetSessionDataTable(si, si.UserName,tableName)
 			If dt Is Nothing Then Return Nothing
 			Dim skp As New Dictionary(Of String, Object)

@@ -55,6 +55,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					Case "ValidateDistWH"
 						dbExt_ChangedResult = Me.ValidateDistWH()
 						Return dbExt_ChangedResult
+					Case "AdjustTopLine"
+						dbExt_ChangedResult = Me.AdjustTopLine()
+						Return dbExt_ChangedResult
+
 				End Select	
 
 
@@ -228,7 +232,7 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 			Next
 			
 			For Each item In toEmail
-				BRAPI.ErrorLog.LogMessage(si, item)
+'BRAPI.ErrorLog.LogMessage(si, item)
 			Next
 			' Send the message
 			BRApi.Utilities.SendMail(si, emailConnectionName, toEmail, subject, messageBody, Nothing)
@@ -304,12 +308,36 @@ Public Function ModifyDistWH() As XFSelectionChangedTaskResult
 	Dim dargs As New DashboardExtenderArgs
 	dargs.FunctionName = "Check_WF_Complete_Lock"
 	Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, dargs)
-    BRAPI.ErrorLog.LogMessage(si,"Hit Ent: " & Entity)
 	If sWFStatus.XFContainsIgnoreCase("Unlocked") Then		
 		Dim gWorkSpaceId As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "40 CMD TGT")
 		Dim dmDictionary As Dictionary(Of String, String) = New Dictionary(Of String, String)
 		dmDictionary.Add("Entity", Entity)
 		brapi.Utilities.ExecuteDataMgmtSequence(si,gWorkSpaceId,"CMD_TGT_ModifyDistWH",dmDictionary)
+		Return selectionChangedTaskResult
+	Else
+		selectionChangedTaskResult.IsOK = False
+		selectionChangedTaskResult.ShowMessageBox = True
+		selectionChangedTaskResult.Message = vbCRLF & "NOT allowed to publish targets while the current workflow is locked. Nagvigate to the Manage Access dashboard and select the Revert Workflows button before publishing targets." & vbCRLF	
+		Return selectionChangedTaskResult
+	End If
+End Function
+
+#End Region
+
+#Region "AdjustTopLine"
+Public Function AdjustTopLine() As XFSelectionChangedTaskResult
+	Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+	Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+	Dim Entity As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetCMD_L2FC(si,wfInfoDetails("CMDName"))    'SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_CMD_TGT_FundsCenter","NA")	
+	Dim dargs As New DashboardExtenderArgs
+	dargs.FunctionName = "Check_WF_Complete_Lock"
+	Dim sWFStatus As String = GBL_Helper.Main(si, globals, api, dargs)
+ ' BRAPI.ErrorLog.LogMessage(si,"Hit Ent: " & Entity)
+	If sWFStatus.XFContainsIgnoreCase("Unlocked") Then		
+		Dim gWorkSpaceId As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "40 CMD TGT")
+		Dim dmDictionary As Dictionary(Of String, String) = New Dictionary(Of String, String)
+		dmDictionary.Add("Entity", Entity)
+		brapi.Utilities.ExecuteDataMgmtSequence(si,gWorkSpaceId,"CMD_TGT_AdjustTopLine",dmDictionary)
 		Return selectionChangedTaskResult
 	Else
 		selectionChangedTaskResult.IsOK = False
@@ -328,13 +356,20 @@ Public Function ValidateDistWH() As XFSelectionChangedTaskResult
 	Dim cvName = "CMD_TGT_FDX_ValidateDist_CV"
 	Dim dt As New DataTable 
 	dt = GetFDXvalidateTGTData(cvName,Entity)
-
-	Dim filteredRows = dt.AsEnumerable().Where(Function(row) row.Field(Of Decimal)("ColumnName") <> 0)
+	
+	
+	Dim filteredRows = dt.AsEnumerable().Where(Function(row) row.Field(Of Decimal)("Time1") <> 0)
+'BRAPI.ErrorLog.LogMessage(si,$"Hit {dt.Rows.Count} - {filteredRows.COunt}")
 	If filteredRows.Any() Then
-		dt = filteredRows.CopyToDataTable()
+		selectionChangedTaskResult.IsOK = False
+		selectionChangedTaskResult.ShowMessageBox = True
+		selectionChangedTaskResult.Message = $"{Entity} did not Validate Successfully, please update your Distributions."
 	Else
-		dt.Clear()
+		selectionChangedTaskResult.IsOK = True
+		selectionChangedTaskResult.ShowMessageBox = True
+		selectionChangedTaskResult.Message = $"{Entity} Validated Successfully."
 	End If
+	Return selectionChangedTaskResult
 End Function
 		#End Region
 		
@@ -388,6 +423,8 @@ End Function
 			
 		End Function
 #End Region
+
+
 
 '===========================================================================
 #Region "Clear Key5 params"
@@ -453,14 +490,11 @@ End Function
 			Dim scenFilter = $"S#{wfInfoDetails("ScenarioName")}"
 			Dim timeFilter = String.Empty '$"T#{wfInfoDetails("TimeName")}"
 			Dim NameValuePairs = New Dictionary(Of String,String)
-			Brapi.ErrorLog.LogMessage(si,"Scenario" & scenFilter)
-			Brapi.ErrorLog.LogMessage(si,"timeFilter" & timeFilter)
+
 			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
 
 			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 8, False)
-If dt Is Nothing
-			BRAPI.ErrorLog.LogMessage(si,$"Hit FDX {EntFilter} - {cvName}")
-		End If
+
 			Return dt
 		End Function
 	End Class

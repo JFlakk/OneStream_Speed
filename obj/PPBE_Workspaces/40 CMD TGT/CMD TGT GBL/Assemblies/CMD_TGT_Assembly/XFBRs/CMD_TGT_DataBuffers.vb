@@ -28,19 +28,17 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 				Me.api = api
 				Me.args = args
 
-				Select Case args.FunctionName.ToLower()
-				Case "getreviewsumtgtdist"	
+				Select Case args.FunctionName
+				Case "GetReviewSumTgtDist"	
 					Return Me.GetReviewSumTgtDist()
-				Case "getreviewtgtdist"	
-					Return Me.getreviewtgtdist()
-				Case "getreviewrectgt"
-					Return Me.GetReviewRecTGT()
-				Case "getmodify_distwh"
+				Case "GetModify_DistWH"
 					Return Me.GetModify_DistWH()
-				Case "getreviewtoplinesummary"
+				Case "GetNew_DistWH"
+					Return Me.GetNew_DistWH()
+				Case "GetReviewTopLineSummary"
 					Return Me.GetReviewTopLineSummary()
-				Case "gettopline_ctrls"
-					Return Me.getTopLine_Ctrls()
+				Case "GetTopLine_Ctrls"
+					Return Me.GetTopLine_Ctrls()
 				End Select
 
 				Return Nothing
@@ -80,10 +78,13 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			Dim FilterString As String = $",[U3#Top.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
 BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 			If Entity = String.Empty Or Entity = "NA" Or Entity = vbNullString Then
-				BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
+BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 				Return "U1#One:U2#Top:U3#Top:U4#Top:U6#Top"
 			End If
 			Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Entity)
+			If EntityLevel = String.Empty Or EntityLevel = vbNullString Then
+				Return "U1#One:U2#Top:U3#Top:U4#Top:U6#Top"
+			End If
 			Dim Acct As String = "Target"
 			Dim Flow As String = $"{EntityLevel}_Dist_Balance"
 			Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,cmd_L2FC,Time)
@@ -92,9 +93,9 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 				If pair.Key.xfcontainsignorecase("APPN")
 					If pair.Value <> "APPN"
 						FilterString &= $",[U1#{u1Mbr}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
-						appnList = BRApi.Finance.Members.GetMembersUsingFilter(si, u1DimPk, $"U1#{u1Mbr}", True)
+						appnList = BRApi.Finance.Members.GetMembersUsingFilter(si, u1DimPk, $"U1#{u1Mbr}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)", True)
 					Else
-						appnList = BRApi.Finance.Members.GetMembersUsingFilter(si, u1DimPk, $"U1#{u1Mbr}.Base.Options(Cube=Army,ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)", True)
+						appnList = BRApi.Finance.Members.GetMembersUsingFilter(si, u1DimPk, $"U1#{u1Mbr}.Base.Options(Cube=Army,ScenarioType=LongTerm,MergeMembersFromReferencedCubes=False)", True)
 					End If
 				ElseIf pair.Key.xfcontainsignorecase("MDEP")
 					If pair.Value = "Yes"
@@ -140,12 +141,13 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 			For Each appn As MemberInfo In appnList
 				
 				If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
-				If appn.Member.Name = "APPN"
-					commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#{Acct}:V#Periodic:O#Top:I#Top:F#{Flow}:{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#Top"
+				If Val_Approach("CMD_Val_APPN_Approach") = "APPN" Then
+					u1commDims = $"U1#{appn.Member.Name}:"
+					commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#{Acct}:V#Periodic:O#Top:I#Top:F#{Flow}:{u1commDims}{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#Top"
 				Else
 					commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#{Acct}:V#Periodic:O#Top:I#Top:F#{Flow}:{u2commDims}{u4commDims}U5#Top:{u6commDims}U7#Top:U8#Top"
 				End If
-				
+				BRAPI.ErrorLog.LogMessage(si, $"FilterMembers(REMOVENODATA({commDims}){FilterString})")
 				globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({commDims}){FilterString})")
 		
 				GetDataBuffer(si,globals,api,args)
@@ -215,112 +217,501 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 		End Function
 	#End Region
 
-	#Region "Get Review TGT Dist"
-		Public Function getreviewtgtdist() As Object
+	#Region "Get Modify TGT DIST/WH"
+		Public Function GetModify_DistWH() As Object
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			Dim Entity As String = args.NameValuePairs("Entity")
-			Dim RowType As String = args.NameValuePairs("RowType") 'OMA/OPA/RDTE/Other
-			Dim RptType As String = args.NameValuePairs("RptType")  'Dist/Dist Variance
-			Dim Scenario As String = args.NameValuePairs("Scenario")
-			Dim Time As String = args.NameValuePairs("Time")
-			Dim toSort As New Dictionary(Of String, String)
-			Dim u1commDims As String = String.Empty
-			Dim u2commDims As String = String.Empty
-			Dim u4commDims As String = String.Empty
-			Dim u5commDims As String = String.Empty
-			Dim u6commDims As String = String.Empty
-			Dim output = ""
-			Dim commDims As String
-			Dim FilterString As String
-			
-			Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Entity)
-			Dim Acct As String = "Target"
-			Dim Flow As String = $"{EntityLevel}_Dist_Balance"
-			Dim Val_Approach = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetValidationApproach(si,wfInfoDetails("CMDName"),Time)
-			For Each pair In Val_Approach
-				If pair.Key.xfcontainsignorecase("APPN")
-					If pair.Value = "Yes"
-						FilterString = $",[U1#APPN.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
-					Else
-						u1commDims = "U1#Top:"
-					End If
-				Else If pair.Key.xfcontainsignorecase("MDEP")
-					If pair.Value = "Yes"
-						FilterString = $",[U2#Top.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
-					Else
-						u2commDims = "U2#Top:"
-					End If
-				Else If pair.Key.xfcontainsignorecase("DollarType")
-					If pair.Value = "Yes"
-						FilterString = $",[U4#Top.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
-					Else
-						u4commDims = "U4#Top:"
-					End If
-				Else If pair.Key.xfcontainsignorecase("cType")
-					If pair.Value = "Yes"
-						FilterString = $",[U5#Top.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
-					Else
-						u5commDims = "U5#Top:"
-					End If
-				Else If pair.Key.xfcontainsignorecase("Pay_NonPay")
-					If pair.Value = "Yes"
-						FilterString = $",[U6#Pay_Benefits,U6#Non_Pay]"
-					Else
-						u6commDims = "U6#Top:"
-					End If
-				End If
-			Next
-						
+			Dim Entity As String = args.NameValuePairs.XFGetValue("Entity","NA")
+			If Entity = "NA" Or Entity = String.Empty Then
+'BRAPI.ErrorLog.LogMessage(si,$"Hit: {Entity}")
+				Return "U6#One"
+			End If
+			Dim Appn As String = args.NameValuePairs.XFGetValue("APPN","NA")
+			Dim Mdep As String = args.NameValuePairs.XFGetValue("MDEP","NA")
+			Dim SagApe As String = args.NameValuePairs.XFGetValue("SAGAPE","NA")
+			Dim DollarType As String = args.NameValuePairs.XFGetValue("DollarType","NA")
+			Dim Scenario As String = args.NameValuePairs.XFGetValue("Scenario","NA")
+			Dim Time As String = args.NameValuePairs.XFGetValue("Time","NA")
+			Dim Acct As String = "TGT_WH"
+			Dim mbr_Expansion As String = ".ChildrenInclusive"
 
 			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")		
-			Dim entList = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{Entity}", True)
-			
+			Dim entList = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{Entity}{mbr_Expansion}", True)
 
-			If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
-			commDims =  $"Cb#{wfInfoDetails("CMDName")}:C#USD:S#{Scenario}:T#{Time}:E#[{Entity}]:A#{Acct}:V#Periodic:O#Top:I#Top:F#{Flow}:{u1commDims}{u2commDims}{u4commDims}{u5commDims}{u6commDims}U7#Top:U8#Top"
+			Dim toSort As New Dictionary(Of String, String)
+			Dim output = ""
+			Dim commDims As String
+			Dim FilterString As String = $",[U1#{Appn}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
+										   ,[U2#{Mdep}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
+										   ,[U3#{SagApe}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
+										   ,[U4#{DollarType}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
 
-			globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({commDims}){FilterString})")
+			For Each Ent As MemberInfo In entList
+				Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk, Ent.Member.MemberId)
+				Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Ent.Member.Name)
+				If Entity <> Ent.Member.Name Then
+					Acct = "Target"
+				End If
 	
+				Select Case EntityLevel
+				    Case "L2"
+						If Acct = "TGT_WH"
+				        	FilterString = $"{FilterString}
+											,[A#Target,A#TGT_WH]
+									        ,[F#L2_Dist_Final]"
+						End If
+				    Case "L3"
+						If Acct = "TGT_WH"
+				        	FilterString = $"{FilterString}
+											,[A#Target,A#TGT_WH]
+									        ,[F#L3_Dist_Final]"
+						ElseIf Ent_Base = True
+				        	FilterString = $"{FilterString}
+											,[A#Target]
+									        ,[F#L3_Dist_Final]"
+						Else
+				        	FilterString = $"{FilterString}
+											,[A#Target]
+									        ,[F#L3_Ctrl_Intermediate]"
+						End If
+				    Case "L4"
+						If Acct = "TGT_WH"
+				        	FilterString = $"{FilterString}
+											,[A#Target,A#TGT_WH]
+									        ,[F#L4_Dist_Final]"
+						ElseIf Ent_Base = True
+				        	FilterString = $"{FilterString}
+											,[A#Target]
+									        ,[F#L4_Dist_Final]"
+						Else
+				        	FilterString = $"{FilterString}
+											,[A#Target]
+									        ,[F#L4_Ctrl_Intermediate]"
+						End If
+				    Case "L5"
+			        	FilterString = $"{FilterString}
+										,[A#Target]
+								        ,[F#L5_Dist_Final]"
+						
+				End Select
+				
+	
+				If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
+				commDims = String.Empty
+	
+				commDims = $"Cb#{wfInfoDetails("CMDName")}:C#Local:S#{Scenario}:T#{Time}:E#[{Ent.Member.Name}]:V#Periodic:O#Top:I#Top:U5#Top:U6#CostCat:U7#None:U8#None"
+				
+				globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({commDims}){FilterString})")
+'brapi.ErrorLog.LogMessage(si,$"FilterMembers(REMOVENODATA({commDims}){FilterString})")
+				GetDataBuffer(si,globals,api,args)
+		
+				If Not globals.GetObject("Results") Is Nothing
+		
+				Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
+		
+				For Each msb In results.Keys
+'brapi.ErrorLog.LogMessage(si,"Hit:" & msb.ud3)
+					Acct = msb.Account
+	 			    msb.Scenario = vbNullString
+				    msb.Entity =  Ent.Member.Name	   
+				    msb.IC = vbNullString
+				    msb.UD5 = vbNullString
+				    msb.UD6 = vbNullString
+				    msb.UD7 = vbNullString
+				    msb.UD8 = vbNullString	   
+					Select Case EntityLevel
+				    	Case "L2"
+							msb.Cons = "Aggregated"
+							msb.Account = "TGT_Target_WH"
+							msb.Origin = "Top"
+							msb.Flow = "L2_Dist_Balance"
+							If Not toSort.ContainsKey(msb.GetMemberScript)
+								toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+							End If
+							msb.Account = "Target"
+							msb.Flow = "L2_Ctrl_Intermediate"
+							If Not toSort.ContainsKey(msb.GetMemberScript)
+								toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:2")
+							End If
+							msb.Cons = "Local"
+							msb.Origin = "AdjInput"
+							msb.Flow = "L2_Dist_Final"
+							If Acct = "Target"
+								msb.Account = "Target"
+								If Not toSort.ContainsKey(msb.GetMemberScript)
+									toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:3")
+								End If
+							ElseIf Acct = "TGT_WH"
+								msb.Account = "TGT_WH"
+								If Not toSort.ContainsKey(msb.GetMemberScript)
+									toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:4")
+								End If
+							End If
+						Case "L3"
+							If ent.Member.Name = Entity Then
+								If Ent_Base = True
+									msb.Cons = "Aggregated"
+									msb.Account = "Target"
+									msb.Origin = "Forms"
+									msb.Flow = "L3_Dist_Final"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+								Else
+									msb.Cons = "Aggregated"
+									msb.Account = "TGT_Target_WH"
+									msb.Origin = "Top"
+									msb.Flow = "L3_Dist_Balance"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+									msb.Account = "Target"
+									msb.Flow = "L3_Ctrl_Intermediate"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:2")
+									End If
+									msb.Cons = "Local"
+									msb.Origin = "AdjInput"
+									msb.Flow = "L3_Dist_Final"
+									If Acct = "Target"
+										msb.Account = "Target"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:3")
+										End If
+									ElseIf Acct = "TGT_WH"
+										msb.Account = "TGT_WH"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:4")
+										End If
+									End If
+								End If
+							Else
+								If Ent_Base = True
+									msb.Cons = "Aggregated"
+									msb.Account = "Target"
+									msb.Origin = "Forms"
+									msb.Flow = "L3_Dist_Final"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+								Else
+									msb.Cons = "Local"
+									msb.Account = "Target"
+									msb.Origin = "AdjInput"
+									msb.Flow = "L3_Ctrl_Intermediate"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+								End If
+							End If
+						Case "L4"
+							If ent.Member.Name = Entity Then
+								If Ent_Base = True
+									msb.Cons = "Aggregated"
+									msb.Account = "Target"
+									msb.Origin = "Forms"
+									msb.Flow = "L4_Dist_Final"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+								Else
+									msb.Cons = "Aggregated"
+									msb.Account = "TGT_Target_WH"
+									msb.Origin = "Top"
+									msb.Flow = "L4_Dist_Balance"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+									msb.Account = "Target"
+									msb.Flow = "L4_Ctrl_Intermediate"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:2")
+									End If
+									msb.Cons = "Local"
+									msb.Origin = "AdjInput"
+									msb.Flow = "L4_Dist_Final"
+									If Acct = "Target"
+										msb.Account = "Target"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:3")
+										End If
+									ElseIf Acct = "TGT_WH"
+										msb.Account = "TGT_WH"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:4")
+										End If
+									End If
+								End If
+							Else
+								If Ent_Base = True
+									msb.Cons = "Aggregated"
+									msb.Account = "Target"
+									msb.Origin = "Forms"
+									msb.Flow = "L4_Dist_Final"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+								Else
+									msb.Cons = "Local"
+									msb.Account = "Target"
+									msb.Origin = "AdjInput"
+									msb.Flow = "L4_Ctrl_Intermediate"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+								End If
+							End If
+						Case "L5"
+							If ent.Member.Name = Entity Then
+								msb.Cons = "Aggregated"
+								msb.Account = "Target"
+								msb.Origin = "Forms"
+								msb.Flow = "L5_Dist_Final"
+								If Not toSort.ContainsKey(msb.GetMemberScript)
+									toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+								End If
+							End If
+					End Select
+				Next
+			End If
+		Next
+	
+		Dim sorted As Dictionary(Of String, String) = toSort.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+	
+		For Each item In sorted
+			If item.Key.XFContainsIgnoreCase("A#Target") And item.Key.XFContainsIgnoreCase("Dist_Final")
+				output = $"{output} {item.key}:Name(Target Dist Final),"
+			ElseIf item.Key.XFContainsIgnoreCase("A#Target") And item.Key.XFContainsIgnoreCase("Ctrl_Intermediate")
+				output = $"{output} {item.key}:Name(Target Control),"
+			ElseIf item.Key.XFContainsIgnoreCase("A#TGT_WH") And item.Key.XFContainsIgnoreCase("Dist_Final")
+				output = $"{output} {item.key}:Name(WithHold),"
+			ElseIf item.Key.XFContainsIgnoreCase("A#TGT_Target_WH") And item.Key.XFContainsIgnoreCase("Dist_Balance")
+				output = $"{output} {item.key}:Name(Target Balance),"
+			End If
+		Next
+'brapi.ErrorLog.LogMessage(si,"output:" & output)
+		
+		If output = "" Then
+		output = "U5#One"
+		End If
+		
+		Return output
+	
+		End Function
+	#End Region
+
+	#Region "Get New TGT DIST/WH"
+		Public Function GetNew_DistWH() As String
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			Dim FundCode As String = args.NameValuePairs.XFGetValue("FundCode","NA")
+			Dim APPN As String = args.NameValuePairs.XFGetValue("APPN","NA")
+			Dim SAG As String = args.NameValuePairs.XFGetValue("SAG","NA") 
+			Dim Scenario As String = args.NameValuePairs("Scenario")
+			Dim Time As String = args.NameValuePairs("Time")
+			Dim cPROBEScenario As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetSrccPROBEScen(si,Scenario)
+			Dim Entity As String = args.NameValuePairs.XFGetValue("Entity","NA")
+			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")		
+			Dim ent_List As New List(Of MemberInfo) 
+			ent_List = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{Entity}.ChildrenInclusive.Where(Name DoesNotContain _General)", True)
+
+			Dim toSort As New Dictionary(Of String, String)
+			Dim output = ""
+			Dim FilterString As String = String.Empty
+			Dim Filters As String = String.Empty
+			If SAG.XFEqualsIgnoreCase("Top")
+				Return "U2#One"
+			End If
+
+		    FilterString = $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{cPROBEScenario}:T#{Time}:E#[{wfInfoDetails("CMDName")}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#{APPN}:U5#Top:U6#CostCat:U7#Top:U8#Top"
+			Filters = $",[U2#Top.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
+			            ,[U3#{SAG}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
+			            ,[U4#Top.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
+			globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({FilterString}){Filters})")
+
 			GetDataBuffer(si,globals,api,args)
 	
 			If Not globals.GetObject("Results") Is Nothing
 	
 			Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
-
-			Dim objU3DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U3_All_APE")
 	
 			For Each msb In results.Keys
-			   msb.Scenario = vbNullString
-			   msb.Entity =  Entity		   
-			   msb.Account = vbNullString
-			   msb.Origin = vbNullString
-			   msb.IC = vbNullString
-			   msb.Flow = vbNullString
-			   msb.UD1 = vbNullString
-			   msb.UD2 = vbNullString   
-			
-			   Dim lsAncestorList As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU3DimPK, "U3#" &  msb.UD3 & ".Ancestors.Where(MemberDim = U3_SAG)", True)
-			   msb.UD3 = lsAncestorList(0).Member.Name	   
-			   msb.UD4 = vbNullString
-			   msb.UD5 = vbNullString
-			   msb.UD6 = vbNullString
-			   msb.UD7 = vbNullString
-			   msb.UD8 = vbNullString	   
-				If Not toSort.ContainsKey(msb.GetMemberScript)
-					toSort.Add(msb.GetMemberScript, $"E#{msb.entity},U1#{msb.UD1},U2#{msb.UD2},U3#{msb.UD3},U4#{msb.UD4},U5#{msb.UD5},U6#{msb.UD6}")
+'BRAPi.errorlog.LogMessage(si,"Hit:" & msb.UD1)
+				msb.Scenario = vbNullString	   
+				msb.IC = vbNullString 
+				msb.UD1 = vbNullString
+				msb.UD5 = vbNullString
+				msb.UD6 = vbNullString
+				msb.UD7 = vbNullString
+				msb.UD8 = vbNullString	
+				If ent_List.Count > 0 Then
+					For Each Ent As MemberInfo In ent_List
+						msb.Entity = Ent.Member.Name
+						Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Ent.Member.Name)
+						Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk, Ent.Member.MemberId)
+						Select Case EntityLevel
+					    	Case "L2"
+								msb.Cons = "Aggregated"
+								msb.Account = "TGT_Target_WH"
+								msb.Origin = "Top"
+								msb.Flow = "L2_Dist_Balance"
+								If Not toSort.ContainsKey(msb.GetMemberScript)
+									toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+								End If
+								msb.Account = "Target"
+								msb.Flow = "L2_Ctrl_Intermediate"
+								If Not toSort.ContainsKey(msb.GetMemberScript)
+									toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:2")
+								End If
+								msb.Cons = "Local"
+								msb.Account = "Target"
+								msb.Origin = "AdjInput"
+								msb.Flow = "L2_Dist_Final"
+								If Not toSort.ContainsKey(msb.GetMemberScript)
+									toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:3")
+								End If
+								msb.Account = "TGT_WH"
+								If Not toSort.ContainsKey(msb.GetMemberScript)
+									toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:4")
+								End If
+							Case "L3"
+								If ent.Member.Name = Entity Then
+									If Ent_Base = True
+										msb.Cons = "Aggregated"
+										msb.Account = "Target"
+										msb.Origin = "BeforeAdj"
+										msb.Flow = "L3_Dist_Final"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+										End If
+									Else
+										msb.Cons = "Aggregated"
+										msb.Account = "TGT_Target_WH"
+										msb.Origin = "Top"
+										msb.Flow = "L3_Dist_Balance"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+										End If
+										msb.Account = "Target"
+										msb.Flow = "L3_Ctrl_Intermediate"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:2")
+										End If
+										msb.Cons = "Local"
+										msb.Account = "Target"
+										msb.Origin = "AdjInput"
+										msb.Flow = "L3_Dist_Final"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:3")
+										End If
+										msb.Account = "TGT_WH"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:4")
+										End If
+									End If
+								Else
+									If Ent_Base = True
+										msb.Cons = "Aggregated"
+										msb.Account = "Target"
+										msb.Origin = "BeforeAdj"
+										msb.Flow = "L3_Dist_Final"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+										End If
+									Else
+										msb.Cons = "Local"
+										msb.Account = "Target"
+										msb.Origin = "AdjInput"
+										msb.Flow = "L3_Ctrl_Intermediate"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+										End If
+									End If
+								End If
+							Case "L4"
+								If ent.Member.Name = Entity Then
+									If Ent_Base = True
+										msb.Cons = "Aggregated"
+										msb.Account = "TGT_Target_WH"
+										msb.Origin = "BeforeAdj"
+										msb.Flow = "L4_Dist_Final"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+										End If
+									Else
+										msb.Cons = "Aggregated"
+										msb.Account = "Target"
+										msb.Origin = "Top"
+										msb.Flow = "L4_Dist_Balance"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+										End If
+										msb.Account = "Target"
+										msb.Flow = "L4_Ctrl_Intermediate"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:2")
+										End If
+										msb.Cons = "Local"
+										msb.Account = "Target"
+										msb.Origin = "AdjInput"
+										msb.Flow = "L4_Dist_Final"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:3")
+										End If
+										msb.Account = "TGT_WH"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:4")
+										End If
+									End If
+								Else
+									If Ent_Base = True
+										msb.Cons = "Aggregated"
+										msb.Account = "Target"
+										msb.Origin = "BeforeAdj"
+										msb.Flow = "L4_Dist_Final"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+										End If
+									Else
+										msb.Cons = "Local"
+										msb.Account = "Target"
+										msb.Origin = "AdjInput"
+										msb.Flow = "L4_Ctrl_Intermediate"
+										If Not toSort.ContainsKey(msb.GetMemberScript)
+											toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+										End If
+									End If
+								End If
+							Case "L5"
+								If ent.Member.Name = Entity Then
+									msb.Cons = "Aggregated"
+									msb.Account = "Target"
+									msb.Origin = "BeforeAdj"
+									msb.Flow = "L5_Dist_Final"
+									If Not toSort.ContainsKey(msb.GetMemberScript)
+										toSort.Add(msb.GetMemberScript, $"U3#{msb.UD3},U2#{msb.UD2},U4#{msb.UD4},E#{Ent.Member.Name}:1")
+									End If
+								End If
+						End Select
+					Next
 				End If
 			Next
 		End If
 	
-		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
+		Dim sorted As Dictionary(Of String, String) = toSort.OrderBy(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
 	
 		For Each item In sorted
-			output &= item.key & ","
+			If item.Key.XFContainsIgnoreCase("A#Target") And item.Key.XFContainsIgnoreCase("Dist_Final")
+				output = $"{output} {item.key}:Name(Target Dist Final),"
+			ElseIf item.Key.XFContainsIgnoreCase("A#Target") And item.Key.XFContainsIgnoreCase("Ctrl_Intermediate")
+				output = $"{output} {item.key}:Name(Target Control),"
+			ElseIf item.Key.XFContainsIgnoreCase("A#TGT_WH") And item.Key.XFContainsIgnoreCase("Dist_Final")
+				output = $"{output} {item.key}:Name(WithHold),"
+			ElseIf item.Key.XFContainsIgnoreCase("A#TGT_Target_WH") And item.Key.XFContainsIgnoreCase("Dist_Balance")
+				output = $"{output} {item.key}:Name(Target Balance),"
+			End If
 		Next
-	brapi.ErrorLog.LogMessage(si,"output:" & output)
 		
 		If output = "" Then
-		output = "U5#One"
+		output = "U2#One"
 		End If
 		
 		Return output
@@ -357,7 +748,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 
 				If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
 				FilterString = String.Empty
-				If PBScenario = "NA" or PBScenario = String.Empty
+				If PBScenario = "NA" Or PBScenario = String.Empty
 					FilterString = $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#Target:V#Periodic:O#Top:I#Top:F#L2_Ctrl_Intermediate:U1#{appn.Member.Name}:U2#Top:U4#Top:U5#Top:U6#Top:U7#None:U8#None"	
 				Else
 					FilterString = $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#Target:V#Periodic:O#Top:I#Top:F#L2_Ctrl_Intermediate:U1#{appn.Member.Name}:U2#Top:U4#Top:U5#Top:U6#Top:U7#None:U8#None +
@@ -410,241 +801,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 		For Each item In sorted
 			output &= item.key & ","
 		Next
-	brapi.ErrorLog.LogMessage(si,"output:" & output)
-		
-		If output = "" Then
-		output = "U5#One"
-		End If
-		
-		Return output
-	
-		End Function
-	#End Region
-	
-	#Region "Get Review Received TGT"
-		Public Function GetReviewRecTGT() As Object
-			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			Dim Entity As String = args.NameValuePairs("Entity")
-			Dim RptType As String = args.NameValuePairs("RptType")  'TGT Received/TGT Received by Appn
-			Dim RowType As String = args.NameValuePairs.XFGetValue("RowType","NA") 
-			Dim Scenario As String = args.NameValuePairs("Scenario")
-			Dim Time As String = args.NameValuePairs("Time")
-			Dim Dist_Acct As String = "Target"
-			Dim Dist_Flow As String = "L2_Ctrl_Intermediate"
-			Dim mbr_Expansion As String = String.Empty
-			Dim u3Mbrs As String = "U3#Top:"
-			If RptType = "TGT_Rec" Then
-				mbr_Expansion = ".Children"
-				u3Mbrs = String.Empty
-			End If
-			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")		
-			Dim entList = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{Entity}{mbr_Expansion}", True)
-
-			Dim toSort As New Dictionary(Of String, String)
-			Dim output = ""
-			Dim FilterString As String
-			
-			For Each Ent As MemberInfo In entList
-				Dim EntBase = Not BRApi.Finance.Members.HasChildren(si, entDimPk, Ent.Member.MemberId)
-				Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Ent.Member.Name)
-	
-				Select Case EntityLevel
-				    Case "L3"
-						If EntBase = True
-				        	Dist_Flow = "L3_Dist_Final"
-						Else
-							Dist_Flow = "L3_Ctrl_Intermediate"
-						End If
-				    Case "L4"
-						If EntBase = True
-				        	Dist_Flow = "L4_Dist_Final"
-						Else
-							Dist_Flow = "L4_Ctrl_Intermediate"
-						End If
-
-						If EntBase = True
-				        	Dist_Flow = "L5_Dist_Final"
-						Else
-							Dist_Flow = "L5_Ctrl_Intermediate"
-						End If
-						
-				End Select
-			
-
-				If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
-				FilterString = String.Empty
-	
-				FilterString = $"Cb#{wfInfoDetails("CMDName")}:C#Aggregated:S#{Scenario}:T#{Time}:E#[{Entity}]:A#{Dist_Acct}:V#Periodic:O#Top:I#Top:F#{Dist_Flow}:U2#Top:{u3Mbrs}U4#Top:U5#Top:U6#Top:U7#None:U8#None"
-	
-				globals.SetStringValue("Filter", $"REMOVENODATA({FilterString})")
-		
-				GetDataBuffer(si,globals,api,args)
-		
-				If Not globals.GetObject("Results") Is Nothing
-		
-				Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
-		
-				For Each msb In results.Keys
-					msb.Scenario = vbNullString
-					msb.Entity =  Entity		   
-					msb.Account = vbNullString
-					msb.Origin = vbNullString
-					msb.IC = vbNullString
-					msb.Flow = vbNullString
-					msb.UD2 = vbNullString   
-					If RptType = "TGT_Rec_Appn" Then
-						msb.UD3 = vbNullString	
-					Else
-						If globals.GetStringValue($"RptU3_{msb.UD3}","NA")
-							If RowType = "RDTE" Then
-								globals.SetStringValue($"RptU3_{msb.UD3}",msb.UD3)
-							Else If RowType <> "PROC"
-								Dim U3mbr_Expansion As String = ".Ancestors.Where(MemberDim = U3_SAG)"
-								Dim objU3DimPK As DimPK = BRapi.Finance.Dim.GetDimPk(si, "U3_All_APE")
-								Dim lsAncestorList As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objU3DimPK, $"U3#{msb.UD3}{U3mbr_Expansion}",True)
-								msb.UD3 = lsAncestorList(0).Member.Name	
-								globals.SetStringValue($"RptU3_{msb.UD3}",msb.UD3)
-							Else
-								msb.UD3 = msb.UD3.Substring(0,msb.UD3.Length-3)
-								globals.SetStringValue($"RptU3_{msb.UD3}",msb.UD3.Substring(0,msb.UD3.Length-3))
-							End If
-						Else
-							msb.UD3 = globals.GetStringValue($"RptU3_{msb.UD3}","NA")
-						End If
-					End If
-					msb.UD4 = vbNullString
-					msb.UD5 = vbNullString
-					msb.UD6 = vbNullString
-					msb.UD7 = vbNullString
-					msb.UD8 = vbNullString	   
-					If Not toSort.ContainsKey(msb.GetMemberScript)
-						If RptType = "TGT_Rec_Appn" Then
-							toSort.Add(msb.GetMemberScript, $"E#{msb.entity},U1#{msb.UD1}")
-						Else
-							toSort.Add(msb.GetMemberScript, $"E#{msb.entity},U1#{msb.UD1},U3#{msb.UD3}")
-						End If
-					End If
-				Next
-			End If
-		Next
-	
-		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-	
-		For Each item In sorted
-			output &= item.key & ","
-		Next
-	brapi.ErrorLog.LogMessage(si,"output:" & output)
-		
-		If output = "" Then
-		output = "U5#One"
-		End If
-		
-		Return output
-	
-		End Function
-	#End Region
-
-	#Region "Get Modify TGT DIST/WH"
-		Public Function GetModify_DistWH() As Object
-			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			Dim Entity As String = args.NameValuePairs.XFGetValue("Entity","NA")
-			If Entity = "NA" Or Entity = String.Empty Then
-				BRAPI.ErrorLog.LogMessage(si,$"Hit: {Entity}")
-				Return "U6#One"
-			End If
-			Dim Appn As String = args.NameValuePairs.XFGetValue("APPN","NA")
-			Dim Mdep As String = args.NameValuePairs.XFGetValue("MDEP","NA")
-			Dim SagApe As String = args.NameValuePairs.XFGetValue("SAGAPE","NA")
-			Dim DollarType As String = args.NameValuePairs.XFGetValue("DollarType","NA")
-			Dim Scenario As String = args.NameValuePairs.XFGetValue("Scenario","NA")
-			Dim Time As String = args.NameValuePairs.XFGetValue("Time","NA")
-			Dim Acct As String = "TGT_WH"
-			Dim Flow As String = "L2_Control"
-			Dim mbr_Expansion As String = ".ChildrenInclusive"
-
-			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")		
-			Dim entList = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{Entity}{mbr_Expansion}", True)
-
-			Dim toSort As New Dictionary(Of String, String)
-			Dim output = ""
-			Dim commDims As String
-			Dim FilterString As String = $",[U1#{Appn}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
-										   ,[U2#{Mdep}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
-										   ,[U3#{SagApe}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
-										   ,[U4#{DollarType}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
-
-			For Each Ent As MemberInfo In entList
-				Dim EntBase = Not BRApi.Finance.Members.HasChildren(si, entDimPk, Ent.Member.MemberId)
-				Dim EntityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,Ent.Member.Name)
-				If Entity <> Ent.Member.Name Then
-					Acct = "Target"
-				End If
-	
-				Select Case EntityLevel
-				    Case "L2"
-						If Acct = "TGT_WH"
-				        	Flow = "L2_Dist_Final"
-						End If
-				    Case "L3"
-						If Acct = "TGT_WH"
-				        	Flow = "L3_Dist_Final"
-						ElseIf EntBase = True
-				        	Flow = "L3_Dist_Final"
-						Else
-							Flow = "L3_Ctrl_Intermediate"
-						End If
-				    Case "L4"
-						If Acct = "TGT_WH"
-				        	Flow = "L4_Dist_Final"
-						ElseIf EntBase = True
-				        	Flow = "L4_Dist_Final"
-						Else
-							Flow = "L4_Ctrl_Intermediate"
-						End If
-				    Case "L5"
-				        Flow = "L5_Dist_Final"
-						
-				End Select
-				
-	
-				If String.IsNullOrWhiteSpace(Entity) Then Return "E#None:U1#None:U3#None"
-				commDims = String.Empty
-	
-				commDims = $"Cb#{wfInfoDetails("CMDName")}:C#Local:S#{Scenario}:T#{Time}:E#[{Ent.Member.Name}]:A#{Acct}:V#Periodic:O#Top:I#Top:F#{Flow}:U5#Top:U6#CostCat:U7#None:U8#None"
-				
-				globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({commDims}){FilterString})")
-		brapi.ErrorLog.LogMessage(si,$"FilterMembers(REMOVENODATA({commDims}){FilterString})")
-				GetDataBuffer(si,globals,api,args)
-		
-				If Not globals.GetObject("Results") Is Nothing
-		
-				Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
-		
-				For Each msb In results.Keys
-					brapi.ErrorLog.LogMessage(si,"Hit:" & msb.ud3)
-				   msb.Scenario = vbNullString
-				   msb.Entity =  Ent.Member.Name	   
-				   msb.Account = Acct
-				   msb.Origin = vbNullString
-				   msb.IC = vbNullString
-				   msb.Flow = Flow
-				   msb.UD5 = vbNullString
-				   msb.UD6 = vbNullString
-				   msb.UD7 = vbNullString
-				   msb.UD8 = vbNullString	   
-					If Not toSort.ContainsKey(msb.GetMemberScript)
-						toSort.Add(msb.GetMemberScript, $"U1#{msb.UD1},U2#{msb.UD2},U3#{msb.UD3},U4#{msb.UD4},A#{msb.Account},E#{msb.entity}")
-					End If
-				Next
-			End If
-		Next
-	
-		Dim sorted As Dictionary(Of String, String) = toSort.OrderByDescending(Function(x) x.Value).ToDictionary(Function(x) x.Key, Function(y) y.Value)
-	
-		For Each item In sorted
-			output &= item.key & ","
-		Next
-	brapi.ErrorLog.LogMessage(si,"output:" & output)
+'brapi.ErrorLog.LogMessage(si,"output:" & output)
 		
 		If output = "" Then
 		output = "U5#One"
@@ -656,7 +813,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 	#End Region
 	
 	#Region "Get TopLine Ctrls"
-		Public Function getTopLine_Ctrls() As Object
+		Public Function GetTopLine_Ctrls() As Object
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			Dim Entity As String = args.NameValuePairs("Entity")
 			Dim APPN As String = args.NameValuePairs.XFGetValue("APPN","NA")
@@ -676,7 +833,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 			            ,[U3#{SAGAPE}.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]
 			            ,[U4#Top.Base.Options(Cube={wfInfoDetails("CMDName")},ScenarioType=Target,MergeMembersFromReferencedCubes=False)]"
 			globals.SetStringValue("Filter", $"FilterMembers(REMOVENODATA({FilterString}){Filters})")
-	BRAPi.ErrorLog.LogMessage(si,$"FilterMembers(REMOVENODATA({FilterString}){Filters})")
+'BRAPi.ErrorLog.LogMessage(si,$"FilterMembers(REMOVENODATA({FilterString}){Filters})")
 			GetDataBuffer(si,globals,api,args)
 	
 			If Not globals.GetObject("Results") Is Nothing
@@ -684,7 +841,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 			Dim results As Dictionary(Of MemberScriptBuilder, DataBufferCell) = globals.GetObject("Results")
 	
 			For Each msb In results.Keys
-				BRAPi.errorlog.LogMessage(si,"Hit:" & msb.UD1)
+'BRAPi.errorlog.LogMessage(si,"Hit:" & msb.UD1)
 				msb.Scenario = vbNullString
 				msb.Entity =  vbNullString		   
 				msb.Account = vbNullString
@@ -706,7 +863,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 		For Each item In sorted
 			output &= item.key & ","
 		Next
-	brapi.ErrorLog.LogMessage(si,"output:" & output)
+'brapi.ErrorLog.LogMessage(si,"output:" & output)
 		
 		If output = "" Then
 		output = "U5#One"
@@ -716,7 +873,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 	
 		End Function
 #End Region
-	
+
 #Region "Utilities: Get DataBuffer"
 	
 	Public Sub GetDataBuffer(ByRef si As SessionInfo, ByRef globals As BRGlobals, ByRef api As Object,ByRef args As DashboardStringFunctionArgs)

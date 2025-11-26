@@ -77,7 +77,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 				'Brapi.ErrorLog.LogMessage(si, "WFProfile" & sProfileName)
 				If sProfileName.XFContainsIgnoreCase("CMD Requirements") 'Or sProfileName.XFContainsIgnoreCase("CMD Dist") Then
 					mode = "ParentOnly"
-				ElseIf sProfileName.XFContainsIgnoreCase("Distribute Targets")
+				ElseIf wfProfileName.XFContainsIgnoreCase("CMD TGT")
 					mode = "TGT"
 				Else
 					mode = "AllChildren"
@@ -162,11 +162,13 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 						Select Case mode
 						Case "ParentOnly"
 							If bHasChildren Then
-								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name & "_General")
+								'Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name & "_General")
+								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name)
 							End If
 						Case "AllChildren"
 							If bHasChildren Then
-								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name & "_General")
+								'Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name & "_General")
+								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name)
 							Else
 								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name)							
 							End If
@@ -174,8 +176,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 							Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name)
 						Case Else
 							If bHasChildren Then
-								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name & "_General")
-								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name)
+								'Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name & "_General") '***This was just commented out. Both were in this blok
+								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name) '*** If reverted back _General this should not be deleted. Simply uncommnet the line above
 							End If
 						End Select
 					Next			

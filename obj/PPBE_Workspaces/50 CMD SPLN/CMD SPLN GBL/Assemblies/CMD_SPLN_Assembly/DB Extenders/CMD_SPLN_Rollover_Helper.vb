@@ -62,6 +62,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			End Try
 		End Function
 		
+#Region "Main RollFwdReq"	
 		Public Function RollFwdReq()As Object
 
 			Dim sqa As New SqlDataAdapter()
@@ -161,25 +162,25 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					For Each row As DataRow In PGMREQsDT.Rows
 						Dim newREQRow As datarow = SPLNREQsDT.NewRow()
 						MapPGMReqToSPLN(newREQRow, row)
-						
+						Dim newGuid As String = newREQRow("CMD_SPLN_REQ_ID").ToString
 						newREQRows.Add(newREQRow)
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 0")							
+'BRApi.ErrorLog.LogMessage(si, "rollover update: 0: newGuid= " & newGuid)							
 						'create details
 						Dim foundDetailRows As DataRow() = PGMREQDetailsDT.Select(String.Format("CMD_PGM_REQ_ID = '{0}'", row("CMD_PGM_REQ_ID").ToString))
 						For Each dtRow In foundDetailRows
-BRApi.ErrorLog.LogMessage(si, "rollover update: 1")								
+'BRApi.ErrorLog.LogMessage(si, "rollover update: 1")								
 							Dim newOblDetailREQRow As datarow = SPLNREQDetailsDT.NewRow()
-							Me.MapPGMReqDetailToSPLN(newOblDetailREQRow, dtRow, "Obligations", newREQRow("CMD_SPLN_REQ_ID").ToString,commitSpread)
+							Me.MapPGMReqDetailToSPLN(newOblDetailREQRow, dtRow, "Obligations", newGuid,obligSpread)
 							UpdateAuditColumns(newOblDetailREQRow)
 							newREQDetailRows.Add(newOblDetailREQRow)
 							
 							Dim newCmtDetailREQRow As datarow = SPLNREQDetailsDT.NewRow()
-							Me.MapPGMReqDetailToSPLN(newCmtDetailREQRow, dtRow, "Commitments", newREQRow("CMD_SPLN_REQ_ID").ToString, obligSpread)
+							Me.MapPGMReqDetailToSPLN(newCmtDetailREQRow, dtRow, "Commitments", newGuid, commitSpread)
 							UpdateAuditColumns(newCmtDetailREQRow)
 							newREQDetailRows.Add(newCmtDetailREQRow)
 							
 						Next
-BRApi.ErrorLog.LogMessage(si, "rollover update: 2")							
+'BRApi.ErrorLog.LogMessage(si, "rollover update: 2")							
 					Next
 					
 					'update SQL Adapter and update
@@ -191,6 +192,7 @@ BRApi.ErrorLog.LogMessage(si, "rollover update: 2")
 					
 					'Add the new rows to the original dataset
 					For Each row In newREQDetailRows
+'BRApi.ErrorLog.LogMessage(si, "new rows: " &row("CMD_SPLN_REQ_ID").ToString)						
 						SPLNREQDetailsDT.Rows.Add(row)
 					Next
 					
@@ -205,24 +207,28 @@ BRApi.ErrorLog.LogMessage(si, "rollover update: 2")
 						deleter.main(si, globals, api, args)
 					End If
 					
-BRApi.ErrorLog.LogMessage(si, "rollover update: 3")					
+'BRApi.ErrorLog.LogMessage(si, "rollover update: 3")
+'BRApi.ErrorLog.LogMessage(si, "SPLNREQsDT count= " & SPLNREQsDT.Rows.Count & " details= " & SPLNREQDetailsDT.Rows.Count)
 					sqaSPLNReqReader.Update_XFC_CMD_SPLN_REQ(SPLNREQsDT, sqa)
 					sqaSPLNReqDetailReader.Update_XFC_CMD_SPLN_REQ_Details(SPLNREQDetailsDT, sqa)
-BRApi.ErrorLog.LogMessage(si, "rollover update: 4")					
+'BRApi.ErrorLog.LogMessage(si, "rollover update: 4")					
 					'Load to the cube
 					Dim loader As New CMD_SPLN_Helper.MainClass
 					Args.NameValuePairs("req_IDs") =  String.Join(",", REQ_IDs)
 					Args.NameValuePairs("Action") = "Insert"
 					Args.NameValuePairs.Add("new_Status", "Formulate") '*** HARD CODE FOR TEST ***
-BRApi.ErrorLog.LogMessage(si, "rollover update: 4.5")						
+'BRApi.ErrorLog.LogMessage(si, "rollover update: 4.5")						
 					loader.main(si, globals, api, args)	
-BRApi.ErrorLog.LogMessage(si, "rollover update: 5")						
+'BRApi.ErrorLog.LogMessage(si, "rollover update: 5")						
 				End Using
 			End Using
 
 		End Function
+#End Region
 
-		
+#Region "Helper Methods"
+
+#Region "Update Audit Columns"
 		Public Sub UpdateAuditColumns(ByRef newRow As DataRow) 
 			
 			'Update Audit columns
@@ -231,14 +237,13 @@ BRApi.ErrorLog.LogMessage(si, "rollover update: 5")
 			newRow("Update_Date") = DateTime.Now
 			newRow("Update_User") = si.UserName
 		End Sub
-	
+
+#End Region
+
+#Region "Map PGM Req To SPLN"		
+
 		Public Sub MapPGMReqToSPLN(ByRef SPLNRow As DataRow, ByRef PGMRow As DataRow) 
-BRApi.ErrorLog.LogMessage(si, "rollover mapping: " & SPLNRow.Table.Columns.Count)			
-Dim columns As String			
-For i As Integer = 0 To SPLNRow.Table.Columns.Count - 1
-	columns = columns & " | " & SPLNRow.Table.Columns(i).ColumnName
-Next
-'BRApi.ErrorLog.LogMessage(si, "columns : " & columns )
+
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			SPLNRow("CMD_SPLN_REQ_ID") = Guid.NewGuid()
 			SPLNRow("WFScenario_Name") = wfInfoDetails("ScenarioName")
@@ -254,7 +259,12 @@ Next
 			SPLNRow("MDEP") = PGMRow("MDEP")
 			SPLNRow("APE9") = PGMRow("APE9")
 			SPLNRow("Dollar_Type") = PGMRow("Dollar_Type")
-			SPLNRow("Obj_Class") = PGMRow("Obj_Class")
+			'SPLNRow("Obj_Class") = PGMRow("Obj_Class")
+			If PGMRow("Obj_Class").ToString.XFEqualsIgnoreCase("None") Then 
+				SPLNRow("Obj_Class") = "None"
+			Else
+				SPLNRow("Obj_Class") = PGMRow("Obj_Class") & "_General"
+			End If
 			SPLNRow("CType") = PGMRow("CType")
 			SPLNRow("UIC") = PGMRow("UIC")
 			SPLNRow("Cost_Methodology") = PGMRow("Cost_Methodology")
@@ -284,46 +294,12 @@ Next
 			SPLNRow("Review_POC_Email") = PGMRow("Review_POC_Email")
 			SPLNRow("MDEP_Functional_Email") = PGMRow("MDEP_Functional_Email")
 			SPLNRow("Notification_List_Emails") = PGMRow("Notification_List_Emails")
-'			SPLNRow() = PGMRow("Gen_Comments_Notes")
-'			SPLNRow() = PGMRow("JUON")
-'			SPLNRow() = PGMRow("ISR_Flag")
-'			SPLNRow() = PGMRow("Cost_Model")
-'			SPLNRow() = PGMRow("Combat_Loss")
-'			SPLNRow() = PGMRow("Cost_Location")
-'			SPLNRow() = PGMRow("Cat_A_Code")
-'			SPLNRow() = PGMRow("CBS_Code")
-'			SPLNRow() = PGMRow("MIP_Proj_Code")
-'			SPLNRow() = PGMRow("SS_Priority")
-'			SPLNRow() = PGMRow("Commit_Group")
-'			SPLNRow() = PGMRow("SS_Cap")
-'			SPLNRow() = PGMRow("Strategic_BIN")
-'			SPLNRow() = PGMRow("LIN")
-'			SPLNRow() = PGMRow("REQ_Type")
-'			SPLNRow() = PGMRow("DD_Priority")
-'			SPLNRow() = PGMRow("Portfolio")
-'			SPLNRow() = PGMRow("DD_Cap")
-'			SPLNRow() = PGMRow("JNT_Cap_Area")
-'			SPLNRow() = PGMRow("TBM_Cost_Pool")
-'			SPLNRow() = PGMRow("TBM_Tower")
-'			SPLNRow() = PGMRow("APMS_AITR_Num")
-'			SPLNRow() = PGMRow("Zero_Trust_Cap")
-'			SPLNRow() = PGMRow("Assoc_Directives")
-'			SPLNRow() = PGMRow("Cloud_IND")
-'			SPLNRow() = PGMRow("Strat_Cyber_Sec_PGM")
-'			SPLNRow() = PGMRow("Notes")
 			SPLNRow("FF_1") = PGMRow("FF_1")
 			SPLNRow("FF_2") = PGMRow("FF_2")
 			SPLNRow("FF_3") = PGMRow("FF_3")
 			SPLNRow("FF_4") = PGMRow("FF_4")
 			SPLNRow("FF_5") = PGMRow("FF_5")
 			SPLNRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, PGMRow("Entity")) & "_Formulate_SPLN"
-			'SPLNRow("Invalid") = PGMRow("Invalid")
-			'SPLNRow("Val_Error") = PGMRow("Val_Error")
-'			SPLNRow("Create_Date") = PGMRow("Create_Date")
-'			SPLNRow("Create_User") = PGMRow("Create_User")
-'			SPLNRow("Update_Date") = PGMRow("Update_Date")
-'			SPLNRow("Update_User") = PGMRow("Update_User")
-			'SPLNRow() = PGMRow("Related_REQs")
 			SPLNRow("Review_Entity") = PGMRow("Review_Entity")
 			SPLNRow("Demotion_Comment") = PGMRow("Demotion_Comment")
 			SPLNRow("Related_REQs") = PGMRow("Validation_List_Emails")
@@ -332,88 +308,74 @@ Next
 
 
 		End Sub
+
+#End Region
+
+#Region "Map PGM Req Detail To SPLN"		
 			
 		Public Sub MapPGMReqDetailToSPLN(ByRef SPLNDetailRow As DataRow, ByRef PGMDetailRow As DataRow, ByRef acct As String ,ByRef newGuid As String, ByRef spread As Dictionary(Of Integer, Decimal)) 
-BRApi.ErrorLog.LogMessage(si, "PGM FY_1: " & PGMDetailRow("FY_1") & " , account = "	& acct)
+'BRApi.ErrorLog.LogMessage(si, "PGM FY_1: " & PGMDetailRow("FY_1") & " , account = "	& acct)
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			SPLNDetailRow("CMD_SPLN_REQ_ID") = newGuid
-			SPLNDetailRow("WFScenario_Name") = PGMDetailRow("WFScenario_Name")
+			SPLNDetailRow("WFScenario_Name") = wfInfoDetails("ScenarioName")
 			SPLNDetailRow("WFCMD_Name") = PGMDetailRow("WFCMD_Name")
 			SPLNDetailRow("WFTime_Name") = PGMDetailRow("WFTime_Name")
 			SPLNDetailRow("Unit_of_Measure") = PGMDetailRow("Unit_of_Measure")
 			SPLNDetailRow("Entity") = PGMDetailRow("Entity")
 			SPLNDetailRow("IC") = PGMDetailRow("IC")
 			SPLNDetailRow("Account") = acct
-			SPLNDetailRow("Flow") = "202014D26"'PGMDetailRow("Flow")
-			SPLNDetailRow("UD1") = PGMDetailRow("UD1")
+			SPLNDetailRow("Flow") = "Formulate_SPLN"'would be updated in the update peorcess  in the helper
+			SPLNDetailRow("UD1") = Me.GetFundCode(PGMDetailRow("UD1").ToString, PGMDetailRow("UD4").ToString)' "202014D26"'PGMDetailRow("UD1")
 			SPLNDetailRow("UD2") = PGMDetailRow("UD2")
 			SPLNDetailRow("UD3") = PGMDetailRow("UD3")
 			SPLNDetailRow("UD4") = PGMDetailRow("UD4")
 			SPLNDetailRow("UD5") = PGMDetailRow("UD5")
-			SPLNDetailRow("UD6") = PGMDetailRow("UD6")
+			If PGMDetailRow("UD6").ToString.XFEqualsIgnoreCase("None") Then 
+				SPLNDetailRow("UD6") = "None"
+			Else
+				SPLNDetailRow("UD6") = PGMDetailRow("UD6") & "_General"
+			End If
 			SPLNDetailRow("UD7") = PGMDetailRow("UD7")
 			SPLNDetailRow("UD8") = PGMDetailRow("UD8")
 			SPLNDetailRow("Fiscal_Year") = PGMDetailRow("Start_Year")
 			
+			Dim APPN As String  = PGMDetailRow("UD1")
 			If acct.XFEqualsIgnoreCase("Commitments") Then
 				If spread.Count = 0 Then 
-					GetMonthlySpread(SPLNDetailRow("UD1").ToString, "Commit_Spread_Pct", spread)
+					GetMonthlySpread(APPN, "Commit_Spread_Pct", spread)
 				End If
 			Else 
 				If acct.XFEqualsIgnoreCase("Obligations") Then
 					If spread.Count = 0 Then 
-						GetMonthlySpread(SPLNDetailRow("UD1").ToString, "Commit_Spread_Pct", spread)
+						GetMonthlySpread(APPN, "Commit_Spread_Pct", spread)
 					End If
 				Else
 					Throw New Exception("Invalid Spend Plan Account: " & acct)
 				End If
 			End If
 			
-			'If commitSpread.Count >= 12 Then
-				SPLNDetailRow("Month1") = PGMDetailRow("FY_1") * spread(1)
-BRApi.ErrorLog.LogMessage(si, "PGM FY_1: " & PGMDetailRow("FY_1") & " , M1 spread = " & spread(1))				
-				SPLNDetailRow("Month2") = PGMDetailRow("FY_1") * spread(2)
-				SPLNDetailRow("Month3") = PGMDetailRow("FY_1") * spread(3)
-				SPLNDetailRow("Month4") = PGMDetailRow("FY_1") * spread(4)
-				SPLNDetailRow("Month5") = PGMDetailRow("FY_1") * spread(5)
-				SPLNDetailRow("Month6") = PGMDetailRow("FY_1") * spread(6)
-				SPLNDetailRow("Month7") = PGMDetailRow("FY_1") * spread(7)
-				SPLNDetailRow("Month8") = PGMDetailRow("FY_1") * spread(8)
-				SPLNDetailRow("Month9") = PGMDetailRow("FY_1") * spread(9)
-				SPLNDetailRow("Month10") = PGMDetailRow("FY_1") * spread(10)
-				SPLNDetailRow("Month11") = PGMDetailRow("FY_1") * spread(11)
-				SPLNDetailRow("Month12") = PGMDetailRow("FY_1") * spread(12)
-			'End If
-			
-'			Dim oblSpread As New Dictionary(Of Integer, Decimal)
-'			GetMonthlySpread(SPLNDetailRow("UD1").ToString, "Obligation_Spread_Pct", oblSpread)
-'			'If oblSpread.Count  >= 12 Then
-'				SPLNDetailRow("Month1") = PGMDetailRow("FY_1") * oblSpread(1)
-'				SPLNDetailRow("Month2") = PGMDetailRow("FY_1") * oblSpread(2)
-'				SPLNDetailRow("Month3") = PGMDetailRow("FY_1") * oblSpread(3)
-'				SPLNDetailRow("Month4") = PGMDetailRow("FY_1") * oblSpread(4)
-'				SPLNDetailRow("Month5") = PGMDetailRow("FY_1") * oblSpread(5)
-'				SPLNDetailRow("Month6") = PGMDetailRow("FY_1") * oblSpread(6)
-'				SPLNDetailRow("Month7") = PGMDetailRow("FY_1") * oblSpread(7)
-'				SPLNDetailRow("Month8") = PGMDetailRow("FY_1") * oblSpread(8)
-'				SPLNDetailRow("Month9") = PGMDetailRow("FY_1") * oblSpread(9)
-'				SPLNDetailRow("Month10") = PGMDetailRow("FY_1") * oblSpread(10)
-'				SPLNDetailRow("Month11") = PGMDetailRow("FY_1") * oblSpread(11)
-'				SPLNDetailRow("Month12") = PGMDetailRow("FY_1") * oblSpread(12)
-'			'End If
-			
-'			SPLNDetailRow("Quarter1") = PGMDetailRow()
-'			SPLNDetailRow("Quarter2") = PGMDetailRow()
-'			SPLNDetailRow("Quarter3") = PGMDetailRow()
-'			SPLNDetailRow("Quarter4") = PGMDetailRow()
-'			SPLNDetailRow("Yearly") = PGMDetailRow()
+			Dim currYearAmt As Decimal = PGMDetailRow("FY_1")
+			SPLNDetailRow("Month1") = currYearAmt * spread(1)
+			SPLNDetailRow("Month2") = currYearAmt * spread(2)
+			SPLNDetailRow("Month3") = currYearAmt * spread(3)
+			SPLNDetailRow("Month4") = currYearAmt * spread(4)
+			SPLNDetailRow("Month5") = currYearAmt * spread(5)
+			SPLNDetailRow("Month6") = currYearAmt * spread(6)
+			SPLNDetailRow("Month7") = currYearAmt * spread(7)
+			SPLNDetailRow("Month8") = currYearAmt * spread(8)
+			SPLNDetailRow("Month9") = currYearAmt * spread(9)
+			SPLNDetailRow("Month10") = currYearAmt * spread(10)
+			SPLNDetailRow("Month11") = currYearAmt * spread(11)
+			SPLNDetailRow("Month12") = currYearAmt * spread(12)
+
 			SPLNDetailRow("AllowUpdate") = PGMDetailRow("AllowUpdate")
-'			SPLNDetailRow("Create_Date") = PGMDetailRow()
-'			SPLNDetailRow("Create_User") = PGMDetailRow()
-'			SPLNDetailRow("Update_Date") = PGMDetailRow()
-'			SPLNDetailRow("Update_User") = PGMDetailRow()
+'BRApi.ErrorLog.LogMessage(si, "currYearAmt: " & currYearAmt & ", Month 2: " & SPLNDetailRow("Month2").ToString & ", Month 6: " & SPLNDetailRow("Month6").ToString  )			
 
 			UpdateAuditColumns(SPLNDetailRow)
 		End Sub
+
+#End Region
+
 #Region "Get Existing Row"
 		
 	Function GetExistingDupREQs(ByRef REQsToRollover As List(Of String)) As List(Of String)
@@ -454,6 +416,8 @@ BRApi.ErrorLog.LogMessage(si, "PGM FY_1: " & PGMDetailRow("FY_1") & " , M1 sprea
 	
 #End Region
 
+#Region "Get Monthly Spread"		
+
 		Public Function GetMonthlySpread(ByRef UD1 As String, ByRef acct As String ,ByRef spread As Dictionary(Of Integer, Decimal)) As Decimal
 			
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
@@ -461,21 +425,27 @@ BRApi.ErrorLog.LogMessage(si, "PGM FY_1: " & PGMDetailRow("FY_1") & " , M1 sprea
 			Dim entity As String = GetCmdFundCenterFromCube()
 			Dim scenario As String = "RMW_Cycle_Config_Monthly"
 			Dim tm As String = wfInfoDetails("TimeName")
-			Dim month As Integer = 1
-			Dim spreadmbrScript = $"Cb#{cubeName}:E#{entity}:C#Local:S#{scenario}:T#{tm}M{month}:V#Periodic:A#{acct}t:F#None:O#AdjInput:I#None:U1#{UD1}:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 			
+
 			For i As Integer = 1 To 12
 				Dim spreadPct As Decimal = 0
-
+				
+				Dim spreadmbrScript = $"Cb#{cubeName}:E#{entity}_General:C#Local:S#{scenario}:T#{tm}M{i}:V#Periodic:A#{acct}:F#None:O#BeforeAdj:I#None:U1#{UD1}:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 				spreadPct = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, cubeName, spreadmbrScript).DataCellEx.DataCell.CellAmount
 				spreadPct = spreadPct/100
 				spread.Add(i,spreadPct)
+'BRApi.ErrorLog.LogMessage(si, "spreadmbrScript: "  & spreadmbrScript & ", Amount = " & spreadPct)			
 				
 			Next 
+			
 			Return Nothing
 			
 		End Function
 		
+
+#End Region
+
+#Region "get GUID"		
 
 		Public Function getGUID(ByRef REQ As DataTable) As String
 			
@@ -488,6 +458,10 @@ BRApi.ErrorLog.LogMessage(si, "PGM FY_1: " & PGMDetailRow("FY_1") & " , M1 sprea
 			Return GUIDs
 
 		End Function
+
+#End Region
+
+#Region "Get Cmd FundCenter From Cube"		
 		
 		Public Function GetCmdFundCenterFromCube() As String
 			
@@ -503,6 +477,10 @@ BRApi.ErrorLog.LogMessage(si, "PGM FY_1: " & PGMDetailRow("FY_1") & " , M1 sprea
 			
 			Return fundCenter			
 		End Function
+
+#End Region
+
+#Region "Get Inflation Rate"		
 		
 		Public Function GetInflationRate(ByRef UD1 As String) As Decimal
 			
@@ -518,6 +496,89 @@ BRApi.ErrorLog.LogMessage(si, "PGM FY_1: " & PGMDetailRow("FY_1") & " , M1 sprea
 			Return inflationRate
 			
 		End Function
+#End Region
+
+#Region "Get Fund Code"
+		Public Function GetFundCode(ByRef UD1 As String, ByRef UD4 As String) As String
+			Dim fundCode As String = String.Empty
+			Dim APPNMap As New Dictionary(Of (String, String), String)
+'BRApi.ErrorLog.LogMessage(si, "UD1= " & UD1 & ", UD4= " & UD4)			
+			If globals.GetObject($"AppropriationMapping") Is Nothing Then
+			'If APPNMap.Count = 0 Then
+				GetAPPNMapping()
+				APPNMap = globals.GetObject($"AppropriationMapping")
+			Else 
+				APPNMap = globals.GetObject($"AppropriationMapping")
+			End If
+'BRApi.ErrorLog.LogMessage(si,"AppropriationMapping count = " & APPNMap.Count)	
+			Dim key As (String, String) = (UD1, UD4)
+			
+			If APPNMap.TryGetValue(key, fundCode) Then
+'BRApi.ErrorLog.LogMessage(si,"fundCode = " & fundCode)					
+				'Validate member
+				Dim validFCList As New List(Of String)
+				If globals.GetObject($"UD1_FundCenter_MemberList") Is Nothing Then
+					GetValidFundCodes()
+					validFCList = globals.GetObject($"UD1_FundCenter_MemberList")
+				Else
+					validFCList = globals.GetObject($"UD1_FundCenter_MemberList")
+				End If
+'BRApi.ErrorLog.LogMessage(si,"validFCList count = " & validFCList.Count) 				
+				If Not validFCList.Contains(fundCode) Then
+					Dim errMessage As String = $"Invalid Fundcode {fundCode} identified for the combilation Appropriation {UD1} and Dollar Type {UD4}."
+					Throw ErrorHandler.LogWrite(si, New XFException(si, New Exception(errMessage)))
+				End If
+					
+			Else
+				Dim errMessage As String = $"No valid Fundcode for the combilation Appropriation {UD1} and Dollar Type {UD4}."
+				Throw ErrorHandler.LogWrite(si, New XFException(si, New Exception(errMessage)))
+			End If
+			
+			Return fundCode
+			
+		End Function
 		
+
+		
+		Public Function GetValidFundCodes()
+			Dim fundCodeList As New List(Of String)
+			Dim dimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "U1_FundCode")
+			Dim mbrList As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, dimPk, $"U1#Top.Base" , True)
+			For Each m In mbrList
+				fundCodeList.Add(m.Member.Name)
+			Next
+'BRApi.ErrorLog.LogMessage(si,"fundCodeList = " & fundCodeList.Count)				
+			globals.SetObject("UD1_FundCenter_MemberList", fundCodeList)
+			
+			Return Nothing
+		End Function
+		
+		Public Function GetAPPNMapping()
+			
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+			Dim tm As String = wfInfoDetails("TimeName")
+			Dim year As String = tm.Substring(2,2)
+			
+			Dim APPNMap As New Dictionary(Of (String, String), String) 
+			
+			Dim SQL As String = $"SELECT * FROM XFC_APPN_Mapping"
+			Dim dt As New DataTable
+			Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
+			 dt = BRApi.Database.ExecuteSql(dbConn,SQL,True)
+			End Using
+			
+			For Each row In dt.Rows
+				APPNMap.Add((row("Appropriation_CD"), row("Dollar_Type")),row("Partial_Fund_CD") & year)	
+			Next
+			
+			globals.SetObject("AppropriationMapping", APPNMap)
+			
+			Return Nothing
+		End Function
+		
+#End Region
+
+#End Region
+
 	End Class
 End Namespace

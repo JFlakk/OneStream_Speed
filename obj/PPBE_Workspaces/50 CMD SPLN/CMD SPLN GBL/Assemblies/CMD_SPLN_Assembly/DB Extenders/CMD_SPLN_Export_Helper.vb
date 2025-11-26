@@ -35,49 +35,13 @@ Public Class MainClass
 				Select Case args.FunctionType
 
 					Case Is = DashboardExtenderFunctionType.ComponentSelectionChanged
-						If args.FunctionName.XFEqualsIgnoreCase("TestFunction") Then
-							
-							'Implement Dashboard Component Selection Changed logic here.
-							
-							Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
-							selectionChangedTaskResult.IsOK = True
-							selectionChangedTaskResult.ShowMessageBox = False
-							selectionChangedTaskResult.Message = ""
-							selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = False
-							selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = Nothing
-							selectionChangedTaskResult.ChangeSelectionChangedNavigationInDashboard = False
-							selectionChangedTaskResult.ModifiedSelectionChangedNavigationInfo = Nothing
-							selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = False
-							selectionChangedTaskResult.ModifiedCustomSubstVars = Nothing
-							selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = False
-							selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard = Nothing
-							Return selectionChangedTaskResult
-						End If
-
-
-
-#Region "Export All Requirements"
-						'Export PGM Requirements to Excel
-						If args.FunctionName.XFEqualsIgnoreCase("ExportAllREQs") Then
-							Try								
-								Return Me.ExportAllREQs(si,globals,api,args)
-								Catch ex As Exception
-								Throw ErrorHandler.LogWrite(si, New XFException(si,ex))
-							End Try
-						End If
-#End Region
-
-#Region "Export For Update"
-						'Export PGM Requirements to Excel
-						If args.FunctionName.XFEqualsIgnoreCase("ExportforUpdate") Then
-							Try								
-								Return Me.ExportforUpdate(si,globals,api,args)
-								Catch ex As Exception
-								Throw ErrorHandler.LogWrite(si, New XFException(si,ex))
-							End Try
-						End If
-#End Region
-
+						Select Case args.FunctionName
+							'Export PGM Requirements to Excel
+							Case "ExportAllREQs"					
+								Return Me.ExportAllREQs()
+							Case "ExportforUpdate"						
+								Return Me.ExportforUpdate()
+						End Select
 
 				End Select
 
@@ -143,12 +107,6 @@ Public Class MainClass
 				'Define folder to hold file
 				Dim sFolderPath As String = "Documents/Users/" & si.UserName
 				Dim objXFFolderEx As XFFolderEx = BRApi.FileSystem.GetFolder(si, FileSystemLocation.ApplicationDatabase, sFolderPath)
-
-				'Check if folder doesn't exist
-				'This should never happen because we created the folder manually
-				'If objXFFolderEx Is Nothing Then
-				'	Throw New XFUserMsgException(si, New Exception("Users/" & si.UserName.Replace(" ",String.Empty) & " folder does NOT exist"))
-				'End If
 				
 				Dim objXFFileInfo = New XFFileInfo(FileSystemLocation.ApplicationDatabase, String.Concat(sFolderPath, "/", sFileName))
 				Dim objXFFile As New XFFile(objXFFileInfo,String.Empty,fileBytes)
@@ -217,7 +175,7 @@ Private Function CreateNameValuePairTable(ByVal si As SessionInfo, ByVal dataTab
 		
 #Region "ExportAllREQs(Review Dashboard)"	
 		'Export SPLN Requirement Data
-		Public Function ExportAllREQs(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
+		Public Function ExportAllREQs() As XFSelectionChangedTaskResult		
 'BRapi.ErrorLog.LogMessage(si,$"Debug A")
 			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
 			Dim sFundCenter As String = args.NameValuePairs.XFGetValue("Entity")
@@ -234,7 +192,7 @@ Private Function CreateNameValuePairTable(ByVal si As SessionInfo, ByVal dataTab
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			
 		
-			'Brapi.ErrorLog.LogMessage(si,"IDs" & sReq_ID)
+'Brapi.ErrorLog.LogMessage(si,"IDs" & sReq_ID)
 			If sFundCenter.XFContainsIgnoreCase("_General") Then
 				sFundCenter = sFundCenter.Replace("_General","")
 			Else 
@@ -260,7 +218,7 @@ Private Function CreateNameValuePairTable(ByVal si As SessionInfo, ByVal dataTab
 					FC = FC.Trim()
 					Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " &  FC & ")"
 					Dim cbMembers As List (Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_" & sCube, mbrScrpt, True  )
-					'Brapi.ErrorLog.LogMessage(si, "FC:" & FC)
+'Brapi.ErrorLog.LogMessage(si, "FC:" & FC)
 	'
 					If Not cbMembers.Count > 0 Then
 						Return Nothing
@@ -276,7 +234,7 @@ Private Function CreateNameValuePairTable(ByVal si As SessionInfo, ByVal dataTab
 					Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, FC)	
 					
 					Dim isBase As Boolean = BRApi.Finance.Members.IsBase(si,entityPk, nAncestorID, nBaseID)
-					'Brapi.ErrorLog.LogMessage(si,"Here 2.4")	
+'Brapi.ErrorLog.LogMessage(si,"Here 2.4")	
 					If Not isBase Then FC = FC & ".Base"
 		
 					Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#" & FC,True)
@@ -445,7 +403,7 @@ FROM AggregatedData;"
 
 #Region "ExportforUpdate(ImportDashboard)"	
 		'Export PGM Requirement Data
-		Public Function ExportforUpdate(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult		
+		Public Function ExportforUpdate() As XFSelectionChangedTaskResult		
 'BRapi.ErrorLog.LogMessage(si,$"Debug A")
 			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
 				Dim sFundCenter As String = args.NameValuePairs.XFGetValue("Entity")
@@ -459,10 +417,7 @@ FROM AggregatedData;"
 			sFilePath = ""
 			BRApi.Dashboards.Parameters.SetLiteralParameterValue(si,False,sFvParam,sFilePath)		
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			
-		
-			
-				
+
 				If String.IsNullOrWhiteSpace(sFundCenter) Then 
 					Throw New Exception("Please select a Command to export")
 				End If
@@ -482,7 +437,7 @@ FROM AggregatedData;"
 					FC = FC.Trim()
 					Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " &  FC & ")"
 					Dim cbMembers As List (Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_" & sCube, mbrScrpt, True  )
-					'Brapi.ErrorLog.LogMessage(si, "FC:" & FC)
+'Brapi.ErrorLog.LogMessage(si, "FC:" & FC)
 	'
 					If Not cbMembers.Count > 0 Then
 						Return Nothing
@@ -498,11 +453,11 @@ FROM AggregatedData;"
 '					Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, FC.Replace("_General",""))	
 					
 '					Dim isBase As Boolean = BRApi.Finance.Members.IsBase(si,entityPk, nAncestorID, nBaseID)
-'					'Brapi.ErrorLog.LogMessage(si,"Here 2.4")	
+''Brapi.ErrorLog.LogMessage(si,"Here 2.4")	
 '					If Not isBase Then FC = FC & ".Base"
 	
 					Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_Army", "E#" & FC,True)
-						'Brapi.ErrorLog.LogMessage(si, "FC count " & LFundCenters.Count)
+'Brapi.ErrorLog.LogMessage(si, "FC count " & LFundCenters.Count)
 						For Each FundCenter As MemberInfo In LFundCenters
 							If FCMulti.Length > 0 Then
 								FCMulti.Append(",")
@@ -517,7 +472,7 @@ FROM AggregatedData;"
 					
 				allFCs = FCMulti.ToString()
 				
-				'Brapi.ErrorLog.LogMessage(si, "FC" & allFCs)
+'Brapi.ErrorLog.LogMessage(si, "FC" & allFCs)
 				
 		'Declare all Time values
 			Dim iTime0 As Integer = iTime + 0

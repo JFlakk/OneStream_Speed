@@ -90,51 +90,68 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
 			Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
 			Dim wfProfileName As String = If(wfProfileFullName.Contains("."), wfProfileFullName.Substring(wfProfileFullName.IndexOf(".") + 1).Trim().Split(" "c)(0), String.Empty)
-
+			Dim counter As Integer = 0
 			Dim WF_ProcCtrl_Account As New Dictionary(Of String, String) From {
-			{"Formulate","CMD_SPLN_Allow_Req_Creation"},
 			{"Import","CMD_SPLN_Allow_Req_Creation"},
+			{"Formulate","CMD_SPLN_Allow_Req_Creation"},
 			{"Validate","CMD_SPLN_Allow_Req_Validation"},
-			{"Prioritize","CMD_SPLN_Allow_Req_Priority"},
 			{"Rollover","CMD_SPLN_Allow_Req_Rollover"}
 			}
 			If WF_ProcCtrl_Account.ContainsKey(wfProfileName) Then
-
-				If wfProfileName.XFContainsIgnoreCase("import")
-				#Region "Import workflow step condition"		
-'					Dim dsArgs As New DashboardDataSetArgs
-'					dsArgs.FunctionType = DashboardDataSetFunctionType.GetDataSet
-'					dsargs.DataSetName = "GetUserFundsCenterByWF"
-'					Dim userSecurity_dt = GBL_DataSet.Main(si, globals, api, dsArgs)				
-'					For Each row As DataRow In userSecurity_dt.Rows
-'						Dim Entity = row("Value").ToString		
-'				    	Dim sAllowAccount As String = WF_ProcCtrl_Account(wfProfileName)
-'				  		Dim sAllowAccountMbrScript As String = $"Cb#{sCube}:E#{sEntity}:C#Local:S#RMW_Cycle_Config_Annual:T#{sREQTime}:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-'						Dim sAllowAccountValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation			
-						
-'					Next
-				#End Region
-				
-				
-				
-				
-				'Grab workflow process control value (blank, yes or no)
-				Else
+					'Grab workflow process control value (blank, yes or no)
 			    	Dim sAllowAccount As String = WF_ProcCtrl_Account(wfProfileName)
-			  		Dim sAllowAccountMbrScript As String = $"Cb#{sCube}:E#{sEntity}:C#Local:S#RMW_Cycle_Config_Annual:T#{sREQTime}:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+			  		Dim sAllowAccountMbrScript As String = $"Cb#{sCube}:E#{sEntity}:C#Local:S#RMW_Cycle_Config_Monthly:T#{sREQTime}M12:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 					Dim sAllowAccountValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation			
-	'brapi.ErrorLog.Logmessage(si, $"sAllowAccount: {sAllowAccount} | sAllowAccountValue: {sAllowAccountValue}")	
+'brapi.ErrorLog.Logmessage(si, $"sAllowAccount: {sAllowAccount} | sAllowAccountValue: {sAllowAccountValue}")	
 					If sAllowAccountValue.XFContainsIgnoreCase("no") Then			
 						Return "no"
 					Else
 						Return "yes"
 					End If
-				End If	
+					
 			'Review Step will be blank --> do not want to show functional components on the review steps i.e., formulate requirement component
 			Else If String.IsNullOrEmpty(wfProfileName)
 				Return "no"
 			End If	
 		End Function
+		
+		Public Shared Function GetProcCtrlValMulti(ByVal si As SessionInfo) As Object 
+			
+			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim sREQTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim wfProfileFullName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			Dim wfProfileName As String = If(wfProfileFullName.Contains("."), wfProfileFullName.Substring(wfProfileFullName.IndexOf(".") + 1).Trim().Split(" "c)(0), String.Empty)
+			Dim counter As Integer = 0
+			Dim WF_ProcCtrl_Account As New Dictionary(Of String, String) From {
+			{"Import","CMD_SPLN_Allow_Req_Creation"},
+			{"Formulate","CMD_SPLN_Allow_Req_Creation"},
+			{"Validate","CMD_SPLN_Allow_Req_Validation"}
+			}
+			If WF_ProcCtrl_Account.ContainsKey(wfProfileName) Then
+				Dim userSecGroup As DataSet = brapi.Dashboards.Process.GetAdoDataSetForAdapter(si,False,"da_CMD_PGM_GetUserSec","FundsCenterByWF",Nothing)	
+				Dim userSecGroup_dt As DataTable = userSecGroup.Tables(0)
+	'brapi.ErrorLog.LogMessage(si, userSecGroup_dt.Rows.Count)
+				'If userSecGroup_dt.Rows.Count > 1 Then
+					For Each row As DataRow In userSecGroup_dt.Rows
+						Dim sUserSecEntity = row("Value").ToString
+						Dim sAllowAccount As String = WF_ProcCtrl_Account(wfProfileName)
+					  	Dim sAllowAccountMbrScript As String = $"Cb#{sCube}:E#{sUserSecEntity}:C#Local:S#RMW_Cycle_Config_Monthly:T#{sREQTime}M12:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+	 					Dim sAllowAccountValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation			
+'brapi.ErrorLog.LogMessage(si,  $"|| {sAllowAccountMbrScript}")								
+						If sAllowAccountValue.XFContainsIgnoreCase("no") Then			
+							counter += 1
+						End If
+'brapi.ErrorLog.LogMessage(si, userSecGroup_dt.Rows.Count & $"|| {counter}")							
+					Next	
+					If counter = userSecGroup_dt.Rows.Count Then
+						Return "no"
+					Else 
+						Return "yes"
+					End If
+				'End If
+			End If	
+		End Function		
 
 	End Class
 End Namespace

@@ -16,6 +16,7 @@ Imports OneStream.Stage.Database
 Imports OneStream.Stage.Engine
 Imports OneStreamWorkspacesApi
 Imports OneStreamWorkspacesApi.V800
+Imports Workspace.GBL.GBL_Assembly
 
 Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 	Public Class CMD_PGM_Svc_Factory
