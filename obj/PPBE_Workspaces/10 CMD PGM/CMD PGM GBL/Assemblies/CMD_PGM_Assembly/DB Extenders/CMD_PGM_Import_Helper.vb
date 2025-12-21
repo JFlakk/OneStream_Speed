@@ -127,15 +127,15 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	            If validFile Then
 					'get req_id and guid
 					UpdateColsForDatabase(Importreq_DT)
-BRApi.ErrorLog.LogMessage(si, "#Here 4")
+'BRApi.ErrorLog.LogMessage(si, "#Here 4")
 					'Update additional columns
 					PostProcessNewREQ(ImportREQ_DT)
-BRApi.ErrorLog.LogMessage(si, "#Here 5")
+'BRApi.ErrorLog.LogMessage(si, "#Here 5")
 
 					'Get existing duplicate Reqs
 					
 					existingREQs = Me.GetExistingDupREQs(Importreq_DT, REQDataTable, REQsinDB)
-BRApi.ErrorLog.LogMessage(si, "#Here 6")
+'BRApi.ErrorLog.LogMessage(si, "#Here 6")
 					'Call delete to delte rows
 					If existingREQs.Count > 0 Then
 						Dim deleter As New CMD_PGM_Helper.MainClass
@@ -144,30 +144,30 @@ BRApi.ErrorLog.LogMessage(si, "#Here 6")
 						Args.NameValuePairs.Add("Action", "Delete")
 						deleter.main(si, globals, api, args)
 					End If
-BRApi.ErrorLog.LogMessage(si, "#Here 7")
+'BRApi.ErrorLog.LogMessage(si, "#Here 7")
 					'Spltit imported data to REQ and detail tables
 					Me.SplitAndUpdateREQTables(ImportREQ_DT, REQDataTable, REQDetailDataTable)
-BRApi.ErrorLog.LogMessage(si, "#Here 8")					
+'BRApi.ErrorLog.LogMessage(si, "#Here 8")					
 					'write to cube
 					Dim REQ_IDs As New List(Of String)
 					For Each r As DataRow In ImportREQ_DT.Rows
 						REQ_IDs.Add(r("REQ_ID").ToString)	
 					Next
-BRApi.ErrorLog.LogMessage(si, "#Here 9, count: " & REQ_IDs.Count)					
+'BRApi.ErrorLog.LogMessage(si, "#Here 9, count: " & REQ_IDs.Count)					
 					Dim loader As New CMD_PGM_Helper.MainClass
 					Args.NameValuePairs("req_IDs") =  String.Join(",", REQ_IDs)
 					'Args.NameValuePairs.Add("req_IDs", String.Join(",", REQ_IDs))
 					Args.NameValuePairs.Add("new_Status", "Formulate") 'It keeps the same status
 					Args.NameValuePairs("Action") = "Insert"
 					loader.main(si, globals, api, args)
-BRApi.ErrorLog.LogMessage(si, "#Here 10")					
+'BRApi.ErrorLog.LogMessage(si, "#Here 10")					
 					'File load complete. Write file to explorer
 
 					'Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf & "Output file is located in the following folder for review:" & vbCrLf & "DOCUMENTS/USERS/" & si.UserName.ToUpper
 					Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf 
 					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", uploadStatus)
 					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_PGM_Import_" & wfInfoDetails("ScenarioName") ,  errorTable)
-BRApi.ErrorLog.LogMessage(si, "#Here 11")					
+'BRApi.ErrorLog.LogMessage(si, "#Here 11")					
 					Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
 				Else 'If the validation failed, write the error out.
 					Dim sErrorLog As String = ""
@@ -177,7 +177,7 @@ BRApi.ErrorLog.LogMessage(si, "#Here 11")
 					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_PGM_Import_" & wfInfoDetails("ScenarioName"),  errorTable)
 					Return Nothing
 				End If
-BRApi.ErrorLog.LogMessage(si, "#Here 12")					
+'BRApi.ErrorLog.LogMessage(si, "#Here 12")					
 				Return Nothing
 	        Catch ex As Exception
 	            Throw New Exception("An error occurred: " & ex.Message)

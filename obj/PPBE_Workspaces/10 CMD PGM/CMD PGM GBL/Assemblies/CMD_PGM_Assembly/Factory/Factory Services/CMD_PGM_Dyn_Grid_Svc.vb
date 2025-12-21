@@ -86,6 +86,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				    	Return dg_CMD_PGM_Attachments()            
 					End If
 					
+					If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_PGM_Comments") Then
+				    	Return dg_CMD_PGM_Comments()            
+					End If
+					
 					If args.Component.Name.XFEqualsIgnoreCase("dg_CMD_PGM_Create") Then
 				    	Return dg_CMD_PGM_Create()        
 					End If
@@ -3546,6 +3550,73 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Return Nothing
         End Function	
 
+#End Region
+
+#Region "Req Comment"
+Private Function dg_CMD_PGM_Comments() As Object
+Dim dt As New DataTable()
+Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition) 	
+
+Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
+			CMD_PGM_ID.ColumnName = "CMD_PGM_REQ_ID"
+			CMD_PGM_ID.IsFromTable = True
+			CMD_PGM_ID.IsVisible = False
+			CMD_PGM_ID.AllowUpdates = False
+			columnDefinitions.Add(CMD_PGM_ID)
+			
+Dim Comments As New XFDynamicGridColumnDefinition()
+			Comments.ColumnName = "General_Comments"
+			Comments.IsFromTable = True
+			Comments.IsVisible = True
+			Comments.AllowUpdates = True
+			Comments.Description = "Comment"
+			columnDefinitions.Add(Comments)
+			
+Dim User As New XFDynamicGridColumnDefinition()
+			User.ColumnName = "User"
+			User.IsFromTable = True
+			User.IsVisible = True
+			User.AllowUpdates = False
+			
+			columnDefinitions.Add(User)
+			
+Dim sDate As New XFDynamicGridColumnDefinition()
+			sDate.ColumnName = "Comment Date"
+			sDate.IsFromTable = True
+			sDate.IsVisible = True
+			sDate.AllowUpdates = False
+			
+			columnDefinitions.Add(sDate)
+			
+			
+'	Dim sREQ As String = BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","REQ","")		
+'	Dim REQ_ID_Split As List(Of String) = StringHelper.SplitString(sREQ, " ")	
+'	Dim RequirementID As String  = REQ_ID_Split(1)
+	
+	   Dim sql As String = $"SELECT Cmt.CMD_PGM_REQ_ID, Cmt.General_Comment, Cmt.Update_User, Cmt.Update_Date
+	   						From XFC_CMD_PGM_REQ_Cmt as Cmt
+	   						LEFT JOIN XFC_CMD_PGM_REQ AS Req
+							ON Req.CMD_PGM_REQ_ID = Cmt.CMD_PGM_REQ_ID
+							
+	  					 	"
+	   
+	   
+	    Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+                dt = BRApi.Database.ExecuteSql(dbConnApp,sql,False)
+            End Using
+			
+				     'Create the XFTable
+					    Dim xfTable As New xfDataTable(si,dt,Nothing,1000)
+						
+					
+					     'Send the result To the Interface component
+					    Dim taskResult As New XFDynamicGridGetDataResult(xfTable,columnDefinitions,DataAccessLevel.AllAccess)
+					        
+					    Return taskResult
+					
+		End Function
+	   
+	   
 #End Region
 
 #Region "Get Priority Categories"

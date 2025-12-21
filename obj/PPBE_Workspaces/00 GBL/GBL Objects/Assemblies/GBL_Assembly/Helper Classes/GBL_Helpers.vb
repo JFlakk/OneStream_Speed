@@ -99,19 +99,37 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         End Function
 		
 		Public Shared Function Is_Step_Allowed(ByRef si As SessionInfo, ByRef args As DashboardExtenderArgs, ByVal wfStep As String, ByVal sFundCenter As String) As Boolean
-			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
-			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim sTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-
-			Dim sUFRPermissionMbrScript As String = "Cb#" & sCube & ":E#" & sFundCenter & ":C#Local:S#" & sScenario & ":T#" & sTime & ":V#Annotation:A#REQ_Allow_Approval:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			Dim sUFRPermission As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sUFRPermissionMbrScript).DataCellEx.DataCellAnnotation	
-			If sUFRPermission.XFEqualsIgnoreCase("no") Then
-				Return False
-			Else
-				Return True
-			End If
-		
-		End Function
+'			Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
+'			Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+'			Dim sTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+'			Dim sConfigCycle As String = ""
+'			Dim WF_ProcCtrl_Account As New Dictionary(Of String, String) From {
+'			{"Formulate","CMD_PGM_Allow_Req_Creation"},
+'			{"Validate","CMD_PGM_Allow_Req_Validation"},
+'			{"Prioritize","CMD_PGM_Allow_Req_Priority"},
+'			{"Rollover","CMD_PGM_Allow_Req_Rollover"}
+'			}
+			
+'			If WF_ProcCtrl_Account.ContainsKey(wfStep) Then
+				
+'				If sScenario.XFContainsIgnoreCase("CMD_PGM") Then 	
+'					sConfigCycle = "RMW_Cycle_Config_Annual"
+'				Else If sScenario.XFContainsIgnoreCase("CMD_SPLN") Then 
+'					sConfigCycle = "RMW_Cycle_Config_Monthly"
+'				End If
+'			Dim sAllowAccount As String = WF_ProcCtrl_Account(wfStep)
+'			Dim sPermissionMbrScript As String = "Cb#" & sCube & ":E#" & sFundCenter & ":C#Local:S#" & sConfigCycle & ":T#" & sTime & ":V#Annotation:A#" & sAllowAccount & ":F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+'			Dim sPermission As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sPermissionMbrScript).DataCellEx.DataCellAnnotation	
+'				If sPermission.XFEqualsIgnoreCase("no") Then
+'					Return False
+'				Else
+'					Return True
+'				End If
+'			Else 
+'				Return Nothing 
+'			End If
+			
+			End Function
 		
 		Public Shared Function Check_WF_Complete_Lock(ByRef si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As XFSelectionChangedTaskResult						
 			Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
@@ -418,12 +436,12 @@ Public Shared Function SendStatusChangeEmail(ByVal si As SessionInfo, ByVal glob
             
             ' Send email
             If StatusChangeEmailIs.Count > 0 AndAlso Not String.IsNullOrWhiteSpace(EmailConnectorStr) Then
-               Brapi.Errorlog.LogMessage(si, "Attempting to send status change email to: " & EmailIs)
+              ' Brapi.Errorlog.LogMessage(si, "Attempting to send status change email to: " & EmailIs)
                 
                 ' Call the utility function to send the email
                ' Brapi.Utilities.SendMail(si, EmailConnectorStr, StatusChangeEmailIs, StatusChangeSubject, StatusChangeBody, Nothing)
                 
-               Brapi.Errorlog.LogMessage(si, "Successfully triggered email for Request Title: " & ReqTitle)
+              ' Brapi.Errorlog.LogMessage(si, "Successfully triggered email for Request Title: " & ReqTitle)
             End If
 			
         'Validation Email List    
@@ -450,12 +468,12 @@ Public Shared Function SendStatusChangeEmail(ByVal si As SessionInfo, ByVal glob
             
             ' Send email
             If ValidationEmailIs.Count > 0 AndAlso Not String.IsNullOrWhiteSpace(EmailConnectorStr) Then
-                Brapi.Errorlog.LogMessage(si, "Attempting to send Validate change email to: " & VEmailIs)
+               ' Brapi.Errorlog.LogMessage(si, "Attempting to send Validate change email to: " & VEmailIs)
                 
                 ' Call the utility function to send the email
                ' Brapi.Utilities.SendMail(si, EmailConnectorStr, StatusChangeEmailIs, StatusChangeSubject, StatusChangeBody, Nothing)
                 
-               Brapi.Errorlog.LogMessage(si, "Successfully triggered validate email for Request Title: " & ReqTitle)
+              ' Brapi.Errorlog.LogMessage(si, "Successfully triggered validate email for Request Title: " & ReqTitle)
             End If
 			
         Next

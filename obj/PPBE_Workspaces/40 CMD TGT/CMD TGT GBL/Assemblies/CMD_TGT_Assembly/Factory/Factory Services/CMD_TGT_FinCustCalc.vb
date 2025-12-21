@@ -36,7 +36,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				Me.globals = globals
 				Me.Global_Functions = New OneStream.BusinessRule.Finance.Global_Functions.MainClass(si,globals,api,args)
 #End Region
-BRApi.ErrorLog.LogMessage(SI, $"args.CustomCalculateArgs.FunctionName: {args.CustomCalculateArgs.FunctionName} - {api.pov.entity.name}")
+
 				Select Case args.CustomCalculateArgs.FunctionName
 					Case "CopycPROBEtoTGT"
 						Me.CopycPROBEtoTGT()

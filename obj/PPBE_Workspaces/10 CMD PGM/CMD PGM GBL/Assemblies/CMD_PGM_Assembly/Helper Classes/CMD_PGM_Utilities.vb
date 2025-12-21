@@ -98,9 +98,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 			If WF_ProcCtrl_Account.ContainsKey(wfProfileName) Then
 		    	Dim sAllowAccount As String = WF_ProcCtrl_Account(wfProfileName)
-		  		Dim sAllowAccountMbrScript As String = $"Cb#{sCube}:E#{sEntity}:C#Local:S#RMW_Cycle_Config_Annual:T#{sREQTime}:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+				Dim sAllowAccountMbrScript As String = sAllowAccountMbrScript = $"Cb#{sCube}:E#{sEntity}:C#Local:S#RMW_Cycle_Config_Annual:T#{sREQTime}:V#Annotation:A#{sAllowAccount}:F#None:O#BeforeAdj:I#None:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
 				Dim sAllowAccountValue As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, sCube, sAllowAccountMbrScript).DataCellEx.DataCellAnnotation			
-brapi.ErrorLog.Logmessage(si, $"sAllowAccountMbrScript: {sAllowAccountMbrScript} | sAllowAccountValue: {sAllowAccountValue}")	
+'brapi.ErrorLog.Logmessage(si, $"sAllowAccountMbrScript: {sAllowAccountMbrScript} | sAllowAccountValue: {sAllowAccountValue}")	
 				If sAllowAccountValue.XFContainsIgnoreCase("no") Then			
 					Return "no"
 				Else

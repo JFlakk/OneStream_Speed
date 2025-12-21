@@ -222,7 +222,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			Dim Entity As String = args.NameValuePairs.XFGetValue("Entity","NA")
 			If Entity = "NA" Or Entity = String.Empty Then
-'BRAPI.ErrorLog.LogMessage(si,$"Hit: {Entity}")
+BRAPI.ErrorLog.LogMessage(si,$"Hit: {Entity}")
 				Return "U6#One"
 			End If
 			Dim Appn As String = args.NameValuePairs.XFGetValue("APPN","NA")
@@ -257,7 +257,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 						If Acct = "TGT_WH"
 				        	FilterString = $"{FilterString}
 											,[A#Target,A#TGT_WH]
-									        ,[F#L2_Dist_Final]"
+									        ,[F#L2_Dist_Final,F#L2_Ctrl_Intermediate]"
 						End If
 				    Case "L3"
 						If Acct = "TGT_WH"
@@ -483,19 +483,19 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 			ElseIf item.Key.XFContainsIgnoreCase("A#Target") And item.Key.XFContainsIgnoreCase("Ctrl_Intermediate")
 				output = $"{output} {item.key}:Name(Target Control),"
 			ElseIf item.Key.XFContainsIgnoreCase("A#TGT_WH") And item.Key.XFContainsIgnoreCase("Dist_Final")
-				output = $"{output} {item.key}:Name(WithHold),"
+				output = $"{output} {item.key}:Name(Withhold),"
 			ElseIf item.Key.XFContainsIgnoreCase("A#TGT_Target_WH") And item.Key.XFContainsIgnoreCase("Dist_Balance")
 				output = $"{output} {item.key}:Name(Target Balance),"
 			End If
 		Next
-'brapi.ErrorLog.LogMessage(si,"output:" & output)
+brapi.ErrorLog.LogMessage(si,"output:" & output)
 		
 		If output = "" Then
 		output = "U5#One"
 		End If
-		
-		Return output
-	
+
+'brapi.ErrorLog.LogMessage(si,"output:" & output)		
+		Return output	
 		End Function
 	#End Region
 
@@ -704,7 +704,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 			ElseIf item.Key.XFContainsIgnoreCase("A#Target") And item.Key.XFContainsIgnoreCase("Ctrl_Intermediate")
 				output = $"{output} {item.key}:Name(Target Control),"
 			ElseIf item.Key.XFContainsIgnoreCase("A#TGT_WH") And item.Key.XFContainsIgnoreCase("Dist_Final")
-				output = $"{output} {item.key}:Name(WithHold),"
+				output = $"{output} {item.key}:Name(Withhold),"
 			ElseIf item.Key.XFContainsIgnoreCase("A#TGT_Target_WH") And item.Key.XFContainsIgnoreCase("Dist_Balance")
 				output = $"{output} {item.key}:Name(Target Balance),"
 			End If
@@ -713,7 +713,7 @@ BRAPI.ErrorLog.LogMessage(si,$"Hit1: {Entity}")
 		If output = "" Then
 		output = "U2#One"
 		End If
-		
+	
 		Return output
 	
 		End Function

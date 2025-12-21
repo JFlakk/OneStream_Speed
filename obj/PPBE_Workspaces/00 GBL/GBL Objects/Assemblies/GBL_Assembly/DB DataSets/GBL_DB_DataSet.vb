@@ -20,12 +20,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 		Public Function Main(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardDataSetArgs) As Object
 			Try
 				Select Case args.FunctionType
-					
-					Case Is = DashboardDataSetFunctionType.GetDataSetNames
-						'Dim names As New List(Of String)()
-						'names.Add("MyDataSet")
-						'Return names
-					
+
 					Case Is = DashboardDataSetFunctionType.GetDataSet
 #Region "Security Logic: Get User FundsCenter By Workflow"						
 						If args.DataSetName.XFEqualsIgnoreCase("GetUserFundsCenterByWF") Then
@@ -176,22 +171,19 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 							Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name)
 						Case Else
 							If bHasChildren Then
-								'Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name & "_General") '***This was just commented out. Both were in this blok
 								Me.WriteNameValuePairRow(si, dt, fc.NameAndDescription, fc.Member.Name) '*** If reverted back _General this should not be deleted. Simply uncommnet the line above
 							End If
 						End Select
 					Next			
 				Next	
-'For Each row As DataRow In dt.Rows
-'	BRApi.ErrorLog.LogMessage(si, $"Name = {row("Name")} || Value = {row("Value")}")
-'Next	
+
 				Dim sColumnlist As New List(Of String)
 
 				For Each sColumn In dt.Columns
 					sColumnlist.Add(sColumn.ColumnName)
 				Next
-'brapi.ErrorLog.LogMessage(si, $"HERE186")
-			Return dt.defaultView.ToTable(True, sColumnlist.ToArray())
+
+			Return dt.DefaultView.ToTable(True, sColumnlist.ToArray())
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
@@ -233,8 +225,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
 				row("Name") = name
 				row("Value") = value
-
-'Brapi.ErrorLog.LogMessage(si, $"Name = {Name} | Value = {Value}")				
+			
                 dt.Rows.Add(row)
 				
 			Catch ex As Exception

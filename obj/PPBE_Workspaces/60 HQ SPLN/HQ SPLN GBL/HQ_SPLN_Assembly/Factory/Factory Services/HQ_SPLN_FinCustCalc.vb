@@ -51,18 +51,26 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         End Sub
 
 		Public Sub Copy_CMD_SPLN_OMA()
+			Dim wfYear As String = api.Time.GetYearFromId(api.Pov.Time.MemberId)
 			Dim originFilter = "O#AdjInput"
-			Dim destFlowFilter = "F#Copy_Adj"
-			Dim srcFlowFilter = "F#L2_Finalized_SPLN"
-			Dim destacctFilter = "A#Commitments,A#Obligations"
 			Dim srcacctFilter = "A#Funded_Commitments.Base,A#Funded_Obligations.Base"
+			Dim srcFlowFilter = "F#L2_Finalized_SPLN"
+			Dim srcu1Filter = "U1#OMA.Base.Options(Cube=Army,ScenarioType=Plan,MergeMembersFromReferencedCubes=False)"
+			Dim srcu3Filter = "U3#OMA.Base.Options(Cube=Army,ScenarioType=Plan,MergeMembersFromReferencedCubes=False)"
+			Dim destacctFilter = "A#Commitments,A#Obligations"
+			Dim destFlowFilter = "F#Copy_Adj"
+			Dim destu1Filter = "U1#OMA.Base.Options(Cube=Army,ScenarioType=Forecast,MergeMembersFromReferencedCubes=False)"
+			Dim destu2Filter = "U2#None"
+			Dim destu3Filter = "U3#OMA.Base.Options(Cube=Army,ScenarioType=Forecast,MergeMembersFromReferencedCubes=False)"			
+			Dim destu4Filter = "U4#None"
 			Dim src_DataBuffer As New DataBuffer()
-			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData(V#Periodic),[{originFilter}],[{destFlowFilter}],[{destacctFilter}])")
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData(V#Periodic),[{originFilter}],[{destFlowFilter}],[{destu1Filter}],[{destu2Filter}],[{destu4Filter}],[{destacctFilter}])")
 			Dim destBuffer As DataBuffer = New DataBuffer()
 			Dim ClearCubeData As DataBuffer = New DataBuffer()
+			Dim srcCommDims As String = "V#Periodic:C#Aggregated:O#Top:S#CMD_SPLN_C{wfYear}:U2#Top:U4#Top:U5#Top:U7#Top"
 			
-			src_DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData(V#Periodic:C#Aggregated:O#Top:S#CMD_SPLN_C{api.Time.GetYearFromId(api.Pov.Time.MemberId)}),[{srcFlowFilter}],[{srcacctFilter}])")
-			Dim hqSPLN_DataBuffer As DataBuffer = api.Data.ConvertDataBufferExtendedMembers(api.Pov.Cube.Name, api.Pov.Entity.Name, $"CMD_SPLN_C{api.Time.GetYearFromId(api.Pov.Time.MemberId)}", src_DataBuffer)
+			src_DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData({srcCommDims}),[{srcFlowFilter}],[{srcacctFilter}])")
+			Dim hqSPLN_DataBuffer As DataBuffer = api.Data.ConvertDataBufferExtendedMembers(api.Pov.Cube.Name, api.Pov.Entity.Name, $"CMD_SPLN_C{wfYear}", src_DataBuffer)
 			For Each hqSPLN_DataCell As DataBufferCell In hqSPLN_DataBuffer.DataBufferCells.Values
 				Dim acctName = "Obligations"
 				If hqSPLN_DataCell.GetAccountName(api).XFContainsIgnoreCase("Commitments")

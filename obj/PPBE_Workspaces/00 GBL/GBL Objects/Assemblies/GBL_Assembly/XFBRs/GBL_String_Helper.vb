@@ -712,7 +712,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 			Dim entDim = $"E_{wfInfoDetails("CMDName")}"
 			Dim scenDim = "S_RMW"
 			Dim scenFilter = $"S#{CprobeScen}"
-			Dim timeFilter = String.Empty '$"T#{wfInfoDetails("TimeName")}"
+			Dim timeFilter = String.Empty 
 			Dim NameValuePairs = New Dictionary(Of String,String)
 			If cvName.XFEqualsIgnoreCase("GBL_cPROBE_FDX_CV")
 				NameValuePairs.Add("ML_GBL_APPN",appn)
@@ -742,7 +742,7 @@ If dt Is Nothing
 			End If
 			NameValuePairs.Add("ML_GBL_Scenario",scenFilter)
 			NameValuePairs.Add("ML_GBL_AllYears","2026")
-'BRAPI.ErrorLog.LogMessage(si,$"Hit Scen: {scenFilter}")
+BRAPI.ErrorLog.LogMessage(si,$"Hit Time: {timeFilter}")
 			
 			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
 
@@ -789,22 +789,34 @@ Public Function GetcPROBEFDXFilteredRows() As String
 			Dim toSort As New Dictionary(Of String,String)
 			Dim output = vbNullString
 			Dim scenParts As New List(Of String)	
-
+			Dim iTime As Integer = time
+			Dim segments As New List(Of String)
+			
+			'Declare all Time values
+			Dim iTime0 As Integer = iTime + 0
+			Dim iTime1 As Integer = iTime + 1
+			Dim iTime2 As Integer = iTime + 2
+			Dim iTime3 As Integer = iTime + 3
+			Dim iTime4 As Integer = iTime + 4
+			
+			
 			' Handle single or multiple scenarios in scen (comma-delimited)
 			scenParts = stringhelper.SplitString(scen,",")
-
+			For i As Integer = 0 To 4 Step 1
 			If scenParts.Count > 1
-				' Build one commDims segment per scenario then join with " + "
-				Dim segments As New List(Of String)
+				
+					' Build one commDims segment per scenario then join with " + "
+					
 				For Each sc As String In scenParts
 					If appn = String.Empty
-						segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U5#Top:U6#Top:U7#Top:U8#Top")
+						segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{iTime + i}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U5#Top:U6#Top:U7#Top:U8#Top")
 					Else
-						segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#[{appn}]:U5#Top:U6#Top:U7#Top:U8#Top")
+						segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{iTime + i}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#[{appn}]:U5#Top:U6#Top:U7#Top:U8#Top")
 					End If
 				Next
-				commDims = String.Join(" + ", segments)
-
+					commDims = String.Join(" + ", segments)
+				
+			
 				' Use same FilterString rules as single-scenario branch (only set once)
 				If appn = String.Empty
 					FilterString = $",[U1#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
@@ -820,19 +832,22 @@ Public Function GetcPROBEFDXFilteredRows() As String
 			Else
 				' Single scenario - preserve original behavior
 				If appn = String.Empty
-					commDims = $"Cb#{cmd}:C#Aggregated:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U5#Top:U6#Top:U7#Top:U8#Top"
+					segments.Add($"Cb#{cmd}:C#Aggregated:S#{scen}:T#{iTime + i}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U5#Top:U6#Top:U7#Top:U8#Top")
 					FilterString = $",[U1#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
 									 [U2#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
 									 [U3#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
 									 [U4#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
 				Else
-					commDims = $"Cb#{cmd}:C#Aggregated:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#[{appn}]:U5#Top:U6#Top:U7#Top:U8#Top"
+					segments.Add($"Cb#{cmd}:C#Aggregated:S#{scen}:T#{ITime + i}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U1#[{appn}]:U5#Top:U6#Top:U7#Top:U8#Top")
 					FilterString = $",[U2#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
 									 [U3#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)],
 									 [U4#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
 				End If
+				commDims = String.Join(" + ", segments)
 			End If
-			
+			Next
+				
+			'Brapi.ErrorLog.LogMessage(si, "Databuffer" & commDims)
 			Dim bufferFilter = $"FilterMembers(REMOVENODATA({commDims}){FilterString})"
 			
 
@@ -883,19 +898,31 @@ Public Function GetcPROBEFDXAPPNRows() As String
 			Dim toSort As New Dictionary(Of String,String)
 			Dim output = vbNullString
 			Dim scenParts As New List(Of String)	
-
+			Dim iTime As Integer = time
+			Dim segments As New List(Of String)
+			
+			'Declare all Time values
+			Dim iTime0 As Integer = iTime + 0
+			Dim iTime1 As Integer = iTime + 1
+			Dim iTime2 As Integer = iTime + 2
+			Dim iTime3 As Integer = iTime + 3
+			Dim iTime4 As Integer = iTime + 4
 			' Handle single or multiple scenarios in scen (comma-delimited)
 			scenParts = stringhelper.SplitString(scen,",")
+			For i As Integer = 0 To 4 Step 1
 			If scenParts.Count > 1
 				' Build one commDims segment per scenario then join with " + "
-				Dim segments As New List(Of String)
+				
 				For Each sc As String In scenParts
-					segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#Top")
+					segments.Add($"Cb#{cmd}:C#Aggregated:S#{sc}:T#{iTime + i}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#Top")
 				Next
 				commDims = String.Join(" + ", segments)
 			Else
-				commDims = $"Cb#{cmd}:C#Aggregated:S#{scen}:T#{Time}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#Top"
+				segments.Add($"Cb#{cmd}:C#Aggregated:S#{scen}:T#{iTime + i}:E#[{cmd}]:A#BO1:V#Periodic:O#Top:I#Top:F#Top:U2#Top:U3#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#Top")
+			commDims = String.Join(" + ", segments)
 			End If
+			
+			Next
 			FilterString = $",[U1#Top.Base.Options(Cube={cmd},ScenarioType=ScenarioType1,MergeMembersFromReferencedCubes=False)]"
 			
 			Dim bufferFilter = $"FilterMembers(REMOVENODATA({commDims}){FilterString})"

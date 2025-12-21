@@ -34,7 +34,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		
         Public Shared Function Convert_xftvCol_to_DbValue(si As SessionInfo, xftvCol As TableViewColumn) As Object
             Try
-'BRApi.ErrorLog.LogMessage(si, $"Hit: {xftvCol.DataType.ToString()} - {xftvCol.Value}")
 				If xftvCol Is Nothing Then
 	                Return DBNull.Value
                 Else

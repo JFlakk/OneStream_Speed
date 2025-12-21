@@ -1,0 +1,9 @@
+# Code Utility for OneStream
+# OneStream connection configurations (contains sensitive data)
+.onestream-metadata/connections.json
+# VS Code extension packages
+*.vsix
+# OneStream file selections (user-specific)
+.onestream-selections.json
+# OneStream authentication tokens
+onestream-token-*

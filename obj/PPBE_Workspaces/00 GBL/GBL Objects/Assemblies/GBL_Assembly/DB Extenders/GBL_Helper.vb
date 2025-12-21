@@ -589,7 +589,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				
 				'Unlock Sub CMD WF steps
 				If sWFLevel.XFEqualsIgnoreCase("SubCMD") Then
-					Dim sWorkflowProfile As String = curProfile.Name.Replace(" CMD"," Sub CMDs")
+					Dim sWorkflowProfile As String = curProfile.Name.Replace(" CMD"," Sub CMD")
 					sWorkflowProfile = sWorkflowProfile.substring(0, sWorkflowProfile.IndexOf("."))		
 					
 					'Grab Parent WF pk
