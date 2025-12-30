@@ -177,3 +177,17 @@
 - **Files:**
   - `MDM_DB_DataSets.cs` (DashboardDataSet)
 
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 3
+
+### OS Consultant Tools/SQL Query Manager/SQM_UI_Assembly
+
+- **Compiler Language:** CSharp
+- **Files:**
+  - `SQM_DB_DataSets.cs` (Unknown)
+  - `SQM_Load_Dashboard_Helper.cs` (Unknown)
+  - `SQL_SQM_Get_DataSets.cs` (Unknown)
+

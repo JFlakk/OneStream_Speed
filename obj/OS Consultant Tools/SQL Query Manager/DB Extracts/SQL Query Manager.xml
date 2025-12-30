@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<OneStreamXF version="8.5.1.17017">
+<OneStreamXF version="9.2.0.18004">
     <applicationWorkspacesRoot>
         <workspaces>
-            <workspace name="OS Consultant Tools" description="" notes="" accessGroup="Everyone" maintenanceGroup="Everyone" isShareableWorkspace="true" sharedWorkspaceNames="" companyName="" versionNum="" author="" namespacePrefix="" importsNamespace1="" importsNamespace2="" importsNamespace3="" importsNamespace4="" importsNamespace5="" importsNamespace6="" importsNamespace7="" importsNamespace8="" wsAssemblyService="" text1="" text2="" text3="" text4="" text5="" text6="" text7="" text8="">
+            <workspace name="OS Consultant Tools" description="" notes="" accessGroup="Everyone" maintenanceGroup="Everyone" isShareableWorkspace="true" sharedWorkspaceNames="PPBE Planning Process" companyName="" versionNum="" author="" namespacePrefix="OSConsTools" importsNamespace1="" importsNamespace2="" importsNamespace3="" importsNamespace4="" importsNamespace5="" importsNamespace6="" importsNamespace7="" importsNamespace8="" wsAssemblyService="" text1="" text2="" text3="" text4="" text5="" text6="" text7="" text8="">
                 <WorkspaceDefinition>
                     <SubstitutionVariableItems />
                 </WorkspaceDefinition>
@@ -480,6 +480,7 @@ order by 1</sqlQuery>
                                                 <ColumnDefinitions />
                                                 <RowDefinitions />
                                             </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="Embedded 0_SQL_Query_On_Demand" left="" top="" width="" height="" dockPosition="Left" />
@@ -508,6 +509,7 @@ order by 1</sqlQuery>
                                                     <RowDefinition RowType="Component" Height="*" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="Embedded 1_SQL_Query_Builder" left="" top="" width="" height="" dockPosition="Left" />
@@ -534,6 +536,7 @@ order by 1</sqlQuery>
                                                     <RowDefinition RowType="Component" Height="*" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="Embedded 1a_SQL_Data_Sources" left="" top="" width="" height="" dockPosition="Left" />
@@ -558,6 +561,7 @@ order by 1</sqlQuery>
                                                     <RowDefinition RowType="Component" Height="Auto" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="lbx_Data_Sources" left="" top="" width="" height="" dockPosition="Left" />
@@ -575,6 +579,7 @@ order by 1</sqlQuery>
                                                 <ColumnDefinitions />
                                                 <RowDefinitions />
                                             </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="txt_SQL_Search" left="" top="" width="" height="" dockPosition="Left" />
@@ -597,6 +602,7 @@ order by 1</sqlQuery>
                                                     <RowDefinition RowType="Component" Height="200" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="grd_Query_TableList" left="" top="" width="" height="" dockPosition="Left" />
@@ -615,6 +621,7 @@ order by 1</sqlQuery>
                                                 <ColumnDefinitions />
                                                 <RowDefinitions />
                                             </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
                                         <componentMembers>
                                             <componentMember name="grd_SQL_Search" left="" top="" width="" height="" dockPosition="Left" />
@@ -623,6 +630,303 @@ order by 1</sqlQuery>
                                 </dashboards>
                             </dashboardGroup>
                         </dashboardGroups>
+                        <workspaceAssemblies>
+                            <workspaceAssembly name="SQM_UI_Assembly" description="" compilerLanguage="CSharp">
+                                <dependencies />
+                                <files>
+                                    <folder name="DB DataSets">
+                                        <file name="SQM_DB_DataSets.cs" fileType="CSharp" businessRuleType="Unknown" compilerActionType="Compile" isEncrypted="false">
+                                            <sourceCode><![CDATA[using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using Microsoft.CSharp;
+using Microsoft.Data.SqlClient;
+using OneStream.Finance.Database;
+using OneStream.Finance.Engine;
+using OneStream.Shared.Common;
+using OneStream.Shared.Database;
+using OneStream.Shared.Engine;
+using OneStream.Shared.Wcf;
+using OneStream.Stage.Database;
+using OneStream.Stage.Engine;
+
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.SQM_DB_DataSets
+{
+    public class MainClass
+    {
+        public object Main(SessionInfo si, BRGlobals globals, object api, DashboardDataSetArgs args)
+        {
+            try
+            {
+                switch (args.FunctionType)
+                {
+                    case DashboardDataSetFunctionType.GetDataSetNames:
+                        var names = new List<string>();
+                        names.Add("Run_SQL_Command");
+                        return names;
+                        break;
+                    case DashboardDataSetFunctionType.GetDataSet:
+                        if (args.DataSetName.XFEqualsIgnoreCase("Run_SQL_Command"))
+                        {
+                            return Run_SQL_Command(si, globals, api, args);
+                        }
+                        break;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        #region "Helper Queries"
+        private DataTable Run_SQL_Command(SessionInfo si, BRGlobals globals, object api, DashboardDataSetArgs args)
+        {
+            try
+            {
+                var txt_SQL_Search = args.NameValuePairs["txt_SQL_Search"];
+                var Data_Source = args.NameValuePairs["Data_Source"];
+                var SQL_DT = new DataTable("SQL_Results");
+                if (txt_SQL_Search.Length == 0)
+                    return SQL_DT;
+                //If statement to get appropriate DBConnection Info
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_SQM_Get_DataSets = new SQL_SQM_Get_DataSets(si, connection);
+                    // Create a new DataTable
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter();
+                    // Define the select query and parameters
+                    string selectQuery = txt_SQL_Search;
+                    // Create an array of SqlParameter objects
+                    SqlParameter[] parameters = new SqlParameter[]
+                    {
+                    };
+                    sql_SQM_Get_DataSets.Fill_Get_SQM_DataTable(si, sqlDataAdapter, SQL_DT, selectQuery, parameters);
+
+                }
+
+                return SQL_DT;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        #endregion
+    }
+}
+
+]]></sourceCode>
+                                        </file>
+                                    </folder>
+                                    <folder name="DB Extenders">
+                                        <file name="SQM_Load_Dashboard_Helper.cs" fileType="CSharp" businessRuleType="Unknown" compilerActionType="Compile" isEncrypted="false">
+                                            <sourceCode><![CDATA[using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using Microsoft.CSharp;
+using OneStream.Finance.Database;
+using OneStream.Finance.Engine;
+using OneStream.Shared.Common;
+using OneStream.Shared.Database;
+using OneStream.Shared.Engine;
+using OneStream.Shared.Wcf;
+using OneStream.Stage.Database;
+using OneStream.Stage.Engine;
+
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.SQM_Load_Dashboard_Helper
+{
+    public class MainClass
+    {
+        public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
+        {
+            try
+            {
+                switch (args.FunctionType)
+                {
+                    case DashboardExtenderFunctionType.LoadDashboard:
+                        if (args.FunctionName.XFEqualsIgnoreCase("Load_SQM_Dashboard"))
+                        {
+                            // Implement Load Dashboard logic here.
+                            if (args.LoadDashboardTaskInfo.Reason == LoadDashboardReasonType.Initialize && args.LoadDashboardTaskInfo.Action == LoadDashboardActionType.BeforeFirstGetParameters)
+                            {
+                                var load_Dashboard_Task_Result = Load_Dashboard(si, globals, api, args, "Initial");
+                                return load_Dashboard_Task_Result;
+                            }
+                            else if (args.LoadDashboardTaskInfo.Reason == LoadDashboardReasonType.ComponentSelectionChanged && args.LoadDashboardTaskInfo.Action == LoadDashboardActionType.BeforeSubsequentGetParameters)
+                            {
+                                var load_Dashboard_Task_Result = Load_Dashboard(si, globals, api, args, "Post-Initial");
+                                return load_Dashboard_Task_Result;
+                            }
+                        }
+                        break;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        #region "Class Helper Functions"  
+        #region "Load Dashboard"
+        private XFLoadDashboardTaskResult Load_Dashboard(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs db_args, string RunType)
+        {
+            var Load_Dashboard_Task_Result = new XFLoadDashboardTaskResult();
+            if (RunType.XFEqualsIgnoreCase("Initial"))
+            {
+                Load_Dashboard_Task_Result.ChangeCustomSubstVarsInDashboard = true;
+                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_SQM_Show_Hide_Menu_Btn", "Show");
+                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_SQM_Display_Show_Menu_Btn", "False");
+                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_SQM_Display_Hide_Menu_Btn", "True");
+                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_SQM_Menu_Width", "Auto");
+                Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_txt_SQL_Search", String.Empty);
+            }
+            else if (RunType.XFEqualsIgnoreCase("Post-Initial"))
+            {
+                Load_Dashboard_Task_Result.ChangeCustomSubstVarsInDashboard = true;
+                //Checks current value of Show Menu param against prior run
+                BRApi.ErrorLog.LogMessage(si, "hit Post-Initial ");
+                var show_hide_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.GetValueOrEmpty("IV_SQM_Show_Hide_Menu_Btn");
+                var new_display_show_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.GetValueOrEmpty("IV_SQM_Show_Hide_Menu_Btn");
+                var prior_run_show_val = db_args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.GetValueOrEmpty("IV_SQM_Display_Show_Menu_Btn");
+                BRApi.ErrorLog.LogMessage(si, "hit Show: " + show_hide_val);
+                if (!string.IsNullOrEmpty(show_hide_val))
+                {
+                    if (show_hide_val == "Hide")
+                    {
+                        if (Load_Dashboard_Task_Result.ModifiedCustomSubstVars.ContainsKey("IV_SQM_Display_Show_Menu_Btn"))
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_SQM_Display_Show_Menu_Btn", "True");
+                        }
+                        else
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.TryAdd("IV_SQM_Display_Show_Menu_Btn", "True");
+                        }
+
+                        if (Load_Dashboard_Task_Result.ModifiedCustomSubstVars.ContainsKey("IV_SQM_Display_Hide_Menu_Btn"))
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_SQM_Display_Hide_Menu_Btn", "False");
+                        }
+                        else
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.TryAdd("IV_SQM_Display_Hide_Menu_Btn", "False");
+                        }
+                        if (Load_Dashboard_Task_Result.ModifiedCustomSubstVars.ContainsKey("IV_SQM_Menu_Width"))
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_SQM_Menu_Width", "0");
+                        }
+                        else
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.TryAdd("IV_SQM_Menu_Width", "0");
+                        }
+                    }
+                    else if (show_hide_val == "Show")
+                    {
+                        if (Load_Dashboard_Task_Result.ModifiedCustomSubstVars.ContainsKey("IV_SQM_Display_Show_Menu_Btn"))
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_SQM_Display_Show_Menu_Btn", "False");
+                        }
+                        else
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.TryAdd("IV_SQM_Display_Show_Menu_Btn", "False");
+                        }
+
+                        if (Load_Dashboard_Task_Result.ModifiedCustomSubstVars.ContainsKey("IV_SQM_Display_Hide_Menu_Btn"))
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_SQM_Display_Hide_Menu_Btn", "True");
+                        }
+                        else
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.TryAdd("IV_SQM_Display_Hide_Menu_Btn", "True");
+                        }
+                        if (Load_Dashboard_Task_Result.ModifiedCustomSubstVars.ContainsKey("IV_SQM_Menu_Width"))
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFSetValue("IV_SQM_Menu_Width", "Auto");
+                        }
+                        else
+                        {
+                            Load_Dashboard_Task_Result.ModifiedCustomSubstVars.TryAdd("IV_SQM_Menu_Width", "Auto");
+                        }
+                    }
+                }
+            }
+
+            return Load_Dashboard_Task_Result;
+        }
+        #endregion
+        #endregion
+    }
+}
+]]></sourceCode>
+                                        </file>
+                                    </folder>
+                                    <folder name="SQL Adapters">
+                                        <file name="SQL_SQM_Get_DataSets.cs" fileType="CSharp" businessRuleType="Unknown" compilerActionType="Compile" isEncrypted="false">
+                                            <sourceCode><![CDATA[using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using Microsoft.CSharp;
+using Microsoft.Data.SqlClient;
+using OneStream.Finance.Database;
+using OneStream.Finance.Engine;
+using OneStream.Shared.Common;
+using OneStream.Shared.Database;
+using OneStream.Shared.Engine;
+using OneStream.Shared.Wcf;
+using OneStream.Stage.Database;
+using OneStream.Stage.Engine;
+using OneStreamWorkspacesApi;
+using OneStreamWorkspacesApi.V800;
+
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
+{
+    public class SQL_SQM_Get_DataSets
+    {
+        private readonly SqlConnection _connection;
+
+        public SQL_SQM_Get_DataSets(SessionInfo si, SqlConnection connection)
+        {
+            _connection = connection;
+        }
+
+        public void Fill_Get_SQM_DataTable(SessionInfo si, SqlDataAdapter adapter, DataTable dataTable, string selectQuery, params SqlParameter[] parameters)
+        {
+            using (SqlCommand command = new SqlCommand(selectQuery, _connection))
+            {
+                command.CommandType = CommandType.Text;
+                if (parameters != null)
+                {
+                    command.Parameters.AddRange(parameters);
+                }
+
+                adapter.SelectCommand = command;
+                adapter.Fill(dataTable);
+            }
+        }
+    }
+}]]></sourceCode>
+                                        </file>
+                                    </folder>
+                                </files>
+                            </workspaceAssembly>
+                        </workspaceAssemblies>
                         <cubeViewGroups />
                         <dataManagementGroups />
                     </maintenanceUnit>
