@@ -22,5 +22,8 @@
     "EnablePackageAutoRestore": true,
     "LoadProjectsOnDemand": false,
     "UseBundledOnly": false
-  }
+  },
+  "ReferenceAssemblies": [
+    "./obj/Debug/net8.0/ref/dlls"
+  ]
 }

@@ -1,4 +1,28 @@
-using System;
+<?xml version="1.0" encoding="utf-8"?>
+<OneStreamXF version="9.0.1.17403">
+  <applicationWorkspacesRoot>
+    <workspaces>
+      <workspace name="OS Consultant Tools" description="" notes="" accessGroup="Everyone" maintenanceGroup="Everyone" isShareableWorkspace="true" sharedWorkspaceNames="PPBE Planning Process" companyName="" versionNum="" author="" namespacePrefix="OSConsTools" importsNamespace1="" importsNamespace2="" importsNamespace3="" importsNamespace4="" importsNamespace5="" importsNamespace6="" importsNamespace7="" importsNamespace8="" wsAssemblyService="" text1="" text2="" text3="" text4="" text5="" text6="" text7="" text8="">
+        <WorkspaceDefinition>
+          <SubstitutionVariableItems />
+        </WorkspaceDefinition>
+        <maintenanceUnits>
+          <maintenanceUnit name="Dynamic Dashboard Manager" description="" uiPlatformType="WpfOrSilverlight" accessGroup="Everyone" maintenanceGroup="Everyone" wsAssemblyService="DDM_UI_Assembly.DDM_Svc_Factory">
+            <fileResources />
+            <stringResources />
+            <parameters />
+            <adapters />
+            <components />
+            <dashboardGroups />
+            <workspaceAssemblies>
+              <workspaceAssembly name="DDM_Config_UI_Assembly" description="" compilerLanguage="CSharp" namespacePrefix="OSConsTools" importsNamespace1="" importsNamespace2="" importsNamespace3="" importsNamespace4="" importsNamespace5="" importsNamespace6="" importsNamespace7="" importsNamespace8="" wsAssemblyService="">
+                <dependencies>
+                  <dependency>GBL_UI_Assembly</dependency>
+                </dependencies>
+                <files>
+                  <folder name="DB Extenders">
+                    <file name="DDM_Config_Data.cs" fileType="CSharp" businessRuleType="Unknown" compilerActionType="Compile" isEncrypted="false">
+                      <sourceCode><![CDATA[using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -61,7 +85,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		/// </summary>
 		public bool Duplicate_Menu_Hdr_Options_Sort_Order { get; set; } = false;
 
-        private SessionInfo si;
+		private SessionInfo si;
 		private BRGlobals globals;
 		private object api;
 		private DashboardExtenderArgs args;
@@ -1302,4 +1326,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			Button = 2
 		}
 	}
-}
+}]]></sourceCode>
+                    </file>
+                  </folder>
+                </files>
+              </workspaceAssembly>
+            </workspaceAssemblies>
+            <cubeViewGroups />
+            <dataManagementGroups />
+          </maintenanceUnit>
+        </maintenanceUnits>
+      </workspace>
+    </workspaces>
+  </applicationWorkspacesRoot>
+</OneStreamXF>

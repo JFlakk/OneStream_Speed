@@ -130,3 +130,50 @@
   - `DDM_DynDB_Svc.cs` (Unknown)
   - `DDM_Svc_Factory.cs` (Unknown)
 
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 3
+
+### OS Consultant Tools/App Objects (Globals)/GBL_UI_Assembly
+
+- **Compiler Language:** CSharp
+- **Files:**
+  - `GBL_Import_CSV.cs` (Unknown)
+  - `SQL_GBL_Get_DataSets.cs` (Unknown)
+  - `SQL_GBL_Get_Max_ID.cs` (Unknown)
+
+
+## Workspace Assemblies
+
+**Total Assemblies:** 3
+**Total Assembly Files:** 9
+
+### OS Consultant Tools/Model Dimension Manager/MDM_Config_UI_Assembly
+
+- **Compiler Language:** CSharp
+- **Dependencies:** GBL_UI_Assembly
+- **Files:**
+  - `MDM_DB_DataSets.cs` (DashboardDataSet)
+  - `MDM_CDC_Config.cs` (Unknown)
+
+### OS Consultant Tools/Model Dimension Manager/MDM_Svc_Factory_Assembly
+
+- **Compiler Language:** CSharp
+- **Dependencies:** GBL_UI_Assembly
+- **Files:**
+  - `MDM_Content.cs` (Unknown)
+  - `MDM_Header.cs` (Unknown)
+  - `MDM_Config_Data.cs` (DashboardExtender)
+  - `MDM_DB_Svc.cs` (Unknown)
+  - `MDM_DynDB_Svc.cs` (Unknown)
+  - `MDM_Svc_Factory.cs` (Unknown)
+
+### OS Consultant Tools/Model Dimension Manager/MDM_UI_Assembly
+
+- **Compiler Language:** CSharp
+- **Dependencies:** GBL_UI_Assembly
+- **Files:**
+  - `MDM_DB_DataSets.cs` (DashboardDataSet)
+

@@ -1,6 +1,4 @@
 {
-  "python-envs.defaultEnvManager": "ms-python.python:system",
-  "python-envs.pythonProjects": [],
   "comment": "Add these settings to your .vscode/settings.json file",
   "editor.quickSuggestions": {
     "other": true,
