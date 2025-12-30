@@ -1,0 +1,14 @@
+<Project>
+  <!-- 
+    OneStream DLL Path Configuration
+    ================================
+    This path points to your OneStream DLL location.
+    It will be automatically set by the OneStream Code Utility extension.
+  -->
+  
+  <PropertyGroup>
+    <!-- This placeholder will be replaced with the actual path from extension settings -->
+    <OneStreamLibPath>/workspaces/OneStream_Speed/obj/Debug/net8.0/ref/dlls</OneStreamLibPath>
+  </PropertyGroup>
+  
+</Project>

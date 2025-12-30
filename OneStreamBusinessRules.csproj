@@ -1,0 +1,133 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputType>Library</OutputType>
+    <RootNamespace>OneStreamBusinessRules</RootNamespace>
+    <AssemblyName>OneStreamBusinessRules</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1701;1702;1591</NoWarn>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Core OneStream DLL References - Essential for BRApi -->
+    <Reference Include="OneStream.SharedCommonBase">
+      <HintPath>$(OneStreamLibPath)\OneStream.SharedCommonBase.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.SharedCommonBusinessRules">
+      <HintPath>$(OneStreamLibPath)\OneStream.SharedCommonBusinessRules.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.SharedWcfContract">
+      <HintPath>$(OneStreamLibPath)\OneStream.SharedWcfContract.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.SharedCoreWcf">
+      <HintPath>$(OneStreamLibPath)\OneStream.SharedCoreWcf.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.FinanceEngine">
+      <HintPath>$(OneStreamLibPath)\OneStream.FinanceEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.FinanceDatabaseTables">
+      <HintPath>$(OneStreamLibPath)\OneStream.FinanceDatabaseTables.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.SharedCommonNetStd">
+      <HintPath>$(OneStreamLibPath)\OneStream.SharedCommonNetStd.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.FinanceEngineMetadata">
+      <HintPath>$(OneStreamLibPath)\OneStream.FinanceEngineMetadata.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.SharedEngine">
+      <HintPath>$(OneStreamLibPath)\OneStream.SharedEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.SharedDatabaseTables">
+      <HintPath>$(OneStreamLibPath)\OneStream.SharedDatabaseTables.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.StageDatabaseTables">
+      <HintPath>$(OneStreamLibPath)\OneStream.StageDatabaseTables.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.StageEngine">
+      <HintPath>$(OneStreamLibPath)\OneStream.StageEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStream.SharedEngineBase">
+      <HintPath>$(OneStreamLibPath)\OneStream.SharedEngineBase.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="OneStreamWcfService">
+      <HintPath>$(OneStreamLibPath)\OneStreamWcfService.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    
+    <!-- System References -->
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+
+  <!-- Include all C# business rule files from standard OneStream folders -->
+  <ItemGroup>
+    <!-- Core Business Rules -->
+    <Compile Include="Finance\**\*.cs" />
+    <Compile Include="Extender\**\*.cs" />
+    <Compile Include="Connector\**\*.cs" />
+    <Compile Include="Parser\**\*.cs" />
+    <Compile Include="ConditionalRule\**\*.cs" />
+    
+    <!-- Dashboard Rules -->
+    <Compile Include="DashboardDataSet\**\*.cs" />
+    <Compile Include="DashboardExtender\**\*.cs" />
+    <Compile Include="DashboardStringFunction\**\*.cs" />
+    <Compile Include="DashboardXFRStringFunction\**\*.cs" />
+    
+    <!-- Transformation and Data Rules -->
+    <Compile Include="TransformationRule\**\*.cs" />
+    <Compile Include="DataManagementEventHandler\**\*.cs" />
+    <Compile Include="DataQualityEventHandler\**\*.cs" />
+    <Compile Include="TransformationEventHandler\**\*.cs" />
+    
+    <!-- UI and Forms Rules -->
+    <Compile Include="CubeViewExtender\**\*.cs" />
+    <Compile Include="FormsEventHandler\**\*.cs" />
+    <Compile Include="Spreadsheet\**\*.cs" />
+    <Compile Include="SpreadsheetEquityPickup\**\*.cs" />
+    
+    <!-- Integration Rules -->
+    <Compile Include="SmartIntegrationFunction\**\*.cs" />
+    <Compile Include="WcfEventHandler\**\*.cs" />
+    
+    <!-- Assemblies - Custom Code Libraries -->
+    <Compile Include="Assemblies\**\*.cs" />
+    <Compile Include="Assemblies\**\*.vb" />
+  </ItemGroup>
+  
+  <!-- Reference custom assemblies DLL files if they exist in Assemblies folder -->
+  <ItemGroup>
+    <Reference Include="Assemblies\*.dll">
+      <HintPath>Assemblies\%(Filename).dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
