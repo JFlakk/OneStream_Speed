@@ -45,9 +45,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 switch (args.FunctionType)
                 {
                     case DashboardDataSetFunctionType.GetDataSetNames:
-                        // Return available dataset names if needed
-                        // var names = new List<string> { "MyDataSet" };
-                        // return names;
                         break;
                     case DashboardDataSetFunctionType.GetDataSet:
                         // Return WF Root Profiles
@@ -59,6 +56,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_TreeView"))
                         {
                             return Get_WFProfile_TreeView();
+                        }
+                        // Return WF Profile Hierarchy for selected root profile
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WSMU_TreeView"))
+                        {
+                            return Get_WSMU_TreeView();
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WSMU_Dashboards"))
+                        {
+                            //return Get_WSMU_DB_TreeView();
                         }
                         // Return WF Profile Menu Options for selected profile
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_Menus"))
@@ -75,7 +81,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return Get_WFProfile_Headers();
                         }
-                        break;
+                        // Return WF Profile Header Items for selected profile/menu option
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_Config_Menu"))
+                        {
+                            return Get_Config_Menu();
+                        }						
+						else if (args.DataSetName.XFEqualsIgnoreCase("Get_Config_Hdr_Ctrls"))
+                        {
+                            return Get_Config_Hdr_Ctrls();
+                        }	
+						break;
                 }
                 return null;
             }
@@ -237,6 +252,216 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
         #endregion
+		
+        #region "Get WFProfile TreeView"
+
+        /// <summary>
+        /// Retrieves the workflow profile hierarchy as a tree view for the selected root profile.
+        /// </summary>
+        private DataSet Get_WSMU_TreeView()
+        {
+            try
+            {
+                var hierarchy = new XFTreeItemCollection();
+                var hierarchy_mbrs = new List<XFTreeItem>();
+                var parent_child = new Dictionary<string, string>();
+
+                var dt = new DataTable();
+
+                // Define the SQL Statement
+                var sql = @"
+                        SELECT 
+                            'All Maint Units' as Name,
+                            CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier) as Value, 
+                            CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier) AS ParentNode,
+							0 as Level
+						UNION ALL
+                        SELECT 
+                            WS.Name,
+                            WS.UniqueID as Value, 
+                            CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier) AS ParentNode,
+							1 as Level
+                        FROM 
+                            DashboardWorkspace WS
+						WHERE WS.Name NOT IN ('GENESIS','OS Consultant Tools','Default')
+                        UNION ALL
+                        SELECT 
+                            MU.Name,
+                            MU.UniqueID as Value, 
+							MU.WorkspaceID as ParentNode,
+						    2 as Level
+                        FROM 
+                            DashboardMaintUnit MU
+                        INNER JOIN 
+                            DashboardWorkspace WS ON MU.WorkspaceID = WS.UniqueID
+	                    ORDER BY 
+	                        Level DESC";
+
+                // Return the DataTable
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+
+                    var sqlparams = new SqlParameter[]
+                    {
+
+                    };
+
+                    sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+
+                // Build the tree structure from the DataTable
+                foreach (DataRow row in dt.Rows)
+                {
+					BRApi.ErrorLog.LogMessage(si,row["Name"].ToString());
+                    var hierarchy_children_mbrs = new List<XFTreeItem>();
+                    string Name = row["Name"].ToString();
+                    string Value = row["Value"].ToString();
+                    string parentNode = row["ParentNode"].ToString();
+                    var Bold_WFProfile = true;
+//                    if (row["DDM_Config_ID"] == DBNull.Value)
+//                    {
+//                        Bold_WFProfile = false;
+//                    }
+                    parent_child.Add(Value, parentNode);
+                    var childProfiles = parent_child.Where(pair => pair.Value == Value)
+                                        .Select(pair => pair.Key)
+                                        .ToList();
+                    if (childProfiles.Count > 0)
+                    {
+                        foreach (var childProfile in childProfiles)
+                        {
+                            // Create an XFTreeItem for each child profile
+                            var childXFTreeItem = hierarchy_mbrs.Find(item => item.UniqueName == childProfile);
+							if (childXFTreeItem != null)
+							{
+                            	hierarchy_children_mbrs.Add(childXFTreeItem);
+                        	}
+							}
+                        var wfprofile_xftreeitem = new XFTreeItem(Value, Name, string.Empty, Bold_WFProfile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
+                        hierarchy_mbrs.Add(wfprofile_xftreeitem);
+                    }
+                    else
+                    {
+                        var wfprofile_xftreeitem = new XFTreeItem(Value, Name, string.Empty, Bold_WFProfile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
+                        hierarchy_mbrs.Add(wfprofile_xftreeitem);
+                    }
+                }
+
+                var hierXFTreeItem = hierarchy_mbrs.Find(item => item.HeaderText == "All Maint Units");
+                hierarchy.TreeItems.Add(hierXFTreeItem);
+                return hierarchy.CreateDataSet(si);
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+		
+        private DataSet Get_WSMU_DB_TreeView()
+        {
+            try
+            {
+                var hierarchy = new XFTreeItemCollection();
+                var hierarchy_mbrs = new List<XFTreeItem>();
+                var parent_child = new Dictionary<string, string>();
+
+                var dt = new DataTable();
+
+                // Define the SQL Statement
+                var sql = @"
+                        SELECT 
+                            'All Maint Units' as Name,
+                            CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier) as Value, 
+                            CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier) AS ParentNode,
+							0 as Level
+						UNION ALL
+                        SELECT 
+                            WS.Name,
+                            WS.UniqueID as Value, 
+                            CAST('00000000-0000-0000-0000-000000000000' AS uniqueidentifier) AS ParentNode,
+							1 as Level
+                        FROM 
+                            DashboardWorkspace WS
+                        UNION ALL
+                        SELECT 
+                            MU.Name,
+                            MU.UniqueID as Value, 
+							MU.WorkspaceID as ParentNode,
+						    2 as Level
+                        FROM 
+                            DashboardMaintUnit MU
+                        INNER JOIN 
+                            DashboardWorkspace WS ON MU.WorkspaceID = WS.UniqueID
+	                    ORDER BY 
+	                        Level DESC";
+
+                // Return the DataTable
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+
+                    var sqlparams = new SqlParameter[]
+                    {
+
+                    };
+
+                    sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+
+                // Build the tree structure from the DataTable
+                foreach (DataRow row in dt.Rows)
+                {
+					BRApi.ErrorLog.LogMessage(si,row["Name"].ToString());
+                    var hierarchy_children_mbrs = new List<XFTreeItem>();
+                    string Name = row["Name"].ToString();
+                    string Value = row["Value"].ToString();
+                    string parentNode = row["ParentNode"].ToString();
+                    var Bold_WFProfile = true;
+//                    if (row["DDM_Config_ID"] == DBNull.Value)
+//                    {
+//                        Bold_WFProfile = false;
+//                    }
+                    parent_child.Add(Value, parentNode);
+                    var childProfiles = parent_child.Where(pair => pair.Value == Value)
+                                        .Select(pair => pair.Key)
+                                        .ToList();
+                    if (childProfiles.Count > 0)
+                    {
+                        foreach (var childProfile in childProfiles)
+                        {
+                            // Create an XFTreeItem for each child profile
+                            var childXFTreeItem = hierarchy_mbrs.Find(item => item.UniqueName == childProfile);
+							if (childXFTreeItem != null)
+							{
+                            	hierarchy_children_mbrs.Add(childXFTreeItem);
+                        	}
+							}
+                        var wfprofile_xftreeitem = new XFTreeItem(Value, Name, string.Empty, Bold_WFProfile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
+                        hierarchy_mbrs.Add(wfprofile_xftreeitem);
+                    }
+                    else
+                    {
+                        var wfprofile_xftreeitem = new XFTreeItem(Value, Name, string.Empty, Bold_WFProfile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
+                        hierarchy_mbrs.Add(wfprofile_xftreeitem);
+                    }
+                }
+
+                var hierXFTreeItem = hierarchy_mbrs.Find(item => item.HeaderText == "All Maint Units");
+                hierarchy.TreeItems.Add(hierXFTreeItem);
+                return hierarchy.CreateDataSet(si);
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        #endregion
+
 
         #region "Get WFProfile Menus"
         /// <summary>
@@ -307,6 +532,83 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
+		
+        #region "Get Config Menus"
+        /// <summary>
+        /// Retrieves the menu options for a given workflow profile.
+        /// </summary>
+        private DataTable Get_Config_Menu()
+        {
+            try
+            {
+                var ddm_Config_ID = args.NameValuePairs.XFGetValue("IV_DDM_Config_ID","0");
+                var ddm_Config_Menu_DT = new DataTable("DDM_Config_Menu");
+                // Define the SQL Statement
+                var sql = @"SELECT CONCAT(Sort_Order,'-',Name) as Name, DDM_Menu_ID as Value
+							FROM DDM_Config_Menu_Layout
+							WHERE DDM_Config_ID = @DDM_Config_ID
+							ORDER BY Sort_Order";
+
+                // Return the DataTable
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+
+                    // Add the parameter for ProfileKey
+                    var sqlparams = new SqlParameter[]
+                    {
+                        new SqlParameter("DDM_Config_ID", SqlDbType.Int) { Value = ddm_Config_ID.XFConvertToInt()}
+                    };
+
+                    sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, ddm_Config_Menu_DT, sql, sqlparams);
+                }
+                return ddm_Config_Menu_DT;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+		
+        private DataTable Get_Config_Hdr_Ctrls()
+        {
+            try
+            {
+                var ddm_Menu_ID = args.NameValuePairs.XFGetValue("BL_DDM_Config_Menu","0");
+				BRApi.ErrorLog.LogMessage(si,$"Menu_ID: {ddm_Menu_ID}");
+                var dt = new DataTable("DDM_Config_Hdr_Ctrls");
+                // Define the SQL Statement
+                var sql = @"SELECT CONCAT(Sort_Order,'-',Name) as Name, DDM_Hdr_Ctrl_ID as Value
+							FROM DDM_Config_Hdr_Ctrls
+							WHERE DDM_Menu_ID = @DDM_Menu_ID
+							ORDER BY Sort_Order";
+
+                // Return the DataTable
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+
+                    // Add the parameter for ProfileKey
+                    var sqlparams = new SqlParameter[]
+                    {
+                        new SqlParameter("DDM_Menu_ID", SqlDbType.Int) { Value = ddm_Menu_ID.XFConvertToInt()}
+                    };
+
+                    sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        #endregion
+		
 
         #region "Get WF Profile Headers"
         /// <summary>
