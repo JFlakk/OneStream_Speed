@@ -46,9 +46,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     var col = args.NameValuePairs.XFGetValue("col");
                     return Get_DDM_Col_Format(curr_TED, curr_DB, col);
                 }
-				else if (args.FunctionName.XFEqualsIgnoreCase("Get_DDM_Col_Format"))
+				else if (args.FunctionName.XFEqualsIgnoreCase("Get_DDM_Config_Menu_Layout_DB"))
 				{
-					
+					return this.Get_DDM_Config_Menu_Layout_DB();
 				}
 
                 return null;
@@ -94,6 +94,40 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             return null;
         }
 
+		public string Get_DDM_Config_Menu_Layout_DB()
+		{
+			var OptionType = args.CustomSubstVars.XFGetValue("DL_DDM_Layout_Option_Type","0").XFConvertToInt();
+			var configHelpers = new DDM_Config_Helpers();
+			var layoutOptionConfig = configHelpers.Get_Layout_Option_Type_Config(OptionType);
+			if (layoutOptionConfig != null)
+			{
+			    return layoutOptionConfig.DashboardName;
+			}
+			else
+			{
+			    return string.Empty;
+			}
+		}
+		
+		public string Get_DDM_DB_Pane_Contents(string dbPaneContentType, string txtBoxType)
+		{
+			var dbPaneContents = (DDM_Config_Helpers.DBPaneContents)dbPaneContentType.XFConvertToInt();
+			if (dbPaneContents == DDM_Config_Helpers.DBPaneContents.CubeView) 
+		    {
+				if (txtBoxType == "CV")
+		        {
+					return true;
+				}
+		    }
+		    else if (dbPaneContents == DDM_Config_Helpers.DBPaneContents.Dashboard)
+		    {
+				if (txtBoxType == "DB")
+		        {
+					return true;
+				}
+		    }	    
+		    return false;
+		}
         public class ColumnConfig
         {
             public string ColumnName { get; set; }
