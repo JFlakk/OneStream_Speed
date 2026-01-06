@@ -184,7 +184,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         Private Function Get_REQ_Base_Info() As TableView
             Dim dt As New DataTable()
             Dim xftv As New TableView()
-			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList")
+			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList")
 			'Brapi.ErrorLog.LogMessage(si,"REQID XFTV" & ReqID)
 				If String.IsNullOrWhiteSpace(ReqID)
 				Return Nothing
@@ -303,7 +303,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         Private Function Get_REQ_cWork_OOC() As TableView
             Dim dt As New DataTable()
             Dim xftv As New TableView()
-			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList")
+			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList")
 				If String.IsNullOrWhiteSpace(ReqID)
 				Return Nothing
 			Else
@@ -339,7 +339,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         Private Function Get_REQ_SS_PEG() As TableView
             Dim dt As New DataTable()
             Dim xftv As New TableView()
-			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList")
+			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList")
 				If String.IsNullOrWhiteSpace(ReqID)
 				Return Nothing
 			Else
@@ -388,7 +388,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         Private Function Get_REQ_DD_PEG() As TableView
             Dim dt As New DataTable()
             Dim xftv As New TableView()
-			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList")
+			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList")
 				If String.IsNullOrWhiteSpace(ReqID)
 				Return Nothing
 			Else
@@ -621,7 +621,7 @@ Private Function Save_Create_New_REQ_Base_Info() As Object
 #Region "Save BaseInfo"
         Private Function Save_REQ_Base_Info() As Object
 			'Dim REQ_ID_List As New List(Of String) 
-		Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList","NA")
+		Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList","NA")
 			
             Dim xftv As New TableView()
 			xftv = args.TableView
@@ -788,7 +788,7 @@ Private Function Save_Create_New_REQ_Base_Info() As Object
 			Else
 				
 			
-				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList","NA")
+				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList","NA")
 				If String.IsNullOrWhiteSpace(REQID)
 					Return Nothing
 						
@@ -886,7 +886,7 @@ Private Function Save_Create_New_REQ_Base_Info() As Object
 				Return Nothing
 			End If
 				
-				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList","NA")
+				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList","NA")
 				If String.IsNullOrWhiteSpace(REQID)
 					Return Nothing
 						
@@ -1034,7 +1034,7 @@ Public Function Save_DD_PEG() As Object
             If xftv Is Nothing OrElse xftv.Rows.Count = 0 Then 
 				Return Nothing
 			End If
-				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList","NA")
+				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList","NA")
 				If String.IsNullOrWhiteSpace(REQID)
 					Return Nothing	
 				End If

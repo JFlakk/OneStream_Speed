@@ -2834,7 +2834,7 @@ Dim CMD_SPLN_ID As New XFDynamicGridColumnDefinition()
 			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			Dim nextyear As Integer = wfInfoDetails("TimeName") + 1
 			
-            Dim sql As String = $"SELECT Req.CMD_SPLN_REQ_ID,
+            Dim sql As String = $"SELECT cast(Req.CMD_SPLN_REQ_ID as varchar(100)) as cmd_spln_req_id,
 								  Req.WFScenario_Name,
 								  Req.WFCMD_Name,
 								  Req.WFTime_Name,
@@ -3115,9 +3115,9 @@ Dim CMD_SPLN_ID As New XFDynamicGridColumnDefinition()
 				
 				Dim IsValid As Boolean = BR_CMD_SPLN_String_Helper.Main(si, globals, api, dargs)
 				
-				If IsValid = False Then 
-					dt.Rows.Remove(dt.Rows(i))
-				End If
+'				If IsValid = False Then 
+'					dt.Rows.Remove(dt.Rows(i))
+'				End If
 			Next
 			
 			
@@ -3163,7 +3163,10 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			Dim WFYear As Integer = wfInfoDetails("TimeName")
 			Dim nextyear As Integer = wfInfoDetails("TimeName") + 1
-'Brapi.ErrorLog.LogMessage(si, "Hit 1")	
+			Dim APPNList As New List (Of String)
+			Dim StatusList As New List (Of String)
+			Dim req_id As String = editedDataRows.Item(0).ModifiedDataRow("CMD_SPLN_REQ_ID").ToString
+'Brapi.ErrorLog.LogMessage(si, "Hit 1 guid = " & req_id)	
 		 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
         Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
             sqlConn.Open()
@@ -3175,13 +3178,13 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim dt As New DataTable()
             Dim sqa As New SqlDataAdapter()
             Dim sqaReader As New SQA_XFC_CMD_SPLN_REQ(sqlConn)
-            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_SPLN_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_SPLN_REQ_ID  = @CMD_SPLN_REQ_ID"
+            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_SPLN_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_SPLN_REQ_ID = '{req_id}'"'  = @CMD_SPLN_REQ_ID"
             Dim sqlParams As SqlParameter() = New SqlParameter() {
                 New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
                 New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
-				New SqlParameter("@CMD_SPLN_REQ_ID", SqlDbType.UniqueIdentifier) With {.Value = editedDataRows.Item(0).ModifiedDataRow("CMD_SPLN_REQ_ID")}
-						}
+                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")} }
+'				New SqlParameter("@CMD_SPLN_REQ_ID", SqlDbType.UniqueIdentifier) With {.Value = editedDataRows.Item(0).ModifiedDataRow("CMD_SPLN_REQ_ID")}
+'						}
               sqaReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, dt, sqlMain, sqlParams)
 			  
 'Brapi.ErrorLog.LogMessage(si, "HERE 4")	
@@ -3190,7 +3193,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim dt_Details As New DataTable()
 			 Dim sqa2 As New SqlDataAdapter()
             Dim sqaReaderdetail As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
-            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_SPLN_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_SPLN_REQ_ID  = @CMD_SPLN_REQ_ID"
+            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_SPLN_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_SPLN_REQ_ID = '{req_id}'"'  = @CMD_SPLN_REQ_ID"
             sqaReaderdetail.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
 
             ' ************************************
@@ -3198,8 +3201,19 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
          		
 	 		For Each editedDataRow As XFEditedDataRow In editedDataRows
 					Dim EditAccount As String = editedDataRow.ModifiedDataRow.Item("Account")
-brapi.ErrorLog.LogMessage(si,"Edit yearly = " & editedDataRow.ModifiedDataRow.Item("Yearly")	)	
+'brapi.ErrorLog.LogMessage(si,"Edit yearly = " & editedDataRow.ModifiedDataRow.Item("Yearly")	)	
+					Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+					Dim lsAncestorListU1 As List(Of MemberInfo)
+					lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & editedDataRow.ModifiedDataRow.Item("UD1") & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+					Dim APPN As String = lsAncestorListU1(0).Member.Name
+
 					status = editedDataRow.ModifiedDataRow.Item("Flow")
+					If Not StatusList.Contains(status) Then
+						statuslist.Add(status)
+					End If 
+					If Not APPNList.Contains(APPN) Then 
+						APPNList.Add(APPN)
+					End If 
 'brapi.ErrorLog.LogMessage(si,"Edit status = " & status)				
 					If StatustoPass.XFEqualsIgnoreCase("") Then 
 						statustopass = status & "|" 
@@ -3207,18 +3221,17 @@ brapi.ErrorLog.LogMessage(si,"Edit yearly = " & editedDataRow.ModifiedDataRow.It
 						statustopass += status & "|" 
 					End If 
 					EditEntity = editedDataRow.ModifiedDataRow.Item("Entity")	
-
+'brapi.ErrorLog.LogMessage(si,"CM HERE 1")
 				    Dim targetRow As DataRow 											
-					Dim req_ID_Val As Guid
-					req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_SPLN_REQ_ID")
-					
+'					Dim req_ID_Val As Guid
+'					req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_SPLN_REQ_ID")
+					Dim req_ID_Val As String = editedDataRow.ModifiedDataRow.Item("CMD_SPLN_REQ_ID")
+'brapi.ErrorLog.LogMessage(si,"CM HERE 2 reqId-val = " & req_ID_Val.ToString & " : count =" & dt.Rows.Count)					
 					targetRow = dt.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
 
 					targetRow("Update_Date") = DateTime.Now
 					targetRow("Update_User") = si.UserName																																																																																				
-
 					Dim targetRowFundingCarryover As DataRow
-
 					targetRowFundingCarryover = dt_Details.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}' AND Account = '{EditAccount}' and Fiscal_Year = '{nextyear}'").FirstOrDefault()		
 					If targetRowFundingCarryover IsNot Nothing Then
 						
@@ -3272,25 +3285,30 @@ brapi.ErrorLog.LogMessage(si,"Edit yearly = " & editedDataRow.ModifiedDataRow.It
 'Brapi.ErrorLog.LogMessage(si,"Statustopass" & Statustopass)		               
 		               sqaReaderdetail.Update_XFC_CMD_SPLN_REQ_Details(dt_Details,sqa2)
 		                sqaReader.Update_XFC_CMD_SPLN_REQ(dt,sqa)
-						globals.SetStringValue($"FundsCenterStatusUpdates - {EditEntity}", Statustopass)
+						'globals.SetStringValue($"FundsCenterStatusUpdates - {EditEntity}", Statustopass)
 						
 						Dim FCList As New List (Of String)
 						FCList.Add(EditEntity)
-						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
-						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-				
-						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
-'Brapi.ErrorLog.LogMessage(si,"baseent" & BaseEntityList)
-'Brapi.ErrorLog.LogMessage(si,"parentent" & ParentEntityList)
 
+						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.Join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.Join("|",APPNList))
+						Next
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
+						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
 						Dim customSubstVars As New Dictionary(Of String, String) 
-						customSubstVars.Add("EntList",BaseEntityList)
-						customSubstVars.Add("ParentEntList",ParentEntityList)
+						customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+						customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
 						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 						Dim currentYear As String = wfInfoDetails("TimeName")
 						customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
-						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
+		
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)				
+				
+						
 						
 		                End Using
 		            End Using
@@ -3502,7 +3520,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
     If saveDataArgs Is Nothing Then
         Return Nothing
     End If
-'Brapi.ErrorLog.LogMessage(si, "HERE 1")
+Brapi.ErrorLog.LogMessage(si, "HERE 1")
     ' Get the edited rows
     Dim editedDataRows As List(Of XFEditedDataRow) = saveDataArgs.EditedDataRows
     If editedDataRows Is Nothing OrElse editedDataRows.Count = 0 Then
@@ -3541,7 +3559,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 						}
               sqaReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, dt, sqlMain, sqlParams)
 			  
-'			Brapi.ErrorLog.LogMessage(si,"In Save Create SQL")
+			Brapi.ErrorLog.LogMessage(si,"In Save Create SQL")
 
             ' --- Details Table (XFC_CMD_SPLN_REQ_Details) ---
             Dim dt_Details As New DataTable()
@@ -3550,7 +3568,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_SPLN_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name"
             sqaReaderdetail.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
 
-'Brapi.ErrorLog.LogMessage(si,"In Save Create SQL 2")
+Brapi.ErrorLog.LogMessage(si,"In Save Create SQL 2")
             ' ************************************
             ' ************************************
 						Dim sU1APPNInput As String = args.CustomSubstVars.XFGetValue("ML_CMD_SPLN_FormulateAPPN","")
@@ -3565,7 +3583,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 						Dim entityLevel As String = Me.GetEntityLevel(sEntity)
 						Dim sREQWFStatus As String = entityLevel & "_Formulate_SPLN"
 						Dim NewReqID As Guid = Guid.NewGuid()
-'brapi.ErrorLog.LogMessage(si,"Hit 3 CM Save Create: entity-" & sEntity)	
+brapi.ErrorLog.LogMessage(si,"Hit 3 CM Save Create: entity-" & sEntity)	
             		For Each editedDataRow As XFEditedDataRow In editedDataRows						
 								
 						
@@ -3628,7 +3646,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 							targetRowDetails("IC") = "None"
 							targetRowDetails("Account") = accountName
 							targetRowDetails("Flow") = sREQWFStatus
-'BRApi.ErrorLog.LogMessage(si,"Hit2")
+BRApi.ErrorLog.LogMessage(si,"Hit2")
 							targetRowDetails("UD1") = sU1FundCodeInput
 							targetRowDetails("UD2") = sU2Input
 							targetRowDetails("UD3") = sU3Input
@@ -3639,7 +3657,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 								targetRowDetails("UD5") = sU5Input
 							End If
 							targetRowDetails("UD6") = sU6Input
-'BRApi.ErrorLog.LogMessage(si,"Hit3")
+BRApi.ErrorLog.LogMessage(si,"Hit3")
 							targetRowDetails("UD7") = "None"
 							targetRowDetails("UD8") = "None"
 							'targetRowDetails("Fiscal_Year") = wfyear
@@ -3662,7 +3680,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 							Dim Yearly As Decimal =  editedDataRow.ModifiedDataRow.Item("Yearly").ToString.XFConvertToDecimal	
 							
 						
-'BRApi.ErrorLog.LogMessage(si,"Hit4")
+BRApi.ErrorLog.LogMessage(si,"Hit4")
                             targetRowDetails("Month1") = Month1
                             targetRowDetails("Month2") = Month2
                             targetRowDetails("Month3") = Month3
@@ -3710,7 +3728,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 								targetRow("Title") = editedDataRow.ModifiedDataRow.Item("Title").ToString()
 '								targetRow("APPN") = sU1APPNInput
 								targetRow("APPN") = sU1FundCodeInput
-'BRApi.ErrorLog.LogMessage(si,"Hit6")								
+BRApi.ErrorLog.LogMessage(si,"Hit6")								
 								targetRow("MDEP") = sU2Input
 								targetRow("APE9") = sU3Input
 								targetRow("Dollar_Type") = sU4Input
@@ -3736,27 +3754,30 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 		                sqaReaderdetail.Update_XFC_CMD_SPLN_REQ_Details(dt_Details,sqa2)
 		                sqaReader.Update_XFC_CMD_SPLN_REQ(dt,sqa)
 'BRApi.ErrorLog.LogMessage(si,"Hit 8")
-						globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", sREQWFStatus)
+						'globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", sREQWFStatus)
 							
 						Dim FCList As New List (Of String)
 'brapi.ErrorLog.LogMessage(si,"Hit 4.5 - ent - " & sEntity)
 						FCList.Add(sEntity)
 'brapi.ErrorLog.LogMessage(si,"Hit 5 CM Save Create: " & sEntity)
 						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", sREQWFStatus)	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",sU1APPNInput)
+						Next
 						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-				
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
 						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
-'Brapi.ErrorLog.LogMessage(si,"@HERE1" &String.Join(",",FCList))
 						Dim customSubstVars As New Dictionary(Of String, String) 
-						customSubstVars.Add("EntList",BaseEntityList)
-						customSubstVars.Add("ParentEntList",ParentEntityList)
+						customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+						customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
 						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 						Dim currentYear As String = wfInfoDetails("TimeName")
-						
 						customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
-						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
-
+		
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)				
+				
 		                End Using
 		            End Using
 'brapi.errorlog.LogMessage(si,"hit here 3.5")
@@ -3791,6 +3812,9 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
             Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
 			Dim wfCubeRootInfo = BRApi.Workflow.Metadata.GetProfile(si,wfUnitInfo.ProfileName)
+			Dim APPNList As New List (Of String)
+			Dim StatusList As New List (Of String)
+			Dim FCList As New List (Of String)
 			
             WFInfoDetails.Add("ProfileName", wfUnitInfo.ProfileName)
             WFInfoDetails.Add("ScenarioName", wfUnitInfo.ScenarioName)
@@ -3843,15 +3867,28 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
  'brapi.ErrorLog.LogMessage(si,"count CM reqs = " & dt_Details.Rows.Count)        		
 	 		For Each editedDataRow As XFEditedDataRow In editedDataRows
 					Dim EditAccount As String = editedDataRow.ModifiedDataRow.Item("Account")
+					Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+					Dim lsAncestorListU1 As List(Of MemberInfo)
+					lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & editedDataRow.ModifiedDataRow.Item("UD1") & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+					Dim APPN As String = lsAncestorListU1(0).Member.Name
+
 					status = editedDataRow.ModifiedDataRow.Item("Flow")
+					If Not StatusList.Contains(status) Then
+						statuslist.Add(status)
+					End If 
+					If Not APPNList.Contains(APPN) Then 
+						APPNList.Add(APPN)
+					End If 
 				
 					If StatustoPass.XFEqualsIgnoreCase("") Then 
 						statustopass = status & "|" & status
 					Else  
 						statustopass += "|" & status & "|" & status 
 					End If 
-					EditEntity = editedDataRow.ModifiedDataRow.Item("Entity")						
-					
+					EditEntity = editedDataRow.ModifiedDataRow.Item("Entity")	
+					If Not FCList.Contains(EditEntity) Then
+						FCList.Add(EditEntity)
+					End If 
 'brapi.ErrorLog.LogMessage(si,"Edit ACcount = " & EditAccount)
 				    Dim targetRow As DataRow 											
 					Dim req_ID_Val As Guid
@@ -3919,56 +3956,25 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 		                sqaReader.Update_XFC_CMD_SPLN_REQ(dt,sqa)
 						globals.SetStringValue($"FundsCenterStatusUpdates - {EditEntity}", Statustopass)
 						
-						Dim FCList As New List (Of String)
-						FCList.Add(EditEntity)
-						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
+						
+						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.Join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.Join("|",APPNList))
+						Next
 						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-				
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
 						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
-'Brapi.ErrorLog.LogMessage(si,"@HERE1" &String.Join(",",FCList))
 						Dim customSubstVars As New Dictionary(Of String, String) 
-						customSubstVars.Add("EntList",BaseEntityList)
-						customSubstVars.Add("ParentEntList",ParentEntityList)
+						customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+						customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
 						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 						Dim currentYear As String = wfInfoDetails("TimeName")
 						customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
-						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
-						
-						'Run consolidation for entities in the correct order
-						Dim consolEntityList As list (Of String) = EntityLists.Item3
-						Dim L4Entity,L3Entity,L2Entity,L1Entity As String 
-						For Each consolentity As String In consolEntityList
-							Dim FClevel As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, consolentity)
-							If consolentity = sCube Then FClevel = "L1"
-							Select Case FClevel
-							Case "L4"
-								L4Entity = $"{L4Entity},E#{ConsolEntity}"
-							Case "L3"
-								L3Entity = $"{L3Entity},E#{ConsolEntity}"
-							Case "L2"
-								L2Entity = $"{L2Entity},E#{ConsolEntity}"
-							Case "L1"
-								L1Entity = $"{L1Entity},E#{ConsolEntity}"
-							End Select
-						Next
-						customSubstVars.Add("consolEntityList","Default")
-						If Not String.IsNullOrEmpty(L4Entity) Then
-							customSubstVars("consolEntityList") = L4Entity 
-							BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-						End If 
-						If Not String.IsNullOrEmpty(L3Entity) Then
-							customSubstVars("consolEntityList") = L3Entity 
-							BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-						End If 
-						If Not String.IsNullOrEmpty(L2Entity) Then
-							customSubstVars("consolEntityList") = L2Entity 
-							BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-						End If 
-						If Not String.IsNullOrEmpty(L1Entity) Then
-							customSubstVars("consolEntityList") = L1Entity 
-							BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-						End If 
+		
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)				
+				
 						
 		                End Using
 		            End Using

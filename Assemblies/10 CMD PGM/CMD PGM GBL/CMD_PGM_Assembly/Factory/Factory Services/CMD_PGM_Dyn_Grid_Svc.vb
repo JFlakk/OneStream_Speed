@@ -2591,7 +2591,7 @@ Private Function dg_CMD_PGM_REQFundingLine() As Object
 	 Dim dt As New DataTable()
 	 Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition)
 	 Dim EditValue As String = args.CustomSubstVars.XFGetValue("DL_CMD_PGM_AdjustFundingLine")
-	  
+	
 	'If EditValue.XFEqualsIgnoreCase("lock") Then
 
 	Dim Scenario As New XFDynamicGridColumnDefinition()
@@ -2736,7 +2736,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 							
 						' Get the data you want To put In the grid
 						
-		Dim ReqID As String = args.CustomSubstVars.XFGetValue("IV_CMD_TGT_REQTitleList")
+		Dim ReqID As String = args.CustomSubstVars.XFGetValue("IV_CMD_PGM_REQTitleList")
 				If String.IsNullOrWhiteSpace(ReqID)
 					Return Nothing
 				Else 
@@ -2806,14 +2806,21 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
     If saveDataArgs Is Nothing Then
         Return Nothing
     End If
-'Brapi.ErrorLog.LogMessage(si, "HERE 1")
+	
+
     ' Get the edited rows
     Dim editedDataRows As List(Of XFEditedDataRow) = saveDataArgs.EditedDataRows
     If editedDataRows Is Nothing OrElse editedDataRows.Count = 0 Then
         Return Nothing
     End If
+'	'Dim reqid As String  = args.SaveDataArgs.editedDataRows.Item(0).ModifiedDataRow("CMD_PGM_REQ_ID").ToString
+'			 For Each column As String In editedDataRows.Item(0).ModifiedDataRow.Items.Keys
+''brapi.ErrorLog.LogMessage(si,$"save req funding column {column} = {editedDataRows.Item(0).ModifiedDataRow.Item(column)} - {editedDataRows.Item(0).InsertUpdateOrDelete.ToString()}")
+''editedDataRows.Item(0).InsertUpdateOrDelete.ToString()
+'Next 
+	Dim ReqID As String = args.CustomSubstVars.XFGetValue("IV_CMD_PGM_REQTitleList")
+'Brapi.ErrorLog.LogMessage(si, "CMD_PGM_ID" & ReqID)
 	
-	'Brapi.ErrorLog.LogMessage(si, "HERE 2")
 		Dim WFInfoDetails As New Dictionary(Of String, String)()
             Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
             Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
@@ -2838,22 +2845,23 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim dt As New DataTable()
             Dim sqa As New SqlDataAdapter()
             Dim sqaReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
-            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_PGM_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_PGM_REQ_ID  = @CMD_PGM_REQ_ID"
+            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_PGM_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND REQ_ID = '{ReqID}'"
             Dim sqlParams As SqlParameter() = New SqlParameter() {
                 New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
                 New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
-				New SqlParameter("@CMD_PGM_REQ_ID", SqlDbType.UniqueIdentifier) With {.Value = editedDataRows.Item(0).ModifiedDataRow("CMD_PGM_REQ_ID")}
+                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
 						}
               sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa, dt, sqlMain, sqlParams)
-			  
-		'Brapi.ErrorLog.LogMessage(si, "HERE 4")	
-
+		
+	Dim req_ID_GUID As Guid = Guid.Empty
+	req_ID_GUID = dt.Rows(0)("CMD_PGM_REQ_ID")
+	
+	Brapi.ErrorLog.LogMessage(si, "REQ_ID" & req_ID_GUID.ToString )
             ' --- Details Table (XFC_CMD_PGM_REQ_Details) ---
             Dim dt_Details As New DataTable()
 			 Dim sqa2 As New SqlDataAdapter()
             Dim sqaReaderdetail As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
-            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_PGM_REQ_ID  = @CMD_PGM_REQ_ID"
+            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_PGM_REQ_ID  = '{req_ID_GUID}'"
             sqaReaderdetail.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
 
 			Dim sqa_xfc_cmd_pgm_req_details_audit = New SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT(sqlConn)
@@ -2864,22 +2872,23 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 								WHERE WFScenario_Name = @WFScenario_Name
 								AND WFCMD_Name = @WFCMD_Name
 								AND WFTime_Name = @WFTime_Name
-								AND CMD_PGM_REQ_ID  = @CMD_PGM_REQ_ID"
+								AND CMD_PGM_REQ_ID  = '{req_ID_GUID}'"
 		sqa_xfc_cmd_pgm_req_details_audit.Fill_XFC_CMD_PGM_REQ_DETAILS_Audit_DT(sqa, SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT, SQL_Audit, sqlParams)
 			
 			
 			
             ' ************************************
             ' ************************************
-          
+      
 	
 			
 	 For Each editedDataRow As XFEditedDataRow In editedDataRows
-		
+'		 For Each column As XFDataColumn In editedDataRow.ModifiedDataRow.Items
+'brapi.ErrorLog.LogMessage(si,"save req funding column = " & column.Name & "," & column.DataType)
+'Next 
 		
     Dim targetRow As DataRow 											
-	Dim req_ID_Val As Guid
-	req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_PGM_REQ_ID")
+
 	If Not status.Contains(editedDataRow.ModifiedDataRow.Item("Flow"))
 		status.Add(editedDataRow.ModifiedDataRow.Item("Flow"))
 	End If 
@@ -2889,9 +2898,9 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 	If Not UD1.Contains(editedDataRow.ModifiedDataRow.Item("UD1"))
 		UD1.Add(editedDataRow.ModifiedDataRow.Item("UD1"))
 	End If 
-'brapi.ErrorLog.LogMessage(si,"save req funding = " & status & Entity & UD1)	
+
 			
-	targetRow = dt.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
+	targetRow = dt.Select($"CMD_PGM_REQ_ID = '{req_ID_GUID}'").FirstOrDefault()
 			
 		
 			
@@ -2902,7 +2911,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 				targetRow("Update_User") = si.UserName																																																																																				
 
 		Dim targetRowFunding As DataRow
-			targetRowFunding = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+			targetRowFunding = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_GUID}' AND Account = 'Req_Funding'").FirstOrDefault()
 			
 			If targetRowFunding IsNot Nothing Then
 			
@@ -2915,7 +2924,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 			'Added Audit update before funding line updates are written to the table			
 					If SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Rows.Count > 0 Then
 								Dim drow As DataRow
-									drow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+									drow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Select($"CMD_PGM_REQ_ID = '{req_ID_GUID}' AND Account = 'Req_Funding'").FirstOrDefault()
 									drow("Orig_FY1") = targetRowFunding("FY_1")
 									drow("Updated_FY1") = FY1
 									drow("Orig_FY2") = targetRowFunding("FY_2")

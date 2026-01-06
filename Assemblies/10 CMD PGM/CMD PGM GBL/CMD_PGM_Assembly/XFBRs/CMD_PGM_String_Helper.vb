@@ -391,7 +391,8 @@ Public GBL_DataSet As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardDataS
 		Public Function displaydashboard() As String
 			Dim reqTitle = args.NameValuePairs.XFGetValue("REQTitle")
 			Dim sDashName = args.NameValuePairs.XFGetValue("DashName",String.Empty)
-'brapi.ErrorLog.LogMessage(si, "TRV: REQ Title: " & reqTitle)			
+'Dim tStart As DateTime = Date.Now()
+'brapi.ErrorLog.LogMessage(si, $"394_PGMSTRGHLP_TRV: REQ Title: {reqTitle} | Time: {tStart}")			
 			If String.IsNullOrEmpty(reqTitle)
 				Dim wsID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "10 CMD PGM")
 				Dim cmd_PGM_Base_Info As New DashboardFileResource 
@@ -469,6 +470,7 @@ Public GBL_DataSet As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardDataS
 			
 		End Function
 #End Region
+
 '****Component Showhide*****
 #Region "ShowHide"
 'Purpose: Any component, cv, object etc., add a case statment 
@@ -1374,7 +1376,7 @@ End Function
 		Public Function displaypegdashboard() As String
 			Dim reqTitle = args.NameValuePairs.XFGetValue("REQTitle")
 			Dim sPEG = args.NameValuePairs.XFGetValue("Peg")
-
+			
 			Dim WFInfoDetails As New Dictionary(Of String, String)()
             Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
             Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
@@ -1396,9 +1398,9 @@ End Function
             Dim sqaReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)		
 			
 			
-				If String.IsNullOrWhiteSpace(reqTitle)
+				If String.IsNullOrWhiteSpace(reqTitle) Then
 					Return Nothing
-				Else 
+				End If 
 				'Fill the DataTable 
 				Dim sql As String = $"SELECT MDEP 
 									FROM XFC_CMD_PGM_REQ 
@@ -1417,22 +1419,25 @@ End Function
    		}
 			sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa,dt,sql, sqlparams)
 			
-		
+	
 			
 		If dt.Rows.Count > 0 Then
-			
+					
     		MDEP = dt.Rows(0)("MDEP")
+		Else 
+		Return Nothing
 		End If
-	End If 
+	
 	End Using
 End Using 
 	
 		Dim iU2MbrID As Integer = BRapi.Finance.Members.GetMemberId(si,dimtype.UD2.Id, MDEP)
 		Dim sParentPEG As String = BRApi.Finance.Members.GetParents(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), iU2MbrID, False)(0).Name
-
+		
 		
 				
 			Select Case True
+		
 				Case (sParentPEG = "DD"	And sPEG = "DD")	
 					Return True
 				Case (sParentPEG = "SS"	And sPEG = "SS")		
@@ -1440,6 +1445,7 @@ End Using
 				Case Else	
 					Return False
 			End Select
+		
 		End Function
 #End Region
 

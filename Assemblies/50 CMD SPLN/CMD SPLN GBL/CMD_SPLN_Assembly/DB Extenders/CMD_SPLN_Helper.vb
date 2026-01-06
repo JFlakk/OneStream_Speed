@@ -521,19 +521,7 @@ End Function
 				Dim currDBsql As String = String.empty
 				Dim Detailsql As String = String.empty
 				Dim currDBDetailsql As String = String.empty
-
-'brapi.ErrorLog.LogMessage(si,"Hit 1 CM")
-'				If args.NameValuePairs.XFGetValue("Demote") = "True" Then
-'					Dim U1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
-'					Dim U1Base As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, U1objDimPk, "U1#" & Appn & ".Base", True)
-'						For Each MemU1 As MemberInfo In U1Base
-'							PackageList.Add($"'{Entity}|{memU1.member.name}|{Flow}'")	
-'						Next
-'					packageFilter = "AND Entity + '|' + APPN + '|' + Status IN (" & String.Join(",", PackageList) & ")"
-'					packageDetailFilter = "AND Entity + '|' + APPN + '|' + Flow IN (" & String.Join(",", PackageList) & ")"
-				
-
-'				Else				
+			
 					If Entity_APPN_Flow = "NA" Then 
 						Entity_APPN_Flow = $"{Entity}:{APPN}:{PrevStatus}"		
 					End If			
@@ -542,6 +530,7 @@ End Function
 					#Region "Promote Statuses"
 					Status_manager.Add("L5_Formulate_SPLN|Base","L5_Validate_SPLN")
 					Status_manager.Add("L4_Formulate_SPLN|Parent","L4_Validate_SPLN")
+					Status_manager.Add("L4_Formulate_SPLN|Base","L4_Validate_SPLN")
 					Status_manager.Add("L3_Formulate_SPLN|Parent","L3_Validate_SPLN")
 					Status_manager.Add("L3_Formulate_SPLN|Base","L3_Validate_SPLN")
 					Status_manager.Add("L2_Formulate_SPLN|Parent","L2_Validate_SPLN")
@@ -579,7 +568,17 @@ End Function
 							PackageList.Clear()
 							If mementity.Member.Name = E
 								Dim ReviewEntList = BRApi.Finance.Members.GetParents(si,entDimPk,mementity.member.MemberId,False)
-								newReviewEntity = ReviewEntList(0).Name
+								If Not demote_comment = "" Then 
+									Dim entityLevel As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, mementity.Member.Name)
+									Dim DemoteLevel As String = new_status.Substring(0,2)
+									If entityLevel = DemoteLevel Then 
+										NewReviewEntity = mementity.Member.Name
+									Else
+										NewReviewEntity = BRApi.Finance.Members.GetMembersUsingFilter(si, EobjDimPk, "E#" & mementity.Member.Name & ".Ancestors.where(text3 contains " & DemoteLevel & ")", True)(0).Member.Name
+									End If 
+								Else
+									newReviewEntity = ReviewEntList(0).Name
+								End If 
 							End If
 							PackageList.Add($"'{mementity.member.name}|{A}|{F}'")	
 							For Each memU1 As MemberInfo In U1Base
@@ -612,10 +611,10 @@ End Function
 								End If
 							End If
 
-							'brapi.ErrorLog.LogMessage(si,$"Hit: {new_status} - {F}|{entBaseParent}")
+						'	brapi.ErrorLog.LogMessage(si,$"Hit: {new_status} - {F}|{entBaseParent}")
 							Dim reviewEntityString As String = "Review_Entity"
 							If F.Substring(0,2) <> new_status.Substring(0,2)
-								reviewEntityString = $"'{newReviewEntity}' as Review_Entity"
+									reviewEntityString = $"'{newReviewEntity}' as Review_Entity"
 							End If
 							If sql.Length > 0
 								sql = $"{sql}
@@ -1516,7 +1515,7 @@ Public Function SetRelatedREQs()
 '									FCList.Add($"{drow("Entity")}")
 '							End If 
 '						Next
-						
+						BRApi.ErrorLog.LogMessage(si,"Hit here")
 						Dim objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"E_Army")
 						Dim entityList As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "E#" & sEntity & ".Children", True)
 						Dim FCList As New List(Of String)
@@ -1545,7 +1544,7 @@ Public Function SetRelatedREQs()
 						dim nextyear as Integer = currentYear  + 1
 						months = months & $"T#{nextyear}"
 						'months = months.Substring(0, months.Length-1)
-
+brapi.ErrorLog.LogMessage(si,"Hit" & months)
 						customSubstVars.Add("WFTime",months)
 						BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
 
@@ -1825,6 +1824,9 @@ Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSel
 			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			Dim WFYear As Integer = wfInfoDetails("TimeName")
 			Dim nextyear As Integer = wfInfoDetails("TimeName") + 1
+			Dim fclist As New List (Of String)
+			Dim APPNList As New List (Of String)
+			Dim StatusList As New List (Of String)
 			
 'Brapi.ErrorLog.LogMessage(si, "HERE 3")	
 		 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
@@ -1852,6 +1854,7 @@ Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSel
 			Dim sqa2 As New SqlDataAdapter()
             Dim sqaReaderdetail As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
 			Dim parentIds As New List(Of String)()
+			
 
 For Each parentRow As DataRow In dt.Rows
    
@@ -1905,16 +1908,21 @@ sqa_xfc_cmd_spln_req_details_audit.Fill_XFC_CMD_SPLN_REQ_DETAILS_Audit_DT(sqa, S
 			
 			targetRow = dt.Select($"REQ_ID = '{req_IDs}'").FirstOrDefault()
 			Dim APPN As String =  args.NameValuePairs.XFGetValue("APPN")
-		
+			Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+			Dim lsAncestorListU1 As List(Of MemberInfo)
+			lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & APPN & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+			APPNList.add(lsAncestorListU1(0).Member.Name)
 'Brapi.ErrorLog.LogMessage(si, "APPN " & APPN)	
 			
 			Dim Entity As String =  args.NameValuePairs.XFGetValue("Entity")
+			fclist.Add(entity)
 			Dim MDEP As String =  args.NameValuePairs.XFGetValue("MDEP")
 			 Dim APE As String =  args.NameValuePairs.XFGetValue("APEPT")
 		     Dim DollarType As String =  args.NameValuePairs.XFGetValue("DollarType")
 		 	 Dim cTypecol As String =  args.NameValuePairs.XFGetValue("CType")
 			 Dim obj_class As String =  args.NameValuePairs.XFGetValue("Obj_Class")
 			Dim Status As String  = targetRow("Status")
+			statuslist.Add(status)
 			Dim Create_User As String = targetRow("Create_User")
 			
 			Dim req_ID_Val As Guid
@@ -1961,7 +1969,7 @@ sqa_xfc_cmd_spln_req_details_audit.Fill_XFC_CMD_SPLN_REQ_DETAILS_Audit_DT(sqa, S
 			accountname = "Obligations"
 			wfyear = nextyear
 		End If
-brapi.ErrorLog.LogMessage(si,"beforeaudit = " & wfyear)
+'brapi.ErrorLog.LogMessage(si,"beforeaudit = " & wfyear)
 		targetRowFunding = dt_Details.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}' AND Account  = '{accountName}' and Fiscal_year = '{wfyear}'").FirstOrDefault()
 'If SQA_XFC_CMD_SPLN_REQ_DETAILS_AUDIT_DT.Rows.Count > 0 Then
 		If SQA_XFC_CMD_SPLN_REQ_DETAILS_AUDIT_DT.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}' AND Account  = '{accountName}' and Fiscal_year = '{wfyear}'").Count > 0 Then
@@ -2026,26 +2034,43 @@ brapi.ErrorLog.LogMessage(si,"beforeaudit = " & wfyear)
 			
 			Dim targetRowFYValues As DataRow
 			targetRowFYValues = dt_Details.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}' AND Account = '{accountName}' and Fiscal_year = '{wfyear}'").FirstOrDefault()
-			Dim Month1 As Decimal =  targetRowFYValues("Month1")
-			Dim Month2 As Decimal = targetRowFYValues("Month2")
-		    Dim Month3 As Decimal = targetRowFYValues("Month3")	
-		 	Dim Month4 As Decimal = targetRowFYValues("Month4")
-			Dim Month5 As Decimal =  targetRowFYValues("Month5")
-			Dim Month6 As Decimal =  targetRowFYValues("Month6")	
-			Dim Month7 As Decimal =  targetRowFYValues("Month7")	
-			Dim Month8 As Decimal =  targetRowFYValues("Month8")	
-			Dim Month9 As Decimal =  targetRowFYValues("Month9")	
-			Dim Month10 As Decimal =  targetRowFYValues("Month10")	
-			Dim Month11 As Decimal =  targetRowFYValues("Month11")	
-			Dim Month12 As Decimal =  targetRowFYValues("Month12")	
-			Dim Quarter1 As Decimal =  targetRowFYValues("Quarter1")	
-			Dim Quarter2 As Decimal =  targetRowFYValues("Quarter2")	
-			Dim Quarter3 As Decimal =  targetRowFYValues("Quarter3")	
-			Dim Quarter4 As Decimal =  targetRowFYValues("Quarter4")
-			Dim Yearly As Decimal = 0
-			If targetRowFYValues("Yearly").ToString IsNot Nothing
-				Yearly =  targetRowFYValues("Yearly")	
-			End If
+				 Dim Yearly As Decimal
+				
+				 Dim Month1 As Decimal
+				 Dim Month2 As Decimal
+				 Dim Month3 As Decimal
+				 Dim Month4 As Decimal
+				 Dim Month5 As Decimal
+				 Dim Month6 As Decimal
+				 Dim Month7 As Decimal
+				 Dim Month8 As Decimal
+				 Dim Month9 As Decimal
+				  Dim Month10 As Decimal 
+				  Dim Month11 As Decimal 
+				  Dim Month12 As Decimal 
+				 Dim Quarter1 As Decimal
+				 Dim Quarter2 As Decimal
+				 Dim Quarter3 As Decimal
+				 Dim Quarter4 As Decimal
+				If Not targetRowFYValues("Yearly").ToString = "" Then Yearly =  targetRowFYValues("Yearly")	
+
+				If Not targetRowFYValues("Month1").ToString = "" Then Month1  =  targetRowFYValues("Month1")
+				If Not targetRowFYValues("Month2").ToString = "" Then Month2  = targetRowFYValues("Month2")
+			    If Not targetRowFYValues("Month3").ToString = "" Then Month3  = targetRowFYValues("Month3")	
+			 	If Not targetRowFYValues("Month4").ToString = "" Then Month4  = targetRowFYValues("Month4")
+				If Not targetRowFYValues("Month5").ToString = "" Then Month5  =  targetRowFYValues("Month5")
+				If Not targetRowFYValues("Month6").ToString = "" Then Month6  =  targetRowFYValues("Month6")	
+				If Not targetRowFYValues("Month7").ToString = "" Then Month7  =  targetRowFYValues("Month7")	
+				If Not targetRowFYValues("Month8").ToString = "" Then Month8  =  targetRowFYValues("Month8")	
+				If Not targetRowFYValues("Month9").ToString = "" Then Month9  =  targetRowFYValues("Month9")	
+				If Not targetRowFYValues("Month10").ToString = "" Then Month10  =  targetRowFYValues("Month10")	
+				If Not targetRowFYValues("Month11").ToString = "" Then Month11  =  targetRowFYValues("Month11")	
+				If Not targetRowFYValues("Month12").ToString = "" Then Month12  =  targetRowFYValues("Month12")	
+				If Not targetRowFYValues("Quarter1").ToString = "" Then Quarter1 =  targetRowFYValues("Quarter1")	
+				If Not targetRowFYValues("Quarter2").ToString = "" Then Quarter2 =  targetRowFYValues("Quarter2")	
+				If Not targetRowFYValues("Quarter3").ToString = "" Then Quarter3 =  targetRowFYValues("Quarter3")	
+				If Not targetRowFYValues("Quarter4").ToString = "" Then Quarter4 =  targetRowFYValues("Quarter4")
+
 	
 							
 						
@@ -2130,10 +2155,29 @@ brapi.ErrorLog.LogMessage(si,"beforeaudit = " & wfyear)
 		          Next    
 		                ' Persist changes back to the DB using the configured adapter
 		               
-		               sqaReaderdetail.Update_XFC_CMD_SPLN_REQ_Details(dt_Details,sqa2)
+		               	sqaReaderdetail.Update_XFC_CMD_SPLN_REQ_Details(dt_Details,sqa2)
 		                sqaReader.Update_XFC_CMD_SPLN_REQ(dt,sqa)
 						sqa_xfc_cmd_spln_req_details_audit.Update_XFC_CMD_SPLN_REQ_DETAILS_AUDIT(SQA_XFC_CMD_SPLN_REQ_DETAILS_AUDIT_DT, sqa)
 						
+						Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							Dim GlobalAPPNs As String = String.Join("|",APPNList)
+							Dim GlobalFlows As String = String.Join("|",StatusList)
+							globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", GlobalFlows)	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",GlobalAPPNs)
+						Next
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
+						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
+						Dim customSubstVars As New Dictionary(Of String, String) 
+						customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+						customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
+						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
+						Dim currentYear As String = wfInfoDetails("TimeName")
+						customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
+		
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
 						
 						
 		                End Using
@@ -2213,7 +2257,7 @@ End Function
 				Dim REQDT As New DataTable()
 				Dim REQDetailDT As New DataTable()
 				Dim Status As String = ""
-				Dim StatusList As String = ""
+
 				
 				Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
 
@@ -2275,21 +2319,33 @@ End Function
 					sqa_xfc_cmd_SPLN_req_details.Fill_XFC_CMD_SPLN_REQ_DETAILS_DT(sqa, REQDetailDT, detailSql, detailParamList.ToArray())
 'brapi.ErrorLog.LogMessage(si,"cm count = " & REQDT.Rows.count)
 					' Mark rows for deletion in both tables
-					Dim entitiesFromReqList As New List(Of String)
+
+					Dim APPNList As New List (Of String)
+					Dim StatusList As New List (Of String)
+					Dim FCList As New List (Of String)
 					For Each reqId As String In Req_ID_List
 						Dim rows As DataRow() = REQDT.Select($"REQ_ID = '{reqId}'")
 'brapi.ErrorLog.LogMessage(si,"reqdt status = " & rows.FirstOrDefault().Item("Status").tostring)					
 						Dim GUIDROW As String = rows.FirstOrDefault().Item("CMD_SPLN_REQ_ID").tostring
 						Dim ent As String = rows.FirstOrDefault().Item("Entity").ToString
-						entitiesFromReqList.Add(ent)
+						Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+						Dim lsAncestorListU1 As List(Of MemberInfo)
+						lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & rows.FirstOrDefault().Item("APPN").tostring & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+						Dim APPN As String = lsAncestorListU1(0).Member.Name
+						
+						
 						Status  = rows.FirstOrDefault().Item("Status").tostring
-						If Status.XFEqualsIgnoreCase("") Then
-							StatusList = Status
-						Else
-							If Not statuslist.XFContainsIgnoreCase(Status) Then
-								statuslist += StatusList & "|" & Status
-							End If
-						End If 
+						
+						If Not FCList.Contains(ent) Then
+							FCList.Add(ent)
+						End If
+						If Not APPNList.Contains(APPN) Then
+							APPNList.Add(APPN)
+						End If
+						If Not StatusList.Contains(status) Then
+							StatusList.Add(status)
+						End If
+
 						For Each row As DataRow In rows
 							row.Delete()
 						Next
@@ -2305,74 +2361,27 @@ End Function
 					' Persist changes back to DB
 					sqa_xfc_cmd_SPLN_req_details.Update_XFC_CMD_SPLN_REQ_Details(REQDetailDT, sqa)
 					sqa_xfc_cmd_SPLN_req.Update_XFC_CMD_SPLN_REQ(REQDT, sqa)
+					
+					
+				Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+				Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+				For Each JoinedEntity As String In joinedentitylist
 
-				Dim FCList As new List (Of String)
-				If Not String.IsNullOrWhiteSpace(sEntity) Then
-						FCList.Add(sEntity)
-					Else
-'BRApi.ErrorLog.LogMessage(si, String.Join(",", entitiesFromReqList.Select(Function (r) "E#" & r)) & ", statuslist = " & statuslist)						
-						Dim entities As String
-						entitiesFromReqList = entitiesFromReqList.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
-						entities = String.Join(",", entitiesFromReqList.Select(Function (r) "" & r))
-						FCList.Add(entities)
-					End If
-					
-					
-				Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
+					globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.Join("|",StatusList))	
+					Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.Join("|",APPNList))
+				Next
 				Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-				Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-				'Dim consolEntityList As String = String.Join(", ", EntityLists.Item3.Select(Function(s) $"E#{s}"))
-'brapi.ErrorLog.LogMessage(si,"Consol List: " & "688")			
+				Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
 				Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
 				Dim customSubstVars As New Dictionary(Of String, String) 
 				customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
 				customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
-				'customSubstVars.Add("consolEntityList",String.Join(",",consolEntityList))
 				customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 				Dim currentYear As String = wfInfoDetails("TimeName")
 				Dim nextyear As String = currentYear + 1
 				customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
 
-
 				BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
-			
-				'Run consolidation for entities in the correct order
-				Dim consolEntityList As list (Of String) = EntityLists.Item3
-				Dim L4Entity,L3Entity,L2Entity,L1Entity As String 
-
-				For Each consolentity As String In consolEntityList
-'brapi.ErrorLog.LogMessage(si,"consolentity: " & consolentity)					
-					Dim Entitylevel As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, consolentity)
-					If consolentity = sCube Then EntityLevel = "L1"
-					Select Case Entitylevel
-					Case "L4"
-						L4Entity = $"{L4Entity},E#{ConsolEntity}"
-					Case "L3"
-						L3Entity = $"{L3Entity},E#{ConsolEntity}"
-					Case "L2"
-						L2Entity = $"{L2Entity},E#{ConsolEntity}"
-					Case "L1"
-						L1Entity = $"{L1Entity},E#{ConsolEntity}"
-					End Select
-				Next
-				
-				customSubstVars.Add("consolEntityList","Default")
-				If Not String.IsNullOrEmpty(L4Entity) Then
-					customSubstVars("consolEntityList") = L4Entity 
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-				End If 
-				If Not String.IsNullOrEmpty(L3Entity) Then
-					customSubstVars("consolEntityList") = L3Entity 
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-				End If 
-				If Not String.IsNullOrEmpty(L2Entity) Then
-					customSubstVars("consolEntityList") = L2Entity 
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-				End If 
-				If Not String.IsNullOrEmpty(L1Entity) Then
-					customSubstVars("consolEntityList") = L1Entity 
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-				End If 
 					
 
 				End Using

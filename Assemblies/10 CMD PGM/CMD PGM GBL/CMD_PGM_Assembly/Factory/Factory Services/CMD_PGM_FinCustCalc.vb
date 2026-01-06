@@ -48,8 +48,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				End If
 			
 				If args.CustomCalculateArgs.FunctionName.XFEqualsIgnoreCase("CalculateWeightedScoreAndRank") Then
-					
 					Me.CalculateWeightedScoreAndRank()
+				End If
+				
+				If args.CustomCalculateArgs.FunctionName.XFEqualsIgnoreCase("Consol_Aggregated") Then
+					Me.Consol_Aggregated()
 				End If
 
             	Catch ex As Exception
@@ -72,7 +75,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Dim origin_Filter As String = "O#Import"
 			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")
 			Dim entityID As Integer = api.Members.GetMemberId(dimType.Entity.Id,api.Pov.Entity.Name)
-			
 			Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk,entityID)
 			
 			If Ent_Base = False Then
@@ -137,10 +139,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				finalUD1WhereClause = $"UD1 like '{appnbyFundsCenter}%'"
 				appnbyFundsCenter = $",[U1#{appnbyFundsCenter}]"
 			End If
-			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(REMOVEZeros(V#Periodic),[origin_Filter]{StatusbyFundsCenter}{appnbyFundsCenter})")
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(REMOVEZeros(V#Periodic),[{origin_Filter}]{StatusbyFundsCenter}{appnbyFundsCenter})")
 			Dim destBuffer As DataBuffer = New DataBuffer()
 			Dim ClearCubeData As DataBuffer = New DataBuffer()
-'BRApi.ErrorLog.LogMessage(si, $"CurrCubeBuffer script: FilterMembers(REMOVEZeros(V#Periodic),[origin_Filter]{StatusbyFundsCenter})")
+'BRApi.ErrorLog.LogMessage(si, $"CurrCubeBuffer script: FilterMembers(REMOVEZeros(V#Periodic),{origin_Filter}{StatusbyFundsCenter})")
 			'Define the SQL Statement 
 			Dim sql = $"SELECT Entity, Account, IC, Flow, UD1, UD2, UD3, UD4, UD5, UD6, UD7, UD8, '{tgt_origin}' as Origin, SUM(FY_{table_FY}) AS Tot_Annual
 						FROM XFC_CMD_PGM_REQ_Details
@@ -630,7 +632,74 @@ End Function
     End Function
 #End Region
 			
-				
+#Region "Consol Aggregated"
+Private Sub Consol_Aggregated()
+		If api.Pov.Entity.Name.XFContainsIgnoreCase("E#None") Then Return
+		Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")
+		Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,api.Pov.Entity.Name)
+		Dim entityID As Integer = api.Members.GetMemberId(dimType.Entity.Id,api.Pov.Entity.Name)
+		Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk,entityID)
+'brapi.ErrorLog.LogMessage(si,"entity = " & api.Pov.Entity.Name)
+		If Not Ent_Base
+			Dim Src_Data = String.Empty
+			Dim acctFilter = "A#Req_Funding"
+			Dim originFilter = "O#AdjConsolidated,O#Forms,O#Import"
+			Dim flowFilter = "F#L2_Formulate_PGM,F#L3_Formulate_PGM,F#L4_Formulate_PGM,F#L5_Formulate_PGM,F#L3_Validate_PGM,F#L4_Validate_PGM,F#L5_Validate_PGM,F#L3_Approve_PGM,F#L2_Validate_PGM,F#L2_Approve_PGM,F#L2_Final_PGM"
+			Select Case entityLevel
+				Case "L3"
+					flowFilter =  "F#L3_Formulate_PGM,F#L4_Formulate_PGM,F#L5_Formulate_PGM,F#L3_Validate_PGM,F#L4_Validate_PGM,F#L5_Validate_PGM,F#L3_Approve_PGM,F#L2_Validate_PGM,F#L2_Approve_PGM,F#L2_Final_PGM"
+				Case "L4"
+					flowFilter =  "F#L4_Formulate_PGM,F#L5_Formulate_PGM,F#L3_Validate_PGM,F#L4_Validate_PGM,F#L5_Validate_PGM,F#L3_Approve_PGM,F#L2_Validate_PGM,F#L2_Approve_PGM,F#L2_Final_PGM"
+			End Select
+			Dim src_DataBuffer As New DataBuffer()
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData(V#Periodic),[{originFilter}],[{flowFilter}],[{acctFilter}])")
+			Dim destBuffer As DataBuffer = New DataBuffer()
+			Dim ClearCubeData As DataBuffer = New DataBuffer()
+			
+			Dim entList = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{api.Pov.Entity.Name}.Children", True)
+			For Each Ent As MemberInfo In entList
+
+				If Src_Data.Length > 0
+					Src_Data = $"{Src_Data} + cb#{api.Pov.Cube.Name}:E#{Ent.Member.Name}:C#Aggregated:V#Periodic"
+				Else
+					Src_Data = $"cb#{api.Pov.Cube.Name}:E#{Ent.Member.Name}:C#Aggregated:V#Periodic"
+				End If
+			Next
+			
+			src_DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData({Src_Data}),[O#AdjConsolidated,O#AdjInput,O#Forms,O#Import],[{flowFilter}],[{acctFilter}])")
+'CurrCubeBuffer.LogDataBuffer(api,$"{api.pov.entity.name}_CurrBufferConsol",500)
+'Src_DataBuffer.LogDataBuffer(api,$"{api.pov.entity.name}_SrcBufferConsol - C#{api.Pov.Cons.Name} - T#{api.Pov.Time.name}",500)  
+
+			For Each Src_DataCell As DataBufferCell In Src_DataBuffer.DataBufferCells.Values
+				Dim destOrigin = Src_DataCell.GetOriginName(api)
+				If Src_DataCell.GetOriginName(api).XFEqualsIgnoreCase("AdjInput")
+					destOrigin = "AdjConsolidated"
+				End If
+				Dim Destcell As New DataBufferCell(UpdateCellDefinition(Src_DataCell,,,destOrigin))
+				UpdateValue(Destcell, CurrCubeBuffer, destBuffer, Destcell.CellAmount)
+				CurrCubeBuffer.DataBufferCells.Remove(Destcell.DataBufferCellPk)
+			Next
+			
+			Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
+			api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,,True)
+			destBuffer.DataBufferCells.Clear()
+	
+			For Each ClearCubeCell As DataBufferCell In CurrCubeBuffer.DataBufferCells.Values
+				Dim Status As New DataCellStatus(False)
+				Dim ClearCell As New DataBufferCell(ClearCubeCell.DataBufferCellPk, 0, Status)
+				ClearCubeData.SetCell(si, ClearCell)
+			Next
+	
+			Dim ClearInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
+			api.Data.SetDataBuffer(ClearCubeData, ClearInfo)
+		End If
+		
+	End Sub
+#End Region
+
+
+
+
 	End Class
 
 	

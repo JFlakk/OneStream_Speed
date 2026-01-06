@@ -11,7 +11,96 @@
                         <fileResources />
                         <stringResources />
                         <parameters />
-                        <adapters />
+                        <adapters>
+                            <adapter name="da_CMD_SPLN_APPN_SpreadPct_FDX_CV" description="" commandType="CubeView">
+                                <templateParameterValues></templateParameterValues>
+                                <brText1></brText1>
+                                <brText2></brText2>
+                                <cubeViewName>CMD_SPLN_APPN_SpreadPct_FDX_CV</cubeViewName>
+                                <dataTablePerCubeViewRow>true</dataTablePerCubeViewRow>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <DashboardAdapterOptions>
+                                    <CubeViewDataTableOptions>
+                                        <IncludeTitle>false</IncludeTitle>
+                                        <IncludeHeaderLeftLabel1>false</IncludeHeaderLeftLabel1>
+                                        <IncludeHeaderLeftLabel2>false</IncludeHeaderLeftLabel2>
+                                        <IncludeHeaderLeftLabel3>false</IncludeHeaderLeftLabel3>
+                                        <IncludeHeaderLeftLabel4>false</IncludeHeaderLeftLabel4>
+                                        <IncludeHeaderCenterLabel1>false</IncludeHeaderCenterLabel1>
+                                        <IncludeHeaderCenterLabel2>false</IncludeHeaderCenterLabel2>
+                                        <IncludeHeaderCenterLabel3>false</IncludeHeaderCenterLabel3>
+                                        <IncludeHeaderCenterLabel4>false</IncludeHeaderCenterLabel4>
+                                        <IncludeHeaderRightLabel1>false</IncludeHeaderRightLabel1>
+                                        <IncludeHeaderRightLabel2>false</IncludeHeaderRightLabel2>
+                                        <IncludeHeaderRightLabel3>false</IncludeHeaderRightLabel3>
+                                        <IncludeHeaderRightLabel4>false</IncludeHeaderRightLabel4>
+                                        <IncludePovCube>true</IncludePovCube>
+                                        <IncludePovEntity>true</IncludePovEntity>
+                                        <IncludePovParent>false</IncludePovParent>
+                                        <IncludePovCons>false</IncludePovCons>
+                                        <IncludePovScenario>true</IncludePovScenario>
+                                        <IncludePovTime>true</IncludePovTime>
+                                        <IncludePovView>true</IncludePovView>
+                                        <IncludePovAccount>false</IncludePovAccount>
+                                        <IncludePovFlow>false</IncludePovFlow>
+                                        <IncludePovOrigin>false</IncludePovOrigin>
+                                        <IncludePovIC>false</IncludePovIC>
+                                        <IncludePovUD1>false</IncludePovUD1>
+                                        <IncludePovUD2>false</IncludePovUD2>
+                                        <IncludePovUD3>false</IncludePovUD3>
+                                        <IncludePovUD4>false</IncludePovUD4>
+                                        <IncludePovUD5>false</IncludePovUD5>
+                                        <IncludePovUD6>false</IncludePovUD6>
+                                        <IncludePovUD7>false</IncludePovUD7>
+                                        <IncludePovUD8>false</IncludePovUD8>
+                                        <IncludeMemberDetails>false</IncludeMemberDetails>
+                                        <IncludeRowNavigationLink>false</IncludeRowNavigationLink>
+                                        <IncludeHasDataStatus>true</IncludeHasDataStatus>
+                                        <IncludeAnnotation>false</IncludeAnnotation>
+                                        <IncludeAssumptions>false</IncludeAssumptions>
+                                        <IncludeAuditComment>false</IncludeAuditComment>
+                                        <IncludeFootnote>false</IncludeFootnote>
+                                        <IncludeVarianceExplanation>false</IncludeVarianceExplanation>
+                                    </CubeViewDataTableOptions>
+                                    <CubeViewMDDataTableOptions>
+                                        <AddStartEndCalendarTime>false</AddStartEndCalendarTime>
+                                        <EntityTextType>3000</EntityTextType>
+                                        <ConsolidationTextType>3000</ConsolidationTextType>
+                                        <ScenarioTextType>3000</ScenarioTextType>
+                                        <TimeTextType>3000</TimeTextType>
+                                        <ViewTextType>3000</ViewTextType>
+                                        <AccountTextType>3000</AccountTextType>
+                                        <FlowTextType>3000</FlowTextType>
+                                        <OriginTextType>3000</OriginTextType>
+                                        <IcTextType>3000</IcTextType>
+                                        <Ud1TextType>3000</Ud1TextType>
+                                        <Ud2TextType>3000</Ud2TextType>
+                                        <Ud3TextType>3000</Ud3TextType>
+                                        <Ud4TextType>3000</Ud4TextType>
+                                        <Ud5TextType>3000</Ud5TextType>
+                                        <Ud6TextType>3000</Ud6TextType>
+                                        <Ud7TextType>3000</Ud7TextType>
+                                        <Ud8TextType>3000</Ud8TextType>
+                                        <DimensionType1>-1</DimensionType1>
+                                        <MemberFilter1 />
+                                        <DimensionType2>-1</DimensionType2>
+                                        <MemberFilter2 />
+                                        <DimensionLevel>Unknown</DimensionLevel>
+                                    </CubeViewMDDataTableOptions>
+                                    <BiBlendDataTableOptions>
+                                        <TableInfo />
+                                        <GroupBy />
+                                        <DataFieldAggregationTypes />
+                                        <WhereClause />
+                                    </BiBlendDataTableOptions>
+                                </DashboardAdapterOptions>
+                            </adapter>
+                        </adapters>
                         <components />
                         <dashboardGroups />
                         <workspaceAssemblies>
@@ -3120,19 +3209,7 @@ End Function
 				Dim currDBsql As String = String.empty
 				Dim Detailsql As String = String.empty
 				Dim currDBDetailsql As String = String.empty
-
-'brapi.ErrorLog.LogMessage(si,"Hit 1 CM")
-'				If args.NameValuePairs.XFGetValue("Demote") = "True" Then
-'					Dim U1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
-'					Dim U1Base As List(Of memberinfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, U1objDimPk, "U1#" & Appn & ".Base", True)
-'						For Each MemU1 As MemberInfo In U1Base
-'							PackageList.Add($"'{Entity}|{memU1.member.name}|{Flow}'")	
-'						Next
-'					packageFilter = "AND Entity + '|' + APPN + '|' + Status IN (" & String.Join(",", PackageList) & ")"
-'					packageDetailFilter = "AND Entity + '|' + APPN + '|' + Flow IN (" & String.Join(",", PackageList) & ")"
-				
-
-'				Else				
+			
 					If Entity_APPN_Flow = "NA" Then 
 						Entity_APPN_Flow = $"{Entity}:{APPN}:{PrevStatus}"		
 					End If			
@@ -3141,6 +3218,7 @@ End Function
 					#Region "Promote Statuses"
 					Status_manager.Add("L5_Formulate_SPLN|Base","L5_Validate_SPLN")
 					Status_manager.Add("L4_Formulate_SPLN|Parent","L4_Validate_SPLN")
+					Status_manager.Add("L4_Formulate_SPLN|Base","L4_Validate_SPLN")
 					Status_manager.Add("L3_Formulate_SPLN|Parent","L3_Validate_SPLN")
 					Status_manager.Add("L3_Formulate_SPLN|Base","L3_Validate_SPLN")
 					Status_manager.Add("L2_Formulate_SPLN|Parent","L2_Validate_SPLN")
@@ -3178,7 +3256,17 @@ End Function
 							PackageList.Clear()
 							If mementity.Member.Name = E
 								Dim ReviewEntList = BRApi.Finance.Members.GetParents(si,entDimPk,mementity.member.MemberId,False)
-								newReviewEntity = ReviewEntList(0).Name
+								If Not demote_comment = "" Then 
+									Dim entityLevel As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, mementity.Member.Name)
+									Dim DemoteLevel As String = new_status.Substring(0,2)
+									If entityLevel = DemoteLevel Then 
+										NewReviewEntity = mementity.Member.Name
+									Else
+										NewReviewEntity = BRApi.Finance.Members.GetMembersUsingFilter(si, EobjDimPk, "E#" & mementity.Member.Name & ".Ancestors.where(text3 contains " & DemoteLevel & ")", True)(0).Member.Name
+									End If 
+								Else
+									newReviewEntity = ReviewEntList(0).Name
+								End If 
 							End If
 							PackageList.Add($"'{mementity.member.name}|{A}|{F}'")	
 							For Each memU1 As MemberInfo In U1Base
@@ -3211,10 +3299,10 @@ End Function
 								End If
 							End If
 
-							'brapi.ErrorLog.LogMessage(si,$"Hit: {new_status} - {F}|{entBaseParent}")
+						'	brapi.ErrorLog.LogMessage(si,$"Hit: {new_status} - {F}|{entBaseParent}")
 							Dim reviewEntityString As String = "Review_Entity"
 							If F.Substring(0,2) <> new_status.Substring(0,2)
-								reviewEntityString = $"'{newReviewEntity}' as Review_Entity"
+									reviewEntityString = $"'{newReviewEntity}' as Review_Entity"
 							End If
 							If sql.Length > 0
 								sql = $"{sql}
@@ -4115,7 +4203,7 @@ Public Function SetRelatedREQs()
 '									FCList.Add($"{drow("Entity")}")
 '							End If 
 '						Next
-						
+						BRApi.ErrorLog.LogMessage(si,"Hit here")
 						Dim objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"E_Army")
 						Dim entityList As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "E#" & sEntity & ".Children", True)
 						Dim FCList As New List(Of String)
@@ -4144,7 +4232,7 @@ Public Function SetRelatedREQs()
 						dim nextyear as Integer = currentYear  + 1
 						months = months & $"T#{nextyear}"
 						'months = months.Substring(0, months.Length-1)
-
+brapi.ErrorLog.LogMessage(si,"Hit" & months)
 						customSubstVars.Add("WFTime",months)
 						BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
 
@@ -4424,6 +4512,9 @@ Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSel
 			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			Dim WFYear As Integer = wfInfoDetails("TimeName")
 			Dim nextyear As Integer = wfInfoDetails("TimeName") + 1
+			Dim fclist As New List (Of String)
+			Dim APPNList As New List (Of String)
+			Dim StatusList As New List (Of String)
 			
 'Brapi.ErrorLog.LogMessage(si, "HERE 3")	
 		 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
@@ -4451,6 +4542,7 @@ Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSel
 			Dim sqa2 As New SqlDataAdapter()
             Dim sqaReaderdetail As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
 			Dim parentIds As New List(Of String)()
+			
 
 For Each parentRow As DataRow In dt.Rows
    
@@ -4504,16 +4596,21 @@ sqa_xfc_cmd_spln_req_details_audit.Fill_XFC_CMD_SPLN_REQ_DETAILS_Audit_DT(sqa, S
 			
 			targetRow = dt.Select($"REQ_ID = '{req_IDs}'").FirstOrDefault()
 			Dim APPN As String =  args.NameValuePairs.XFGetValue("APPN")
-		
+			Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+			Dim lsAncestorListU1 As List(Of MemberInfo)
+			lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & APPN & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+			APPNList.add(lsAncestorListU1(0).Member.Name)
 'Brapi.ErrorLog.LogMessage(si, "APPN " & APPN)	
 			
 			Dim Entity As String =  args.NameValuePairs.XFGetValue("Entity")
+			fclist.Add(entity)
 			Dim MDEP As String =  args.NameValuePairs.XFGetValue("MDEP")
 			 Dim APE As String =  args.NameValuePairs.XFGetValue("APEPT")
 		     Dim DollarType As String =  args.NameValuePairs.XFGetValue("DollarType")
 		 	 Dim cTypecol As String =  args.NameValuePairs.XFGetValue("CType")
 			 Dim obj_class As String =  args.NameValuePairs.XFGetValue("Obj_Class")
 			Dim Status As String  = targetRow("Status")
+			statuslist.Add(status)
 			Dim Create_User As String = targetRow("Create_User")
 			
 			Dim req_ID_Val As Guid
@@ -4560,7 +4657,7 @@ sqa_xfc_cmd_spln_req_details_audit.Fill_XFC_CMD_SPLN_REQ_DETAILS_Audit_DT(sqa, S
 			accountname = "Obligations"
 			wfyear = nextyear
 		End If
-brapi.ErrorLog.LogMessage(si,"beforeaudit = " & wfyear)
+'brapi.ErrorLog.LogMessage(si,"beforeaudit = " & wfyear)
 		targetRowFunding = dt_Details.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}' AND Account  = '{accountName}' and Fiscal_year = '{wfyear}'").FirstOrDefault()
 'If SQA_XFC_CMD_SPLN_REQ_DETAILS_AUDIT_DT.Rows.Count > 0 Then
 		If SQA_XFC_CMD_SPLN_REQ_DETAILS_AUDIT_DT.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}' AND Account  = '{accountName}' and Fiscal_year = '{wfyear}'").Count > 0 Then
@@ -4625,26 +4722,43 @@ brapi.ErrorLog.LogMessage(si,"beforeaudit = " & wfyear)
 			
 			Dim targetRowFYValues As DataRow
 			targetRowFYValues = dt_Details.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}' AND Account = '{accountName}' and Fiscal_year = '{wfyear}'").FirstOrDefault()
-			Dim Month1 As Decimal =  targetRowFYValues("Month1")
-			Dim Month2 As Decimal = targetRowFYValues("Month2")
-		    Dim Month3 As Decimal = targetRowFYValues("Month3")	
-		 	Dim Month4 As Decimal = targetRowFYValues("Month4")
-			Dim Month5 As Decimal =  targetRowFYValues("Month5")
-			Dim Month6 As Decimal =  targetRowFYValues("Month6")	
-			Dim Month7 As Decimal =  targetRowFYValues("Month7")	
-			Dim Month8 As Decimal =  targetRowFYValues("Month8")	
-			Dim Month9 As Decimal =  targetRowFYValues("Month9")	
-			Dim Month10 As Decimal =  targetRowFYValues("Month10")	
-			Dim Month11 As Decimal =  targetRowFYValues("Month11")	
-			Dim Month12 As Decimal =  targetRowFYValues("Month12")	
-			Dim Quarter1 As Decimal =  targetRowFYValues("Quarter1")	
-			Dim Quarter2 As Decimal =  targetRowFYValues("Quarter2")	
-			Dim Quarter3 As Decimal =  targetRowFYValues("Quarter3")	
-			Dim Quarter4 As Decimal =  targetRowFYValues("Quarter4")
-			Dim Yearly As Decimal = 0
-			If targetRowFYValues("Yearly").ToString IsNot Nothing
-				Yearly =  targetRowFYValues("Yearly")	
-			End If
+				 Dim Yearly As Decimal
+				
+				 Dim Month1 As Decimal
+				 Dim Month2 As Decimal
+				 Dim Month3 As Decimal
+				 Dim Month4 As Decimal
+				 Dim Month5 As Decimal
+				 Dim Month6 As Decimal
+				 Dim Month7 As Decimal
+				 Dim Month8 As Decimal
+				 Dim Month9 As Decimal
+				  Dim Month10 As Decimal 
+				  Dim Month11 As Decimal 
+				  Dim Month12 As Decimal 
+				 Dim Quarter1 As Decimal
+				 Dim Quarter2 As Decimal
+				 Dim Quarter3 As Decimal
+				 Dim Quarter4 As Decimal
+				If Not targetRowFYValues("Yearly").ToString = "" Then Yearly =  targetRowFYValues("Yearly")	
+
+				If Not targetRowFYValues("Month1").ToString = "" Then Month1  =  targetRowFYValues("Month1")
+				If Not targetRowFYValues("Month2").ToString = "" Then Month2  = targetRowFYValues("Month2")
+			    If Not targetRowFYValues("Month3").ToString = "" Then Month3  = targetRowFYValues("Month3")	
+			 	If Not targetRowFYValues("Month4").ToString = "" Then Month4  = targetRowFYValues("Month4")
+				If Not targetRowFYValues("Month5").ToString = "" Then Month5  =  targetRowFYValues("Month5")
+				If Not targetRowFYValues("Month6").ToString = "" Then Month6  =  targetRowFYValues("Month6")	
+				If Not targetRowFYValues("Month7").ToString = "" Then Month7  =  targetRowFYValues("Month7")	
+				If Not targetRowFYValues("Month8").ToString = "" Then Month8  =  targetRowFYValues("Month8")	
+				If Not targetRowFYValues("Month9").ToString = "" Then Month9  =  targetRowFYValues("Month9")	
+				If Not targetRowFYValues("Month10").ToString = "" Then Month10  =  targetRowFYValues("Month10")	
+				If Not targetRowFYValues("Month11").ToString = "" Then Month11  =  targetRowFYValues("Month11")	
+				If Not targetRowFYValues("Month12").ToString = "" Then Month12  =  targetRowFYValues("Month12")	
+				If Not targetRowFYValues("Quarter1").ToString = "" Then Quarter1 =  targetRowFYValues("Quarter1")	
+				If Not targetRowFYValues("Quarter2").ToString = "" Then Quarter2 =  targetRowFYValues("Quarter2")	
+				If Not targetRowFYValues("Quarter3").ToString = "" Then Quarter3 =  targetRowFYValues("Quarter3")	
+				If Not targetRowFYValues("Quarter4").ToString = "" Then Quarter4 =  targetRowFYValues("Quarter4")
+
 	
 							
 						
@@ -4729,10 +4843,29 @@ brapi.ErrorLog.LogMessage(si,"beforeaudit = " & wfyear)
 		          Next    
 		                ' Persist changes back to the DB using the configured adapter
 		               
-		               sqaReaderdetail.Update_XFC_CMD_SPLN_REQ_Details(dt_Details,sqa2)
+		               	sqaReaderdetail.Update_XFC_CMD_SPLN_REQ_Details(dt_Details,sqa2)
 		                sqaReader.Update_XFC_CMD_SPLN_REQ(dt,sqa)
 						sqa_xfc_cmd_spln_req_details_audit.Update_XFC_CMD_SPLN_REQ_DETAILS_AUDIT(SQA_XFC_CMD_SPLN_REQ_DETAILS_AUDIT_DT, sqa)
 						
+						Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							Dim GlobalAPPNs As String = String.Join("|",APPNList)
+							Dim GlobalFlows As String = String.Join("|",StatusList)
+							globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", GlobalFlows)	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",GlobalAPPNs)
+						Next
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
+						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
+						Dim customSubstVars As New Dictionary(Of String, String) 
+						customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+						customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
+						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
+						Dim currentYear As String = wfInfoDetails("TimeName")
+						customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
+		
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
 						
 						
 		                End Using
@@ -4812,7 +4945,7 @@ End Function
 				Dim REQDT As New DataTable()
 				Dim REQDetailDT As New DataTable()
 				Dim Status As String = ""
-				Dim StatusList As String = ""
+
 				
 				Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
 
@@ -4874,21 +5007,33 @@ End Function
 					sqa_xfc_cmd_SPLN_req_details.Fill_XFC_CMD_SPLN_REQ_DETAILS_DT(sqa, REQDetailDT, detailSql, detailParamList.ToArray())
 'brapi.ErrorLog.LogMessage(si,"cm count = " & REQDT.Rows.count)
 					' Mark rows for deletion in both tables
-					Dim entitiesFromReqList As New List(Of String)
+
+					Dim APPNList As New List (Of String)
+					Dim StatusList As New List (Of String)
+					Dim FCList As New List (Of String)
 					For Each reqId As String In Req_ID_List
 						Dim rows As DataRow() = REQDT.Select($"REQ_ID = '{reqId}'")
 'brapi.ErrorLog.LogMessage(si,"reqdt status = " & rows.FirstOrDefault().Item("Status").tostring)					
 						Dim GUIDROW As String = rows.FirstOrDefault().Item("CMD_SPLN_REQ_ID").tostring
 						Dim ent As String = rows.FirstOrDefault().Item("Entity").ToString
-						entitiesFromReqList.Add(ent)
+						Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+						Dim lsAncestorListU1 As List(Of MemberInfo)
+						lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & rows.FirstOrDefault().Item("APPN").tostring & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+						Dim APPN As String = lsAncestorListU1(0).Member.Name
+						
+						
 						Status  = rows.FirstOrDefault().Item("Status").tostring
-						If Status.XFEqualsIgnoreCase("") Then
-							StatusList = Status
-						Else
-							If Not statuslist.XFContainsIgnoreCase(Status) Then
-								statuslist += StatusList & "|" & Status
-							End If
-						End If 
+						
+						If Not FCList.Contains(ent) Then
+							FCList.Add(ent)
+						End If
+						If Not APPNList.Contains(APPN) Then
+							APPNList.Add(APPN)
+						End If
+						If Not StatusList.Contains(status) Then
+							StatusList.Add(status)
+						End If
+
 						For Each row As DataRow In rows
 							row.Delete()
 						Next
@@ -4904,74 +5049,27 @@ End Function
 					' Persist changes back to DB
 					sqa_xfc_cmd_SPLN_req_details.Update_XFC_CMD_SPLN_REQ_Details(REQDetailDT, sqa)
 					sqa_xfc_cmd_SPLN_req.Update_XFC_CMD_SPLN_REQ(REQDT, sqa)
+					
+					
+				Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+				Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+				For Each JoinedEntity As String In joinedentitylist
 
-				Dim FCList As new List (Of String)
-				If Not String.IsNullOrWhiteSpace(sEntity) Then
-						FCList.Add(sEntity)
-					Else
-'BRApi.ErrorLog.LogMessage(si, String.Join(",", entitiesFromReqList.Select(Function (r) "E#" & r)) & ", statuslist = " & statuslist)						
-						Dim entities As String
-						entitiesFromReqList = entitiesFromReqList.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
-						entities = String.Join(",", entitiesFromReqList.Select(Function (r) "" & r))
-						FCList.Add(entities)
-					End If
-					
-					
-				Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
+					globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.Join("|",StatusList))	
+					Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.Join("|",APPNList))
+				Next
 				Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-				Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-				'Dim consolEntityList As String = String.Join(", ", EntityLists.Item3.Select(Function(s) $"E#{s}"))
-'brapi.ErrorLog.LogMessage(si,"Consol List: " & "688")			
+				Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
 				Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
 				Dim customSubstVars As New Dictionary(Of String, String) 
 				customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
 				customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
-				'customSubstVars.Add("consolEntityList",String.Join(",",consolEntityList))
 				customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 				Dim currentYear As String = wfInfoDetails("TimeName")
 				Dim nextyear As String = currentYear + 1
 				customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
 
-
 				BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
-			
-				'Run consolidation for entities in the correct order
-				Dim consolEntityList As list (Of String) = EntityLists.Item3
-				Dim L4Entity,L3Entity,L2Entity,L1Entity As String 
-
-				For Each consolentity As String In consolEntityList
-'brapi.ErrorLog.LogMessage(si,"consolentity: " & consolentity)					
-					Dim Entitylevel As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, consolentity)
-					If consolentity = sCube Then EntityLevel = "L1"
-					Select Case Entitylevel
-					Case "L4"
-						L4Entity = $"{L4Entity},E#{ConsolEntity}"
-					Case "L3"
-						L3Entity = $"{L3Entity},E#{ConsolEntity}"
-					Case "L2"
-						L2Entity = $"{L2Entity},E#{ConsolEntity}"
-					Case "L1"
-						L1Entity = $"{L1Entity},E#{ConsolEntity}"
-					End Select
-				Next
-				
-				customSubstVars.Add("consolEntityList","Default")
-				If Not String.IsNullOrEmpty(L4Entity) Then
-					customSubstVars("consolEntityList") = L4Entity 
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-				End If 
-				If Not String.IsNullOrEmpty(L3Entity) Then
-					customSubstVars("consolEntityList") = L3Entity 
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-				End If 
-				If Not String.IsNullOrEmpty(L2Entity) Then
-					customSubstVars("consolEntityList") = L2Entity 
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-				End If 
-				If Not String.IsNullOrEmpty(L1Entity) Then
-					customSubstVars("consolEntityList") = L1Entity 
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-				End If 
 					
 
 				End Using
@@ -5408,6 +5506,16 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 				Dim REQDataTable As New DataTable("XFC_CMD_SPLN_REQ")
 				Dim REQDetailDataTable As New DataTable("XFC_CMD_SPLN_REQ_Details")
+				
+				
+				
+				'write only error messages. If no error leave blank
+				Dim errRowsToReport As list (Of DataRow) = Importreq_DT.AsEnumerable().
+										Where(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors"))).ToList()
+				Dim errorTable As DataTable = Importreq_DT.Clone()
+				For Each errorRow As DataRow In errRowsToReport
+					errorTable.ImportRow(errorRow)
+				Next
 'brapi.ErrorLog.LogMessage(si,"Hit 6")				
 	            If validFile Then
 					'get req_id and guid
@@ -5453,7 +5561,7 @@ brapi.ErrorLog.LogMessage(si,"Proc load table time = " & Now.Subtract(tStart4).T
 					'Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf & "Output file is located in the following folder for review:" & vbCrLf & "DOCUMENTS/USERS/" & si.UserName.ToUpper
 					Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf 
 					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", uploadStatus)
-					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName") ,  ImportREQ_DT)
+					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName") ,  errorTable)
 	'brapi.ErrorLog.LogMessage(si, "Post 4")						
 					Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
 				Else 'If the validation failed, write the error out.
@@ -5461,7 +5569,7 @@ brapi.ErrorLog.LogMessage(si,"Proc load table time = " & Now.Subtract(tStart4).T
 									
 					Dim stastusMsg As String = "LOAD FAILED" & vbCrLf & fileName & " has invalid data." & vbCrLf & vbCrLf & $"To view import error(s), please take look at the column titled ""ValidationError""."
 					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", stastusMsg)
-					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName"),  ImportREQ_DT)
+					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName"),  errorTable)
 					Return Nothing
 				End If
 				
@@ -5526,7 +5634,8 @@ brapi.ErrorLog.LogMessage(si,"Proc load table time = " & Now.Subtract(tStart4).T
 			row("UD5") = "None"
 			row("UD7") = "None"
 			row("UD8") = "None"			
-			row("FundCenter") = fundCenter		
+			row("FundCenter") = fundCenter
+			row("Review_Entity") = fundCenter	
 ''brapi.ErrorLog.LogMessage(si,"lsAncestorListUD1=" & lsAncestorListUD1(0).Member.Name)
 			row("APE9") =   lsAncestorListUD1(0).Member.Name & "_" & row("APE9") '"OMA_111011000"'row("FundCode") & "_" & row("APE9") 'CMD_SPLN_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
 			
@@ -5572,6 +5681,7 @@ brapi.ErrorLog.LogMessage(si,"Proc load table time = " & Now.Subtract(tStart4).T
 		dt.Columns.Add("REQ_ID_Type")
 		dt.Columns.Add("REQ_ID")
 		dt.Columns.Add("Status")
+		dt.Columns.Add("Review_Entity")
         ' Assuming the first line contains headers
 
 		'Add audit columns for narrative
@@ -6125,7 +6235,8 @@ brapi.ErrorLog.LogMessage(si,"inclause = " & inclause)
 				{"Create_Date","Create_Date"},
 				{"Create_User","Create_User"},
 				{"Update_Date","Update_Date"},
-				{"Update_User","Update_User"}		
+				{"Update_User","Update_User"},
+				{"Review_Entity","Review_Entity"}
 		}
 		Return REQColMapping
 	End Function
@@ -6248,6 +6359,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			Dim scName As String = wfInfoDetails("ScenarioName")
 			Dim cmd As String = wfInfoDetails("CMDName")
 			Dim tm As String = wfInfoDetails("TimeName")
+			Dim fclist As New List (Of String)
+			Dim APPNList As New List (Of String)
+			Dim StatusList As New List (Of String)
 			
 			Dim PGM_SscName As String = "CMD_PGM_C" & tm
 			Dim PGMRQSdt As New DataTable ("REQsFromPGM")
@@ -6339,14 +6453,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					
 					For Each row As DataRow In PGMREQsDT.Rows
 						Dim newREQRow As datarow = SPLNREQsDT.NewRow()
-						MapPGMReqToSPLN(newREQRow, row)
+						MapPGMReqToSPLN(newREQRow, row,FCList,APPNList,StatusList)
 						Dim newGuid As String = newREQRow("CMD_SPLN_REQ_ID").ToString
 						newREQRows.Add(newREQRow)
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 0: newGuid= " & newGuid)							
+BRApi.ErrorLog.LogMessage(si, "rollover update: 0: newGuid= " & newGuid)							
 						'create details
 						Dim foundDetailRows As DataRow() = PGMREQDetailsDT.Select(String.Format("CMD_PGM_REQ_ID = '{0}'", row("CMD_PGM_REQ_ID").ToString))
 						For Each dtRow In foundDetailRows
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 1")								
+BRApi.ErrorLog.LogMessage(si, "rollover update: 1")								
 							Dim newOblDetailREQRow As datarow = SPLNREQDetailsDT.NewRow()
 							Me.MapPGMReqDetailToSPLN(newOblDetailREQRow, dtRow, "Obligations", newGuid,obligSpread)
 							UpdateAuditColumns(newOblDetailREQRow)
@@ -6358,9 +6472,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							newREQDetailRows.Add(newCmtDetailREQRow)
 							
 						Next
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 2")							
+BRApi.ErrorLog.LogMessage(si, "rollover update: 2")							
 					Next
-					
+	
 					'update SQL Adapter and update
 					Dim REQ_IDs As New List(Of String)
 					For Each row In newREQRows
@@ -6377,27 +6491,41 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					'Call delete To delte rows
 					Dim existingREQs As New List(Of String)
 					existingREQs = Me.GetExistingDupREQs(REQ_IDs)
-					
+BRApi.ErrorLog.LogMessage(si, "rollover update: " & existingREQs.Count)							
 					If existingREQs.Count > 0 Then
 						Dim deleter As New CMD_SPLN_Helper.MainClass
 						Args.NameValuePairs.Add("req_IDs", String.Join(",", existingREQs))
 						Args.NameValuePairs.Add("Action", "Delete")
 						deleter.main(si, globals, api, args)
+BRApi.ErrorLog.LogMessage(si, "rollover update: post delete")		
 					End If
 					
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 3")
+BRApi.ErrorLog.LogMessage(si, "rAPPN LIst" & String.Join("|",APPNList))
+BRApi.ErrorLog.LogMessage(si, "rStatusList" & String.Join("|",StatusList))
+BRApi.ErrorLog.LogMessage(si, "rFCList" & String.Join("|",FCList))
 'BRApi.ErrorLog.LogMessage(si, "SPLNREQsDT count= " & SPLNREQsDT.Rows.Count & " details= " & SPLNREQDetailsDT.Rows.Count)
 					sqaSPLNReqReader.Update_XFC_CMD_SPLN_REQ(SPLNREQsDT, sqa)
 					sqaSPLNReqDetailReader.Update_XFC_CMD_SPLN_REQ_Details(SPLNREQDetailsDT, sqa)
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 4")					
-					'Load to the cube
-					Dim loader As New CMD_SPLN_Helper.MainClass
-					Args.NameValuePairs("req_IDs") =  String.Join(",", REQ_IDs)
-					Args.NameValuePairs("Action") = "Insert"
-					Args.NameValuePairs.Add("new_Status", "Formulate") '*** HARD CODE FOR TEST ***
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 4.5")						
-					loader.main(si, globals, api, args)	
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 5")						
+					
+					Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+					Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+					For Each JoinedEntity As String In joinedentitylist
+						globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.Join("|",StatusList))	
+						Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.Join("|",APPNList))
+					Next
+					Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+					Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
+					Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
+					Dim customSubstVars As New Dictionary(Of String, String) 
+					customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+					customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
+					customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
+					Dim currentYear As String = wfInfoDetails("TimeName")
+					Dim nextyear As String = currentYear + 1
+					customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
+	
+					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)	
+							
 				End Using
 			End Using
 
@@ -6420,7 +6548,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 #Region "Map PGM Req To SPLN"		
 
-		Public Sub MapPGMReqToSPLN(ByRef SPLNRow As DataRow, ByRef PGMRow As DataRow) 
+		Public Sub MapPGMReqToSPLN(ByRef SPLNRow As DataRow, ByRef PGMRow As DataRow, ByRef FCList As List (Of String), ByRef APPNList As List (Of String),ByRef StatusList As List (Of String) ) 
 
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			SPLNRow("CMD_SPLN_REQ_ID") = Guid.NewGuid()
@@ -6437,6 +6565,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			SPLNRow("MDEP") = PGMRow("MDEP")
 			SPLNRow("APE9") = PGMRow("APE9")
 			SPLNRow("Dollar_Type") = PGMRow("Dollar_Type")
+'brapi.ErrorLog.LogMessage(si,"APPN Rollover = " & SPLNRow("APPN").ToString)
 			'SPLNRow("Obj_Class") = PGMRow("Obj_Class")
 			If PGMRow("Obj_Class").ToString.XFEqualsIgnoreCase("None") Then 
 				SPLNRow("Obj_Class") = "None"
@@ -6477,13 +6606,23 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			SPLNRow("FF_3") = PGMRow("FF_3")
 			SPLNRow("FF_4") = PGMRow("FF_4")
 			SPLNRow("FF_5") = PGMRow("FF_5")
+brapi.ErrorLog.LogMessage(si,"entity from pgm = " & PGMRow("Entity"))
 			SPLNRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, PGMRow("Entity")) & "_Formulate_SPLN"
 			SPLNRow("Review_Entity") = PGMRow("Review_Entity")
 			SPLNRow("Demotion_Comment") = PGMRow("Demotion_Comment")
 			SPLNRow("Related_REQs") = PGMRow("Validation_List_Emails")
 			
-			UpdateAuditColumns(SPLNRow)
-
+			UpdateAuditColumns(SPLNRow)		
+			If Not FCList.Contains(SPLNRow("Entity")) Then
+					FCList.Add(SPLNRow("Entity"))
+			End If
+			If Not APPNList.Contains(SPLNRow("APPN")) Then
+					APPNList.Add(SPLNRow("APPN"))
+			End If
+			If Not StatusList.Contains(SPLNRow("Status")) Then
+					StatusList.Add(SPLNRow("Status"))
+			End If
+			
 
 		End Sub
 
@@ -6502,7 +6641,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			SPLNDetailRow("Entity") = PGMDetailRow("Entity")
 			SPLNDetailRow("IC") = PGMDetailRow("IC")
 			SPLNDetailRow("Account") = acct
-			SPLNDetailRow("Flow") = "Formulate_SPLN"'would be updated in the update peorcess  in the helper
+			SPLNDetailRow("Flow") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, PGMDetailRow("Entity")) & "_Formulate_SPLN" 'would be updated in the update peorcess  in the helper
 			SPLNDetailRow("UD1") = Me.GetFundCode(PGMDetailRow("UD1").ToString, PGMDetailRow("UD4").ToString)' "202014D26"'PGMDetailRow("UD1")
 			SPLNDetailRow("UD2") = PGMDetailRow("UD2")
 			SPLNDetailRow("UD3") = PGMDetailRow("UD3")
@@ -9636,7 +9775,7 @@ Dim CMD_SPLN_ID As New XFDynamicGridColumnDefinition()
 			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			Dim nextyear As Integer = wfInfoDetails("TimeName") + 1
 			
-            Dim sql As String = $"SELECT Req.CMD_SPLN_REQ_ID,
+            Dim sql As String = $"SELECT cast(Req.CMD_SPLN_REQ_ID as varchar(100)) as cmd_spln_req_id,
 								  Req.WFScenario_Name,
 								  Req.WFCMD_Name,
 								  Req.WFTime_Name,
@@ -9917,9 +10056,9 @@ Dim CMD_SPLN_ID As New XFDynamicGridColumnDefinition()
 				
 				Dim IsValid As Boolean = BR_CMD_SPLN_String_Helper.Main(si, globals, api, dargs)
 				
-				If IsValid = False Then 
-					dt.Rows.Remove(dt.Rows(i))
-				End If
+'				If IsValid = False Then 
+'					dt.Rows.Remove(dt.Rows(i))
+'				End If
 			Next
 			
 			
@@ -9965,7 +10104,10 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 			WFInfoDetails.Add("CMDName", wfCubeRootInfo.CubeName)
 			Dim WFYear As Integer = wfInfoDetails("TimeName")
 			Dim nextyear As Integer = wfInfoDetails("TimeName") + 1
-'Brapi.ErrorLog.LogMessage(si, "Hit 1")	
+			Dim APPNList As New List (Of String)
+			Dim StatusList As New List (Of String)
+			Dim req_id As String = editedDataRows.Item(0).ModifiedDataRow("CMD_SPLN_REQ_ID").ToString
+'Brapi.ErrorLog.LogMessage(si, "Hit 1 guid = " & req_id)	
 		 Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
         Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
             sqlConn.Open()
@@ -9977,13 +10119,13 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim dt As New DataTable()
             Dim sqa As New SqlDataAdapter()
             Dim sqaReader As New SQA_XFC_CMD_SPLN_REQ(sqlConn)
-            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_SPLN_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_SPLN_REQ_ID  = @CMD_SPLN_REQ_ID"
+            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_SPLN_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_SPLN_REQ_ID = '{req_id}'"'  = @CMD_SPLN_REQ_ID"
             Dim sqlParams As SqlParameter() = New SqlParameter() {
                 New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
                 New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
-				New SqlParameter("@CMD_SPLN_REQ_ID", SqlDbType.UniqueIdentifier) With {.Value = editedDataRows.Item(0).ModifiedDataRow("CMD_SPLN_REQ_ID")}
-						}
+                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")} }
+'				New SqlParameter("@CMD_SPLN_REQ_ID", SqlDbType.UniqueIdentifier) With {.Value = editedDataRows.Item(0).ModifiedDataRow("CMD_SPLN_REQ_ID")}
+'						}
               sqaReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, dt, sqlMain, sqlParams)
 			  
 'Brapi.ErrorLog.LogMessage(si, "HERE 4")	
@@ -9992,7 +10134,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim dt_Details As New DataTable()
 			 Dim sqa2 As New SqlDataAdapter()
             Dim sqaReaderdetail As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
-            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_SPLN_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_SPLN_REQ_ID  = @CMD_SPLN_REQ_ID"
+            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_SPLN_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_SPLN_REQ_ID = '{req_id}'"'  = @CMD_SPLN_REQ_ID"
             sqaReaderdetail.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
 
             ' ************************************
@@ -10000,8 +10142,19 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
          		
 	 		For Each editedDataRow As XFEditedDataRow In editedDataRows
 					Dim EditAccount As String = editedDataRow.ModifiedDataRow.Item("Account")
-brapi.ErrorLog.LogMessage(si,"Edit yearly = " & editedDataRow.ModifiedDataRow.Item("Yearly")	)	
+'brapi.ErrorLog.LogMessage(si,"Edit yearly = " & editedDataRow.ModifiedDataRow.Item("Yearly")	)	
+					Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+					Dim lsAncestorListU1 As List(Of MemberInfo)
+					lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & editedDataRow.ModifiedDataRow.Item("UD1") & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+					Dim APPN As String = lsAncestorListU1(0).Member.Name
+
 					status = editedDataRow.ModifiedDataRow.Item("Flow")
+					If Not StatusList.Contains(status) Then
+						statuslist.Add(status)
+					End If 
+					If Not APPNList.Contains(APPN) Then 
+						APPNList.Add(APPN)
+					End If 
 'brapi.ErrorLog.LogMessage(si,"Edit status = " & status)				
 					If StatustoPass.XFEqualsIgnoreCase("") Then 
 						statustopass = status & "|" 
@@ -10009,18 +10162,17 @@ brapi.ErrorLog.LogMessage(si,"Edit yearly = " & editedDataRow.ModifiedDataRow.It
 						statustopass += status & "|" 
 					End If 
 					EditEntity = editedDataRow.ModifiedDataRow.Item("Entity")	
-
+'brapi.ErrorLog.LogMessage(si,"CM HERE 1")
 				    Dim targetRow As DataRow 											
-					Dim req_ID_Val As Guid
-					req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_SPLN_REQ_ID")
-					
+'					Dim req_ID_Val As Guid
+'					req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_SPLN_REQ_ID")
+					Dim req_ID_Val As String = editedDataRow.ModifiedDataRow.Item("CMD_SPLN_REQ_ID")
+'brapi.ErrorLog.LogMessage(si,"CM HERE 2 reqId-val = " & req_ID_Val.ToString & " : count =" & dt.Rows.Count)					
 					targetRow = dt.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
 
 					targetRow("Update_Date") = DateTime.Now
 					targetRow("Update_User") = si.UserName																																																																																				
-
 					Dim targetRowFundingCarryover As DataRow
-
 					targetRowFundingCarryover = dt_Details.Select($"CMD_SPLN_REQ_ID = '{req_ID_Val}' AND Account = '{EditAccount}' and Fiscal_Year = '{nextyear}'").FirstOrDefault()		
 					If targetRowFundingCarryover IsNot Nothing Then
 						
@@ -10074,25 +10226,30 @@ brapi.ErrorLog.LogMessage(si,"Edit yearly = " & editedDataRow.ModifiedDataRow.It
 'Brapi.ErrorLog.LogMessage(si,"Statustopass" & Statustopass)		               
 		               sqaReaderdetail.Update_XFC_CMD_SPLN_REQ_Details(dt_Details,sqa2)
 		                sqaReader.Update_XFC_CMD_SPLN_REQ(dt,sqa)
-						globals.SetStringValue($"FundsCenterStatusUpdates - {EditEntity}", Statustopass)
+						'globals.SetStringValue($"FundsCenterStatusUpdates - {EditEntity}", Statustopass)
 						
 						Dim FCList As New List (Of String)
 						FCList.Add(EditEntity)
-						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
-						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-				
-						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
-'Brapi.ErrorLog.LogMessage(si,"baseent" & BaseEntityList)
-'Brapi.ErrorLog.LogMessage(si,"parentent" & ParentEntityList)
 
+						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.Join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.Join("|",APPNList))
+						Next
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
+						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
 						Dim customSubstVars As New Dictionary(Of String, String) 
-						customSubstVars.Add("EntList",BaseEntityList)
-						customSubstVars.Add("ParentEntList",ParentEntityList)
+						customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+						customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
 						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 						Dim currentYear As String = wfInfoDetails("TimeName")
 						customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
-						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
+		
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)				
+				
+						
 						
 		                End Using
 		            End Using
@@ -10304,7 +10461,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
     If saveDataArgs Is Nothing Then
         Return Nothing
     End If
-'Brapi.ErrorLog.LogMessage(si, "HERE 1")
+Brapi.ErrorLog.LogMessage(si, "HERE 1")
     ' Get the edited rows
     Dim editedDataRows As List(Of XFEditedDataRow) = saveDataArgs.EditedDataRows
     If editedDataRows Is Nothing OrElse editedDataRows.Count = 0 Then
@@ -10343,7 +10500,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 						}
               sqaReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, dt, sqlMain, sqlParams)
 			  
-'			Brapi.ErrorLog.LogMessage(si,"In Save Create SQL")
+			Brapi.ErrorLog.LogMessage(si,"In Save Create SQL")
 
             ' --- Details Table (XFC_CMD_SPLN_REQ_Details) ---
             Dim dt_Details As New DataTable()
@@ -10352,7 +10509,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_SPLN_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name"
             sqaReaderdetail.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
 
-'Brapi.ErrorLog.LogMessage(si,"In Save Create SQL 2")
+Brapi.ErrorLog.LogMessage(si,"In Save Create SQL 2")
             ' ************************************
             ' ************************************
 						Dim sU1APPNInput As String = args.CustomSubstVars.XFGetValue("ML_CMD_SPLN_FormulateAPPN","")
@@ -10367,7 +10524,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 						Dim entityLevel As String = Me.GetEntityLevel(sEntity)
 						Dim sREQWFStatus As String = entityLevel & "_Formulate_SPLN"
 						Dim NewReqID As Guid = Guid.NewGuid()
-'brapi.ErrorLog.LogMessage(si,"Hit 3 CM Save Create: entity-" & sEntity)	
+brapi.ErrorLog.LogMessage(si,"Hit 3 CM Save Create: entity-" & sEntity)	
             		For Each editedDataRow As XFEditedDataRow In editedDataRows						
 								
 						
@@ -10430,7 +10587,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 							targetRowDetails("IC") = "None"
 							targetRowDetails("Account") = accountName
 							targetRowDetails("Flow") = sREQWFStatus
-'BRApi.ErrorLog.LogMessage(si,"Hit2")
+BRApi.ErrorLog.LogMessage(si,"Hit2")
 							targetRowDetails("UD1") = sU1FundCodeInput
 							targetRowDetails("UD2") = sU2Input
 							targetRowDetails("UD3") = sU3Input
@@ -10441,7 +10598,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 								targetRowDetails("UD5") = sU5Input
 							End If
 							targetRowDetails("UD6") = sU6Input
-'BRApi.ErrorLog.LogMessage(si,"Hit3")
+BRApi.ErrorLog.LogMessage(si,"Hit3")
 							targetRowDetails("UD7") = "None"
 							targetRowDetails("UD8") = "None"
 							'targetRowDetails("Fiscal_Year") = wfyear
@@ -10464,7 +10621,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 							Dim Yearly As Decimal =  editedDataRow.ModifiedDataRow.Item("Yearly").ToString.XFConvertToDecimal	
 							
 						
-'BRApi.ErrorLog.LogMessage(si,"Hit4")
+BRApi.ErrorLog.LogMessage(si,"Hit4")
                             targetRowDetails("Month1") = Month1
                             targetRowDetails("Month2") = Month2
                             targetRowDetails("Month3") = Month3
@@ -10512,7 +10669,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 								targetRow("Title") = editedDataRow.ModifiedDataRow.Item("Title").ToString()
 '								targetRow("APPN") = sU1APPNInput
 								targetRow("APPN") = sU1FundCodeInput
-'BRApi.ErrorLog.LogMessage(si,"Hit6")								
+BRApi.ErrorLog.LogMessage(si,"Hit6")								
 								targetRow("MDEP") = sU2Input
 								targetRow("APE9") = sU3Input
 								targetRow("Dollar_Type") = sU4Input
@@ -10538,27 +10695,30 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 		                sqaReaderdetail.Update_XFC_CMD_SPLN_REQ_Details(dt_Details,sqa2)
 		                sqaReader.Update_XFC_CMD_SPLN_REQ(dt,sqa)
 'BRApi.ErrorLog.LogMessage(si,"Hit 8")
-						globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", sREQWFStatus)
+						'globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", sREQWFStatus)
 							
 						Dim FCList As New List (Of String)
 'brapi.ErrorLog.LogMessage(si,"Hit 4.5 - ent - " & sEntity)
 						FCList.Add(sEntity)
 'brapi.ErrorLog.LogMessage(si,"Hit 5 CM Save Create: " & sEntity)
 						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", sREQWFStatus)	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",sU1APPNInput)
+						Next
 						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-				
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
 						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
-'Brapi.ErrorLog.LogMessage(si,"@HERE1" &String.Join(",",FCList))
 						Dim customSubstVars As New Dictionary(Of String, String) 
-						customSubstVars.Add("EntList",BaseEntityList)
-						customSubstVars.Add("ParentEntList",ParentEntityList)
+						customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+						customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
 						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 						Dim currentYear As String = wfInfoDetails("TimeName")
-						
 						customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
-						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
-
+		
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)				
+				
 		                End Using
 		            End Using
 'brapi.errorlog.LogMessage(si,"hit here 3.5")
@@ -10593,6 +10753,9 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
             Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
 			Dim wfCubeRootInfo = BRApi.Workflow.Metadata.GetProfile(si,wfUnitInfo.ProfileName)
+			Dim APPNList As New List (Of String)
+			Dim StatusList As New List (Of String)
+			Dim FCList As New List (Of String)
 			
             WFInfoDetails.Add("ProfileName", wfUnitInfo.ProfileName)
             WFInfoDetails.Add("ScenarioName", wfUnitInfo.ScenarioName)
@@ -10645,15 +10808,28 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
  'brapi.ErrorLog.LogMessage(si,"count CM reqs = " & dt_Details.Rows.Count)        		
 	 		For Each editedDataRow As XFEditedDataRow In editedDataRows
 					Dim EditAccount As String = editedDataRow.ModifiedDataRow.Item("Account")
+					Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+					Dim lsAncestorListU1 As List(Of MemberInfo)
+					lsAncestorListU1 = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & editedDataRow.ModifiedDataRow.Item("UD1") & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+					Dim APPN As String = lsAncestorListU1(0).Member.Name
+
 					status = editedDataRow.ModifiedDataRow.Item("Flow")
+					If Not StatusList.Contains(status) Then
+						statuslist.Add(status)
+					End If 
+					If Not APPNList.Contains(APPN) Then 
+						APPNList.Add(APPN)
+					End If 
 				
 					If StatustoPass.XFEqualsIgnoreCase("") Then 
 						statustopass = status & "|" & status
 					Else  
 						statustopass += "|" & status & "|" & status 
 					End If 
-					EditEntity = editedDataRow.ModifiedDataRow.Item("Entity")						
-					
+					EditEntity = editedDataRow.ModifiedDataRow.Item("Entity")	
+					If Not FCList.Contains(EditEntity) Then
+						FCList.Add(EditEntity)
+					End If 
 'brapi.ErrorLog.LogMessage(si,"Edit ACcount = " & EditAccount)
 				    Dim targetRow As DataRow 											
 					Dim req_ID_Val As Guid
@@ -10721,56 +10897,25 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 		                sqaReader.Update_XFC_CMD_SPLN_REQ(dt,sqa)
 						globals.SetStringValue($"FundsCenterStatusUpdates - {EditEntity}", Statustopass)
 						
-						Dim FCList As New List (Of String)
-						FCList.Add(EditEntity)
-						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
+						
+						Dim EntityLists  = GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.Join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.Join("|",APPNList))
+						Next
 						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-				
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
 						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
-'Brapi.ErrorLog.LogMessage(si,"@HERE1" &String.Join(",",FCList))
 						Dim customSubstVars As New Dictionary(Of String, String) 
-						customSubstVars.Add("EntList",BaseEntityList)
-						customSubstVars.Add("ParentEntList",ParentEntityList)
+						customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+						customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
 						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 						Dim currentYear As String = wfInfoDetails("TimeName")
 						customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
-						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)
-						
-						'Run consolidation for entities in the correct order
-						Dim consolEntityList As list (Of String) = EntityLists.Item3
-						Dim L4Entity,L3Entity,L2Entity,L1Entity As String 
-						For Each consolentity As String In consolEntityList
-							Dim FClevel As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, consolentity)
-							If consolentity = sCube Then FClevel = "L1"
-							Select Case FClevel
-							Case "L4"
-								L4Entity = $"{L4Entity},E#{ConsolEntity}"
-							Case "L3"
-								L3Entity = $"{L3Entity},E#{ConsolEntity}"
-							Case "L2"
-								L2Entity = $"{L2Entity},E#{ConsolEntity}"
-							Case "L1"
-								L1Entity = $"{L1Entity},E#{ConsolEntity}"
-							End Select
-						Next
-						customSubstVars.Add("consolEntityList","Default")
-						If Not String.IsNullOrEmpty(L4Entity) Then
-							customSubstVars("consolEntityList") = L4Entity 
-							BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-						End If 
-						If Not String.IsNullOrEmpty(L3Entity) Then
-							customSubstVars("consolEntityList") = L3Entity 
-							BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-						End If 
-						If Not String.IsNullOrEmpty(L2Entity) Then
-							customSubstVars("consolEntityList") = L2Entity 
-							BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-						End If 
-						If Not String.IsNullOrEmpty(L1Entity) Then
-							customSubstVars("consolEntityList") = L1Entity 
-							BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Consol_Load_to_Cube", customSubstVars)
-						End If 
+		
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)				
+				
 						
 		                End Using
 		            End Using
@@ -10938,12 +11083,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 'brapi.ErrorLog.LogMessage(si,"Withhold Calc call main")
 					Me.Copy_Withhold(globals)
 				End If
-				
-				If args.CustomCalculateArgs.FunctionName.XFEqualsIgnoreCase("Consol_Aggregated") Then
-'brapi.ErrorLog.LogMessage(si,"Withhold Calc call main")
-					Me.Consol_Aggregated()
-				End If
-
 
             Catch ex As Exception
                 Throw New XFException(si, ex)
@@ -11119,14 +11258,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					End If
 				End Using
 			End Using
-destBuffer.LogDataBuffer(api,"destBuffer = " & api.Pov.Entity.name,500)
+'destBuffer.LogDataBuffer(api,"destBuffer = " & api.Pov.Entity.name,500)
 			Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
 			If destBuffer.DataBufferCells.Count > 0 Then
 				api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,, True)
 				destBuffer.DataBufferCells.Clear()
 			End If
 			
-currcubebuffer.LogDataBuffer(api,"currcube = " & api.Pov.Entity.name,500)
+'currcubebuffer.LogDataBuffer(api,"currcube = " & api.Pov.Entity.name,500)
 			For Each ClearCubeCell As DataBufferCell In CurrCubeBuffer.DataBufferCells.Values
 				Dim Status As New DataCellStatus(False)
 				Dim ClearCell As New DataBufferCell(ClearCubeCell.DataBufferCellPk, 0, Status)
@@ -11139,370 +11278,7 @@ currcubebuffer.LogDataBuffer(api,"currcube = " & api.Pov.Entity.name,500)
 			End If
 		
 		End Sub
-#End Region
-
-
-#Region "Copy Civ Pay and Withhold"
-		Public Sub Copy_CivPay_Withhold(ByVal globals As BRGlobals, ByRef req_id_Type As String)
-			Try	
-				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-				Dim cmd As String = wfInfoDetails("CMDName")	
-				Dim sSourcePosition As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-				Dim req_id_val As String = ""' args.CustomCalculateArgs.NameValuePairs.XFGetValue("REQ_ID_VAL").XFConvertToGuid
-				Dim tm As String = api.Pov.Time.Name
-				tm = tm.Substring(0, tm.Length - 3)
-				Dim sTargetScenario As String = "CMD_SPLN_C" & tm
-				Dim currentYear As Integer = Convert.ToInt32(tm)
-				Dim nextyear As Integer = currentYear  + 1
-				'Dim sTargetFirstYear As String = api.Time.GetNameFromId(si.WorkflowClusterPk.TimeKey)
-				Dim sTargetYear As Integer =tm.XFConvertToInt' api.Pov.Time.Name.XFConvertToInt
-				Dim sEntity As String = api.Pov.Entity.Name
-				Dim levl As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, sEntity)
-				Dim statuslvl As String = levl & "_Formulate_SPLN"
-				
-				If Not (req_id_Type.XFEqualsIgnoreCase("CivPay_Copied") Or req_id_Type.XFEqualsIgnoreCase("withhold")) Then
-					
-				End If
-				
-				Dim sSrcMbrScript = ""
-				If req_id_Type.XFEqualsIgnoreCase("CivPay_Copied")
-					sSrcMbrScript = $"FilterMembers(RemoveZeros(E#{sEntity}:S#{sSourcePosition}:T#{sTargetYear}:C#Local:V#Periodic:F#Tot_Dist_Final:O#Top:I#Top:U6#Pay_Benefits:U7#Top:U8#Top),[A#Target])"
-				ElseIf req_id_Type.XFEqualsIgnoreCase("withhold")
-					sSrcMbrScript = $"FilterMembers(RemoveZeros(Cb#{cmd}:E#{sEntity}:S#{sSourcePosition}:T#{sTargetYear}:C#USD:V#Periodic:F#Tot_Dist_Final:O#AdjInput:I#None:U7#Top:U8#None),[A#TGT_WH])"
-				End If
-				Dim dbFundingLines = api.Data.GetDataBufferUsingFormula(sSrcMbrScript)
-				
-				Dim REQDetailDT As DataTable = New DataTable("REQDetailDT")
-				Dim REQDT As DataTable = New DataTable("REQDT")
-				
-				Dim sqa As New SqlDataAdapter()
-				Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
-		        	Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
-		            	sqlConn.Open()
-						'Get header
-						Dim sqaREQDetailReader As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
-					    Dim sqaREQReader As New SQA_XFC_CMD_SPLN_REQ(sqlConn)
-						
-						Dim SqlREQ As String = $"SELECT * 
-								     				   FROM XFC_CMD_SPLN_REQ WITH (NOLOCK)
-											           WHERE WFCMD_Name = '{api.pov.Cube.Name}'
-											           And WFTime_Name = '{tm}'
-											           AND WFScenario_Name = '{sTargetScenario}'
-											           AND ENTITY = '{api.pov.Entity.Name}'
-													   and REQ_ID_Type = '{req_id_Type}' "
-'BRApi.ErrorLog.LogMessage(si, "SqlREQ: " & 	SqlREQ)					
-						Dim sqlparamsREQ As SqlParameter() = New SqlParameter() {}
-						sqaREQReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, REQDT, SqlREQ, sqlparamsREQ)
-						
-						Dim cmd_req_ids As New List(Of String) 
-						Dim whereClause As String = " 1 = 2"
-						If Not REQDT Is Nothing And REQDT.Rows.Count > 0 Then
-							For Each r As DataRow In REQDT.Rows
-								cmd_req_ids.Add($"'{r("CMD_SPLN_REQ_ID").ToString}'")
-							Next
-							 whereClause = $"CMD_SPLN_REQ_ID In ({String.Join(",", cmd_req_ids)})"
-						End If
-					
-					    'Details
-						Dim SqlREQDetail As String = $"SELECT *  
-								     				   FROM XFC_CMD_SPLN_REQ_Details WITH (NOLOCK)
-											           WHERE {whereClause}"
-'BRApi.ErrorLog.LogMessage(si, "SqlREQDetail: " & 	SqlREQDetail)	
-
-						Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
-						sqaREQDetailReader.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa, REQDetailDT, SqlREQDetail, sqlparamsREQDetails)
-						
-						REQDetailDT.PrimaryKey = New DataColumn() {
-												 REQDetailDT.Columns("Entity"),
-												 REQDetailDT.Columns("Fiscal_Year"),
-										         REQDetailDT.Columns("Unit_of_Measure"),
-												 REQDetailDT.Columns("UD1"),
-												 REQDetailDT.Columns("UD2"),
-												 REQDetailDT.Columns("UD3"),
-												 REQDetailDT.Columns("UD4"),
-												 REQDetailDT.Columns("UD5"),
-												 REQDetailDT.Columns("Account"),
-												 REQDetailDT.Columns("CMD_SPLN_REQ_ID")
-												 }
-												 
-						For Each FundingLineCell As DataBufferCell In dbFundingLines.DataBufferCells.values
-							Dim UD1 As String = FundingLineCell.DataBufferCellPk.GetUD1Name(api)
-							Dim UD2 As String = FundingLineCell.DataBufferCellPk.GetUD2Name(api)
-							Dim UD3 As String = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
-							Dim UD4 As String = FundingLineCell.DataBufferCellPk.GetUD4Name(api)
-							Dim UD5 As String = FundingLineCell.DataBufferCellPk.GetUD5Name(api)
-							Dim UD6 As String = FundingLineCell.DataBufferCellPk.GetUD6Name(api)
-							Dim APPN As String = UD3.Split("_")(0)
-							If  (UD6.XFEqualsIgnoreCase("Pay_Benefits") Or UD6.XFEqualsIgnoreCase("Pay_General"))  Then
-								UD6= "Pay_General"
-							Else
-								UD6 = "NonPay_General"
-							End If
-							
-							'Dim Acct = "Obligations"  'Target account?
-		 					Dim UoM = "Funding"
-							Dim parentRow As DataRow = Nothing
-							Dim obligRow As DataRow = Nothing
-							Dim comtRow As DataRow = Nothing
-							Dim carryOverObligRow As DataRow = Nothing 
-							Dim carryOverComtRow As DataRow = Nothing
-							Dim insertCivPay, insertParent, insertoblig, insertComit, insertCarryover As Boolean 
-							
-							
-							
-							'--Handle CivPay
-							'Each commt and oblig row is paired with a parent row.
-							'Civpay copied is only created through this process
-#Region "CivPay_Copied"							
-							If req_id_Type.XFEqualsIgnoreCase("CivPay_Copied")
-								
-								'Get data from db for each funding line in the data buffer
-								If Not REQDetailDT Is Nothing And REQDetailDT.Rows.Count > 0 Then
-									'parentRow = GetParentRow(REQDetailDT, tm, "CivPay_Copied", FundingLineCell)
-									obligRow = GetDetailRow(REQDetailDT, tm, "Obligations", FundingLineCell, "CivPay_Copied")
-									comtRow = GetDetailRow(REQDetailDT, tm, "Commitments",FundingLineCell, "CivPay_Copied")
-									
-									carryOverObligRow = GetDetailRow(REQDetailDT, nextyear, "Obligations", FundingLineCell, "CivPay_Copied")
-									carryOverComtRow = GetDetailRow(REQDetailDT, nextyear, "Commitments", FundingLineCell, "CivPay_Copied")
-								
-									
-								End If
-	
-								If obligRow Is Nothing Then
-									insertCivPay = True
-									
-									parentRow = REQDT.NewRow()
-									Me.Populate_REQ(parentRow, FundingLineCell, insertCivPay)
-									'REQDT.Rows.Add(parentRow)
-									obligRow = REQDetailDT.NewRow()
-									comtRow = REQDetailDT.NewRow()
-									
-								Else
-									parentRow = REQDT.Select("CMD_SPLN_REQ_ID = " & "'" & obligRow("CMD_SPLN_REQ_ID").ToString & "'").FirstOrDefault()
-								End If 
-								
-								'Dim isinsertCarryOver = False
-								If carryOverObligRow Is Nothing Then
-									insertCarryover = True
-									carryOverObligRow = REQDetailDT.NewRow()
-									carryOverComtRow = REQDetailDT.NewRow()
-								End If
-								
-								'Me.Populate_REQ(parentRow, FundingLineCell, isinsert)'*Dead Lock
-								req_id_val = parentRow("CMD_SPLN_REQ_ID").ToString
-								Me.Populate_REQDetail(obligRow, FundingLineCell, req_id_val, "Obligations", insertCivPay, False)
-								Me.Populate_REQDetail(comtRow, FundingLineCell, req_id_val, "Commitments", insertCivPay, False)
-								'do carry over accounts
-								Me.Populate_REQDetail(carryOverObligRow, FundingLineCell, req_id_val, "Obligations", insertCarryover, True)
-								Me.Populate_REQDetail(carryOverComtRow, FundingLineCell, req_id_val, "Commitments", insertCarryover, True)
-								
-								If insertCivPay Then
-									
-									REQDT.Rows.Add(parentRow)
-		
-									Dim newObligRow As Object() = obligRow.ItemArray
-									REQDetailDT.Rows.Add(newObligRow)
-		
-									Dim newCmtRow As Object() = comtRow.ItemArray
-									REQDetailDT.Rows.Add(newCmtRow)
-								End If 
-								
-								If insertCarryover Then
-									Dim newcarryOverObligRow As Object() = carryOverObligRow.ItemArray
-									REQDetailDT.Rows.Add(newcarryOverObligRow)
-		
-									Dim newcarryOverCmtRow As Object() = carryOverComtRow.ItemArray
-									REQDetailDT.Rows.Add(newcarryOverCmtRow)
-								End If
-							End If
-#End Region			
-
-#Region "withhold"	
-							'Handle withhold
-							If req_id_Type.XFEqualsIgnoreCase("withhold")
-								dim insertshell as Boolean
-								'Get data from db for each funding line in the data buffer
-								If Not REQDetailDT Is Nothing And REQDetailDT.Rows.Count > 0 Then
-									If req_id_Type.XFEqualsIgnoreCase("withhold")
-										obligRow = GetDetailRow(REQDetailDT, tm, "Obligations", FundingLineCell, "withhold")
-										comtRow = GetDetailRow(REQDetailDT, tm, "Commitments", FundingLineCell, "withhold")
-										
-									End If
-	
-								End If 
-								'there should only be one row per APPN and Entity
-								If Not REQDT Is Nothing And REQDT.Rows.Count > 0 Then
-									parentRow = REQDT.Select($"APPN = '{APPN}'").FirstOrDefault()
-									If parentRow Is Nothing Then
-										insertShell = True
-										parentRow = REQDT.NewRow()
-										Me.Populate_REQParent_WH(parentRow, FundingLineCell, insertShell)
-										REQDT.Rows.Add(parentRow)
-									Else
-									End If
-								Else
-									insertShell = True
-									parentRow = REQDT.NewRow()
-									Me.Populate_REQParent_WH(parentRow, FundingLineCell, insertShell)
-									REQDT.Rows.Add(parentRow)
-									'req_id_val = parentRow("CMD_SPLN_REQ_ID").ToString
-									'whereClause = $"CMD_SPLN_REQ_ID = '{req_id_val}'"
-								End If
-								
-								req_id_val = parentRow("CMD_SPLN_REQ_ID").ToString
-								
-						
-							    'Details
-								
-								
-								REQDetailDT.PrimaryKey = New DataColumn() {
-													 REQDetailDT.Columns("Entity"),
-													 REQDetailDT.Columns("Fiscal_Year"),
-											         REQDetailDT.Columns("Unit_of_Measure"),
-													 REQDetailDT.Columns("UD1"),
-													 REQDetailDT.Columns("UD2"),
-													 REQDetailDT.Columns("UD3"),
-													 REQDetailDT.Columns("UD4"),
-													 REQDetailDT.Columns("UD6"),
-													 REQDetailDT.Columns("Account"),
-													 REQDetailDT.Columns("CMD_SPLN_REQ_ID")
-													 }
-										 
-			 					
-								Dim isDetailinsert As Boolean = False
-								Dim detailObligRow As DataRow = Nothing 'REQDetailDT.NewRow()
-								Dim detailCommitRow As DataRow = Nothing
-								If Not REQDetailDT Is Nothing And REQDetailDT.Rows.Count > 0 Then
-	
-	'BRApi.ErrorLog.LogMessage(si,"Looking for Detail : " & api.Pov.Entity.Name  & " Acct = WH_Obligations  UD1 = " & UD1 & " UD2 = " & UD2 & " UD3 = " & UD3 & " UD4 = " & UD4 & " UD5 = " & UD5 &  " UD6 = " & UD6)	
-	
-									detailObligRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-																			AND Account = 'WH_Obligations'
-																			AND WFCMD_Name = '{api.pov.cube.name}' 																	
-																			AND Entity = '{api.pov.entity.name}'
-																			AND UD1 = '{UD1}'
-																			AND UD2 = '{UD2}'
-																			AND UD3 = '{UD3}'
-																			AND UD4 = '{UD4}'
-																			AND UD6 = '{UD6}'").FirstOrDefault()
-									
-									detailCommitRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-																			AND Account = 'WH_Commitments'
-																			AND WFCMD_Name = '{api.pov.cube.name}' 																	
-																			AND Entity = '{api.pov.entity.name}'
-																			AND UD1 = '{UD1}'
-																			AND UD2 = '{UD2}'
-																			AND UD3 = '{UD3}'
-																			AND UD4 = '{UD4}'
-																			AND UD6 = '{UD6}'").FirstOrDefault()
-		
-								End If
-	
-								If detailObligRow Is Nothing Then
-									isDetailinsert = True
-									detailObligRow = REQDetailDT.NewRow()
-									'REQDetailDT.Rows.Add(detailObligRow)
-								Else
-								End If 
-								If detailCommitRow Is Nothing Then
-									isDetailinsert = True
-									detailCommitRow = REQDetailDT.NewRow()
-									'REQDetailDT.Rows.Add(detailCommitRow)
-								End If 
-								'Me.Populat_REQDetail(obligRow, FundingLineCell, req_id_val, "Commitments", isinsert)
-								Me.Populate_REQDetail_WH(detailObligRow, FundingLineCell, req_id_val, "WH_Obligations", isDetailinsert)
-								Me.Populate_REQDetail_WH(detailCommitRow, FundingLineCell, req_id_val, "WH_Commitments", isDetailinsert)
-								If isDetailinsert Then
-									REQDetailDT.Rows.Add(detailObligRow)
-									REQDetailDT.Rows.Add(detailCommitRow)
-								End If
-								
-							End If
-#End Region								
-						Next
-						
-				 	End Using
-				 End Using				
-
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try			 
-		End Sub
-					
-#End Region
-		Public Function GetParentRow(ByVal REQDT As DataTable, ByRef year As String, ByRef req_id_type As String, ByRef FundingLineCell As DataBufferCell ) As DataRow
-			Try	
-				Dim UD1 As String = FundingLineCell.DataBufferCellPk.GetUD1Name(api)
-				Dim UD2 As String = FundingLineCell.DataBufferCellPk.GetUD2Name(api)
-				Dim UD3 As String = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
-				Dim UD4 As String = FundingLineCell.DataBufferCellPk.GetUD4Name(api)
-				Dim UD5 As String = FundingLineCell.DataBufferCellPk.GetUD5Name(api)
-				Dim UD6 As String = FundingLineCell.DataBufferCellPk.GetUD6Name(api)
-				Dim UD7 As String = FundingLineCell.DataBufferCellPk.GetUD7Name(api)
-				
-				'Dim APPN As String = ""
-				If req_id_type.XFEqualsIgnoreCase("civPay_Copied") Then
-					UD6 = "Pay_General"
-				End If
-				
-				If req_id_type.XFEqualsIgnoreCase("withhold") Then
-					Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
-					Dim lsAncestorListU1 As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & UD1 & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
-					UD1 = lsAncestorListU1(0).Member.Name
-				End If
-				
-				Dim detailRow As DataRow = Nothing
-				detailRow = REQDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-											AND req_id_type = 'req_id_type'
-											AND WFCMD_Name = '{api.pov.cube.name}' 																	
-											AND Entity = '{api.pov.entity.name}'
-											AND Fiscal_Year = '{year}'
-											AND APPN = '{UD1}'
-											AND MDEP = '{UD2}'
-											AND APE9 = '{UD3}'
-											AND Dollar_Type = '{UD4}'
-											AND CType = '{UD5}'
-											AND Obj_Class = '{UD6}'").FirstOrDefault()	
-				Return detailRow
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try			 
-		End Function
-
-		Public Function GetDetailRow(ByVal REQDetailDT As DataTable, ByRef year As String, ByRef account As String, ByRef FundingLineCell As DataBufferCell,ByRef req_id_type As String ) As DataRow
-			Try	
-				Dim UD6 As String = ""
-				If req_id_type.XFEqualsIgnoreCase("civPay_Copied") Then
-					UD6 = "Pay_General"
-				End If
-				
-				If req_id_type.XFEqualsIgnoreCase("withhold") Then
-					If  (UD6.XFEqualsIgnoreCase("Pay_Benefits") Or UD6.XFEqualsIgnoreCase("Pay_General"))  Then
-						UD6= "Pay_General"
-					Else
-						UD6 = "NonPay_General"
-					End If
-				End If
-				
-				Dim detailRow As DataRow = Nothing
-				detailRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-											AND Account = 'account'
-											AND WFCMD_Name = '{api.pov.cube.name}' 																	
-											AND Entity = '{api.pov.entity.name}'
-											AND Fiscal_Year = '{year}'
-											AND UD1 = '{FundingLineCell.DataBufferCellPk.GetUD1Name(api)}'
-											AND UD2 = '{FundingLineCell.DataBufferCellPk.GetUD2Name(api)}'
-											AND UD3 = '{FundingLineCell.DataBufferCellPk.GetUD3Name(api)}'
-											AND UD4 = '{FundingLineCell.DataBufferCellPk.GetUD4Name(api)}'
-											AND UD5 = '{FundingLineCell.DataBufferCellPk.GetUD5Name(api)}'").FirstOrDefault()	
-				Return detailRow
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try			 
-		End Function
-		
+#End Region		
 				
 #Region "Copy_CivPay"
 		Public Sub Copy_CivPay(ByVal globals As BRGlobals)
@@ -11511,26 +11287,31 @@ currcubebuffer.LogDataBuffer(api,"currcube = " & api.Pov.Entity.name,500)
 				Dim cmd As String = wfInfoDetails("CMDName")	
 				Dim sSourcePosition As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
 				Dim req_id_val As String = ""' args.CustomCalculateArgs.NameValuePairs.XFGetValue("REQ_ID_VAL").XFConvertToGuid
-				Dim tm As String = api.Pov.Time.Name
-				tm = tm.Substring(0, tm.Length - 3)
-				Dim sTargetScenario As String = "CMD_SPLN_C" & tm
-				Dim currentYear As Integer = Convert.ToInt32(tm)
+				Dim sTargetScenario As String = "CMD_SPLN_C" & wfInfoDetails("TimeName")
+				Dim currentYear As Integer = Convert.ToInt32(wfInfoDetails("TimeName"))
 				Dim nextyear As Integer = currentYear  + 1
-				'Dim sTargetFirstYear As String = api.Time.GetNameFromId(si.WorkflowClusterPk.TimeKey)
-				Dim sTargetYear As Integer =tm.XFConvertToInt' api.Pov.Time.Name.XFConvertToInt
+				Dim sTargetYear As Integer = wfInfoDetails("TimeName").XFConvertToInt
 				Dim sEntity As String = api.Pov.Entity.Name
 				Dim levl As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, sEntity)
 				Dim statuslvl As String = levl & "_Formulate_SPLN"
-
-				Dim sSrcMbrScript = $"FilterMembers(RemoveZeros(E#{sEntity}:S#{sSourcePosition}:T#{sTargetYear}:C#Local:V#Periodic:F#Tot_Dist_Final:O#Top:I#Top:U6#Pay_Benefits:U7#Top:U8#Top),[A#Target])"
-				Dim dbFundingLines = api.Data.GetDataBufferUsingFormula(sSrcMbrScript)
-	'BRApi.ErrorLog.LogMessage(si, "dbFundingLines: " & sSrcMbrScript & "dbFundingLines count: " & dbFundingLines.DataBufferCells.Count)	
-	'dbFundingLines.LogDataBuffer(api,"Buffer log " & api.Pov.Entity.Name, 1000)
-                Dim mpr_buffers As New Dictionary(Of String,DataBuffer)
 				
-				Dim REQDetailDT As DataTable = New DataTable("REQDetailDT")
-				Dim REQDT As DataTable = New DataTable("REQDT")
-				 
+				Dim cmd_Appn_Rates As New DataTable()
+				If globals.GetObject($"CMD APPN Rates - {wfInfoDetails("CMDName")}") Is Nothing
+					cmd_Appn_Rates = GetFDXCMDSPLNData("CMD_SPLN_APPN_SpreadPct_FDX_CV",wfInfoDetails("CMDName"))
+					globals.SetObject($"CMD APPN Rates - {wfInfoDetails("CMDName")}",cmd_Appn_Rates)
+				Else
+					cmd_Appn_Rates = globals.GetObject($"CMD APPN Rates - {wfInfoDetails("CMDName")}")
+				End If
+				Dim APPN As String  = String.Empty
+				Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+				Dim sSrcMbrScript = $"FilterMembers(RemoveZeros(E#{sEntity}:S#{sSourcePosition}:T#{sTargetYear}:C#Aggregated:V#Periodic:F#Tot_Dist_Final:O#Top:I#Top:U6#Pay_Benefits:U7#Top:U8#Top),[A#Target])"
+				Dim dbFundingLines = api.Data.GetDataBufferUsingFormula(sSrcMbrScript)
+				
+				Dim accounts As New List(Of String) From {"Commit", "Obligation"}
+                Dim mpr_buffers As New Dictionary(Of String,DataBuffer)
+
+				Dim currREQDetailDT As DataTable = New DataTable("REQDetailDT")
+				Dim currREQDT As DataTable = New DataTable("REQDT")
 				Dim sqa As New SqlDataAdapter()
 		        Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
 		        	Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
@@ -11539,636 +11320,386 @@ currcubebuffer.LogDataBuffer(api,"currcube = " & api.Pov.Entity.name,500)
 						Dim sqaREQDetailReader As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
 					    Dim sqaREQReader As New SQA_XFC_CMD_SPLN_REQ(sqlConn)
 						
-						Dim SqlREQ As String = $"SELECT * 
+						Dim SqlREQ As String = $"SELECT CMD_SPLN_REQ_ID, WFScenario_Name, WFCMD_Name, WFTime_Name, REQ_ID,
+														    Title, Description, Justification, Entity, APPN, MDEP, APE9,
+														    Dollar_Type, Obj_Class, CType, UIC, Cost_Methodology, Impact_Not_Funded,
+														    Risk_Not_Funded, Cost_Growth_Justification, Must_Fund, Funding_Src,
+														    Army_Init_Dir, CMD_Init_Dir, Activity_Exercise, Directorate, Div,
+														    Branch, IT_Cyber_REQ, Emerging_REQ, CPA_Topic, PBR_Submission,
+														    UPL_Submission, Contract_Num, Task_Order_Num, Award_Target_Date,
+														    POP_Exp_Date, CME, COR_Email, POC_Email, Review_POC_Email,
+														    MDEP_Functional_Email, Notification_List_Emails, FF_1, FF_2, FF_3,
+														    FF_4, FF_5, Status, Invalid, Val_Error, Create_Date, Create_User,
+														    Update_Date, Update_User, Review_Entity, REQ_ID_Type, Demotion_Comment,
+														    Related_REQs
 								     				   FROM XFC_CMD_SPLN_REQ WITH (NOLOCK)
-											           WHERE WFCMD_Name = '{api.pov.Cube.Name}'
-											           And WFTime_Name = '{tm}'
+											           WHERE WFCMD_Name = '{wfInfoDetails("CMDName")}'
+											           And WFTime_Name = '{wfInfoDetails("TimeName")}'
 											           AND WFScenario_Name = '{sTargetScenario}'
 											           AND ENTITY = '{api.pov.Entity.Name}'
-													   and REQ_ID_Type = 'CivPay_Copied' "
+													   and REQ_ID_Type = 'CivPay_Copied'"
 'BRApi.ErrorLog.LogMessage(si, "SqlREQ: " & 	SqlREQ)					
 						Dim sqlparamsREQ As SqlParameter() = New SqlParameter() {}
-						sqaREQReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, REQDT, SqlREQ, sqlparamsREQ)
-						
-						Dim cmd_req_ids As New List(Of String) 
-						Dim whereClause As String = " 1 = 2"
-						If Not REQDT Is Nothing And REQDT.Rows.Count > 0 Then
-							For Each r As DataRow In REQDT.Rows
-								cmd_req_ids.Add($"'{r("CMD_SPLN_REQ_ID").ToString}'")
-							Next
-							 whereClause = $"CMD_SPLN_REQ_ID In ({String.Join(",", cmd_req_ids)})"
-						End If
+						sqaREQReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, currREQDT, SqlREQ, sqlparamsREQ)
 					
 					    'Details
-						Dim SqlREQDetail As String = $"SELECT *  
-								     				   FROM XFC_CMD_SPLN_REQ_Details WITH (NOLOCK)
-											           WHERE {whereClause}"
+						Dim SqlREQDetail As String = $"SELECT d.CMD_SPLN_REQ_ID,d.WFScenario_Name,d.WFCMD_Name,d.WFTime_Name,d.Unit_of_Measure,
+															d.Entity,d.IC,d.Account,d.Flow,d.UD1,d.UD2,d.UD3,d.UD4,d.UD5,d.UD6,d.UD7,d.UD8,
+															d.Fiscal_Year,d.Month1,d.Month2,d.Month3,d.Month4,d.Month5,d.Month6,
+															d.Month7,d.Month8,d.Month9,d.Month10,d.Month11,d.Month12,
+															d.Quarter1,d.Quarter2,d.Quarter3,d.Quarter4,d.Yearly,
+															d.AllowUpdate,d.Create_Date,d.Create_User,d.Update_Date,d.Update_User
+														FROM XFC_CMD_SPLN_REQ_Details d WITH (NOLOCK)
+														INNER JOIN XFC_CMD_SPLN_REQ r WITH (NOLOCK) 
+														ON d.CMD_SPLN_REQ_ID = r.CMD_SPLN_REQ_ID
+														WHERE r.WFCMD_Name = '{wfInfoDetails("CMDName")}'
+														AND r.WFTime_Name = '{wfInfoDetails("TimeName")}'
+														AND r.WFScenario_Name = '{sTargetScenario}'
+														AND r.ENTITY = '{api.pov.Entity.Name}'
+														AND r.REQ_ID_Type = 'CivPay_Copied'"
 'BRApi.ErrorLog.LogMessage(si, "SqlREQDetail: " & 	SqlREQDetail)	
 
 						Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
-						sqaREQDetailReader.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa, REQDetailDT, SqlREQDetail, sqlparamsREQDetails)
+						sqaREQDetailReader.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa, currREQDetailDT, SqlREQDetail, sqlparamsREQDetails)
 						
-						REQDetailDT.PrimaryKey = New DataColumn() {
-												 REQDetailDT.Columns("Entity"),
-												 REQDetailDT.Columns("Fiscal_Year"),
-										         REQDetailDT.Columns("Unit_of_Measure"),
-												 REQDetailDT.Columns("UD1"),
-												 REQDetailDT.Columns("UD2"),
-												 REQDetailDT.Columns("UD3"),
-												 REQDetailDT.Columns("UD4"),
-												 REQDetailDT.Columns("UD5"),
-												 REQDetailDT.Columns("Account"),
-												 REQDetailDT.Columns("CMD_SPLN_REQ_ID")
-												 }
-									 
-'BRApi.ErrorLog.LogMessage(si,"civpay dbFundingLines.DataBufferCells.values: " & dbFundingLines.DataBufferCells.values.Count)
-
-					'Dim REQDetailDTToADD As DataTable = New DataTable("REQDetailDTToADD")
-					For Each FundingLineCell As DataBufferCell In dbFundingLines.DataBufferCells.values
-						'Dim Acct = "Obligations"  'Target account?
-	 					Dim UoM = "Funding"
-					
-						Dim isinsert As Boolean = False
-						Dim parentRow As DataRow = REQDT.NewRow()
-						Dim obligRow As DataRow = Nothing 'REQDetailDT.NewRow()
-						Dim comtRow As DataRow = Nothing
-						Dim carryOverObligRow As DataRow = Nothing 
-						Dim carryOverComtRow As DataRow = Nothing
-						If Not REQDetailDT Is Nothing And REQDetailDT.Rows.Count > 0 Then
-							obligRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-																	AND Account = 'Obligations'
-																	AND WFCMD_Name = '{api.pov.cube.name}' 																	
-																	AND Entity = '{api.pov.entity.name}'
-																	AND Fiscal_Year = '{currentYear}' 
-																	AND UD1 = '{FundingLineCell.DataBufferCellPk.GetUD1Name(api)}'
-																	AND UD2 = '{FundingLineCell.DataBufferCellPk.GetUD2Name(api)}'
-																	AND UD3 = '{FundingLineCell.DataBufferCellPk.GetUD3Name(api)}'
-																	AND UD4 = '{FundingLineCell.DataBufferCellPk.GetUD4Name(api)}'
-																	AND UD5 = '{FundingLineCell.DataBufferCellPk.GetUD5Name(api)}'").FirstOrDefault()
-							
-							comtRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-																	AND Account = 'Commitments'
-																	AND WFCMD_Name = '{api.pov.cube.name}' 																	
-																	AND Entity = '{api.pov.entity.name}'
-																	AND Fiscal_Year = '{currentYear}'
-																	AND UD1 = '{FundingLineCell.DataBufferCellPk.GetUD1Name(api)}'
-																	AND UD2 = '{FundingLineCell.DataBufferCellPk.GetUD2Name(api)}'
-																	AND UD3 = '{FundingLineCell.DataBufferCellPk.GetUD3Name(api)}'
-																	AND UD4 = '{FundingLineCell.DataBufferCellPk.GetUD4Name(api)}'
-																	AND UD5 = '{FundingLineCell.DataBufferCellPk.GetUD5Name(api)}'").FirstOrDefault()
-							
-							carryOverObligRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-																	AND Account = 'Obligations'
-																	AND WFCMD_Name = '{api.pov.cube.name}' 																	
-																	AND Entity = '{api.pov.entity.name}'
-																	AND Fiscal_Year = '{nextYear}'
-																	AND UD1 = '{FundingLineCell.DataBufferCellPk.GetUD1Name(api)}'
-																	AND UD2 = '{FundingLineCell.DataBufferCellPk.GetUD2Name(api)}'
-																	AND UD3 = '{FundingLineCell.DataBufferCellPk.GetUD3Name(api)}'
-																	AND UD4 = '{FundingLineCell.DataBufferCellPk.GetUD4Name(api)}'
-																	AND UD5 = '{FundingLineCell.DataBufferCellPk.GetUD5Name(api)}'").FirstOrDefault()
-							
-							carryOverComtRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-																	AND Account = 'Commitments'
-																	AND WFCMD_Name = '{api.pov.cube.name}' 																	
-																	AND Entity = '{api.pov.entity.name}'
-																	AND Fiscal_Year = '{nextYear}'
-																	AND UD1 = '{FundingLineCell.DataBufferCellPk.GetUD1Name(api)}'
-																	AND UD2 = '{FundingLineCell.DataBufferCellPk.GetUD2Name(api)}'
-																	AND UD3 = '{FundingLineCell.DataBufferCellPk.GetUD3Name(api)}'
-																	AND UD4 = '{FundingLineCell.DataBufferCellPk.GetUD4Name(api)}'
-																	AND UD5 = '{FundingLineCell.DataBufferCellPk.GetUD5Name(api)}'").FirstOrDefault()
-						
-						End If
-						If obligRow Is Nothing Then
-							isinsert = True
-							
-							parentRow = REQDT.NewRow()
-							Me.Populate_REQ(parentRow, FundingLineCell, isinsert)
-							'REQDT.Rows.Add(parentRow)
-							obligRow = REQDetailDT.NewRow()
-							comtRow = REQDetailDT.NewRow()
-							
-						Else
-							parentRow = REQDT.Select("CMD_SPLN_REQ_ID = " & "'" & obligRow("CMD_SPLN_REQ_ID").ToString & "'").FirstOrDefault()
-						End If 
-						
-						Dim isinsertCarryOver = False
-						If carryOverObligRow Is Nothing Then
-							isinsertCarryOver = True
-							carryOverObligRow = REQDetailDT.NewRow()
-							carryOverComtRow = REQDetailDT.NewRow()
-						End If
-						'Me.Populate_REQ(parentRow, FundingLineCell, isinsert)'*Dead Lock
-						req_id_val = parentRow("CMD_SPLN_REQ_ID").ToString
-						Me.Populate_REQDetail(obligRow, FundingLineCell, req_id_val, "Obligations", isinsert, False)
-						Me.Populate_REQDetail(comtRow, FundingLineCell, req_id_val, "Commitments", isinsert, False)
-						'do carry over accounts
-						Me.Populate_REQDetail(carryOverObligRow, FundingLineCell, req_id_val, "Obligations", isinsertCarryOver, True)
-						Me.Populate_REQDetail(carryOverComtRow, FundingLineCell, req_id_val, "Commitments", isinsertCarryOver, True)
-						
-						If isinsert Then
-							
-							REQDT.Rows.Add(parentRow)
-
-							Dim newObligRow As Object() = obligRow.ItemArray
-							REQDetailDT.Rows.Add(newObligRow)
-
-							Dim newCmtRow As Object() = comtRow.ItemArray
-							REQDetailDT.Rows.Add(newCmtRow)
-						End If 
-						
-						If isinsertCarryOver Then
-							Dim newcarryOverObligRow As Object() = carryOverObligRow.ItemArray
-							REQDetailDT.Rows.Add(newcarryOverObligRow)
-
-							Dim newcarryOverCmtRow As Object() = carryOverComtRow.ItemArray
-							REQDetailDT.Rows.Add(newcarryOverCmtRow)
-						End If
-						
-					Next
-					'create a new Data row for req and detail
-					sqaREQReader.Update_XFC_CMD_SPLN_REQ(REQDT, sqa)	
-					sqaREQDetailReader.Update_XFC_CMD_SPLN_REQ_Details(REQDetailDT, sqa)	
-				 	End Using
-				 End Using
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try			 
-		End Sub
-					
-#End Region
-
-#Region "civ pay helpers"
-		Public Sub Populate_REQ(ByVal row As DataRow, ByVal FundingLineCell As DataBufferCell, ByRef isNew As Boolean )
-			Try	
-				Dim sTargetScenario As String = "CMD_SPLN_C" + api.Time.GetNameFromId(si.WorkflowClusterPk.TimeKey)
-				Dim statuslvl As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, api.Pov.Entity.Name) & "_Formulate_SPLN"
- 				Dim UoM = "Funding"
-				Dim UD1 As String = FundingLineCell.DataBufferCellPk.GetUD1Name(api)
-				Dim UD2 As String = FundingLineCell.DataBufferCellPk.GetUD2Name(api)
-				Dim UD3 As String = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
-				Dim UD4 As String = FundingLineCell.DataBufferCellPk.GetUD4Name(api)
-				Dim UD5 As String = FundingLineCell.DataBufferCellPk.GetUD5Name(api)
-				Dim UD6 As String = FundingLineCell.DataBufferCellPk.GetUD6Name(api)
-				Dim UD7 As String = FundingLineCell.DataBufferCellPk.GetUD7Name(api)
-				Dim entity As String = api.Pov.Entity.Name
-
-				row("WFScenario_Name") = sTargetScenario
-				Dim tm As String = api.Pov.Time.Name
-				tm = tm.Substring(0, tm.Length - 3)
-				row("WFTime_Name") = tm
-				
-				row("WFCMD_Name") = api.Pov.Cube.Name
-				Row("Entity") = entity
-				Row("Status") = statuslvl
-				
-				
-				Row("Title") = $"CivPay - {entity} - {UD1}-{UD2}-{UD3}-{UD4}-{UD5}"
-				
-				Row("APPN") = UD1
-				Row("MDEP") = UD2
-				Row("APE9") = UD3
-				Row("Dollar_Type") = UD4
-				Row("Ctype") = UD5
-				Row("Obj_Class") = "Pay_General"
-				Row("UIC") = "None"
-				Row("REQ_ID_Type") = "CivPay_Copied"
-
-				If isNew  Then
-					row("CMD_SPLN_REQ_ID") = Guid.NewGuid()
-					'row("REQ_ID") = GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,api.Pov.Entity.Name)
-					row("REQ_ID") = GetNextREQID(entity)
-					row("Create_Date") = DateTime.Now
-					row("Create_User") = si.UserName
-				End If
-				row("Update_Date") = DateTime.Now
-				row("Update_User") = si.UserName
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try			 
-		End Sub	
-		
-		Public Sub Populate_REQDetail(ByVal row As DataRow, ByVal FundingLineCell As DataBufferCell, ByRef req_id_val As String,ByRef act As String, ByRef isNew As Boolean, ByRef isCarryOver As Boolean)
-			Try	
-				Dim sTargetScenario As String = "CMD_SPLN_C" + api.Time.GetNameFromId(si.WorkflowClusterPk.TimeKey)
-				Dim statuslvl As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, api.Pov.Entity.Name) & "_Formulate_SPLN"
-				Dim Acct = act 'Target account?
- 				Dim UoM = "Funding"
-				Dim UD1 As String = FundingLineCell.DataBufferCellPk.GetUD1Name(api)
-				Dim UD2 As String = FundingLineCell.DataBufferCellPk.GetUD2Name(api)
-				Dim UD3 As String = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
-				Dim UD4 As String = FundingLineCell.DataBufferCellPk.GetUD4Name(api)
-				Dim UD5 As String = FundingLineCell.DataBufferCellPk.GetUD5Name(api)
-				Dim UD6 As String = FundingLineCell.DataBufferCellPk.GetUD6Name(api)
-				Dim Amt As Decimal = FundingLineCell.CellAmount
-				Dim tm As String = api.Pov.Time.Name
-				tm = tm.Substring(0, tm.Length - 3)
-				Dim currentYear As Integer = Convert.ToInt32(tm)
-				Dim nextyear As Integer = currentYear  + 1
-
-				Dim spread As Dictionary(Of Integer, Decimal)
-				
-				If isCarryOver Then
-					Row("Fiscal_Year") = nextyear
-				Else
-					Row("Fiscal_Year") = tm
-				End If
-
-				row("WFScenario_Name") = api.pov.Scenario.Name
-				
-				row("WFTime_Name") = tm
-				row("WFCMD_Name") = api.Pov.Cube.Name
-				row("Unit_of_Measure") = UoM 
-				Row("Entity") = api.Pov.Entity.Name
-				Row("IC") = "None"
-				Row("Account") = Acct
-				Row("Flow") = statuslvl
-				
-				Dim APPN As String  = ""
-				Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
-				Dim lsAncestorListU1 As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & UD1 & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
-				APPN = lsAncestorListU1(0).Member.Name
-'Brapi.ErrorLog.LogMessage(si, "writing detail for: New rec= " & isNew & ", iscarryOver= " & isCarryOver & ", GUID= " & req_id_val & ", entity = " & api.Pov.Entity.Name  & ", scenario = " & api.pov.Scenario.Name & ", APPN: " & APPN & ", UD1: " & UD1 & ", UD3: " & UD3)								
-				Dim spreadTitle As String = $"Monthly Spread - {APPN} - {acct}"
-				spread = globals.GetObject(spreadTitle)
-				If spread Is Nothing Then
-					spread = New Dictionary(Of Integer, Decimal)
-					If acct.XFEqualsIgnoreCase("Commitments") Then
-							GetMonthlySpread(APPN, "Commit_Spread_Pct", spreadTitle, spread)
-					Else 
-						If acct.XFEqualsIgnoreCase("Obligations") Then
-								GetMonthlySpread(APPN, "Obligation_Spread_Pct",spreadTitle, spread)
-						Else
-							Throw New Exception("Invalid Spend Plan Account: " & acct)
-						End If
-					End If
-				End If
-				
-				If isCarryOver Then
-					Row("Yearly") = Amt * spread(13)
-				Else
-					Row("Month1") = Amt * spread(1)
-					Row("Month2") = Amt * spread(2)
-					Row("Month3") = Amt * spread(3)
-					Row("Month4") = Amt * spread(4)
-					Row("Month5") = Amt * spread(5)
-					Row("Month6") = Amt * spread(6)
-					Row("Month7") = Amt * spread(7)
-					Row("Month8") = Amt * spread(8)
-					Row("Month9") = Amt * spread(9)
-					Row("Month10") = Amt * spread(10)
-					Row("Month11") = Amt * spread(11)
-					Row("Month12") = Amt * spread(12)
-				End If
-
-				
-				row("UD1") = UD1
-				row("UD2") = UD2
-				row("UD3") = UD3
-				row("UD4") = UD4
-				row("UD5") = UD5
-				row("UD6") = "Pay_General"
-				row("UD7") = "None"
-				row("UD8") = "None"
-				If isNew  Then
-					row("CMD_SPLN_REQ_ID") = req_id_val
-					row("Create_Date") = DateTime.Now
-					row("Create_User") = si.UserName
-				End If
-				row("Update_Date") = DateTime.Now
-				row("Update_User") = si.UserName
-					
-				globals.SetStringValue($"FundsCenterStatusUpdates - {api.Pov.Entity.Name}", $"{statuslvl}")
-				
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try			 
-		End Sub	
-		
-
-#End Region
-
-#Region "Copy_Withhold"
-
-		Public Sub Copy_Withhold(ByVal globals As BRGlobals)
-			Try		
-				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-				Dim cmd As String = wfInfoDetails("CMDName")
-				Dim sSourcePosition As String = wfInfoDetails("ScenarioName")'ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-				Dim req_id_val As String = ""
-				Dim tm As String = api.Pov.Time.Name
-				tm = tm.Substring(0, tm.Length - 3)
-				Dim sTargetScenario As String = "CMD_SPLN_C" & tm
-				Dim sTargetYear As Integer =tm.XFConvertToInt
-				Dim sEntity As String = api.Pov.Entity.Name
-				Dim levl As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, sEntity)
-				Dim statuslvl As String = levl & "_Formulate_SPLN"
-				Dim UoM = "Funding"
-				
-				Dim sSrcMbrScript = $"FilterMembers(RemoveZeros(Cb#{cmd}:E#{sEntity}:S#{sSourcePosition}:T#{sTargetYear}:C#USD:V#Periodic:F#Tot_Dist_Final:O#AdjInput:I#None:U7#Top:U8#None),[A#TGT_WH])"
-				Dim dbFundingLines = api.Data.GetDataBufferUsingFormula(sSrcMbrScript)
-	'dbFundingLines.LogDataBuffer(api, "DataBuffer: " & api.pov.Entity.name & api.Pov.Scenario.Name & api.Pov.Time.Name & api.Pov.Cons.name	,1000)
-			
-                Dim mpr_buffers As New Dictionary(Of String,DataBuffer)
-						
-				Dim REQDetailDT As DataTable = New DataTable("REQDetailDT")
-				Dim REQDT As DataTable = New DataTable("REQDT")
-				 
-				Dim sqa As New SqlDataAdapter()
-		        Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
-		        	Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
-		            	sqlConn.Open()
-						'Get header
-						Dim sqaREQDetailReader As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
-					    Dim sqaREQReader As New SQA_XFC_CMD_SPLN_REQ(sqlConn)
-						Dim SqlREQ As String = $"SELECT * 
-									     				   FROM XFC_CMD_SPLN_REQ
-												           WHERE WFCMD_Name = '{api.pov.Cube.Name}'
-												           And WFTime_Name = '{tm}'
-												           AND WFScenario_Name = '{sTargetScenario}'
-												           AND ENTITY = '{api.pov.Entity.Name}'
-														   and REQ_ID_Type = 'Withhold'"
-'BRApi.ErrorLog.LogMessage(si, "SqlREQ: " & 	SqlREQ)					
-						Dim sqlparamsREQ As SqlParameter() = New SqlParameter() {}
-						sqaREQReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, REQDT, SqlREQ, sqlparamsREQ)
-						
-						Dim whereClause As String = " 1 = 22 "
-						If Not REQDT Is Nothing And REQDT.Rows.Count > 0 Then
-							whereClause = "CMD_SPLN_REQ_ID in ("
-							For Each r In REQDT.Rows
-								whereClause = whereClause & "'" & r("CMD_SPLN_REQ_ID").toString &"',"
-							Next
-							whereClause = whereClause.Substring(0, whereClause.Length -1)
-							whereClause = whereClause & ")"
-						End If
-						Dim SqlREQDetail As String = $"SELECT * 
-							     				   FROM XFC_CMD_SPLN_REQ_Details
-										           WHERE {whereClause}"
-'BRApi.ErrorLog.LogMessage(si, "SqlREQDetail: " & 	SqlREQDetail)	
-
-						Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
-						sqaREQDetailReader.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa, REQDetailDT, SqlREQDetail, sqlparamsREQDetails)
-							
-							
+						Dim srcREQDT As DataTable = currREQDT.Clone()
+						Dim srcREQDetailDT As DataTable = currREQDetailDT.Clone()
 						For Each FundingLineCell As DataBufferCell In dbFundingLines.DataBufferCells.values
-							
+							BRApi.ErrorLog.LogMessage(si, "fOR 1")
+							Dim req_ID As New Guid()
 							Dim UD1 As String = FundingLineCell.DataBufferCellPk.GetUD1Name(api)
 							Dim UD2 As String = FundingLineCell.DataBufferCellPk.GetUD2Name(api)
 							Dim UD3 As String = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
 							Dim UD4 As String = FundingLineCell.DataBufferCellPk.GetUD4Name(api)
 							Dim UD5 As String = FundingLineCell.DataBufferCellPk.GetUD5Name(api)
 							Dim UD6 As String = FundingLineCell.DataBufferCellPk.GetUD6Name(api)
-							Dim APPN As String = UD3.Split("_")(0)
+							Dim UD7 As String = FundingLineCell.DataBufferCellPk.GetUD7Name(api)
+							Dim parentRow As DataRow = Nothing
+							Dim currparentRow As DataRow = Nothing
+
+							' Check if parent row exists in REQDT using key fields
+							If Not srcREQDT Is Nothing Then
+								parentRow = srcREQDT.Select($"APPN = '{UD1}' AND MDEP = '{UD2}' AND APE9 = '{UD3}' AND Dollar_Type = '{UD4}' AND Obj_Class = 'Pay_General' AND Ctype = '{UD5}' AND UIC = 'None'").FirstOrDefault()
+								If parentRow Is Nothing Then
+									Dim row = srcREQDT.NewRow()
+									row("WFScenario_Name") = sTargetScenario
+									row("WFTime_Name") = wfInfoDetails("TimeName")
+									row("WFCMD_Name") = api.Pov.Cube.Name
+									row("Entity") = sEntity
+									row("Status") = statuslvl
+									row("Title") = $"CivPay - {sEntity} - {UD1}-{UD2}-{UD3}-{UD4}-{UD5}"
+									row("APPN") = UD1
+									row("MDEP") = UD2
+									row("APE9") = UD3
+									row("Dollar_Type") = UD4
+									row("Ctype") = UD5
+									row("Obj_Class") = "Pay_General"
+									row("UIC") = "None"
+									row("REQ_ID_Type") = "CivPay_Copied"
+									row("REQ_ID") = GetNextREQID(sEntity)
+									row("Create_Date") = DateTime.Now
+									row("Create_User") = si.UserName
+									row("Update_Date") = DateTime.Now
+									row("Update_User") = si.UserName	
+									currparentRow = currREQDT.Select($"APPN = '{UD1}' AND MDEP = '{UD2}' AND APE9 = '{UD3}' AND Dollar_Type = '{UD4}' AND Obj_Class = 'Pay_General' AND Ctype = '{UD5}' AND UIC = 'None'").FirstOrDefault()
+									If currparentRow Is Nothing Then
+										req_ID = Guid.NewGuid()
+										row("CMD_SPLN_REQ_ID") = req_ID
+									Else
+										req_ID = currparentRow("CMD_SPLN_REQ_ID")
+										row("CMD_SPLN_REQ_ID") = req_ID
+									End If
+									srcREQDT.Rows.Add(row)
+								Else
+									req_ID = parentRow("CMD_SPLN_REQ_ID")								
+								End If
+
+								Dim lsAncestorListU1 As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & UD1 & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+								APPN = lsAncestorListU1(0).Member.Name
+								For Each account As String In accounts
+									BRApi.ErrorLog.LogMessage(si, "fOR 2")
+									Dim detailRow = srcREQDetailDT.NewRow()
+									detailRow("CMD_SPLN_REQ_ID") = req_ID
+									detailRow("WFScenario_Name") = api.pov.Scenario.Name
+									detailRow("WFTime_Name") = wfInfoDetails("TimeName")
+									detailRow("WFCMD_Name") = wfInfoDetails("CMDName")
+									detailRow("Unit_of_Measure") = "Funding"
+									detailRow("Entity") = sEntity
+									detailRow("IC") = "None"
+									If account.XFEqualsIgnoreCase("Commit")
+										detailRow("Account") = $"{account}ments"
+									Else
+										detailRow("Account") = $"{account}s"
+									End If
+									detailRow("Flow") = statuslvl
+									detailRow("UD1") = UD1
+									detailRow("UD2") = UD2
+									detailRow("UD3") = UD3
+									detailRow("UD4") = UD4
+									detailRow("UD5") = UD5
+									detailRow("UD6") = "Pay_General"
+									detailRow("UD7") = "None"
+									detailRow("UD8") = "None"
+									detailRow("Fiscal_Year") = wfInfoDetails("TimeName")
+									detailRow("Create_Date") = DateTime.Now
+									detailRow("Create_User") = si.UserName
+									detailRow("Update_Date") = DateTime.Now
+									detailRow("Update_User") = si.UserName
+									
+									Dim rows = From row In cmd_Appn_Rates.AsEnumerable()
+											   		Where row.Field(Of String)("UD1") = APPN _
+												    AndAlso row.Field(Of String)("Account").StartsWith(account)
+						           			   Select row
+									If rows.FirstOrDefault().Item("Time13") <> 0
+										Dim detailCarryOverRow = srcREQDetailDT.NewRow()
+										detailCarryOverRow = detailRow
+										detailCarryOverRow("Fiscal_Year") = (wfInfoDetails("TimeName").xfConverttoInt() + 1).xftoString()
+										detailCarryOverRow("Yearly") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time13")/100
+										srcREQDetailDT.Rows.Add(detailCarryOverRow)
+									End If
+									detailRow("Month1") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time1")/100
+									detailRow("Month2") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time2")/100
+									detailRow("Month3") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time3")/100
+									detailRow("Month4") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time4")/100
+									detailRow("Month5") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time5")/100
+									detailRow("Month6") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time6")/100
+									detailRow("Month7") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time7")/100
+									detailRow("Month8") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time8")/100
+									detailRow("Month9") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time9")/100
+									detailRow("Month10") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time10")/100
+									detailRow("Month11") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time11")/100
+									detailRow("Month12") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time12")/100
+									BRApi.ErrorLog.LogMessage(si, "fOR 4")
+									srcREQDetailDT.Rows.Add(detailRow)
+								Next
+							End If
+								
+							globals.SetStringValue($"FundsCenterStatusUpdates - {api.Pov.Entity.Name}", $"{statuslvl}")
+						
+						Next
+						BRApi.ErrorLog.LogMessage(si, "aFTER")	
+
+					'create a new Data row for req and detail
+						sqaREQReader.MergeandSync_XFC_CMD_SPLN_REQ_toDB(si,srcREQDT,currREQDT)
+						
+						sqaREQDetailReader.MergeandSync_XFC_CMD_SPLN_REQ_Details_toDB(si,srcREQDetailDT,currREQDetailDT)			
+				 	End Using
+				 End Using
+			Catch ex As Exception
+				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+			End Try			 
+		End Sub
+					
+#End Region
+
+#Region "Copy_Withhold"
+
+		Public Sub Copy_Withhold(ByVal globals As BRGlobals)
+			Try	
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+				Dim cmd As String = wfInfoDetails("CMDName")	
+				Dim sSourcePosition As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+				Dim req_id_val As String = ""' args.CustomCalculateArgs.NameValuePairs.XFGetValue("REQ_ID_VAL").XFConvertToGuid
+				Dim sTargetScenario As String = "CMD_SPLN_C" & wfInfoDetails("TimeName")
+				Dim currentYear As Integer = Convert.ToInt32(wfInfoDetails("TimeName"))
+				Dim nextyear As Integer = currentYear  + 1
+				Dim sTargetYear As Integer = wfInfoDetails("TimeName").XFConvertToInt
+				Dim sEntity As String = api.Pov.Entity.Name
+				Dim levl As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, sEntity)
+				Dim statuslvl As String = levl & "_Formulate_SPLN"
+				
+				Dim cmd_WH_Rates As New DataTable()
+				If globals.GetObject($"CMD WH Rates - {wfInfoDetails("CMDName")}") Is Nothing
+					cmd_WH_Rates = GetFDXCMDSPLNData("CMD_SPLN_WH_SpreadPct_FDX_CV",wfInfoDetails("CMDName"))
+					globals.SetObject($"CMD WH Rates - {wfInfoDetails("CMDName")}",cmd_WH_Rates)
+				Else
+					cmd_WH_Rates = globals.GetObject($"CMD WH Rates - {wfInfoDetails("CMDName")}")
+				End If
+				Dim APPN As String  = String.Empty
+				Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
+				Dim sSrcMbrScript = $"FilterMembers(RemoveZeros(Cb#{cmd}:E#{sEntity}:S#{sSourcePosition}:T#{sTargetYear}:C#Aggregated:V#Periodic:F#Tot_Dist_Final:O#Top:I#None:U7#Top:U8#None),[A#TGT_WH])"
+
+				Dim dbFundingLines = api.Data.GetDataBufferUsingFormula(sSrcMbrScript)
+				
+				Dim accounts As New List(Of String) From {"Commit", "Obligation"}
+                Dim mpr_buffers As New Dictionary(Of String,DataBuffer)
+
+				Dim currREQDetailDT As DataTable = New DataTable("REQDetailDT")
+				Dim currREQDT As DataTable = New DataTable("REQDT")
+				Dim sqa As New SqlDataAdapter()
+		        Using dbConnApp As DbConnInfoApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+		        	Using sqlConn As New SqlConnection(dbConnApp.ConnectionString)
+		            	sqlConn.Open()
+						'Get header
+						Dim sqaREQDetailReader As New SQA_XFC_CMD_SPLN_REQ_Details(sqlConn)
+					    Dim sqaREQReader As New SQA_XFC_CMD_SPLN_REQ(sqlConn)
+						
+						Dim SqlREQ As String = $"SELECT CMD_SPLN_REQ_ID, WFScenario_Name, WFCMD_Name, WFTime_Name, REQ_ID,
+														    Title, Description, Justification, Entity, APPN, MDEP, APE9,
+														    Dollar_Type, Obj_Class, CType, UIC, Cost_Methodology, Impact_Not_Funded,
+														    Risk_Not_Funded, Cost_Growth_Justification, Must_Fund, Funding_Src,
+														    Army_Init_Dir, CMD_Init_Dir, Activity_Exercise, Directorate, Div,
+														    Branch, IT_Cyber_REQ, Emerging_REQ, CPA_Topic, PBR_Submission,
+														    UPL_Submission, Contract_Num, Task_Order_Num, Award_Target_Date,
+														    POP_Exp_Date, CME, COR_Email, POC_Email, Review_POC_Email,
+														    MDEP_Functional_Email, Notification_List_Emails, FF_1, FF_2, FF_3,
+														    FF_4, FF_5, Status, Invalid, Val_Error, Create_Date, Create_User,
+														    Update_Date, Update_User, Review_Entity, REQ_ID_Type, Demotion_Comment,
+														    Related_REQs
+								     				   FROM XFC_CMD_SPLN_REQ WITH (NOLOCK)
+											           WHERE WFCMD_Name = '{wfInfoDetails("CMDName")}'
+											           And WFTime_Name = '{wfInfoDetails("TimeName")}'
+											           AND WFScenario_Name = '{sTargetScenario}'
+											           AND ENTITY = '{api.pov.Entity.Name}'
+													   and REQ_ID_Type = 'Withhold' "
+'BRApi.ErrorLog.LogMessage(si, "SqlREQ: " & 	SqlREQ)					
+						Dim sqlparamsREQ As SqlParameter() = New SqlParameter() {}
+						sqaREQReader.Fill_XFC_CMD_SPLN_REQ_DT(sqa, currREQDT, SqlREQ, sqlparamsREQ)
+					
+					    'Details
+						Dim SqlREQDetail As String = $"SELECT d.CMD_SPLN_REQ_ID,d.WFScenario_Name,d.WFCMD_Name,d.WFTime_Name,d.Unit_of_Measure,
+															d.Entity,d.IC,d.Account,d.Flow,d.UD1,d.UD2,d.UD3,d.UD4,d.UD5,d.UD6,d.UD7,d.UD8,
+															d.Fiscal_Year,d.Month1,d.Month2,d.Month3,d.Month4,d.Month5,d.Month6,
+															d.Month7,d.Month8,d.Month9,d.Month10,d.Month11,d.Month12,
+															d.Quarter1,d.Quarter2,d.Quarter3,d.Quarter4,d.Yearly,
+															d.AllowUpdate,d.Create_Date,d.Create_User,d.Update_Date,d.Update_User
+														FROM XFC_CMD_SPLN_REQ_Details d WITH (NOLOCK)
+														INNER JOIN XFC_CMD_SPLN_REQ r WITH (NOLOCK) 
+														ON d.CMD_SPLN_REQ_ID = r.CMD_SPLN_REQ_ID
+														WHERE r.WFCMD_Name = '{wfInfoDetails("CMDName")}'
+														AND r.WFTime_Name = '{wfInfoDetails("TimeName")}'
+														AND r.WFScenario_Name = '{sTargetScenario}'
+														AND r.ENTITY = '{api.pov.Entity.Name}'
+														AND r.REQ_ID_Type = 'Withhold'"
+'BRApi.ErrorLog.LogMessage(si, "SqlREQDetail: " & 	SqlREQDetail)	
+
+						Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
+						sqaREQDetailReader.Fill_XFC_CMD_SPLN_REQ_Details_DT(sqa, currREQDetailDT, SqlREQDetail, sqlparamsREQDetails)
+						
+						Dim srcREQDT As DataTable = currREQDT.Clone()
+						Dim srcREQDetailDT As DataTable = currREQDetailDT.Clone()
+						For Each FundingLineCell As DataBufferCell In dbFundingLines.DataBufferCells.values
+							BRApi.ErrorLog.LogMessage(si, "fOR 1")
+							Dim req_ID As New Guid()
+							Dim UD1 As String = FundingLineCell.DataBufferCellPk.GetUD1Name(api)
+							Dim UD2 As String = FundingLineCell.DataBufferCellPk.GetUD2Name(api)
+							Dim UD3 As String = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
+							Dim UD4 As String = FundingLineCell.DataBufferCellPk.GetUD4Name(api)
+							Dim UD5 As String = FundingLineCell.DataBufferCellPk.GetUD5Name(api)
+							Dim UD6 As String = FundingLineCell.DataBufferCellPk.GetUD6Name(api)
+							APPN = UD3.Split("_")(0)
 							If  (UD6.XFEqualsIgnoreCase("Pay_Benefits") Or UD6.XFEqualsIgnoreCase("Pay_General"))  Then
 								UD6= "Pay_General"
 							Else
 								UD6 = "NonPay_General"
 							End If
-							
-							Dim Amt As Decimal = FundingLineCell.CellAmount
-							
-							Dim cmd_req_ids As New List(Of String) 
-							
-							Dim insertShell As Boolean = False
-							Dim parentRow As DataRow = REQDT.NewRow()
-							
-							'there should only be one row per APPN and Entity
-							If Not REQDT Is Nothing And REQDT.Rows.Count > 0 Then
-								parentRow = REQDT.Select($"APPN = '{APPN}'").FirstOrDefault()
+							Dim UD7 As String = FundingLineCell.DataBufferCellPk.GetUD7Name(api)
+							Dim parentRow As DataRow = Nothing
+							Dim currparentRow As DataRow = Nothing
+
+							' Check if parent row exists in REQDT using key fields
+							If Not srcREQDT Is Nothing Then
+								parentRow = srcREQDT.Select($"APPN = '{APPN}'").FirstOrDefault()
 								If parentRow Is Nothing Then
-									insertShell = True
-									parentRow = REQDT.NewRow()
-									Me.Populate_REQParent_WH(parentRow, FundingLineCell, insertShell)
-									REQDT.Rows.Add(parentRow)
+									Dim row = srcREQDT.NewRow()
+									row("WFScenario_Name") = sTargetScenario
+									row("WFTime_Name") = wfInfoDetails("TimeName")
+									row("WFCMD_Name") = api.Pov.Cube.Name
+									row("Entity") = sEntity
+									row("Status") = statuslvl
+									row("Title") = $"Withhold - {sEntity} - {APPN}"
+									row("APPN") = APPN
+									row("MDEP") = "None"
+									row("APE9") = "None"
+									row("Dollar_Type") = "None"
+									row("Ctype") =  "None"
+									row("Obj_Class") =  "None"
+									row("UIC") = "None"
+									row("REQ_ID_Type") = "Withhold"
+									row("REQ_ID") = GetNextREQID(sEntity)
+									row("Create_Date") = DateTime.Now
+									row("Create_User") = si.UserName
+									row("Update_Date") = DateTime.Now
+									row("Update_User") = si.UserName	
+									currparentRow = currREQDT.Select($"APPN = '{APPN}'").FirstOrDefault()
+									If currparentRow Is Nothing Then
+										req_ID = Guid.NewGuid()
+										row("CMD_SPLN_REQ_ID") = req_ID
+									Else
+										req_ID = currparentRow("CMD_SPLN_REQ_ID")
+										row("CMD_SPLN_REQ_ID") = req_ID
+									End If
+									srcREQDT.Rows.Add(row)
 								Else
+									req_ID = parentRow("CMD_SPLN_REQ_ID")								
 								End If
-							Else
-								insertShell = True
-								parentRow = REQDT.NewRow()
-								Me.Populate_REQParent_WH(parentRow, FundingLineCell, insertShell)
-								REQDT.Rows.Add(parentRow)
-								'req_id_val = parentRow("CMD_SPLN_REQ_ID").ToString
-								'whereClause = $"CMD_SPLN_REQ_ID = '{req_id_val}'"
+
+								Dim lsAncestorListU1 As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & UD1 & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
+								APPN = lsAncestorListU1(0).Member.Name
+								For Each account As String In accounts
+									BRApi.ErrorLog.LogMessage(si, "fOR 2")
+									Dim detailRow = srcREQDetailDT.NewRow()
+									detailRow("CMD_SPLN_REQ_ID") = req_ID
+									detailRow("WFScenario_Name") = api.pov.Scenario.Name
+									detailRow("WFTime_Name") = wfInfoDetails("TimeName")
+									detailRow("WFCMD_Name") = wfInfoDetails("CMDName")
+									detailRow("Unit_of_Measure") = "Funding"
+									detailRow("Entity") = sEntity
+									detailRow("IC") = "None"
+									If account.XFEqualsIgnoreCase("Commit")
+										detailRow("Account") = $"WH_{account}ments"
+									Else
+										detailRow("Account") = $"WH_{account}s"
+									End If
+									detailRow("Flow") = statuslvl
+									detailRow("UD1") = UD1
+									detailRow("UD2") = UD2
+									detailRow("UD3") = UD3
+									detailRow("UD4") = UD4
+									detailRow("UD5") = UD5
+									detailRow("UD6") = UD6
+									detailRow("UD7") = "None"
+									detailRow("UD8") = "None"
+									detailRow("Fiscal_Year") = wfInfoDetails("TimeName")
+									detailRow("Create_Date") = DateTime.Now
+									detailRow("Create_User") = si.UserName
+									detailRow("Update_Date") = DateTime.Now
+									detailRow("Update_User") = si.UserName
+									
+									Dim rows = From row In cmd_WH_Rates.AsEnumerable()
+											   		Where row.Field(Of String)("Account").StartsWith(account)
+						           			   Select row
+									detailRow("Month1") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time1")/100
+									detailRow("Month2") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time2")/100
+									detailRow("Month3") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time3")/100
+									detailRow("Month4") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time4")/100
+									detailRow("Month5") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time5")/100
+									detailRow("Month6") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time6")/100
+									detailRow("Month7") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time7")/100
+									detailRow("Month8") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time8")/100
+									detailRow("Month9") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time9")/100
+									detailRow("Month10") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time10")/100
+									detailRow("Month11") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time11")/100
+									detailRow("Month12") = FundingLineCell.CellAmount * rows.FirstOrDefault().Item("Time12")/100
+									srcREQDetailDT.Rows.Add(detailRow)
+								Next
 							End If
-							
-							req_id_val = parentRow("CMD_SPLN_REQ_ID").ToString
-							
-					
-						    'Details
-							
-							
-							REQDetailDT.PrimaryKey = New DataColumn() {
-												 REQDetailDT.Columns("Entity"),
-												 REQDetailDT.Columns("Fiscal_Year"),
-										         REQDetailDT.Columns("Unit_of_Measure"),
-												 REQDetailDT.Columns("UD1"),
-												 REQDetailDT.Columns("UD2"),
-												 REQDetailDT.Columns("UD3"),
-												 REQDetailDT.Columns("UD4"),
-												 REQDetailDT.Columns("UD6"),
-												 REQDetailDT.Columns("Account"),
-												 REQDetailDT.Columns("CMD_SPLN_REQ_ID")
-												 }
-									 
-		 					
-							Dim isDetailinsert As Boolean = False
-							Dim detailObligRow As DataRow = Nothing 'REQDetailDT.NewRow()
-							Dim detailCommitRow As DataRow = Nothing
-							If Not REQDetailDT Is Nothing And REQDetailDT.Rows.Count > 0 Then
-
-'BRApi.ErrorLog.LogMessage(si,"Looking for Detail : " & api.Pov.Entity.Name  & " Acct = WH_Obligations  UD1 = " & UD1 & " UD2 = " & UD2 & " UD3 = " & UD3 & " UD4 = " & UD4 & " UD5 = " & UD5 &  " UD6 = " & UD6)	
-
-								detailObligRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-																		AND Account = 'WH_Obligations'
-																		AND WFCMD_Name = '{api.pov.cube.name}' 																	
-																		AND Entity = '{api.pov.entity.name}'
-																		AND UD1 = '{UD1}'
-																		AND UD2 = '{UD2}'
-																		AND UD3 = '{UD3}'
-																		AND UD4 = '{UD4}'
-																		AND UD6 = '{UD6}'").FirstOrDefault()
 								
-								detailCommitRow = REQDetailDT.Select($"WFScenario_Name = '{api.pov.Scenario.Name}' 
-																		AND Account = 'WH_Commitments'
-																		AND WFCMD_Name = '{api.pov.cube.name}' 																	
-																		AND Entity = '{api.pov.entity.name}'
-																		AND UD1 = '{UD1}'
-																		AND UD2 = '{UD2}'
-																		AND UD3 = '{UD3}'
-																		AND UD4 = '{UD4}'
-																		AND UD6 = '{UD6}'").FirstOrDefault()
-	
-							End If
-
-							If detailObligRow Is Nothing Then
-								isDetailinsert = True
-								detailObligRow = REQDetailDT.NewRow()
-								'REQDetailDT.Rows.Add(detailObligRow)
-							Else
-							End If 
-							If detailCommitRow Is Nothing Then
-								isDetailinsert = True
-								detailCommitRow = REQDetailDT.NewRow()
-								'REQDetailDT.Rows.Add(detailCommitRow)
-							End If 
-							'Me.Populat_REQDetail(obligRow, FundingLineCell, req_id_val, "Commitments", isinsert)
-							Me.Populate_REQDetail_WH(detailObligRow, FundingLineCell, req_id_val, "WH_Obligations", isDetailinsert)
-							Me.Populate_REQDetail_WH(detailCommitRow, FundingLineCell, req_id_val, "WH_Commitments", isDetailinsert)
-							If isDetailinsert Then
-								REQDetailDT.Rows.Add(detailObligRow)
-								REQDetailDT.Rows.Add(detailCommitRow)
-							End If
-
+							globals.SetStringValue($"FundsCenterStatusUpdates - {api.Pov.Entity.Name}", $"{statuslvl}")
+						
 						Next
 
-						'create a new Data row for req and detail
-						sqaREQReader.Update_XFC_CMD_SPLN_REQ(REQDT, sqa)
-						sqaREQDetailReader.Update_XFC_CMD_SPLN_REQ_Details(REQDetailDT, sqa)	
+					'create a new Data row for req and detail
+						sqaREQReader.MergeandSync_XFC_CMD_SPLN_REQ_toDB(si,srcREQDT,currREQDT)
+						
+						sqaREQDetailReader.MergeandSync_XFC_CMD_SPLN_REQ_Details_toDB(si,srcREQDetailDT,currREQDetailDT)			
 				 	End Using
 				 End Using
 			Catch ex As Exception
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try				 
+			End Try			 
 		End Sub
-					
-#End Region
-
-#Region "Withhold helpers"
-		Public Sub Populate_REQParent_WH(ByVal row As DataRow, ByVal FundingLineCell As DataBufferCell, ByRef isNew As Boolean )
-			Try	
-				Dim sTargetScenario As String = "CMD_SPLN_C" + api.Time.GetNameFromId(si.WorkflowClusterPk.TimeKey)
-				Dim statuslvl As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, api.Pov.Entity.Name) & "_Formulate_SPLN"
- 				Dim UoM = "Funding"
-				Dim UD3 As String = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
-				Dim APPN As String = UD3.Split("_")(0)
-				Dim entity As String = api.Pov.Entity.Name
-
-				row("WFScenario_Name") = sTargetScenario
-				Dim tm As String = api.Pov.Time.Name
-				tm = tm.Substring(0, tm.Length - 3)
-				row("WFTime_Name") = tm
 				
-				row("WFCMD_Name") = api.Pov.Cube.Name
-				Row("Entity") = entity
-				Row("Status") = statuslvl
-				
-				
-				Row("Title") = $"Withhold - {entity} - {APPN}"
-				
-				Row("APPN") = APPN
-				Row("MDEP") = "None"
-				Row("APE9") = "None"
-				Row("Dollar_Type") = "None"
-				Row("Ctype") =  "None"
-				Row("Obj_Class") =  "None"
-				Row("UIC") = "None"
-				Row("REQ_ID_Type") = "Withhold"
-				If isNew  Then
-					row("CMD_SPLN_REQ_ID") = Guid.NewGuid()
-					'row("REQ_ID") = GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,api.Pov.Entity.Name)
-					row("REQ_ID") = GetNextREQID(api.Pov.Entity.Name)
-					row("Create_Date") = DateTime.Now
-					row("Create_User") = si.UserName
-				End If
-				row("Update_Date") = DateTime.Now
-				row("Update_User") = si.UserName
-				
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try			 
-		End Sub	
-		
-		Public Sub Populate_REQDetail_WH(ByVal row As DataRow, ByVal FundingLineCell As DataBufferCell, ByRef req_id_val As String,ByRef act As String, ByRef isNew As Boolean)
-			Try	
-				Dim sTargetScenario As String = "CMD_SPLN_C" + api.Time.GetNameFromId(si.WorkflowClusterPk.TimeKey)
-				Dim statuslvl As String = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, api.Pov.Entity.Name) & "_Formulate_SPLN"
-				Dim Acct = act
- 				Dim UoM = "Funding"
-				Dim UD1 As String = FundingLineCell.DataBufferCellPk.GetUD1Name(api)
-				Dim UD2 As String = FundingLineCell.DataBufferCellPk.GetUD2Name(api)
-				Dim UD3 As String = FundingLineCell.DataBufferCellPk.GetUD3Name(api)
-				Dim UD4 As String = FundingLineCell.DataBufferCellPk.GetUD4Name(api)
-				Dim UD5 As String = FundingLineCell.DataBufferCellPk.GetUD5Name(api)
-				Dim UD6 As String = FundingLineCell.DataBufferCellPk.GetUD6Name(api)
-				If (UD6.XFEqualsIgnoreCase("Pay_Benefits") Or UD6.XFEqualsIgnoreCase("Pay_General")) Then
-					UD6 = "Pay_General"
-				Else
-					UD6 = "NonPay_General"
-				End If
-				Dim Amt As Decimal = FundingLineCell.CellAmount
-				Dim tm As String = api.Pov.Time.Name
-				tm = tm.Substring(0, tm.Length - 3)
-				Dim spread As Dictionary(Of Integer, Decimal)
-				
-'BRApi.ErrorLog.LogMessage(si,"Detail is new: " & isNew & " " & req_id_val & " " & api.Pov.Entity.Name & " UD1 = " & UD1 & " UD2 = " & UD2 & " UD3 = " & UD3 & " UD4 = " & UD4 & " UD5 = " & UD5 &  " UD6 = " & UD6 & " Acct = " & Acct & ", Amt = " & Amt)	
-				row("WFScenario_Name") = api.pov.Scenario.Name
-				row("WFTime_Name") = tm
-				
-				row("WFCMD_Name") = api.Pov.Cube.Name
-				row("Unit_of_Measure") = UoM 
-				Row("Entity") = api.Pov.Entity.Name
-				Row("IC") = "None"
-				Row("Account") = Acct
-				Row("Flow") = statuslvl
-				Row("Fiscal_Year") = tm
-				'Dim APPN As String = UD3.Split("_")(0)
-				
-				Dim APPN As String  = ""
-				Dim UD1objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si,"U1_FundCode")
-				Dim lsAncestorListU1 As List(Of MemberInfo) = BRApi.Finance.Members.GetMembersUsingFilter(si, UD1objDimPk, "U1#" & UD1 & ".Ancestors.Where(MemberDim = 'U1_APPN')", True)
-				APPN = lsAncestorListU1(0).Member.Name
-
-				Dim spreadTitle As String = "Monthly Withhold Spread"
-				spread = globals.GetObject(spreadTitle)
-				If spread Is Nothing Then
-					spread = New Dictionary(Of Integer, Decimal)
-					If acct.XFEqualsIgnoreCase("WH_Commitments") Then
-							GetMonthlySpread("None", "Commit_WH_Spread_Pct", spreadTitle, spread)
-					Else 
-						If acct.XFEqualsIgnoreCase("WH_Obligations") Then
-								GetMonthlySpread("None", "Commit_WH_Spread_Pct", spreadTitle, spread)
-						Else
-							Throw New Exception("Invalid Spend Plan Account: " & acct)
-						End If
-					End If
-				End If
-				Row("Month1") = Amt * spread(1)
-				Row("Month2") = Amt * spread(2)
-				Row("Month3") = Amt * spread(3)
-				Row("Month4") = Amt * spread(4)
-				Row("Month5") = Amt * spread(5)
-				Row("Month6") = Amt * spread(6)
-				Row("Month7") = Amt * spread(7)
-				Row("Month8") = Amt * spread(8)
-				Row("Month9") = Amt * spread(9)
-				Row("Month10") = Amt * spread(10)
-				Row("Month11") = Amt * spread(11)
-				Row("Month12") = Amt * spread(12)
-				row("UD1") = UD1
-				row("UD2") = UD2
-				row("UD3") = UD3
-				row("UD4") = UD4
-				row("UD5") = UD5
-				row("UD6") = UD6
-				
-				row("UD7") = "None"
-				row("UD8") = "None"
-				
-				If isNew  Then
-					row("CMD_SPLN_REQ_ID") = req_id_val
-					row("Create_Date") = DateTime.Now
-					row("Create_User") = si.UserName
-				End If
-				row("Update_Date") = DateTime.Now
-				row("Update_User") = si.UserName
-				globals.SetStringValue($"FundsCenterStatusUpdates - {api.Pov.Entity.Name}", $"{statuslvl}")
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try			 
-		End Sub	
 #End Region
 
 #Region "Get Cmd FundCenter From Cube"		
@@ -12187,42 +11718,6 @@ currcubebuffer.LogDataBuffer(api,"currcube = " & api.Pov.Entity.name,500)
 			
 			Return fundCenter			
 		End Function
-
-#End Region
-
-#Region "Get Monthly Spread"		
-
-		Public Function GetMonthlySpread(ByRef APPN As String, ByRef acct As String ,ByRef title As String, ByRef spread As Dictionary(Of Integer, Decimal)) As Decimal
-			
-			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-			Dim cubeName As String = wfInfoDetails("CMDName")
-			Dim entity As String = GetCmdFundCenterFromCube()
-			Dim scenario As String = "RMW_Cycle_Config_Monthly"
-			Dim tm As String = wfInfoDetails("TimeName")
-			
-			Dim spreadPct As Decimal = 0
-			For i As Integer = 1 To 12
-				Dim spreadmbrScript = $"Cb#{cubeName}:E#{entity}:C#Local:S#{scenario}:T#{tm}M{i}:V#Periodic:A#{acct}:F#None:O#AdjInput:I#None:U1#{APPN}:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-				spreadPct = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, cubeName, spreadmbrScript).DataCellEx.DataCell.CellAmount
-				spreadPct = spreadPct/100
-				spread.Add(i,spreadPct)
-			Next 
-			
-			'Add carry over
-			Dim tmInt As Integer = Convert.ToInt32(tm)
-			Dim nextyear As Integer = tmInt  + 1
-			Dim carryOverSpreadmbrScript = $"Cb#{cubeName}:E#{entity}:C#Local:S#{scenario}:T#{nextyear}M12:V#Periodic:A#{acct}:F#None:O#AdjInput:I#None:U1#{APPN}:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			spreadPct = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, cubeName, carryOverSpreadmbrScript).DataCellEx.DataCell.CellAmount
-'BRApi.ErrorLog.LogMessage(si,"carryOverSpreadmbrScript: " & carryOverSpreadmbrScript.ToString & ", Amt: " & spreadPct)		
-			spreadPct = spreadPct/100
-			spread.Add(13,spreadPct)
-				
-			globals.SetObject($"{title}", spread)
-			
-			Return Nothing
-			
-		End Function
-		
 
 #End Region
 
@@ -12247,73 +11742,24 @@ currcubebuffer.LogDataBuffer(api,"currcube = " & api.Pov.Entity.name,500)
 	End Function
 #End Region	
 
-#Region "Consol Aggregated"
-Private Sub Consol_Aggregated()
-		If api.Pov.Entity.Name.XFContainsIgnoreCase("E#None") Then Return
-		Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")
-		Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,api.Pov.Entity.Name)
-		Dim entityID As Integer = api.Members.GetMemberId(dimType.Entity.Id,api.Pov.Entity.Name)
-		Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk,entityID)
-'brapi.ErrorLog.LogMessage(si,"entity = " & api.Pov.Entity.Name)
-		If Not Ent_Base
-			Dim Src_Data = String.Empty
-			Dim acctFilter = "A#Commitments,A#Obligations,A#WH_Obligations,A#WH_Commitments"
-			Dim originFilter = "O#AdjConsolidated,O#Forms,O#Import"
-			Dim flowFilter = "F#L2_Formulate,F#L3_Formulate_SPLN,F#L4_Formulate_SPLN,F#L5_Formulate_SPLN,F#L3_Validate_SPLN,F#L4_Validate_SPLN,F#L5_Validate_SPLN,F#L3_Approve_SPLN,F#L2_Validate_SPLN,F#L2_Approve_SPLN,F#L2_Final_SPLN"
-			Select Case entityLevel
-				Case "L3"
-					flowFilter =  "F#L3_Formulate_SPLN,F#L4_Formulate_SPLN,F#L5_Formulate_SPLN,F#L3_Validate_SPLN,F#L4_Validate_SPLN,F#L5_Validate_SPLN,F#L3_Approve_SPLN,F#L2_Validate_SPLN,F#L2_Approve_SPLN,F#L2_Final_SPLN"
-				Case "L4"
-					flowFilter =  "F#L4_Formulate_SPLN,F#L5_Formulate_SPLN,F#L3_Validate_SPLN,F#L4_Validate_SPLN,F#L5_Validate_SPLN,F#L3_Approve_SPLN,F#L2_Validate_SPLN,F#L2_Approve_SPLN,F#L2_Final_SPLN"
-			End Select
-			Dim src_DataBuffer As New DataBuffer()
-			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData(V#Periodic),[{originFilter}],[{flowFilter}],[{acctFilter}])")
-			Dim destBuffer As DataBuffer = New DataBuffer()
-			Dim ClearCubeData As DataBuffer = New DataBuffer()
-			
-			Dim entList = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{api.Pov.Entity.Name}.Children", True)
-			For Each Ent As MemberInfo In entList
+		Private Function GetFDXCMDSPLNData(ByVal cvName As String,ByVal entFilter As String) As DataTable
+			Dim dt As New DataTable()
+			Dim wsName As String = "50 CMD SPLN"
+			Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 
-				If Src_Data.Length > 0
-					Src_Data = $"{Src_Data} + cb#{api.Pov.Cube.Name}:E#{Ent.Member.Name}:C#Aggregated:V#Periodic"
-				Else
-					Src_Data = $"cb#{api.Pov.Cube.Name}:E#{Ent.Member.Name}:C#Aggregated:V#Periodic"
-				End If
-			Next
-			
-			src_DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData({Src_Data}),[O#AdjConsolidated,O#AdjInput,O#Forms,O#Import],[{flowFilter}],[{acctFilter}])")
-'CurrCubeBuffer.LogDataBuffer(api,$"{api.pov.entity.name}_CurrBufferConsol",500)
-'Src_DataBuffer.LogDataBuffer(api,$"{api.pov.entity.name}_SrcBufferConsol - C#{api.Pov.Cons.Name} - T#{api.Pov.Time.name}",500)  
+			Dim entDim = $"E_{wfInfoDetails("CMDName")}"
+			Dim scenDim = "S_RMW"
+			Dim scenFilter = $"S#{wfInfoDetails("ScenarioName")}"
+			Dim timeFilter = String.Empty '$"T#{wfInfoDetails("TimeName")}"
+			Dim NameValuePairs = New Dictionary(Of String,String)
 
-			For Each Src_DataCell As DataBufferCell In Src_DataBuffer.DataBufferCells.Values
-				Dim destOrigin = Src_DataCell.GetOriginName(api)
-				If Src_DataCell.GetOriginName(api).XFEqualsIgnoreCase("AdjInput")
-					destOrigin = "AdjConsolidated"
-				End If
-				Dim Destcell As New DataBufferCell(UpdateCellDefinition(Src_DataCell,,,destOrigin))
-				UpdateValue(Destcell, CurrCubeBuffer, destBuffer, Destcell.CellAmount)
-				CurrCubeBuffer.DataBufferCells.Remove(Destcell.DataBufferCellPk)
-			Next
-			
-			Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
-			api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,,True)
-			destBuffer.DataBufferCells.Clear()
-	
-			For Each ClearCubeCell As DataBufferCell In CurrCubeBuffer.DataBufferCells.Values
-				Dim Status As New DataCellStatus(False)
-				Dim ClearCell As New DataBufferCell(ClearCubeCell.DataBufferCellPk, 0, Status)
-				ClearCubeData.SetCell(si, ClearCell)
-			Next
-	
-			Dim ClearInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
-			api.Data.SetDataBuffer(ClearCubeData, ClearInfo)
-		End If
-		
-	End Sub
-#End Region
-		Public Sub Copy_HQ_SPLN()
-			
-		End Sub
+			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
+
+			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 8, False)
+
+			Return dt
+		End Function
 #Region "Helper Functions"		
 		''-------------------------------------------------------------------------		
 		Public Function UpdateCellDefinition(ByRef destcell As DataBufferCell,Optional ByRef DriverDB_Acct As String = "NoPassedValue",Optional ByRef DriverDB_Flow As String = "NoPassedValue",Optional ByRef DriverDB_Origin As String = "NoPassedValue",Optional ByRef DriverDB_IC As String = "NoPassedValue",Optional ByRef DriverDB_UD1 As String = "NoPassedValue",Optional ByRef DriverDB_UD2 As String = "NoPassedValue",Optional ByRef DriverDB_UD3 As String = "NoPassedValue",Optional ByRef DriverDB_UD4 As String = "NoPassedValue",Optional ByRef DriverDB_UD5 As String = "NoPassedValue",Optional ByRef DriverDB_UD6 As String = "NoPassedValue",Optional ByRef DriverDB_UD7 As String = "NoPassedValue",Optional ByRef DriverDB_UD8 As String = "NoPassedValue") As DatabufferCell
@@ -13291,9 +12737,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		    Finally
 		        RemoveHandler tgtTable.TableNewRow, handler
 		    End Try
-brapi.ErrorLog.LogMessage(si,"count tgtTable =" & tgtTable.Rows.Count & ": " & tgtTable.Rows.Item(0).RowState.ToString)			
+'brapi.ErrorLog.LogMessage(si,"count tgtTable =" & tgtTable.Rows.Count & ": " & tgtTable.Rows.Item(0).RowState.ToString)			
 		    Dim changes As DataTable = tgtTable.GetChanges(DataRowState.Added Or DataRowState.Modified)
-brapi.ErrorLog.LogMessage(si,"count changes =" & changes.Rows.Count)			
+'brapi.ErrorLog.LogMessage(si,"count changes =" & changes.Rows.Count)			
 		    If changes IsNot Nothing AndAlso changes.Rows.Count > 0 Then
 		        ' Execute the bulk and SQL merge process
 		        XFC_CMD_SPLN_REQ_Details_BulkSync(si, changes)
@@ -13872,6 +13318,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 		
 					Return Me.GetAPPNPropertyList(si,globals,api,args)
 				End If	
+				If args.FunctionName.XFEqualsIgnoreCase("GetAPPNPropertyListbySpreadPct") Then	
+		
+					Return Me.GetAPPNPropertyListbySpreadPct(si,globals,api,args)
+				End If	
+
 #End Region 'Updated 10/21/2025
 
 				Return Nothing
@@ -14777,6 +14228,52 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 			
 				For Each item As String In lsDimensions
 					output &= item & ","
+				Next
+			
+			Return output			
+			
+			End Function 	
+			
+			
+		Public Function GetAPPNPropertyListbySpreadPct(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
+				
+			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			Dim wfCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+			Dim wfScenarioName As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
+			Dim wfTimeName As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si,DimType.Time.Id,wfTime)
+
+			Dim objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "U1_APPN")
+			Dim lAPPNMembList As List(Of memberinfo) = New List(Of MemberInfo)
+			lAPPNMembList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U1#APPN.Base", True)
+			Dim lsDimensions As New List (Of String)
+			Dim output As String
+		
+			'Check loop
+			For Each appn As MemberInfo In lAPPNMembList
+				
+				'--------- get APPN Text2 --------- 							
+				'Dim sText2 As String = BRApi.Finance.Account.Text(si, appn, 2, wfScenarioTypeID,wfTimeId)
+				Dim MemberAppn As Member = brapi.Finance.Members.GetMember(si,dimtype.UD1.Id, appn.Member.Name)
+				Dim sText2 As String = brapi.Finance.UD.Text(si,dimtype.UD1.Id,MemberAppn.MemberId,2,0,0)
+
+'Brapi.ErrorLog.LogMessage(si, appn.Member.Name & ": " & sText2)
+				
+			
+				If Not sText2.XFContainsIgnoreCase("Yes") Then
+					
+					lsDimensions.Add("U1#" & appn.Member.Name & ":U8#ReadOnlyAnnotation")
+				Else
+						
+					lsDimensions.Add(", U1#" & appn.Member.Name & ":U8#None")				
+				End If
+
+			Next
+			
+				For Each item As String In lsDimensions
+					output &= item & ":A#Commit_Spread_Pct," & item & ":A#Obligation_Spread_Pct,"
 				Next
 			
 			Return output			
@@ -17288,7 +16785,585 @@ End Namespace]]></sourceCode>
                                 </files>
                             </workspaceAssembly>
                         </workspaceAssemblies>
-                        <cubeViewGroups />
+                        <cubeViewGroups>
+                            <cubeViewGroup name="CMD SPLN FDX CVs" description="" accessGroup="Everyone" maintenanceGroup="Everyone">
+                                <cubeViewItems>
+                                    <cubeViewItem name="CMD_SPLN_APPN_SpreadPct_FDX_CV" description="Spread Appropriation Rates" isVisibleInProfiles="true" isShortcut="false" shortcutCubeViewName="" isDynamic="false">
+                                        <cubeView>
+                                            <pageCaption />
+                                            <canModifyData>true</canModifyData>
+                                            <canCalculate>false</canCalculate>
+                                            <canTranslate>false</canTranslate>
+                                            <canConsolidate>true</canConsolidate>
+                                            <canModifySuppression>false</canModifySuppression>
+                                            <includeCellAttachmentStatus>false</includeCellAttachmentStatus>
+                                            <useDetailedLogging>false</useDetailedLogging>
+                                            <headerFormat>|!LV_GBL_CV_Header_Format!|, Bold = True</headerFormat>
+                                            <cellFormat>|!LV_GBL_CV_Cell_Format!|</cellFormat>
+                                            <allowSparseRowSuppression>false</allowSparseRowSuppression>
+                                            <maxNumUnsuppressedRowsPerCubeViewPage>-1</maxNumUnsuppressedRowsPerCubeViewPage>
+                                            <maxNumSecondsToProcessCubeView>-1</maxNumSecondsToProcessCubeView>
+                                            <formula><![CDATA[]]></formula>
+                                            <reportTaskType>NoTask</reportTaskType>
+                                            <reportBRName />
+                                            <reportPaperKind>Unknown</reportPaperKind>
+                                            <reportIsLandscape>false</reportIsLandscape>
+                                            <reportMarginLeft>-1</reportMarginLeft>
+                                            <reportMarginTop>-1</reportMarginTop>
+                                            <reportMarginRight>-1</reportMarginRight>
+                                            <reportMarginBottom>-1</reportMarginBottom>
+                                            <reportAutoFitNumPagesWide>0</reportAutoFitNumPagesWide>
+                                            <reportScaleFactor>1</reportScaleFactor>
+                                            <reportAutoFitToPageWidth>true</reportAutoFitToPageWidth>
+                                            <excelExportDisplayGridlines>true</excelExportDisplayGridlines>
+                                            <reportTitle />
+                                            <reportHeaderLeftLabel1 />
+                                            <reportHeaderLeftLabel2 />
+                                            <reportHeaderLeftLabel3 />
+                                            <reportHeaderLeftLabel4 />
+                                            <reportHeaderCenterLabel1 />
+                                            <reportHeaderCenterLabel2 />
+                                            <reportHeaderCenterLabel3 />
+                                            <reportHeaderCenterLabel4 />
+                                            <reportHeaderRightLabel1 />
+                                            <reportHeaderRightLabel2 />
+                                            <reportHeaderRightLabel3 />
+                                            <reportHeaderRightLabel4 />
+                                            <reportFooter />
+                                            <reportFooterLeftLabel1 />
+                                            <reportFooterLeftLabel2 />
+                                            <reportFooterLeftLabel3 />
+                                            <reportFooterLeftLabel4 />
+                                            <reportFooterCenterLabel1 />
+                                            <reportFooterCenterLabel2 />
+                                            <reportFooterCenterLabel3 />
+                                            <reportFooterCenterLabel4 />
+                                            <reportFooterRightLabel1 />
+                                            <reportFooterRightLabel2 />
+                                            <reportFooterRightLabel3 />
+                                            <reportFooterRightLabel4 />
+                                            <rowSharingType>NotUsed</rowSharingType>
+                                            <cubeViewNameForSharingAllRows />
+                                            <cubeViewNameForSharingAllRows2 />
+                                            <colSharingType>NotUsed</colSharingType>
+                                            <cubeViewNameForSharingAllCols />
+                                            <cubeViewNameForSharingAllCols2 />
+                                            <cube>
+                                                <name>|WFCube|</name>
+                                            </cube>
+                                            <povMembers>
+                                                <entity>
+                                                    <name>XFBR(Workspace.GBL.GBL_Assembly.GBL_String_Helper,GetEntityTextProperty,Mbr=|!FDXEntity!|,TextNum=1)</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </entity>
+                                                <parent>
+                                                    <name />
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </parent>
+                                                <consolidation>
+                                                    <name>Local</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </consolidation>
+                                                <scenario>
+                                                    <name>RMW_Cycle_Config_Monthly</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </scenario>
+                                                <time>
+                                                    <name>|WFTime|M12</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </time>
+                                                <view>
+                                                    <name>Periodic</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </view>
+                                                <account>
+                                                    <name />
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </account>
+                                                <flow>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </flow>
+                                                <origin>
+                                                    <name>AdjInput</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </origin>
+                                                <ic>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ic>
+                                                <ud1>
+                                                    <name />
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud1>
+                                                <ud2>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud2>
+                                                <ud3>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud3>
+                                                <ud4>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud4>
+                                                <ud5>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud5>
+                                                <ud6>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud6>
+                                                <ud7>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud7>
+                                                <ud8>
+                                                    <name />
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud8>
+                                            </povMembers>
+                                            <useDefaultColumnHeaders>true</useDefaultColumnHeaders>
+                                            <columnHeaders />
+                                            <useDefaultRowHeaders>false</useDefaultRowHeaders>
+                                            <rowHeaders>
+                                                <rowHeader>
+                                                    <dimType>UD1</dimType>
+                                                </rowHeader>
+                                                <rowHeader>
+                                                    <dimType>Account</dimType>
+                                                </rowHeader>
+                                            </rowHeaders>
+                                            <reportColumnIndexForRowHeaders>-1</reportColumnIndexForRowHeaders>
+                                            <reportColumnHeader1Height>-1</reportColumnHeader1Height>
+                                            <reportColumnHeader2Height>-1</reportColumnHeader2Height>
+                                            <reportColumnHeader3Height>-1</reportColumnHeader3Height>
+                                            <reportColumnHeader4Height>-1</reportColumnHeader4Height>
+                                            <reportColumnHeader5Height>-1</reportColumnHeader5Height>
+                                            <reportColumnHeader6Height>-1</reportColumnHeader6Height>
+                                            <rowHeader1Width>-1</rowHeader1Width>
+                                            <excelRowHeader1Width>-1</excelRowHeader1Width>
+                                            <reportRowHeader1Width>-1</reportRowHeader1Width>
+                                            <rowHeader2Width>-1</rowHeader2Width>
+                                            <excelRowHeader2Width>-1</excelRowHeader2Width>
+                                            <reportRowHeader2Width>-1</reportRowHeader2Width>
+                                            <rowHeader3Width>-1</rowHeader3Width>
+                                            <excelRowHeader3Width>-1</excelRowHeader3Width>
+                                            <reportRowHeader3Width>-1</reportRowHeader3Width>
+                                            <rowHeader4Width>-1</rowHeader4Width>
+                                            <excelRowHeader4Width>-1</excelRowHeader4Width>
+                                            <reportRowHeader4Width>-1</reportRowHeader4Width>
+                                            <rowHeader5Width>-1</rowHeader5Width>
+                                            <excelRowHeader5Width>-1</excelRowHeader5Width>
+                                            <reportRowHeader5Width>-1</reportRowHeader5Width>
+                                            <rowHeader6Width>-1</rowHeader6Width>
+                                            <excelRowHeader6Width>-1</excelRowHeader6Width>
+                                            <reportRowHeader6Width>-1</reportRowHeader6Width>
+                                            <culture />
+                                            <headerTextTypes entity="2000" parent="2000" consolidation="2000" scenario="2000" time="2000" view="2000" account="2000" flow="2000" origin="2000" ic="2000" ud1="1000" ud2="1000" ud3="1000" ud4="1000" ud5="1000" ud6="1000" ud7="1000" ud8="1000" />
+                                            <linkedCubeViewNames />
+                                            <linkedDashboardNames />
+                                            <includeDefaultNavLinkBoundParameterNames>false</includeDefaultNavLinkBoundParameterNames>
+                                            <boundParameterNames cube="" entity="" parent="" consolidation="" scenario="" time="" view="" account="" flow="" origin="" ic="" ud1="" ud2="" ud3="" ud4="" ud5="" ud6="" ud7="" ud8="" />
+                                            <columns>
+                                                <column name="P_PercSpread" shareSettingsFromAnotherCubeView="false" cubeViewNameForSharing="" cubeViewColNameForSharing="">
+                                                    <width>-1</width>
+                                                    <reportWidth>-1</reportWidth>
+                                                    <canModifyData>true</canModifyData>
+                                                    <colHeaderFormat />
+                                                    <cellFormat />
+                                                    <cellType>Unknown</cellType>
+                                                    <listParameter />
+                                                    <linkedCubeViewNames />
+                                                    <linkedDashboardNames />
+                                                    <memberExpansions>
+                                                        <memberExpansion>
+                                                            <primaryDimType>Time</primaryDimType>
+                                                            <memberFilter>T#|WFYear|.Base</memberFilter>
+                                                            <initialIndentLevel>0</initialIndentLevel>
+                                                        </memberExpansion>
+                                                    </memberExpansions>
+                                                    <suppressZeroCols>false</suppressZeroCols>
+                                                    <suppressNoDataCols>false</suppressNoDataCols>
+                                                    <suppressInvalidCols>false</suppressInvalidCols>
+                                                    <useSuppressionSettingsOnParentCols>true</useSuppressionSettingsOnParentCols>
+                                                    <zeroSuppressionThreshold />
+                                                    <useToDetermineRowSuppression>true</useToDetermineRowSuppression>
+                                                    <allowSparseRowSuppression>TrueValue</allowSparseRowSuppression>
+                                                    <rowOverrides>
+                                                        <rowOverride>
+                                                            <rowsOrCols range="D_APPN" />
+                                                            <memberFilter>U8#None</memberFilter>
+                                                            <cellFormat />
+                                                            <cellType>Unknown</cellType>
+                                                            <listParameter />
+                                                        </rowOverride>
+                                                    </rowOverrides>
+                                                </column>
+                                                <column name="P_WFNextYear" shareSettingsFromAnotherCubeView="false" cubeViewNameForSharing="" cubeViewColNameForSharing="">
+                                                    <width>-1</width>
+                                                    <reportWidth>-1</reportWidth>
+                                                    <canModifyData>true</canModifyData>
+                                                    <colHeaderFormat />
+                                                    <cellFormat />
+                                                    <cellType>Unknown</cellType>
+                                                    <listParameter />
+                                                    <linkedCubeViewNames />
+                                                    <linkedDashboardNames />
+                                                    <memberExpansions>
+                                                        <memberExpansion>
+                                                            <primaryDimType>Time</primaryDimType>
+                                                            <memberFilter>T#YearNext1(|WFTime|)Period(M12):Name(|WFYearNext|)</memberFilter>
+                                                            <initialIndentLevel>0</initialIndentLevel>
+                                                        </memberExpansion>
+                                                    </memberExpansions>
+                                                    <suppressZeroCols>false</suppressZeroCols>
+                                                    <suppressNoDataCols>false</suppressNoDataCols>
+                                                    <suppressInvalidCols>false</suppressInvalidCols>
+                                                    <useSuppressionSettingsOnParentCols>true</useSuppressionSettingsOnParentCols>
+                                                    <zeroSuppressionThreshold />
+                                                    <useToDetermineRowSuppression>true</useToDetermineRowSuppression>
+                                                    <allowSparseRowSuppression>TrueValue</allowSparseRowSuppression>
+                                                    <rowOverrides />
+                                                </column>
+                                            </columns>
+                                            <rows>
+                                                <row name="D_APPN" shareSettingsFromAnotherCubeView="false" cubeViewNameForSharing="" cubeViewRowNameForSharing="">
+                                                    <reportRowHeight>-1</reportRowHeight>
+                                                    <canModifyData>true</canModifyData>
+                                                    <rowHeaderFormat />
+                                                    <cellFormat />
+                                                    <cellType>Unknown</cellType>
+                                                    <listParameter />
+                                                    <enableNavigationLink>false</enableNavigationLink>
+                                                    <linkedNavigationItem />
+                                                    <linkedCubeViewNames />
+                                                    <linkedDashboardNames />
+                                                    <memberExpansions>
+                                                        <memberExpansion>
+                                                            <primaryDimType>UD1</primaryDimType>
+                                                            <memberFilter>XFBR(Workspace.CMD_SPLN.CMD_SPLN_Assembly.CMD_SPLN_DataBuffers,GetAPPNPropertyListbySpreadPct)</memberFilter>
+                                                            <initialIndentLevel>0</initialIndentLevel>
+                                                        </memberExpansion>
+                                                    </memberExpansions>
+                                                    <suppressZeroRows>false</suppressZeroRows>
+                                                    <suppressNoDataRows>false</suppressNoDataRows>
+                                                    <suppressInvalidRows>false</suppressInvalidRows>
+                                                    <insertSuppressedMemberType>Unknown</insertSuppressedMemberType>
+                                                    <useSuppressionSettingsOnParentRows>true</useSuppressionSettingsOnParentRows>
+                                                    <zeroSuppressionThreshold />
+                                                    <colOverrides />
+                                                </row>
+                                            </rows>
+                                        </cubeView>
+                                    </cubeViewItem>
+                                    <cubeViewItem name="CMD_SPLN_WH_SpreadPct_FDX_CV" description="Set Withhold Spread Rates" isVisibleInProfiles="true" isShortcut="false" shortcutCubeViewName="" isDynamic="false">
+                                        <cubeView>
+                                            <pageCaption />
+                                            <canModifyData>true</canModifyData>
+                                            <canCalculate>false</canCalculate>
+                                            <canTranslate>false</canTranslate>
+                                            <canConsolidate>false</canConsolidate>
+                                            <canModifySuppression>false</canModifySuppression>
+                                            <includeCellAttachmentStatus>true</includeCellAttachmentStatus>
+                                            <useDetailedLogging>false</useDetailedLogging>
+                                            <headerFormat>    |!LV_GBL_CV_Header_Format!|</headerFormat>
+                                            <cellFormat>|!LV_GBL_CV_Cell_Format!|</cellFormat>
+                                            <allowSparseRowSuppression>false</allowSparseRowSuppression>
+                                            <maxNumUnsuppressedRowsPerCubeViewPage>-1</maxNumUnsuppressedRowsPerCubeViewPage>
+                                            <maxNumSecondsToProcessCubeView>-1</maxNumSecondsToProcessCubeView>
+                                            <formula><![CDATA[]]></formula>
+                                            <reportTaskType>NoTask</reportTaskType>
+                                            <reportBRName />
+                                            <reportPaperKind>Unknown</reportPaperKind>
+                                            <reportIsLandscape>false</reportIsLandscape>
+                                            <reportMarginLeft>-1</reportMarginLeft>
+                                            <reportMarginTop>-1</reportMarginTop>
+                                            <reportMarginRight>-1</reportMarginRight>
+                                            <reportMarginBottom>-1</reportMarginBottom>
+                                            <reportAutoFitNumPagesWide>0</reportAutoFitNumPagesWide>
+                                            <reportScaleFactor>1</reportScaleFactor>
+                                            <reportAutoFitToPageWidth>true</reportAutoFitToPageWidth>
+                                            <excelExportDisplayGridlines>true</excelExportDisplayGridlines>
+                                            <reportTitle />
+                                            <reportHeaderLeftLabel1 />
+                                            <reportHeaderLeftLabel2 />
+                                            <reportHeaderLeftLabel3 />
+                                            <reportHeaderLeftLabel4 />
+                                            <reportHeaderCenterLabel1>|!LV_GBL_CV_CUIHeader!|</reportHeaderCenterLabel1>
+                                            <reportHeaderCenterLabel2 />
+                                            <reportHeaderCenterLabel3 />
+                                            <reportHeaderCenterLabel4 />
+                                            <reportHeaderRightLabel1 />
+                                            <reportHeaderRightLabel2 />
+                                            <reportHeaderRightLabel3 />
+                                            <reportHeaderRightLabel4 />
+                                            <reportFooter />
+                                            <reportFooterLeftLabel1 />
+                                            <reportFooterLeftLabel2 />
+                                            <reportFooterLeftLabel3 />
+                                            <reportFooterLeftLabel4 />
+                                            <reportFooterCenterLabel1 />
+                                            <reportFooterCenterLabel2 />
+                                            <reportFooterCenterLabel3 />
+                                            <reportFooterCenterLabel4 />
+                                            <reportFooterRightLabel1 />
+                                            <reportFooterRightLabel2 />
+                                            <reportFooterRightLabel3 />
+                                            <reportFooterRightLabel4 />
+                                            <rowSharingType>NotUsed</rowSharingType>
+                                            <cubeViewNameForSharingAllRows />
+                                            <cubeViewNameForSharingAllRows2 />
+                                            <colSharingType>NotUsed</colSharingType>
+                                            <cubeViewNameForSharingAllCols />
+                                            <cubeViewNameForSharingAllCols2 />
+                                            <cube>
+                                                <name>|WFCube|</name>
+                                            </cube>
+                                            <povMembers>
+                                                <entity>
+                                                    <name />
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </entity>
+                                                <parent>
+                                                    <name />
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </parent>
+                                                <consolidation>
+                                                    <name>Local</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </consolidation>
+                                                <scenario>
+                                                    <name>RMW_Cycle_Config_Monthly</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </scenario>
+                                                <time>
+                                                    <name>|WFTime|</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </time>
+                                                <view>
+                                                    <name>Periodic</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </view>
+                                                <account>
+                                                    <name />
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </account>
+                                                <flow>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </flow>
+                                                <origin>
+                                                    <name>AdjInput</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </origin>
+                                                <ic>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ic>
+                                                <ud1>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud1>
+                                                <ud2>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud2>
+                                                <ud3>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud3>
+                                                <ud4>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud4>
+                                                <ud5>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud5>
+                                                <ud6>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud6>
+                                                <ud7>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud7>
+                                                <ud8>
+                                                    <name>None</name>
+                                                    <memberFilter />
+                                                    <topLevelFilterForNextLevelExp />
+                                                </ud8>
+                                            </povMembers>
+                                            <useDefaultColumnHeaders>true</useDefaultColumnHeaders>
+                                            <columnHeaders />
+                                            <useDefaultRowHeaders>true</useDefaultRowHeaders>
+                                            <rowHeaders />
+                                            <reportColumnIndexForRowHeaders>-1</reportColumnIndexForRowHeaders>
+                                            <reportColumnHeader1Height>-1</reportColumnHeader1Height>
+                                            <reportColumnHeader2Height>-1</reportColumnHeader2Height>
+                                            <reportColumnHeader3Height>-1</reportColumnHeader3Height>
+                                            <reportColumnHeader4Height>-1</reportColumnHeader4Height>
+                                            <reportColumnHeader5Height>-1</reportColumnHeader5Height>
+                                            <reportColumnHeader6Height>-1</reportColumnHeader6Height>
+                                            <rowHeader1Width>-1</rowHeader1Width>
+                                            <excelRowHeader1Width>-1</excelRowHeader1Width>
+                                            <reportRowHeader1Width>-1</reportRowHeader1Width>
+                                            <rowHeader2Width>-1</rowHeader2Width>
+                                            <excelRowHeader2Width>-1</excelRowHeader2Width>
+                                            <reportRowHeader2Width>-1</reportRowHeader2Width>
+                                            <rowHeader3Width>-1</rowHeader3Width>
+                                            <excelRowHeader3Width>-1</excelRowHeader3Width>
+                                            <reportRowHeader3Width>-1</reportRowHeader3Width>
+                                            <rowHeader4Width>-1</rowHeader4Width>
+                                            <excelRowHeader4Width>-1</excelRowHeader4Width>
+                                            <reportRowHeader4Width>-1</reportRowHeader4Width>
+                                            <rowHeader5Width>-1</rowHeader5Width>
+                                            <excelRowHeader5Width>-1</excelRowHeader5Width>
+                                            <reportRowHeader5Width>-1</reportRowHeader5Width>
+                                            <rowHeader6Width>-1</rowHeader6Width>
+                                            <excelRowHeader6Width>-1</excelRowHeader6Width>
+                                            <reportRowHeader6Width>-1</reportRowHeader6Width>
+                                            <culture />
+                                            <headerTextTypes entity="2000" parent="2000" consolidation="2000" scenario="2000" time="4000" view="2000" account="2000" flow="2000" origin="2000" ic="2000" ud1="2000" ud2="2000" ud3="2000" ud4="2000" ud5="2000" ud6="2000" ud7="2000" ud8="2000" />
+                                            <linkedCubeViewNames />
+                                            <linkedDashboardNames />
+                                            <includeDefaultNavLinkBoundParameterNames>false</includeDefaultNavLinkBoundParameterNames>
+                                            <boundParameterNames cube="" entity="" parent="" consolidation="" scenario="" time="" view="" account="" flow="" origin="" ic="" ud1="" ud2="" ud3="" ud4="" ud5="" ud6="" ud7="" ud8="" />
+                                            <columns>
+                                                <column name="Col1" shareSettingsFromAnotherCubeView="false" cubeViewNameForSharing="" cubeViewColNameForSharing="">
+                                                    <width>-1</width>
+                                                    <reportWidth>-1</reportWidth>
+                                                    <canModifyData>true</canModifyData>
+                                                    <colHeaderFormat />
+                                                    <cellFormat>    NumberFormat = [#,###,0\%]</cellFormat>
+                                                    <cellType>Unknown</cellType>
+                                                    <listParameter />
+                                                    <linkedCubeViewNames />
+                                                    <linkedDashboardNames />
+                                                    <memberExpansions>
+                                                        <memberExpansion>
+                                                            <primaryDimType>Time</primaryDimType>
+                                                            <memberFilter>T#|WFYear|.Months</memberFilter>
+                                                            <initialIndentLevel>0</initialIndentLevel>
+                                                        </memberExpansion>
+                                                    </memberExpansions>
+                                                    <suppressZeroCols>false</suppressZeroCols>
+                                                    <suppressNoDataCols>false</suppressNoDataCols>
+                                                    <suppressInvalidCols>false</suppressInvalidCols>
+                                                    <useSuppressionSettingsOnParentCols>true</useSuppressionSettingsOnParentCols>
+                                                    <zeroSuppressionThreshold />
+                                                    <useToDetermineRowSuppression>true</useToDetermineRowSuppression>
+                                                    <allowSparseRowSuppression>TrueValue</allowSparseRowSuppression>
+                                                    <rowOverrides />
+                                                </column>
+                                            </columns>
+                                            <rows>
+                                                <row name="D_Commitment Withhold Spread %" shareSettingsFromAnotherCubeView="false" cubeViewNameForSharing="" cubeViewRowNameForSharing="">
+                                                    <reportRowHeight>-1</reportRowHeight>
+                                                    <canModifyData>true</canModifyData>
+                                                    <rowHeaderFormat>Bold = True</rowHeaderFormat>
+                                                    <cellFormat />
+                                                    <cellType>Unknown</cellType>
+                                                    <listParameter />
+                                                    <enableNavigationLink>false</enableNavigationLink>
+                                                    <linkedNavigationItem />
+                                                    <linkedCubeViewNames />
+                                                    <linkedDashboardNames />
+                                                    <memberExpansions>
+                                                        <memberExpansion>
+                                                            <primaryDimType>Entity</primaryDimType>
+                                                            <memberFilter>E#XFMemberProperty(DimType=Entity, Member=|!FDXEntity!|, Property=Text1)</memberFilter>
+                                                            <initialIndentLevel>0</initialIndentLevel>
+                                                        </memberExpansion>
+                                                        <memberExpansion>
+                                                            <primaryDimType>Account</primaryDimType>
+                                                            <memberFilter>A#Commit_WH_Spread_Pct</memberFilter>
+                                                            <initialIndentLevel>0</initialIndentLevel>
+                                                        </memberExpansion>
+                                                    </memberExpansions>
+                                                    <suppressZeroRows>false</suppressZeroRows>
+                                                    <suppressNoDataRows>false</suppressNoDataRows>
+                                                    <suppressInvalidRows>false</suppressInvalidRows>
+                                                    <insertSuppressedMemberType>Unknown</insertSuppressedMemberType>
+                                                    <useSuppressionSettingsOnParentRows>true</useSuppressionSettingsOnParentRows>
+                                                    <zeroSuppressionThreshold />
+                                                    <colOverrides />
+                                                </row>
+                                                <row name="D_Obligation Withhold Spread %" shareSettingsFromAnotherCubeView="false" cubeViewNameForSharing="" cubeViewRowNameForSharing="">
+                                                    <reportRowHeight>-1</reportRowHeight>
+                                                    <canModifyData>true</canModifyData>
+                                                    <rowHeaderFormat>Bold = True</rowHeaderFormat>
+                                                    <cellFormat />
+                                                    <cellType>Unknown</cellType>
+                                                    <listParameter />
+                                                    <enableNavigationLink>false</enableNavigationLink>
+                                                    <linkedNavigationItem />
+                                                    <linkedCubeViewNames />
+                                                    <linkedDashboardNames />
+                                                    <memberExpansions>
+                                                        <memberExpansion>
+                                                            <primaryDimType>Entity</primaryDimType>
+                                                            <memberFilter>E#XFMemberProperty(DimType=Entity, Member=|!FDXEntity!|, Property=Text1)</memberFilter>
+                                                            <initialIndentLevel>0</initialIndentLevel>
+                                                        </memberExpansion>
+                                                        <memberExpansion>
+                                                            <primaryDimType>Account</primaryDimType>
+                                                            <memberFilter>A#Obligation_WH_Spread_Pct</memberFilter>
+                                                            <initialIndentLevel>0</initialIndentLevel>
+                                                        </memberExpansion>
+                                                    </memberExpansions>
+                                                    <suppressZeroRows>false</suppressZeroRows>
+                                                    <suppressNoDataRows>false</suppressNoDataRows>
+                                                    <suppressInvalidRows>false</suppressInvalidRows>
+                                                    <insertSuppressedMemberType>Unknown</insertSuppressedMemberType>
+                                                    <useSuppressionSettingsOnParentRows>true</useSuppressionSettingsOnParentRows>
+                                                    <zeroSuppressionThreshold />
+                                                    <colOverrides />
+                                                </row>
+                                            </rows>
+                                        </cubeView>
+                                    </cubeViewItem>
+                                </cubeViewItems>
+                            </cubeViewGroup>
+                        </cubeViewGroups>
                         <dataManagementGroups />
                     </maintenanceUnit>
                     <maintenanceUnit name="CMD SPLN RPT" description="" uiPlatformType="WpfOrSilverlight" accessGroup="Everyone" maintenanceGroup="Everyone" wsAssemblyService="">
@@ -19969,13 +20044,10 @@ Order By
                                 <cubeViewName></cubeViewName>
                                 <dataTablePerCubeViewRow>true</dataTablePerCubeViewRow>
                                 <sqlQuery> SELECT * 
-           FROM XFC_CMD_SPLN_REQ
-           WHERE WFCMD_Name = 'AFC'
-           And WFTime_Name = '2026'
-           AND WFScenario_Name = 'CMD_SPLN_C2026'
-           AND ENTITY = 'A97AB'
-           AND REQ_ID LIKE '%OMA%'
-            AND REQ_ID_Type = 'CivPay'</sqlQuery>
+           FROM XFC_CMD_PGM_REQ
+           Where WFScenario_Name = 'CMD_PGM_C2027'
+AND WFCMD_NAME like 'USASMDC'
+    </sqlQuery>
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>Unknown</methodType>
@@ -23758,7 +23830,7 @@ returnType=SAG
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_SPLN_0a_Dialog_FormulateREQ" description="Create New Requirement:" pageCaption="" dashboardType="Unknown" layoutType="VerticalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
-                                        <displayFormat>BorderPaddingLeft = 5, BorderPaddingTop = 5, DialogHeight = 435, DialogWidth = 2000</displayFormat>
+                                        <displayFormat>BorderPaddingLeft = 5, BorderPaddingTop = 5, DialogHeight = 435, DialogWidth = 3000</displayFormat>
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -23839,7 +23911,7 @@ returnType=SAG
                                             <componentMember name="btn_CMD_SPLN_FormulateCType" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="CMD_SPLN_0a3_Dialog_FormulateREQ" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="CMD_SPLN_0a3_Dialog_FormulateREQ" description="" pageCaption="" dashboardType="Unknown" layoutType="VerticalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <displayFormat>BorderMarginBottom = 10</displayFormat>
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
@@ -23849,13 +23921,8 @@ returnType=SAG
                                             </DynamicDashboardDefinition>
                                             <CustomControlDbrdDefinition RequiredInputParameters="" />
                                             <GridLayoutDefinition>
-                                                <ColumnDefinitions>
-                                                    <ColumnDefinition ColumnType="Component" Width="1950" />
-                                                </ColumnDefinitions>
-                                                <RowDefinitions>
-                                                    <RowDefinition RowType="Component" Height="175" />
-                                                    <RowDefinition RowType="Component" Height="*" />
-                                                </RowDefinitions>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
                                             </GridLayoutDefinition>
                                             <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
@@ -37537,7 +37604,7 @@ Account=[Phased_Obligation_Base,Phased_Commitment]
                                                     <topLevelFilterForNextLevelExp />
                                                 </parent>
                                                 <consolidation>
-                                                    <name>USD</name>
+                                                    <name>Aggregated</name>
                                                     <memberFilter />
                                                     <topLevelFilterForNextLevelExp />
                                                 </consolidation>
@@ -38439,35 +38506,6 @@ Account=[Phased_Obligation_Base,Phased_Commitment]
                         <dataManagementGroups>
                             <dataManagementGroup name="CMD SPLN" description="" accessGroup="Everyone" maintenanceGroup="Everyone">
                                 <dataManagementSteps>
-                                    <dataManagementStep name="CMD_SPLN_Consol_Load_to_Cube" description="" stepType="CustomCalculate">
-                                        <stepDefinition>
-                                            <DataMgmtCustomCalculateDefinition>
-                                                <UseDetailedLogging>true</UseDetailedLogging>
-                                                <Cube>|WFCube|</Cube>
-                                                <EntityFilter>|!consolEntityList!|</EntityFilter>
-                                                <ParentFilter />
-                                                <ConsFilter>C#Aggregated</ConsFilter>
-                                                <Scenario>|!WFScen!|</Scenario>
-                                                <TimeFilter>|!WFTime!|</TimeFilter>
-                                                <View />
-                                                <Account />
-                                                <Flow />
-                                                <Origin />
-                                                <IC />
-                                                <UD1 />
-                                                <UD2 />
-                                                <UD3 />
-                                                <UD4 />
-                                                <UD5 />
-                                                <UD6 />
-                                                <UD7 />
-                                                <UD8 />
-                                                <BusinessRuleName>Workspace.CMD_SPLN.WS</BusinessRuleName>
-                                                <FunctionName>Consol_Aggregated</FunctionName>
-                                                <Parameters />
-                                            </DataMgmtCustomCalculateDefinition>
-                                        </stepDefinition>
-                                    </dataManagementStep>
                                     <dataManagementStep name="CMD_SPLN_Copy_CivPay" description="" stepType="CustomCalculate">
                                         <stepDefinition>
                                             <DataMgmtCustomCalculateDefinition>
@@ -38586,45 +38624,6 @@ Account=[Phased_Obligation_Base,Phased_Commitment]
                                     </dataManagementStep>
                                 </dataManagementSteps>
                                 <dataManagementSequences>
-                                    <dataManagementSequence name="CMD_SPLN_Consol_Load_to_Cube" description="">
-                                        <sequenceDefinition>
-                                            <DataMgmtSequenceDefinition>
-                                                <AppServer />
-                                                <EnableNotifications>false</EnableNotifications>
-                                                <NotificationServer />
-                                                <NotificationEventType>SuccessOrFailure</NotificationEventType>
-                                                <Parameters>
-                                                    <Parameter SubstVarName="">
-                                                        <DefaultValue />
-                                                    </Parameter>
-                                                    <Parameter SubstVarName="">
-                                                        <DefaultValue />
-                                                    </Parameter>
-                                                    <Parameter SubstVarName="">
-                                                        <DefaultValue />
-                                                    </Parameter>
-                                                    <Parameter SubstVarName="">
-                                                        <DefaultValue />
-                                                    </Parameter>
-                                                    <Parameter SubstVarName="">
-                                                        <DefaultValue />
-                                                    </Parameter>
-                                                    <Parameter SubstVarName="">
-                                                        <DefaultValue />
-                                                    </Parameter>
-                                                    <Parameter SubstVarName="">
-                                                        <DefaultValue />
-                                                    </Parameter>
-                                                    <Parameter SubstVarName="">
-                                                        <DefaultValue />
-                                                    </Parameter>
-                                                </Parameters>
-                                            </DataMgmtSequenceDefinition>
-                                        </sequenceDefinition>
-                                        <stepMembers>
-                                            <stepMember name="CMD_SPLN_Consol_Load_to_Cube" />
-                                        </stepMembers>
-                                    </dataManagementSequence>
                                     <dataManagementSequence name="CMD_SPLN_Proc_Status_Updates" description="">
                                         <sequenceDefinition>
                                             <DataMgmtSequenceDefinition>

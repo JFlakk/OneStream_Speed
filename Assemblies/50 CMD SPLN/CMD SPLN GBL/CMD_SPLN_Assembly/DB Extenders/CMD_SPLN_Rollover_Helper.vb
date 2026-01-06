@@ -70,6 +70,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			Dim scName As String = wfInfoDetails("ScenarioName")
 			Dim cmd As String = wfInfoDetails("CMDName")
 			Dim tm As String = wfInfoDetails("TimeName")
+			Dim fclist As New List (Of String)
+			Dim APPNList As New List (Of String)
+			Dim StatusList As New List (Of String)
 			
 			Dim PGM_SscName As String = "CMD_PGM_C" & tm
 			Dim PGMRQSdt As New DataTable ("REQsFromPGM")
@@ -161,14 +164,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					
 					For Each row As DataRow In PGMREQsDT.Rows
 						Dim newREQRow As datarow = SPLNREQsDT.NewRow()
-						MapPGMReqToSPLN(newREQRow, row)
+						MapPGMReqToSPLN(newREQRow, row,FCList,APPNList,StatusList)
 						Dim newGuid As String = newREQRow("CMD_SPLN_REQ_ID").ToString
 						newREQRows.Add(newREQRow)
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 0: newGuid= " & newGuid)							
+BRApi.ErrorLog.LogMessage(si, "rollover update: 0: newGuid= " & newGuid)							
 						'create details
 						Dim foundDetailRows As DataRow() = PGMREQDetailsDT.Select(String.Format("CMD_PGM_REQ_ID = '{0}'", row("CMD_PGM_REQ_ID").ToString))
 						For Each dtRow In foundDetailRows
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 1")								
+BRApi.ErrorLog.LogMessage(si, "rollover update: 1")								
 							Dim newOblDetailREQRow As datarow = SPLNREQDetailsDT.NewRow()
 							Me.MapPGMReqDetailToSPLN(newOblDetailREQRow, dtRow, "Obligations", newGuid,obligSpread)
 							UpdateAuditColumns(newOblDetailREQRow)
@@ -180,9 +183,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							newREQDetailRows.Add(newCmtDetailREQRow)
 							
 						Next
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 2")							
+BRApi.ErrorLog.LogMessage(si, "rollover update: 2")							
 					Next
-					
+	
 					'update SQL Adapter and update
 					Dim REQ_IDs As New List(Of String)
 					For Each row In newREQRows
@@ -199,27 +202,41 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					'Call delete To delte rows
 					Dim existingREQs As New List(Of String)
 					existingREQs = Me.GetExistingDupREQs(REQ_IDs)
-					
+BRApi.ErrorLog.LogMessage(si, "rollover update: " & existingREQs.Count)							
 					If existingREQs.Count > 0 Then
 						Dim deleter As New CMD_SPLN_Helper.MainClass
 						Args.NameValuePairs.Add("req_IDs", String.Join(",", existingREQs))
 						Args.NameValuePairs.Add("Action", "Delete")
 						deleter.main(si, globals, api, args)
+BRApi.ErrorLog.LogMessage(si, "rollover update: post delete")		
 					End If
 					
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 3")
+BRApi.ErrorLog.LogMessage(si, "rAPPN LIst" & String.Join("|",APPNList))
+BRApi.ErrorLog.LogMessage(si, "rStatusList" & String.Join("|",StatusList))
+BRApi.ErrorLog.LogMessage(si, "rFCList" & String.Join("|",FCList))
 'BRApi.ErrorLog.LogMessage(si, "SPLNREQsDT count= " & SPLNREQsDT.Rows.Count & " details= " & SPLNREQDetailsDT.Rows.Count)
 					sqaSPLNReqReader.Update_XFC_CMD_SPLN_REQ(SPLNREQsDT, sqa)
 					sqaSPLNReqDetailReader.Update_XFC_CMD_SPLN_REQ_Details(SPLNREQDetailsDT, sqa)
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 4")					
-					'Load to the cube
-					Dim loader As New CMD_SPLN_Helper.MainClass
-					Args.NameValuePairs("req_IDs") =  String.Join(",", REQ_IDs)
-					Args.NameValuePairs("Action") = "Insert"
-					Args.NameValuePairs.Add("new_Status", "Formulate") '*** HARD CODE FOR TEST ***
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 4.5")						
-					loader.main(si, globals, api, args)	
-'BRApi.ErrorLog.LogMessage(si, "rollover update: 5")						
+					
+					Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_SPLN")
+					Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+					For Each JoinedEntity As String In joinedentitylist
+						globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.Join("|",StatusList))	
+						Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.Join("|",APPNList))
+					Next
+					Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+					Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))			
+					Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"50 CMD SPLN")
+					Dim customSubstVars As New Dictionary(Of String, String) 
+					customSubstVars.Add("EntList",String.Join(",",BaseEntityList))
+					customSubstVars.Add("ParentEntList",String.Join(",",ParentEntityList))
+					customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
+					Dim currentYear As String = wfInfoDetails("TimeName")
+					Dim nextyear As String = currentYear + 1
+					customSubstVars.Add("WFTime",$"T#{currentYear}M1,T#{currentYear}M2,T#{currentYear}M3,T#{currentYear}M4,T#{currentYear}M5,T#{currentYear}M6,T#{currentYear}M7,T#{currentYear}M8,T#{currentYear}M9,T#{currentYear}M10,T#{currentYear}M11,T#{currentYear}M12,T#{nextyear}")
+	
+					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_SPLN_Proc_Status_Updates", customSubstVars)	
+							
 				End Using
 			End Using
 
@@ -242,7 +259,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 #Region "Map PGM Req To SPLN"		
 
-		Public Sub MapPGMReqToSPLN(ByRef SPLNRow As DataRow, ByRef PGMRow As DataRow) 
+		Public Sub MapPGMReqToSPLN(ByRef SPLNRow As DataRow, ByRef PGMRow As DataRow, ByRef FCList As List (Of String), ByRef APPNList As List (Of String),ByRef StatusList As List (Of String) ) 
 
 			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			SPLNRow("CMD_SPLN_REQ_ID") = Guid.NewGuid()
@@ -259,6 +276,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			SPLNRow("MDEP") = PGMRow("MDEP")
 			SPLNRow("APE9") = PGMRow("APE9")
 			SPLNRow("Dollar_Type") = PGMRow("Dollar_Type")
+'brapi.ErrorLog.LogMessage(si,"APPN Rollover = " & SPLNRow("APPN").ToString)
 			'SPLNRow("Obj_Class") = PGMRow("Obj_Class")
 			If PGMRow("Obj_Class").ToString.XFEqualsIgnoreCase("None") Then 
 				SPLNRow("Obj_Class") = "None"
@@ -299,13 +317,23 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			SPLNRow("FF_3") = PGMRow("FF_3")
 			SPLNRow("FF_4") = PGMRow("FF_4")
 			SPLNRow("FF_5") = PGMRow("FF_5")
+brapi.ErrorLog.LogMessage(si,"entity from pgm = " & PGMRow("Entity"))
 			SPLNRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, PGMRow("Entity")) & "_Formulate_SPLN"
 			SPLNRow("Review_Entity") = PGMRow("Review_Entity")
 			SPLNRow("Demotion_Comment") = PGMRow("Demotion_Comment")
 			SPLNRow("Related_REQs") = PGMRow("Validation_List_Emails")
 			
-			UpdateAuditColumns(SPLNRow)
-
+			UpdateAuditColumns(SPLNRow)		
+			If Not FCList.Contains(SPLNRow("Entity")) Then
+					FCList.Add(SPLNRow("Entity"))
+			End If
+			If Not APPNList.Contains(SPLNRow("APPN")) Then
+					APPNList.Add(SPLNRow("APPN"))
+			End If
+			If Not StatusList.Contains(SPLNRow("Status")) Then
+					StatusList.Add(SPLNRow("Status"))
+			End If
+			
 
 		End Sub
 
@@ -324,7 +352,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			SPLNDetailRow("Entity") = PGMDetailRow("Entity")
 			SPLNDetailRow("IC") = PGMDetailRow("IC")
 			SPLNDetailRow("Account") = acct
-			SPLNDetailRow("Flow") = "Formulate_SPLN"'would be updated in the update peorcess  in the helper
+			SPLNDetailRow("Flow") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, PGMDetailRow("Entity")) & "_Formulate_SPLN" 'would be updated in the update peorcess  in the helper
 			SPLNDetailRow("UD1") = Me.GetFundCode(PGMDetailRow("UD1").ToString, PGMDetailRow("UD4").ToString)' "202014D26"'PGMDetailRow("UD1")
 			SPLNDetailRow("UD2") = PGMDetailRow("UD2")
 			SPLNDetailRow("UD3") = PGMDetailRow("UD3")

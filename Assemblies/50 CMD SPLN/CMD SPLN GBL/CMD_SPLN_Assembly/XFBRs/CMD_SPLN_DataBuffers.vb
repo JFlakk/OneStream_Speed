@@ -85,6 +85,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 		
 					Return Me.GetAPPNPropertyList(si,globals,api,args)
 				End If	
+				If args.FunctionName.XFEqualsIgnoreCase("GetAPPNPropertyListbySpreadPct") Then	
+		
+					Return Me.GetAPPNPropertyListbySpreadPct(si,globals,api,args)
+				End If	
+
 #End Region 'Updated 10/21/2025
 
 				Return Nothing
@@ -990,6 +995,52 @@ Public GBL_Helper As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardExtend
 			
 				For Each item As String In lsDimensions
 					output &= item & ","
+				Next
+			
+			Return output			
+			
+			End Function 	
+			
+			
+		Public Function GetAPPNPropertyListbySpreadPct(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardStringFunctionArgs) As String
+				
+			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
+			Dim wfCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
+			Dim wfScenarioName As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
+			Dim wfTimeName As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
+			Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si,DimType.Time.Id,wfTime)
+
+			Dim objDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "U1_APPN")
+			Dim lAPPNMembList As List(Of memberinfo) = New List(Of MemberInfo)
+			lAPPNMembList = BRApi.Finance.Members.GetMembersUsingFilter(si, objDimPk, "U1#APPN.Base", True)
+			Dim lsDimensions As New List (Of String)
+			Dim output As String
+		
+			'Check loop
+			For Each appn As MemberInfo In lAPPNMembList
+				
+				'--------- get APPN Text2 --------- 							
+				'Dim sText2 As String = BRApi.Finance.Account.Text(si, appn, 2, wfScenarioTypeID,wfTimeId)
+				Dim MemberAppn As Member = brapi.Finance.Members.GetMember(si,dimtype.UD1.Id, appn.Member.Name)
+				Dim sText2 As String = brapi.Finance.UD.Text(si,dimtype.UD1.Id,MemberAppn.MemberId,2,0,0)
+
+'Brapi.ErrorLog.LogMessage(si, appn.Member.Name & ": " & sText2)
+				
+			
+				If Not sText2.XFContainsIgnoreCase("Yes") Then
+					
+					lsDimensions.Add("U1#" & appn.Member.Name & ":U8#ReadOnlyAnnotation")
+				Else
+						
+					lsDimensions.Add(", U1#" & appn.Member.Name & ":U8#None")				
+				End If
+
+			Next
+			
+				For Each item As String In lsDimensions
+					output &= item & ":A#Commit_Spread_Pct," & item & ":A#Obligation_Spread_Pct,"
 				Next
 			
 			Return output			

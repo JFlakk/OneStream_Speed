@@ -29,6 +29,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         Public globals As BRGlobals
         Private api As Object
         Private args As DashboardExtenderArgs
+		Dim startingREQ_IDByFC As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
 		Public Function Main(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
 			Try			
 				Me.si = si
@@ -405,26 +406,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Dim Dashboard As String = args.NameValuePairs.XFGetValue("Dashboard")
 				Dim demote_comment As String = args.NameValuePairs.XFGetValue("demotecomment")
 				Dim FCList As New List(Of String)
+				Dim statusList As New List(Of String)
+				Dim APPNList As New List(Of String)
 				Dim Status_manager As New Dictionary(Of String,String)
-				'@Jeff Martin - Think we should add these on else side of 427/Demote
-				Status_manager.Add("L5_Formulate_PGM|Validate","L4_Validate_PGM")
-				Status_manager.Add("L4_Formulate_PGM|Validate","L3_Validate_PGM")
-				Status_manager.Add("L3_Formulate_PGM|Validate","L3_Validate_PGM")
-				Status_manager.Add("L2_Formulate_PGM|Validate","L2_Validate_PGM")
-				Status_manager.Add("L4_Validate_PGM|Prioritize","L4_Prioritize_PGM")
-				Status_manager.Add("L3_Validate_PGM|Prioritize","L3_Prioritize_PGM")
-				Status_manager.Add("L2_Validate_PGM|Prioritize","L2_Prioritize_PGM")
-				Status_manager.Add("L4_Validate_PGM|Approve","L4_Approve_PGM")
-				Status_manager.Add("L3_Validate_PGM|Approve","L3_Approve_PGM")
-				Status_manager.Add("L2_Validate_PGM|Approve","L2_Approve_PGM")
-				Status_manager.Add("L4_Prioritize_PGM|Approve","L4_Approve_PGM")
-				Status_manager.Add("L3_Prioritize_PGM|Approve","L3_Approve_PGM")
-				Status_manager.Add("L2_Prioritize_PGM|Approve","L2_Approve_PGM")
-				Status_manager.Add("L2_Approve_PGM|Final","L2_Final_PGM")
-				Status_manager.Add("L3_Approve_PGM|Validate","L2_Validate_PGM")
-				Status_manager.Add("L4_Approve_PGM|Validate","L3_Validate_PGM")
-				Status_manager.Add("L2_Formulate_PGM|Final","L2_Final_PGM")
-				Status_manager.Add("L2_Final_PGM|Formulate","L2_Formulate_PGM")
+				
 
 				
 				If args.NameValuePairs.XFGetValue("Demote") = "True" Then
@@ -481,6 +466,26 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					'--------------------------Demote Statuses----------------------------------
 #End Region
 				End If 
+#Region "Status Manager"
+				Status_manager.Add("L5_Formulate_PGM|Validate","L4_Validate_PGM")
+				Status_manager.Add("L4_Formulate_PGM|Validate","L3_Validate_PGM")
+				Status_manager.Add("L3_Formulate_PGM|Validate","L3_Validate_PGM")
+				Status_manager.Add("L2_Formulate_PGM|Validate","L2_Validate_PGM")
+				Status_manager.Add("L4_Validate_PGM|Prioritize","L4_Prioritize_PGM")
+				Status_manager.Add("L3_Validate_PGM|Prioritize","L3_Prioritize_PGM")
+				Status_manager.Add("L2_Validate_PGM|Prioritize","L2_Prioritize_PGM")
+				Status_manager.Add("L4_Validate_PGM|Approve","L4_Approve_PGM")
+				Status_manager.Add("L3_Validate_PGM|Approve","L3_Approve_PGM")
+				Status_manager.Add("L2_Validate_PGM|Approve","L2_Approve_PGM")
+				Status_manager.Add("L4_Prioritize_PGM|Approve","L4_Approve_PGM")
+				Status_manager.Add("L3_Prioritize_PGM|Approve","L3_Approve_PGM")
+				Status_manager.Add("L2_Prioritize_PGM|Approve","L2_Approve_PGM")
+				Status_manager.Add("L2_Approve_PGM|Final","L2_Final_PGM")
+				Status_manager.Add("L3_Approve_PGM|Validate","L2_Validate_PGM")
+				Status_manager.Add("L4_Approve_PGM|Validate","L3_Validate_PGM")
+				Status_manager.Add("L2_Formulate_PGM|Final","L2_Final_PGM")
+				Status_manager.Add("L2_Final_PGM|Formulate","L2_Formulate_PGM")
+#End region							
 				
 				Dim dbExt_ChangedResult As New XFSelectionChangedTaskResult()
 				Dim req_IDs As String = args.NameValuePairs.XFGetValue("req_IDs")
@@ -500,12 +505,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Else 
 
 					Dim full_Req_ID_List As List (Of String) =  StringHelper.SplitString(req_IDs, ",")
-'Brapi.ErrorLog.LogMessage(si, "full_Req_ID_List = " & full_Req_ID_List.Count & ", req_IDs; " & req_IDs)
 
-					'SQL has a parameter limit of 2100. To work around that if REQ list is more than 200 we chunk it
-'					Dim size As Integer = 2000
-'					Dim reqListChuncks = Me.ChunckREQList(full_Req_ID_List, size)
-'					For Each Req_ID_List As List(Of String) In reqListChuncks
 '@Jeff Martin - DOes this code get called after the Manage DB is saved?  I assume not, need to see that code.
 					Dim new_Status As String = args.NameValuePairs.XFGetValue("new_Status")
 						
@@ -638,6 +638,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 										Dim existingStatus As String = ""
 										If Not IsDBNull(row("Status")) Then existingStatus = row("Status").ToString().Trim()
 	'@Jeff Martin - I am unsure that this will work if not a demote, we need to run through that on Thursday.
+										
 										Dim lookupKey As String = existingStatus & "|" & new_Status
 'brapi.ErrorLog.LogMessage(si,"lookupKey: " & lookupKey)
 										Dim resolvedStatus As String
@@ -653,7 +654,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 											row("Demotion_Comment") = demote_comment
 										End If 
 										row("Status") = resolvedStatus
-										'@Jeff Martin - Add Review Entity here
+										' Add Review Entity here
 										row("Update_User") = si.UserName
 										row("Update_Date") = DateTime.Now
 'Brapi.ErrorLog.LogMessage(si, "existingStatus | new_Status  |  resolvedStatus: " & existingStatus & "|" & new_Status &  " | " & resolvedStatus)
@@ -673,7 +674,17 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 												If Not FCList.Contains($"{drow("Entity")}")
 													FCList.Add($"{drow("Entity")}")
 												End If
-												globals.SetStringValue($"FundsCenterStatusUpdates - {drow("Entity")}", $"{existingStatus}|{resolvedStatus}")
+												If Not APPNList.Contains($"{drow("UD1")}") Then
+													APPNList.Add($"{drow("UD1")}")
+												End If
+												If Not statusList.Contains($"{drow("Flow")}") Then
+													statusList.Add($"{drow("Flow")}")
+												End If
+												If Not statusList.Contains(resolvedStatus) Then
+													statusList.Add(resolvedStatus)
+												End If
+												
+												'globals.SetStringValue($"FundsCenterStatusUpdates - {drow("Entity")}", $"{existingStatus}|{resolvedStatus}")
 
 												drow("Flow") = resolvedStatus
 												drow("Update_User") = si.UserName
@@ -757,9 +768,15 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 								
 							End Using
 						End If
-					
+'brapi.ErrorLog.LogMessage(si,"status = " & String.join("|",StatusList))					
 					'@Yosef & Jeff Martin - I think this piece should be it's own function/sub, so that we don't have to update status when not necessary
-					Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_PGM")
+						Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_PGM")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							Globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.join("|",APPNList))	
+						Next
+					
 					Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
 					Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
 					Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
@@ -772,6 +789,27 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
 					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
 'Brapi.ErrorLog.LogMessage(si,"HERE2")
+
+						Dim dKeyVal As New Dictionary(Of String, String)					
+						dKeyVal.Add("IV_CMD_PGM_REQTitleList","")
+						Dim selectionChangedTaskResult As XFSelectionChangedTaskResult
+						If selectionChangedTaskResult Is Nothing Then
+							selectionChangedTaskResult = New XFSelectionChangedTaskResult()
+						End If
+			
+						selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True			
+						selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
+			
+			For Each KeyVal As KeyValuePair(Of String, String) In dKeyVal
+				selectionChangedTaskResult.ModifiedCustomSubstVars.Remove(KeyVal.Key)
+				selectionChangedTaskResult.ModifiedCustomSubstVars.Add(KeyVal.Key, KeyVal.Value)
+			
+				selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard.Add(KeyVal.Key, KeyVal.Value)			
+			Next
+			
+			
+						dbExt_ChangedResult = selectionChangedTaskResult
+
 					Return dbExt_ChangedResult
 				End If
 			Catch ex As Exception
@@ -852,7 +890,7 @@ Dim startTime As DateTime = DateTime.Now
 						Dim targetsqaREQReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
 						If action.ToLower = "copy" Then
 							targetSqlREQ = $"SELECT * 
-								FROM XFC_CMD_PGM_REQ
+								FROM XFC_CMD_PGM_REQ WITH (NOLOCK)
 								WHERE WFScenario_Name = '{senario}'
 								And WFCMD_Name = '{cmd}'
 								AND WFTime_Name = '{tm}'
@@ -860,7 +898,7 @@ Dim startTime As DateTime = DateTime.Now
 						End If
 						If action.ToLower = "rollover" Then
 							targetSqlREQ  = $"SELECT *
-								FROM XFC_CMD_PGM_REQ
+								FROM XFC_CMD_PGM_REQ WITH (NOLOCK)
 								WHERE WFScenario_Name = '{senario}'
 								And WFCMD_Name = '{cmd}'
 								AND WFTime_Name = '{tm}'
@@ -878,12 +916,12 @@ Dim startTime As DateTime = DateTime.Now
 						Next
 						
 						Dim SqlREQDetail As String = $"SELECT * 
-								FROM XFC_CMD_PGM_REQ_Details
+								FROM XFC_CMD_PGM_REQ_Details WITH (NOLOCK)
 								WHERE 1=0"
 						If Not String.IsNullOrWhiteSpace(GUIDs) Then
 							GUIDs = GUIDs.Substring(0,GUIDs.Length -1)
 							SqlREQDetail = $"SELECT * 
-								FROM XFC_CMD_PGM_REQ_Details
+								FROM XFC_CMD_PGM_REQ_Details WITH (NOLOCK)
 								WHERE CMD_PGM_REQ_ID in ({GUIDs})"
 						End If
 	'BRApi.ErrorLog.LogMessage(si, "target detail: " & SqlREQDetail)					
@@ -935,7 +973,7 @@ Dim startTime As DateTime = DateTime.Now
 											   Gen_Comments_Notes,JUON,ISR_Flag,Cost_Model,Combat_Loss,Cost_Location,Cat_A_Code,CBS_Code,MIP_Proj_Code,SS_Priority,Commit_Group,SS_Cap,Strategic_BIN,LIN,REQ_Type,
 											   DD_Priority,Portfolio,DD_Cap,JNT_Cap_Area,TBM_Cost_Pool,TBM_Tower,APMS_AITR_Num,Zero_Trust_Cap,Assoc_Directives,Cloud_IND,Strat_Cyber_Sec_PGM,
 											   Notes,FF_1,FF_2,FF_3,FF_4,FF_5,Status,Invalid,Val_Error,Create_Date,Create_User,Update_Date,Update_User,Related_REQs,Review_Entity,Demotion_Comment,Validation_List_Emails
-									   FROM XFC_CMD_PGM_REQ AS OuterREQ
+									   FROM XFC_CMD_PGM_REQ AS OuterREQ WITH (NOLOCK)
 									   WHERE{whereClause}"
 'BRApi.ErrorLog.LogMessage(si, "REQ Source: " & SqlREQ)	
 					    REQDT.AcceptChanges()
@@ -951,20 +989,24 @@ Dim startTime As DateTime = DateTime.Now
 							GUID_Mapping.Columns.Add("Orig_REQ_ID", GetType(String))
 							
 						'Update REQ_IDs
+						Dim statusByEntity As New Dictionary(Of String, String) 
 						For Each r In REQDT.Rows
 'BRApi.ErrorLog.LogMessage(si, "In loop")							
 							Dim orig_guid As String = r("CMD_PGM_REQ_ID").toString '= Guid.NewGuid()
 							Dim orig_id As String = r("REQ_ID")
 							If action.ToLower = "copy" Then
-								r("REQ_ID") = Me.GetNextREQID(r("Entity"))
+								r("REQ_ID") =  GBL.GBL_Assembly.GBL_REQ_ID_Helpers.GetNextREQID(si, r("Entity"), startingREQ_IDByFC)
 								r("CMD_PGM_REQ_ID") = Guid.NewGuid()
 							End If
 							r("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, r("Entity") ) & "_Formulate_PGM"
-							
+							r("Review_Entity") = r("Entity")
 							GUID_Mapping.Rows.Add( r("CMD_PGM_REQ_ID").toString, orig_guid, orig_id, r("REQ_ID"))
+							If Not statusByEntity.ContainsKey((r("Entity"))) Then
+								statusByEntity.Add(r("Entity"), r("Status"))
+							End If
 						Next
 						REQDT.Columns.Remove("orig_CMD_PGM_REQ_ID")
-						
+'BRApi.ErrorLog.LogMessage(si, "Out of loop")						
 'For Each r As DataRow In GUID_Mapping.Rows
 '	BRApi.ErrorLog.LogMessage(si,"GUID_Mapping: "&  String.Join(", ", r.ItemArray) )
 'Next						
@@ -990,13 +1032,13 @@ Dim startTime As DateTime = DateTime.Now
 							tempTableName = tempTableName.Replace("-", "_")
 							Dim tempSQL As String = $" select 
 															tmp.CMD_PGM_REQ_ID, tmp.WFScenario_Name,tmp.WFCMD_Name,tmp.WFTime_Name,dtl.Unit_of_Measure,tmp.Entity,dtl.IC,dtl.Account,dtl.Flow,dtl.UD1,
-															dtl.UD2,dtl.UD3,dtl.UD4,dtl.UD5,dtl.UD6,dtl.UD7,dtl.UD8,dtl.Start_Year,dtl.FY_1,dtl.FY_2,dtl.FY_3,dtl.FY_4,dtl.FY_5,dtl.FY_Total,
+															dtl.UD2,dtl.UD3,dtl.UD4,dtl.UD5,dtl.UD6,dtl.UD7,dtl.UD8,'{tm}' Start_Year,dtl.FY_1,dtl.FY_2,dtl.FY_3,dtl.FY_4,dtl.FY_5,dtl.FY_Total,
 															dtl.AllowUpdate,dtl.Create_Date,dtl.Create_User,dtl.Update_Date,dtl.Update_User
 														From  {tempTableName} tmp
 														Join XFC_CMD_PGM_REQ req On req.REQ_ID = tmp.REQ_ID And req.WFScenario_Name = '{prevscName}'
 														Join XFC_CMD_PGM_REQ_Details dtl On dtl.CMD_PGM_REQ_ID = req.CMD_PGM_REQ_ID"
 							
-		BRApi.ErrorLog.LogMessage(si, "tempSQL: " & tempSQL)
+		'BRApi.ErrorLog.LogMessage(si, "tempSQL: " & tempSQL)
 							
 							tempTable.AcceptChanges()
 							sqa.AcceptChangesDuringFill = False
@@ -1042,14 +1084,25 @@ Dim startTime As DateTime = DateTime.Now
 								.Update_Date = REQDetail.Field(Of DateTime?)("Update_Date"),
 								.Update_User = REQDetail.Field(Of String)("Update_User")
 		                    }
+
 							' Fill the  DataTable
 'BRApi.ErrorLog.LogMessage(si, "query count:  " & query.Count() )							
 					        For Each row In query
 'BRApi.ErrorLog.LogMessage(si, "in query loop:  " )								
 					            tempTable.Rows.Add(row.CMD_PGM_REQ_ID,row.WFScenario_Name,row.WFCMD_Name,row.WFTime_Name,row.Unit_of_Measure,row.Entity,row.IC,row.Account,row.Flow,row.UD1,row.UD2,row.UD3,row.UD4,row.UD5,row.UD6,row.UD7,row.UD8,row.Start_Year,row.FY_1,row.FY_2,row.FY_3,row.FY_4,row.FY_5,row.FY_Total,row.AllowUpdate,row.Create_Date,row.Create_User,row.Update_Date,row.Update_User)
 					        Next
-						
+'BRApi.ErrorLog.LogMessage(si, "statusByEntity: " & statusByEntity.Count)
 						End If
+						
+						For Each r As DataRow In tempTable.Rows
+							r("Flow") = statusByEntity.GetValueOrEmpty(r("Entity"))
+							r("Create_Date") = DateTime.Now
+							r("Create_User") = si.UserName
+							r("Update_Date") = DateTime.Now
+							r("Update_User") = si.UserName
+'BRApi.ErrorLog.LogMessage(si, "Entitiy - Flow " & r("Flow")	& " - "	& r("Entity"))					
+						Next
+
 'For Each r As DataRow In targetREQDetailDT.Rows
 '	BRApi.ErrorLog.LogMessage(si, " before join targetREQDetailDT: " & r("CMD_PGM_REQ_ID").ToString & " |   row: " & String.Join(",",r.ItemArray) )
 'Next						
@@ -1077,16 +1130,25 @@ Dim startTime As DateTime = DateTime.Now
 						Dim newREQDetailRows As New List(Of DataRow)
 						'Dim newREQRow As datarow = Nothing
 						Dim FCList As New List(Of String)
-						Dim EntList As New List(Of String)
+						Dim APPNList As New List (Of String)
+						Dim StatusList As New List (Of String)
 						For Each row As DataRow In REQDT.Rows	
 							'Set up entity/status for the cube writing rule
-							If Not FCList.Contains($"E#{row("Entity")}")
-								FCList.Add($"E#{row("Entity")}")
-								Globals.SetStringValue($"FundsCenterStatusUpdates - {row("Entity")}",$"{row("Status")}")
-								EntList.Add(row("Entity").ToString)
+							Dim appn As String = row("APPN").ToString
+							Dim status As String = row("Status").ToString
+							Dim Entity As String = row("Entity").ToString
+							If Not FCList.Contains(Entity)
+								FCList.Add(Entity)
+							End If
+							If Not APPNList.Contains(appn) Then
+								APPNList.Add(appn)
+							End If
+							If Not StatusList.Contains(status) Then
+								StatusList.Add(status)
 							End If
 						Next
-
+'brapi.ErrorLog.LogMessage(si,"copy appn =" & String.Join("|",APPNList))
+'brapi.ErrorLog.LogMessage(si,"copy StatusList =" & String.Join("|",StatusList))
 						'Write to the cube
 						'@Jeff Martin - Ignore my comment above about Non-Demote status updates
 						Args.NameValuePairs.Add("new_Status", "Formulate")
@@ -1096,14 +1158,19 @@ Dim startTime As DateTime = DateTime.Now
 						'Globals.SetStringValue($"FundsCenterStatusUpdates - {api.pov.entity.name}",String.Empty)
 						'-------------------------------------
 						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
-		'Brapi.ErrorLog.LogMessage(si,"@@FCList, " & String.Join(",",FCList))
-						Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,EntList,"CMD_PGM")
-						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-						
 						Dim customSubstVars As New Dictionary(Of String, String) 
+						Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_PGM")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							Globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.join("|",APPNList))	
+						Next
+					
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
+
+						customSubstVars.Add("EntList",BaseEntityList)
 						customSubstVars.Add("ParentEntList",ParentEntityList)
-						customSubstVars.Add("EntList",String.Join(",",FCList))
-		'Brapi.ErrorLog.LogMessage(si,"@@ ParentEntityList: " & ParentEntityList)				
 						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 						Dim currentYear As Integer = Convert.ToInt32(wfInfoDetails("TimeName"))
 						customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
@@ -1123,72 +1190,11 @@ Brapi.ErrorLog.LogMessage(si,$"**The method took {elapsed.TotalMilliseconds} mil
 			 
 		End Function
 
-		'@Jeff Martin & Yosef - This needs to be GBL function, I think this is 3rd place I have seen this exact same thing.
-#Region "GetNextREQID"
-
-	Dim startingREQ_IDByFC As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
-	Function GetNextREQID (fundCenter As String) As String
-		Dim currentREQID As Integer
-		Dim newREQ_ID As String
-		If startingREQ_IDByFC.TryGetValue(fundCenter, currentREQID) Then
-'BRApi.ErrorLog.LogMessage(si,"IF Fund Center: " & fundCenter & ", currentREQID: " & currentREQID )			
-			currentREQID = currentREQID + 1
-			Dim modifiedFC As String = fundCenter
-			modifiedFC = modifiedFC.Replace("_General", "")
-			If modifiedFC.Length = 3 Then modifiedFC = modifiedFC & "xx"
-			newREQ_ID =  modifiedFC &"_" & currentREQID.ToString("D5")
-			startingREQ_IDByFC(fundCenter) = currentREQID
-		Else	
-			newREQ_ID = GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,fundCenter)
-'BRApi.ErrorLog.LogMessage(si,"ELSE Fund Center: " & fundCenter & ", newREQ_ID: " & newREQ_ID.Split("_")(1) )				
-			startingREQ_IDByFC.Add(fundCenter.Trim, newREQ_ID.Split("_")(1))
-		End If 
-			
-		Return newREQ_ID
-	End Function
-#End Region	
-
 		'@Yosef - Looking through Import, Rollover and Copy, It feels like we could & should merge these with parameters
 			'My justification for this is we have a pretty good idea that these relational tables will be relatively fluid and it will be painful to sustain this
 			'Here are my thoughts....  No doubt Import will have to run the split table function and that would be Imports unique piece
 			'I see it like this for all of these - 'Stage Data' so to speak -> Fill DT -> Map source to target -> Determine if Insert or Update -> Write to DB
 			
-
-		Public Sub UpdateNewREQColumns(ByRef newRow As DataRow, ByRef action As String) 
-			'update the columns
-			newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
-			Dim trgtfundCenter = newRow("Entity")
-			newRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, trgtfundCenter) & "_Formulate_PGM"
-			
-			If action.XFEqualsIgnoreCase("copy") Then
-				Dim newREQ_ID As String= GetNextREQID(trgtfundCenter)
-				newRow("REQ_ID") = newREQ_ID
-				newRow("Title") = newRow("Title") & " - Copy" 'args.NameValuePairs.XFGetValue("NewREQName")
-				
-			End If
-			
-			If action.XFEqualsIgnoreCase("rollover") Then
-				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-				newRow("WFScenario_Name") = wfInfoDetails("ScenarioName")
-				newRow("WFTime_Name") = wfInfoDetails("TimeName")				
-			End If
-			
-		End Sub
-		
-
-		Public Sub UpdateCopyREQColumns(ByRef newRow As DataRow) 
-			'update the columns
-			Dim trgtfundCenter = newRow("Entity")'BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity","")
-
-			Dim newREQ_ID As String= GetNextREQID(trgtfundCenter)
-			newRow("REQ_ID") = newREQ_ID
-'BRApi.ErrorLog.LogMessage(si,"Copied REQ_ID: " & newREQ_ID)			
-			newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
-			newRow("Title") = newRow("Title") & " - Copy" 'args.NameValuePairs.XFGetValue("NewREQName")
-			newRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, trgtfundCenter) & "_Formulate_PGM"
-			'newRow("Entity") = trgtfundCenter
-			
-		End Sub
 		
 		Public Sub UpdateCopyREQDetailColumns(ByRef newRow As DataRow, ByRef newCMD_PGM_REQ_ID As String) 
 			'update the columns
@@ -1553,8 +1559,10 @@ End Function
 #Region "Set reqid for details popup"
 Public Function Setreqidfordetails() As Object
 Dim reqid As String = args.NameValuePairs.XFGetValue("REQ")
+Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity")
 	Dim dKeyVal As New Dictionary(Of String, String)					
-	dKeyVal.Add("IV_CMD_TGT_REQTitleList",reqid)	
+	dKeyVal.Add("IV_CMD_PGM_REQTitleList",reqid)
+	dKeyVal.Add("BL_CMD_PGM_FundsCenter",sEntity)
 	Return Me.SetParameter(si, globals, api, dKeyVal)
 		
 End Function
@@ -1626,7 +1634,7 @@ End Function
 
 #Region "Clear Selections"
 		Public Function ClearSelections(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs, ByVal ParamsToClear As String)As Object
-'BRApi.ErrorLog.LogMessage(si,$"ParamsToClear = {ParamsToClear}")
+'BRApi.ErrorLog.LogMessage(si,$"ParamsToClear in clear = {ParamsToClear}")
 			Dim objDictionary = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues
 			For i As Integer = 0 To objDictionary.Count -1
 				'Clear only prompts that are passed in as parameters
@@ -1898,6 +1906,9 @@ Public Function SetRelatedREQs()
 				Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity")
 				Dim sSourcePosition As String = args.NameValuePairs.XFGetValue("Cprobe")
 				Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			
+				Dim APPNList As New List (Of String)
+				Dim StatusList As New List (Of String)
 
 				 Dim REQDT As DataTable = New DataTable()
 				 Dim REQDetailDT As DataTable = New DataTable()
@@ -1976,10 +1987,14 @@ Public Function SetRelatedREQs()
 						params.Add("REQ_ID_VAL",REQ_ID_VAL.ToString)
 						params.Add("Entity",sEntity)
 						BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "Copy_Manpower", Params)
-						
 						Dim customSubstVars As New Dictionary(Of String, String) 
-						globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", $"L2_Formulate_PGM|L2_Formulate_PGM")
-						customSubstVars.Add("EntList","E#" & sEntity)
+						Dim FCList As New List(Of String)
+						FCList.Add(sEntity)
+						Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
+						customSubstVars.Add("EntList",BaseEntityList)
+						customSubstVars.Add("ParentEntList", ParentEntityList)
 						customSubstVars.Add("WFScen",sScenario)
 						Dim currentYear As Integer = Convert.ToInt32(tm)
 						customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
@@ -1996,8 +2011,8 @@ Public Function SetRelatedREQs()
 #Region "Save Adjust Funding Line "		
 Public Function Save_AdjustFundingLine() As xfselectionchangedTaskResult
 		
-		Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_CMD_PGM_REQTitleList","NA")
-		req_IDs = req_IDs.Split(" ").Last()
+		Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_CMD_PGM_REQTitleList","")
+		
 
 		'@Jeff Martin - Use GBLs for this entire block through 1992
 		Dim WFInfoDetails As New Dictionary(Of String, String)()
@@ -2035,7 +2050,7 @@ Public Function Save_AdjustFundingLine() As xfselectionchangedTaskResult
 		Dim sqa2 As New SqlDataAdapter()
         Dim sqaReaderdetail As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
 		Dim parentIds As New List(Of String)()
-'Brapi.ErrorLog.LogMessage(si, "HERE 3:" & dt.Rows.Count)	
+Brapi.ErrorLog.LogMessage(si, "HERE 3:" & dt.Rows.Count)	
 		For Each parentRow As DataRow In dt.Rows
 'Brapi.ErrorLog.LogMessage(si, "HERE 4")	
 		    If Not IsDBNull(parentRow("CMD_PGM_REQ_ID")) Then
@@ -2353,7 +2368,7 @@ End Function
 
 #Region "Delete Requirement ID"
 		Public Function DeleteRequirementID() As XFSelectionChangedTaskResult
-			Try
+		
 				Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
 				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 				' Get list of REQ IDs from args and split into list
@@ -2365,6 +2380,9 @@ End Function
 				' Build a cleaned list of REQ IDs (handle single value, comma separated, or space-delimited passed-in values)
 				Dim Req_ID_List As List(Of String) = New List(Of String)()
 				Dim raw As String = req_IDsRaw.Trim()
+				Dim fclist As New List (Of String)
+				Dim APPNList As New List (Of String)
+				Dim StatusList As New List (Of String)
 
 				If String.IsNullOrWhiteSpace(raw) Then
 					Req_ID_List = New List(Of String)()
@@ -2376,15 +2394,16 @@ End Function
 				Else
 					Req_ID_List.Add(raw)
 				End If
-'brapi.ErrorLog.LogMessage(si,"here1")
+
 				' Remove duplicates if any
 				Req_ID_List = Req_ID_List.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
+'brapi.ErrorLog.LogMessage(si,$"here1 {req_IDsRaw}")
 				' Prepare datatables to be filled and fill them from DB
 				Dim REQDT As New DataTable()
 				Dim REQDetailDT As New DataTable()
 				Dim REQCMTDT As New DataTable()
 				Dim Status As String = ""
-				Dim StatusList As String = ""
+				'Dim StatusList As String = ""
 				
 				Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
 
@@ -2465,15 +2484,19 @@ End Function
 						Dim GUIDROW As String = rows.FirstOrDefault().Item("CMD_PGM_REQ_ID").ToString
 					
 						Dim ent As String = rows.FirstOrDefault().Item("Entity").ToString
+						Dim APPN As String = rows.FirstOrDefault().Item("APPN").ToString
 						entitiesFromReqList.Add(ent)
 						Status  = rows.FirstOrDefault().Item("Status").ToString
-						If StatusList.XFEqualsIgnoreCase("") Then
-							StatusList = Status
-						Else
-							If Not statuslist.XFContainsIgnoreCase(Status) Then
-								statuslist += StatusList & "|" & Status
-							End If
-						End If 
+						If Not FCList.Contains(ent) Then
+							FCList.Add(ent)
+						End If
+						If Not APPNList.Contains(APPN) Then
+							APPNList.Add(APPN)
+						End If
+						If Not StatusList.Contains(Status) Then
+							StatusList.Add(Status)
+						End If
+						
 						For Each row As DataRow In rows
 							row.Delete()
 						Next
@@ -2485,40 +2508,53 @@ End Function
 						For Each srow As DataRow In cmtRows
 							srow.Delete()
 						Next
-						globals.SetStringValue($"FundsCenterStatusUpdates - {ent}", statuslist)
+					
 					Next
 					' Persist changes back to DB
 					sqa_xfc_CMD_PGM_req_details.Update_XFC_CMD_PGM_REQ_Details(REQDetailDT, sqa)
 					sqa_xfc_CMD_PGM_req.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
 					sqa_xfc_CMD_PGM_req_cmt.Update_XFC_CMD_PGM_REQ_CMT(REQCMTDT, sqa)
-					Dim workspaceID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "10 CMD PGM")	
-					Dim customSubstVars As New Dictionary(Of String, String)
-					Dim FCList As New List (Of String)
-					If Not String.IsNullOrWhiteSpace(sEntity) Then
-						FCList.Add(sEntity)
-					Else
-						Dim entities As String
-						entitiesFromReqList = entitiesFromReqList.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
-						entities = String.Join(",", entitiesFromReqList.Select(Function (r) "E#" & r))
-						FCList.Add(entities)
-					End If
-					Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
-					Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-					Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-					customSubstVars.Add("EntList",BaseEntityList)
-					customSubstVars.Add("ParentEntList",ParentEntityList)
-					customSubstVars.Add("WFScen", sScenario)
-					Dim currentYear As Integer = Convert.ToInt32(tm)
-					customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
 					
 
-				End Using
+					
+'brapi.ErrorLog.LogMessage(si,"delete appn =" & String.Join("|",APPNList))
+'brapi.ErrorLog.LogMessage(si,"delete StatusList =" & String.Join("|",StatusList))					
+						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
+						Dim customSubstVars As New Dictionary(Of String, String) 
+						Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_PGM")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							Globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.join("|",APPNList))	
+						Next
+					
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
 
-				Return Nothing
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try
+						customSubstVars.Add("EntList",BaseEntityList)
+						customSubstVars.Add("ParentEntList",ParentEntityList)
+						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
+						Dim currentYear As Integer = Convert.ToInt32(wfInfoDetails("TimeName"))
+						customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
+
+						
+				End Using
+'				If args.LoadDashboardTaskInfo.Reason = LoadDashboardReasonType.ComponentSelectionChanged Then
+'				Dim loadDashboardTaskResult As New XFLoadDashboardTaskResult()
+											
+'								loadDashboardTaskResult.ChangeCustomSubstVarsInDashboard = True
+'								loadDashboardTaskResult.ModifiedCustomSubstVars.Add("IV_CMD_PGM_REQTitleList","")
+														
+'				Return loadDashboardTaskResult
+'				End If
+				
+				
+						Dim dKeyVal As New Dictionary(Of String, String)					
+						dKeyVal.Add("IV_CMD_PGM_REQTitleList","")	
+						Dim xfselectionchnagedtaskresult = Me.SetParameter(si, globals, api, dKeyVal)
+						Return xfselectionchnagedtaskresult
+			
 			
 		End Function
 

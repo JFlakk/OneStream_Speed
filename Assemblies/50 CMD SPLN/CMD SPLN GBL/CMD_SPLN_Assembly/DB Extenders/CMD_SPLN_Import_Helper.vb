@@ -126,6 +126,16 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 				Dim REQDataTable As New DataTable("XFC_CMD_SPLN_REQ")
 				Dim REQDetailDataTable As New DataTable("XFC_CMD_SPLN_REQ_Details")
+				
+				
+				
+				'write only error messages. If no error leave blank
+				Dim errRowsToReport As list (Of DataRow) = Importreq_DT.AsEnumerable().
+										Where(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors"))).ToList()
+				Dim errorTable As DataTable = Importreq_DT.Clone()
+				For Each errorRow As DataRow In errRowsToReport
+					errorTable.ImportRow(errorRow)
+				Next
 'brapi.ErrorLog.LogMessage(si,"Hit 6")				
 	            If validFile Then
 					'get req_id and guid
@@ -171,7 +181,7 @@ brapi.ErrorLog.LogMessage(si,"Proc load table time = " & Now.Subtract(tStart4).T
 					'Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf & "Output file is located in the following folder for review:" & vbCrLf & "DOCUMENTS/USERS/" & si.UserName.ToUpper
 					Dim uploadStatus As String = "IMPORT PASSED" & vbCrLf 
 					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", uploadStatus)
-					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName") ,  ImportREQ_DT)
+					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName") ,  errorTable)
 	'brapi.ErrorLog.LogMessage(si, "Post 4")						
 					Dim sPasstimespent As System.TimeSpan = Now.Subtract(timestart)
 				Else 'If the validation failed, write the error out.
@@ -179,7 +189,7 @@ brapi.ErrorLog.LogMessage(si,"Proc load table time = " & Now.Subtract(tStart4).T
 									
 					Dim stastusMsg As String = "LOAD FAILED" & vbCrLf & fileName & " has invalid data." & vbCrLf & vbCrLf & $"To view import error(s), please take look at the column titled ""ValidationError""."
 					BRApi.Utilities.SetWorkspaceSessionSetting(si, si.UserName, "UploadStatus", "UploadStatus", stastusMsg)
-					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName"),  ImportREQ_DT)
+					Brapi.Utilities.SetSessionDataTable(si,si.UserName, "CMD_SPLN_Import_" & wfInfoDetails("ScenarioName"),  errorTable)
 					Return Nothing
 				End If
 				
@@ -244,7 +254,8 @@ brapi.ErrorLog.LogMessage(si,"Proc load table time = " & Now.Subtract(tStart4).T
 			row("UD5") = "None"
 			row("UD7") = "None"
 			row("UD8") = "None"			
-			row("FundCenter") = fundCenter		
+			row("FundCenter") = fundCenter
+			row("Review_Entity") = fundCenter	
 ''brapi.ErrorLog.LogMessage(si,"lsAncestorListUD1=" & lsAncestorListUD1(0).Member.Name)
 			row("APE9") =   lsAncestorListUD1(0).Member.Name & "_" & row("APE9") '"OMA_111011000"'row("FundCode") & "_" & row("APE9") 'CMD_SPLN_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
 			
@@ -290,6 +301,7 @@ brapi.ErrorLog.LogMessage(si,"Proc load table time = " & Now.Subtract(tStart4).T
 		dt.Columns.Add("REQ_ID_Type")
 		dt.Columns.Add("REQ_ID")
 		dt.Columns.Add("Status")
+		dt.Columns.Add("Review_Entity")
         ' Assuming the first line contains headers
 
 		'Add audit columns for narrative
@@ -843,7 +855,8 @@ brapi.ErrorLog.LogMessage(si,"inclause = " & inclause)
 				{"Create_Date","Create_Date"},
 				{"Create_User","Create_User"},
 				{"Update_Date","Update_Date"},
-				{"Update_User","Update_User"}		
+				{"Update_User","Update_User"},
+				{"Review_Entity","Review_Entity"}
 		}
 		Return REQColMapping
 	End Function

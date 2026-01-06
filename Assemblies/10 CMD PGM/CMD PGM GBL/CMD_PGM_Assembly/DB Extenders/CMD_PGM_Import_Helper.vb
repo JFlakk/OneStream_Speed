@@ -104,15 +104,15 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 											FirstOrDefault(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors")) )
 											
 				If errRow IsNot Nothing Then validFile = False
-				Dim REQDataTable As New DataTable("XFC_CMD_PGM_REQ")
-				Dim REQDetailDataTable As New DataTable("XFC_CMD_PGM_REQ_Details")
+				Dim targetREQDT As New DataTable("XFC_CMD_PGM_REQ")
+				Dim targetREQDetailDT As New DataTable("XFC_CMD_PGM_REQ_Details")
 				
 				Dim existingREQs As New List(Of String)
 				Dim REQsinDB As Dictionary(Of (String, String, String), String)
 			
 				If validFile Then
 					'Get current REQs for the current scenario and command
-					REQsinDB = Me.GetDbValuesIntoREQTables(Importreq_DT, REQDataTable, REQDetailDataTable)
+					REQsinDB = Me.GetDbValuesIntoREQTables(targetREQDT, targetREQDetailDT)
 					validFile = REQ_IDIsValid( Importreq_DT, REQsinDB)
 				End If
 				
@@ -130,19 +130,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					'Update additional columns
 					PostProcessNewREQ(ImportREQ_DT, FCList, APPNList, StatusList)
 
-					'Get existing duplicate Reqs
-					
-					existingREQs = Me.GetExistingDupREQs(Importreq_DT, REQDataTable, REQsinDB)
-					'Call delete to delte rows
-					If existingREQs.Count > 0 Then
-						Dim deleter As New CMD_PGM_Helper.MainClass
-						Args.NameValuePairs.Add("req_IDs", String.Join(",", existingREQs))
-						'Args.NameValuePairs.Add("Entity", comd)
-						Args.NameValuePairs.Add("Action", "Delete")
-						deleter.main(si, globals, api, args)
-					End If
 					'Spltit imported data to REQ and detail tables
-					Me.SplitAndUpdateREQTables(ImportREQ_DT, REQDataTable, REQDetailDataTable)
+					Me.SplitAndUpdateREQTables(ImportREQ_DT, targetREQDT, targetREQDetailDT)
 					
 					'write to cube
 					Dim REQ_IDs As New List(Of String)
@@ -253,13 +242,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			'If String.IsNullOrWhiteSpace(REQ_ID) Then 
 			If String.IsNullOrWhiteSpace(row("REQ_ID").ToString) Then 
 				row("REQ_ID") = GetNextREQID(fundCenter)
-				row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
-			Else
-				If String.IsNullOrWhiteSpace(row("REQ_ID").ToString) Then 
-					row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
-				End If
 			End If
-			row("CMD_PGM_REQ_ID") = Guid.NewGuid()
+			If String.IsNullOrWhiteSpace(row("Status").ToString) Then 
+				row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
+			End If
+			
 			row("WFScenario_Name") =  wfInfoDetails("ScenarioName")
 			row("WFTime_Name") =  wfInfoDetails("TimeName")
 			row("WFCMD_Name") =  wfInfoDetails("CMDName")
@@ -271,6 +258,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			row("FundsCenter") = fundCenter
 			row("APE9") =  row("APPN") & "_" & row("APE9") 'CMD_PGM_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
 			row("REQ_ID_Type") = "Requirement"
+			row("Review_Entity") = fundCenter
 			row("Create_Date") = DateTime.Now
 			row("Create_User") = si.UserName
 			row("Update_Date") = DateTime.Now
@@ -318,7 +306,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		dt.Columns.Add("WFScenario_Name",GetType(String))
 		dt.Columns.Add("WFCMD_Name",GetType(String))
 		dt.Columns.Add("WFTime_Name",GetType(String))
-		
+		dt.Columns.Add("Review_Entity",GetType(String))
 		'Add columns for detail
 		dt.Columns.Add("IC",GetType(String))
 		dt.Columns.Add("Account",GetType(String))
@@ -327,26 +315,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		dt.Columns.Add("UD8",GetType(String))
 		dt.Columns.Add("FY_Total",GetType(String))
 		dt.Columns.Add("AllowUpdate",GetType(Boolean))
+		
        
         Return Nothing
 	
 	End Function	
-#End Region
-
-#Region "Get Existing Row"
-
-		Public Function GetExistingDupREQs(ByRef Importreq_DT As DataTable, ByRef REQDataTable As DataTable, ByRef existingREQs As Dictionary(Of (String, String, String), String)) As List(Of String)
-	
-	        'Identify dupliacate rows to delete based on the new data
-	        Dim rowsToDelete As New List(Of String)
-	        For Each newRow As DataRow In Importreq_DT.Rows
-	            Dim key = ((newRow("REQ_ID").ToString, newRow("WFScenario_Name").ToString(), newRow("FundsCenter").ToString()))
-	            If existingREQs.ContainsKey(key) Then
-	                rowsToDelete.Add(existingREQs(key))
-	            End If
-	        Next	
-			Return rowsToDelete
-		End Function
 #End Region
 
 #Region "CleanUp Special Characters"	
@@ -389,7 +362,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 #Region "setup Split And Insert Into REQ Tables"	
 
-	Function GetDbValuesIntoREQTables(ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable ) As Dictionary(Of (String, String, String), String)
+	Function GetDbValuesIntoREQTables(ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable ) As Dictionary(Of (String, String, String), String)
 
 		Dim sqa As New SqlDataAdapter()
 		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
@@ -402,7 +375,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sqlConn.Open()
                 Dim sqaREQReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
                 Dim SqlREQ As String = $"SELECT * 
-									FROM XFC_CMD_PGM_REQ
+									FROM XFC_CMD_PGM_REQ  WITH (NOLOCK)
 									WHERE WFScenario_Name = '{scName}'
 									And WFCMD_Name = '{cmd}'
 									AND WFTime_Name = '{tm}'"
@@ -414,10 +387,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				'Prepare Detail	
 				 Dim sqaREQDetailReader As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
 				 Dim SqlREQDetail As String = $"SELECT * 
-									FROM XFC_CMD_PGM_REQ_Details
+									FROM XFC_CMD_PGM_REQ_Details  WITH (NOLOCK)
 									WHERE WFScenario_Name = '{scName}'
 									And WFCMD_Name = '{cmd}'
-									AND WFTime_Name = '{tm}'"
+									AND WFTime_Name = '{tm}'
+				 					AND UNIT_OF_MEASURE = 'Funding'"
 
 				Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
                 sqaREQDetailReader.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa, REQDTDetail, SqlREQDetail, sqlparamsREQDetails)
@@ -432,7 +406,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		Return existingREQs
 	End Function
 	
-	Function SplitAndUpdateREQTables(ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable )
+	Function SplitAndUpdateREQTables(ByRef fullDT As DataTable, ByRef targetREQDT As DataTable, ByRef tergetREQDTDetail As DataTable )
 
 'Brapi.ErrorLog.LogMessage(si,"here * 1")	
 		Dim sqa As New SqlDataAdapter()
@@ -441,11 +415,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sqlConn.Open()
 				Dim sqaREQReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
 				Dim sqaREQDetailReader As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
+				
+				Dim srcREQDT As DataTable = targetREQDT.Clone()
+				Dim srcREQDetailDT As DataTable = tergetREQDTDetail.Clone()
 				 
-				Me.SplitFullDataTable(fullDT, REQDT, REQDTDetail)
-			
-				sqaREQReader.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
-				sqaREQDetailReader.Update_XFC_CMD_PGM_REQ_Details(REQDTDetail,sqa)
+				Me.SplitFullDataTable(fullDT, srcREQDT, srcREQDetailDT, targetREQDT)
+
+				sqaREQReader.MergeandSync_XFC_CMD_PGM_REQ_toDB(si, srcREQDT, targetREQDT)
+				sqaREQDetailReader.MergeandSync_XFC_CMD_PGM_REQ_Details_toDB(si, srcREQDetailDT, tergetREQDTDetail)
 
 			End Using
 		End Using
@@ -456,7 +433,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 #End Region
 
 #Region"Split dataset"
-	Public Function SplitFullDataTable (ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable) As Object
+	Public Function SplitFullDataTable (ByRef fullDT As DataTable, ByRef srcREQDT As DataTable, ByRef srcREQDTDetail As DataTable, ByRef tgtREQDT As DataTable) As Object
 		' Split and translate data per row
 		For Each row As DataRow In fullDT.Rows
 			
@@ -465,10 +442,22 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			MappingForREQ = GetMappingForREQ()
 		    'Dim existingRowREQDT As DataRow = REQDT.Rows.Find(row("CMD_PGM_REQ_ID")) 
 
-			' Create a new row
-	        Dim newRowREQDT As DataRow = REQDT.NewRow()
+			'Check if REQ_ID exists if not create a new row
+			Dim req_id = row("REQ_ID")
+			Dim currentGuid =""
+			Dim newRowREQDT As DataRow = srcREQDT.NewRow()
+			Dim newRowREQDTFind As DataRow = tgtREQDT.Select($"REQ_ID = '{req_id}'").FirstOrDefault()
+			If newRowREQDTFind Is Nothing Then
+				currentGuid =  Guid.NewGuid().ToString()
+			Else
+				currentGuid = newRowREQDTFind("CMD_PGM_REQ_ID").ToString()
+			End If 
+			newRowREQDT("CMD_PGM_REQ_ID") = currentGuid
+			'Update the row GUID so it makes processing details easier
+			row("CMD_PGM_REQ_ID") = currentGuid
+
 	        For Each fullCol As KeyValuePair (Of String, String) In MappingForREQ
-				If REQDT.Columns(fullCol.Value).DataType Is GetType(DateTime) Then
+				If srcREQDT.Columns(fullCol.Value).DataType Is GetType(DateTime) Then
                     Dim tempDate As DateTime
 					'Account for blank date fields. Has to be set to dbnull
                     If DateTime.TryParse(row(fullCol.Key), tempDate) Then
@@ -477,38 +466,41 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         newRowREQDT(MappingForREQ(fullCol.Key)) = DBNull.Value
                     End If
                 Else
-					newRowREQDT(MappingForREQ(fullCol.Key)) = row(fullCol.Key)
+					'Don't update the GUID is is handled earlier
+					If Not fullCol.Key.XFEqualsIgnoreCase("CMD_PGM_REQ_ID") Then
+						newRowREQDT(MappingForREQ(fullCol.Key)) = row(fullCol.Key)
+					End If
 				End If 
-	        Next		
-		    
-			REQDT.Rows.Add(newRowREQDT)
-			
+	        Next	
+			srcREQDT.Rows.Add(newRowREQDT)
 		    ' Handle REQDTDetail Base FYDP
 	        ' Create a new row
 			Dim MappingForREQDetails As New Dictionary(Of String, String)
 			MappingForREQDetails = GetMappingForREQDetailsBase()
-	        Dim newRowREQDTDetail As DataRow = REQDTDetail.NewRow()
+			
+	        Dim newRowREQDTDetail As DataRow = srcREQDTDetail.NewRow()
+			
 	        For Each fullCol As String In MappingForREQDetails.Keys
 	            newRowREQDTDetail(MappingForREQDetails(fullCol)) = row(fullCol)
 	        Next
 			
 			newRowREQDTDetail("UNIT_OF_MEASURE") = "Funding"
-			REQDTDetail.Rows.Add(newRowREQDTDetail)
-		   
+			
+			srcREQDTDetail.Rows.Add(newRowREQDTDetail)
 			
 			' Handle REQDTDetail Items 
 			If  CheckItems(row) Then
 				Dim MappingForREQDetailsItems As New Dictionary(Of String, String)
 				MappingForREQDetailsItems = GetMappingForREQDetailsItem()
 		        ' Create a new row
-		        Dim newRowREQDTDetailItem As DataRow = REQDTDetail.NewRow()
+		        Dim newRowREQDTDetailItem As DataRow = srcREQDTDetail.NewRow()
 		        For Each fullCol As String In MappingForREQDetailsItems.Keys
 		            newRowREQDTDetailItem(MappingForREQDetailsItems(fullCol)) = row(fullCol)
 		        Next
 				
 				newRowREQDTDetailItem("Account") = "DD_PEG_Item"
 				'row("UNIT_OF_MEASURE")
-				REQDTDetail.Rows.Add(newRowREQDTDetailItem)
+				srcREQDTDetail.Rows.Add(newRowREQDTDetailItem)
 			End If
 			
 			' Handle REQDTDetail Cost 
@@ -516,7 +508,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Dim MappingForREQDetailsCost As New Dictionary(Of String, String)
 				MappingForREQDetailsCost = GetMappingForREQDetailsCost() 
 		        ' Create a new row
-		        Dim newRowREQDTDetailCost As DataRow = REQDTDetail.NewRow()
+		        Dim newRowREQDTDetailCost As DataRow = srcREQDTDetail.NewRow()
 		        For Each fullCol As String In MappingForREQDetailsCost.Keys
 		            newRowREQDTDetailCost(MappingForREQDetailsCost(fullCol)) = row(fullCol)
 		        Next
@@ -524,7 +516,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				newRowREQDTDetailCost("Account") = "DD_PEG_Cost"
 				'row("UNIT_OF_MEASURE") & "_Cost"
 				
-				REQDTDetail.Rows.Add(newRowREQDTDetailCost)
+				srcREQDTDetail.Rows.Add(newRowREQDTDetailCost)
 			End If
 			
 			' Handle REQDTDetail Quantity
@@ -533,14 +525,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Dim MappingForREQDetailsQTY As New Dictionary(Of String, String)
 				MappingForREQDetailsQTY = GetMappingForREQDetailsQTY()
 		        ' Create a new row
-		        Dim newRowREQDTDetailQTY As DataRow = REQDTDetail.NewRow()
+		        Dim newRowREQDTDetailQTY As DataRow = srcREQDTDetail.NewRow()
 		        For Each fullCol As String In MappingForREQDetailsQTY.Keys
 		            newRowREQDTDetailQTY(MappingForREQDetailsQTY(fullCol)) = row(fullCol)
 		        Next
 					
 				newRowREQDTDetailQTY("Account") = "Quantity"
 				
-				REQDTDetail.Rows.Add(newRowREQDTDetailQTY)
+				srcREQDTDetail.Rows.Add(newRowREQDTDetailQTY)
 				
 			End If						
 			
@@ -549,10 +541,17 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 	End Function
 	
-	Public Sub UpdateExistingREQIDs(ByRef dr As DataRow, ByVal existingCMD_PGM_REQ_ID As String, ByVal existingREQ_ID As String )
-		dr("CMD_PGM_REQ_ID") = existingCMD_PGM_REQ_ID
-		dr("REQ_ID") = existingREQ_ID
-	End Sub
+	Public Function GetExistingDetailRow(ByRef dr As DataRow,  ByRef existingREQDTDetail As DataTable, ByRef account As String) As DataRow
+		Dim newRow As DataRow = existingREQDTDetail.Select($"CMD_PGM_REQ_ID = '{dr("CMD_PGM_REQ_ID")}' 
+															AND Account = '{account}' 
+															AND UD1 = '{dr("UD1")}' 
+															AND UD2 = '{dr("UD2")}' 
+															AND UD3 = '{dr("UD3")}' 
+															AND UD4 = '{dr("UD4")}' 
+															AND UD5 = '{dr("UD5")}'   
+															AND UD6 = '{dr("UD6")}' ").FirstOrDefault()
+		Return newRow
+	End Function
 #End Region
 
 #Region	"Get Mapping XFC_CMD_PGM_REQ_Details"
@@ -782,6 +781,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{"FLEX5","FF_5"},
 				{"Status","Status"},
 				{"Invalid","Invalid"},
+				{"Review_Entity","Review_Entity"},
 				{"Create_Date","Create_Date"},
 				{"Create_User","Create_User"},
 				{"Update_Date","Update_Date"},

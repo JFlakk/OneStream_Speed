@@ -287,6 +287,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 				Else
 					sFundCenter = FCParam
 				End If
+				
 				Dim sdashboard as String = String.Empty
 				If String.IsNullOrWhiteSpace(dashboardparam)
 					sdashboard = args.NameValuePairs.XFGetValue("Dashboard")
@@ -297,8 +298,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 If String.IsNullOrWhiteSpace(sFundCenter) Then
                     Return dt
                 End If
-
-                Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " & sFundCenter.Replace("_General", "") & ")"
+				
+				
+ 				Dim FCArray() As String = sFundCenter.Split(","c)
+                Dim FCList As List(Of String) = FCArray.ToList()
+ 				Dim FCMulti As New Text.StringBuilder()
+				 For Each FC As String In FCList
+                    FC = FC.Trim()
+                Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " & FC.Replace("_General", "") & ")"
                 Dim cbMembers As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_" & sCube, mbrScrpt, True)
 
                 If Not cbMembers.Count > 0 Then
@@ -308,31 +315,48 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
                 Dim entityPk = BRApi.Finance.Dim.GetDimPk(si, "E_" & sCube)
                 Dim nAncestorID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sCube)
-                Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sFundCenter.Replace("_General", ""))
+                Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, FC)
                 Dim isBase As Boolean = BRApi.Finance.Members.IsBase(si, entityPk, nAncestorID, nBaseID)
 
                 If Not isBase Then
                     If Not sProfileName.XFContainsIgnoreCase("Formulate") Then
-                        sFundCenter = sFundCenter & ".DescendantsInclusive"
+                        FC = FC & ".DescendantsInclusive"
                     End If
                 End If
 
-                Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#" & sFundCenter, True)
+                Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#" & FC, True)
 
-                Dim allFCs As String = ""
+              
                 If LFundCenters.Count = 0 Then
                     Return dt
                 End If
+ 				If Not isBase Then
+                        If Not sProfileName.XFContainsIgnoreCase("Formulate") Then
+                            FC = FC & ".DescendantsInclusive"
+                        End If
+                 End If
 
-                If Not isBase Then allFcs = "'" & sFundCenter.Replace(".DescendantsInclusive", "") & "',"
+                   
+                    For Each FundCenter As MemberInfo In LFundCenters
+                        If FCMulti.Length > 0 Then
+                            FCMulti.Append(",")
+                        End If
+                        FCMulti.Append($"'{FundCenter.Member.Name}'")
+                    Next
+					Next
+''                If Not isBase Then allFcs = "'" & FC.Replace(".DescendantsInclusive", "") & "',"
 
-                For Each FundCenter As MemberInfo In LFundCenters
-                    allFcs = allFcs & "'" & FundCenter.Member.Name & "',"
-                Next
+''                For Each FundCenter As MemberInfo In LFundCenters
+''                    allFcs = allFcs & "'" & FundCenter.Member.Name & "',"
+''                Next
 
 
-                allFCs = allFcs.Substring(0, allFcs.Length - 1)
+''                allFCs = allFcs.Substring(0, allFcs.Length - 1)
+''				Next
+ 				Dim allFCs As String = ""
 
+                allFCs = FCMulti.ToString()
+Brapi.ErrorLog.LogMessage(si, "FCs" & allFCs)
                 Dim SQL As String
                 SQL = $"Select Req.Title,
 						  	   Req.Entity,
@@ -364,8 +388,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     End If
                     Dim REQStatus As String = dataRow.Item("Status")
                     Dim REQType As String = dataRow.Item("REQ_ID_Type")
-                    Dim sFC As String = sFundCenter.Replace(".DescendantsInclusive", "")
-                    Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sFC).Member
+                    'Dim sFC As String = 
+                    Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, FundCenter).Member
                     Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
                     Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Time.Id, sREQTime)
                     Dim entityText3 As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 3, wfScenarioTypeID, wfTimeId)
@@ -743,9 +767,24 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             Try
                 Dim wfCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
                 Dim sEntityGeneral As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, "REQPrompts", "Entity", "")
-                Dim sOrigEntity As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, "REQPrompts", "REQ", "").Split(" ")(0)
+                Dim sOrigEntity As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, "REQPrompts", "REQ", "")
                 Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
                 Dim sEntity As String = ""
+				
+				If sOrigEntity.Contains("xx") Then
+                If sOrigEntity.Length >= 3 Then
+                    sOrigEntity = sOrigEntity.Substring(0, 3)
+                Else
+                    sOrigEntity = sOrigEntity 
+                End If
+            Else
+                If sOrigEntity.Length >= 5 Then
+                    sOrigEntity = sOrigEntity.Substring(0, 5)
+                Else
+                    sOrigEntity = sOrigEntity 
+                End If
+            End If
+
 
                 If sEntityGeneral.XFContainsIgnoreCase("General") Then
                     sEntity = sEntityGeneral.Replace("_General", "")
@@ -760,9 +799,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 End If
 
                 Dim x As Integer = InStr(wfProfileName, ".")
-                Dim sProfileName As String = wfProfileName.Substring(x + 0).Split(" ")(0)
+                Dim sProfileName As String = wfProfileName.Substring(x + 0).Split(" ")(0)	
+				
                 Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sOrigEntity).Member
+				Brapi.ErrorLog.LogMessage(si, "Here Dataset .5" & entityMem.ToString)
                 Dim CurrEntityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sEntity).Member
+				Brapi.ErrorLog.LogMessage(si, "Here Dataset 1" & CurrEntityMem.ToString)
                 Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
                 Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si, si.WorkflowClusterPk.TimeKey)
                 Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Time.Id, wfTime)
@@ -1082,20 +1124,31 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 				Dim hierarchy_reqID_mbrs As New List(Of XFTreeItem)()
 				Dim hierarchy_FC_mbrs As New List(Of XFTreeItem)()
 				Dim hierarchy_No_mbrs As New List(Of XFTreeItem)()
-				Dim Entity As String = args.NameValuePairs.XFGetValue("Entity")
+				Dim Entity as String  = args.NameValuePairs.XFGetValue("Entity")
 				Dim dashboard As String  = args.NameValuePairs.XFGetValue("Dashboard")
-				'Substring the entity From the first requirement selected By a user.
-'			    Dim REQIDS As String = args.NameValuePairs.XFGetValue("req_IDs")
 				
+				 Dim FCArray() As String = Entity.Split(","c)
+                Dim FCList As List(Of String) = FCArray.ToList()
+				'Substring the entity From the first requirement selected By a user.
+'			    Dim sREQID As String = args.NameValuePairs.XFGetValue("req_IDs")
+'brapi.ErrorLog.LogMessage(si, $"Entity: {Entity}")					
 '				Dim cube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
-'				Dim REQIDs_list As New List(Of String)
-'				REQIDs_list = REQIDS.Split(",").ToList
-'				Dim Entity As String = REQIDs_list(0).Substring(0, REQIDs_list(0).IndexOf("_"))
-'				If Entity = $"{cube}xx"
-'					Entity = Entity.Replace("x","")
-'				End If		
-
-				Dim req_DT = Me.REQTitleList(si, Entity,Dashboard)
+'				If sREQID.Contains("xx") Then
+'                If sREQID.Length >= 3 Then
+'                    sREQID = sREQID.Substring(0, 3)
+'                Else
+'                    sREQID = sREQID 
+'                End If
+'            Else
+'                If sREQID.Length >= 5 Then
+'                    sREQID = sREQID.Substring(0, 5)
+'                Else
+'                    sREQID = sREQID 
+'                End If
+'            End If
+'Dim Entity As String = String.Empty
+'Entity = sREQID
+				Dim req_DT = Me.REQTitleList(si,Entity,Dashboard)
 'brapi.ErrorLog.LogMessage(si, req_DT.Rows.Count)				
 'For Each req As DataRow In req_DT.Rows()				
 '	brapi.ErrorLog.LogMessage(si,"HERE: " & req("Name").ToString)	
@@ -1118,25 +1171,29 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 '					                      And Title Is Not NULL"
 ''brapi.ErrorLog.LogMessage(si,sql)		
 '	                Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-'	                    dt = BRApi.Database.ExecuteSql(dbConn, SQL.ToString(), True)
+'	                    dt = BRApi.Database.ExecuteSql(dbConn, SQL.T,oString(), True)
 '	                End Using
 		
 			        ' Build the tree structure from the DataTable
+					For Each sEntity As String In FCList 
 			        For Each row As DataRow In req_DT.Rows
+						If  Reqidval.Split(" ")(0) = sEntity
 	                	Dim Reqidval As String  = row("Value").ToString
+						
 						Reqidval = Reqidval.Split(" ")(1)
 					
 		                Dim ReqID_xftreeitem As New XFTreeItem(Reqidval,row("Name"), String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_No_mbrs, TriStateBool.TrueValue)
 						hierarchy_mbrs.Add(ReqID_xftreeitem)
-						hierarchy_reqID_mbrs.Add(ReqID_xftreeitem)
-					Next
-					Dim FC_xftreeitem As New XFTreeItem(Entity,Entity, String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_reqID_mbrs, TriStateBool.TrueValue)
-		        	'Dim FC_xftreeitem As New XFTreeItem(FundsCenter("Value"),FundsCenter("Name"), String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_reqID_mbrs, TriStateBool.TrueValue)
+					hierarchy_reqID_mbrs.Add(ReqID_xftreeitem)
+				end if 
+				Next
+					'Dim FC_xftreeitem As New XFTreeItem(Entity,Entity, String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_reqID_mbrs, TriStateBool.TrueValue)
+		        	Dim FC_xftreeitem As New XFTreeItem(sEntity,sEntity, String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_reqID_mbrs, TriStateBool.TrueValue)
 		        	
 					hierarchy_FC_mbrs.Add(FC_xftreeitem)
 					hierarchy_mbrs.Add(FC_xftreeitem)
-					
-'				Next
+				
+				Next
 				Dim Top_xftreeitem As New XFTreeItem("Top","Top", String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_FC_mbrs, TriStateBool.TrueValue)
 				hierarchy_mbrs.Add(Top_xftreeitem)
 		        
@@ -3197,6 +3254,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         Public globals As BRGlobals
         Private api As Object
         Private args As DashboardExtenderArgs
+		Dim startingREQ_IDByFC As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
 		Public Function Main(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
 			Try			
 				Me.si = si
@@ -3573,26 +3631,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Dim Dashboard As String = args.NameValuePairs.XFGetValue("Dashboard")
 				Dim demote_comment As String = args.NameValuePairs.XFGetValue("demotecomment")
 				Dim FCList As New List(Of String)
+				Dim statusList As New List(Of String)
+				Dim APPNList As New List(Of String)
 				Dim Status_manager As New Dictionary(Of String,String)
-				'@Jeff Martin - Think we should add these on else side of 427/Demote
-				Status_manager.Add("L5_Formulate_PGM|Validate","L4_Validate_PGM")
-				Status_manager.Add("L4_Formulate_PGM|Validate","L3_Validate_PGM")
-				Status_manager.Add("L3_Formulate_PGM|Validate","L3_Validate_PGM")
-				Status_manager.Add("L2_Formulate_PGM|Validate","L2_Validate_PGM")
-				Status_manager.Add("L4_Validate_PGM|Prioritize","L4_Prioritize_PGM")
-				Status_manager.Add("L3_Validate_PGM|Prioritize","L3_Prioritize_PGM")
-				Status_manager.Add("L2_Validate_PGM|Prioritize","L2_Prioritize_PGM")
-				Status_manager.Add("L4_Validate_PGM|Approve","L4_Approve_PGM")
-				Status_manager.Add("L3_Validate_PGM|Approve","L3_Approve_PGM")
-				Status_manager.Add("L2_Validate_PGM|Approve","L2_Approve_PGM")
-				Status_manager.Add("L4_Prioritize_PGM|Approve","L4_Approve_PGM")
-				Status_manager.Add("L3_Prioritize_PGM|Approve","L3_Approve_PGM")
-				Status_manager.Add("L2_Prioritize_PGM|Approve","L2_Approve_PGM")
-				Status_manager.Add("L2_Approve_PGM|Final","L2_Final_PGM")
-				Status_manager.Add("L3_Approve_PGM|Validate","L2_Validate_PGM")
-				Status_manager.Add("L4_Approve_PGM|Validate","L3_Validate_PGM")
-				Status_manager.Add("L2_Formulate_PGM|Final","L2_Final_PGM")
-				Status_manager.Add("L2_Final_PGM|Formulate","L2_Formulate_PGM")
+				
 
 				
 				If args.NameValuePairs.XFGetValue("Demote") = "True" Then
@@ -3649,6 +3691,26 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					'--------------------------Demote Statuses----------------------------------
 #End Region
 				End If 
+#Region "Status Manager"
+				Status_manager.Add("L5_Formulate_PGM|Validate","L4_Validate_PGM")
+				Status_manager.Add("L4_Formulate_PGM|Validate","L3_Validate_PGM")
+				Status_manager.Add("L3_Formulate_PGM|Validate","L3_Validate_PGM")
+				Status_manager.Add("L2_Formulate_PGM|Validate","L2_Validate_PGM")
+				Status_manager.Add("L4_Validate_PGM|Prioritize","L4_Prioritize_PGM")
+				Status_manager.Add("L3_Validate_PGM|Prioritize","L3_Prioritize_PGM")
+				Status_manager.Add("L2_Validate_PGM|Prioritize","L2_Prioritize_PGM")
+				Status_manager.Add("L4_Validate_PGM|Approve","L4_Approve_PGM")
+				Status_manager.Add("L3_Validate_PGM|Approve","L3_Approve_PGM")
+				Status_manager.Add("L2_Validate_PGM|Approve","L2_Approve_PGM")
+				Status_manager.Add("L4_Prioritize_PGM|Approve","L4_Approve_PGM")
+				Status_manager.Add("L3_Prioritize_PGM|Approve","L3_Approve_PGM")
+				Status_manager.Add("L2_Prioritize_PGM|Approve","L2_Approve_PGM")
+				Status_manager.Add("L2_Approve_PGM|Final","L2_Final_PGM")
+				Status_manager.Add("L3_Approve_PGM|Validate","L2_Validate_PGM")
+				Status_manager.Add("L4_Approve_PGM|Validate","L3_Validate_PGM")
+				Status_manager.Add("L2_Formulate_PGM|Final","L2_Final_PGM")
+				Status_manager.Add("L2_Final_PGM|Formulate","L2_Formulate_PGM")
+#End region							
 				
 				Dim dbExt_ChangedResult As New XFSelectionChangedTaskResult()
 				Dim req_IDs As String = args.NameValuePairs.XFGetValue("req_IDs")
@@ -3668,12 +3730,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Else 
 
 					Dim full_Req_ID_List As List (Of String) =  StringHelper.SplitString(req_IDs, ",")
-'Brapi.ErrorLog.LogMessage(si, "full_Req_ID_List = " & full_Req_ID_List.Count & ", req_IDs; " & req_IDs)
 
-					'SQL has a parameter limit of 2100. To work around that if REQ list is more than 200 we chunk it
-'					Dim size As Integer = 2000
-'					Dim reqListChuncks = Me.ChunckREQList(full_Req_ID_List, size)
-'					For Each Req_ID_List As List(Of String) In reqListChuncks
 '@Jeff Martin - DOes this code get called after the Manage DB is saved?  I assume not, need to see that code.
 					Dim new_Status As String = args.NameValuePairs.XFGetValue("new_Status")
 						
@@ -3806,6 +3863,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 										Dim existingStatus As String = ""
 										If Not IsDBNull(row("Status")) Then existingStatus = row("Status").ToString().Trim()
 	'@Jeff Martin - I am unsure that this will work if not a demote, we need to run through that on Thursday.
+										
 										Dim lookupKey As String = existingStatus & "|" & new_Status
 'brapi.ErrorLog.LogMessage(si,"lookupKey: " & lookupKey)
 										Dim resolvedStatus As String
@@ -3821,7 +3879,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 											row("Demotion_Comment") = demote_comment
 										End If 
 										row("Status") = resolvedStatus
-										'@Jeff Martin - Add Review Entity here
+										' Add Review Entity here
 										row("Update_User") = si.UserName
 										row("Update_Date") = DateTime.Now
 'Brapi.ErrorLog.LogMessage(si, "existingStatus | new_Status  |  resolvedStatus: " & existingStatus & "|" & new_Status &  " | " & resolvedStatus)
@@ -3841,7 +3899,17 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 												If Not FCList.Contains($"{drow("Entity")}")
 													FCList.Add($"{drow("Entity")}")
 												End If
-												globals.SetStringValue($"FundsCenterStatusUpdates - {drow("Entity")}", $"{existingStatus}|{resolvedStatus}")
+												If Not APPNList.Contains($"{drow("UD1")}") Then
+													APPNList.Add($"{drow("UD1")}")
+												End If
+												If Not statusList.Contains($"{drow("Flow")}") Then
+													statusList.Add($"{drow("Flow")}")
+												End If
+												If Not statusList.Contains(resolvedStatus) Then
+													statusList.Add(resolvedStatus)
+												End If
+												
+												'globals.SetStringValue($"FundsCenterStatusUpdates - {drow("Entity")}", $"{existingStatus}|{resolvedStatus}")
 
 												drow("Flow") = resolvedStatus
 												drow("Update_User") = si.UserName
@@ -3925,9 +3993,15 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 								
 							End Using
 						End If
-					
+'brapi.ErrorLog.LogMessage(si,"status = " & String.join("|",StatusList))					
 					'@Yosef & Jeff Martin - I think this piece should be it's own function/sub, so that we don't have to update status when not necessary
-					Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_PGM")
+						Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_PGM")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							Globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.join("|",APPNList))	
+						Next
+					
 					Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
 					Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
 					Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
@@ -3940,6 +4014,27 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
 					BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
 'Brapi.ErrorLog.LogMessage(si,"HERE2")
+
+						Dim dKeyVal As New Dictionary(Of String, String)					
+						dKeyVal.Add("IV_CMD_PGM_REQTitleList","")
+						Dim selectionChangedTaskResult As XFSelectionChangedTaskResult
+						If selectionChangedTaskResult Is Nothing Then
+							selectionChangedTaskResult = New XFSelectionChangedTaskResult()
+						End If
+			
+						selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = True			
+						selectionChangedTaskResult.ChangeCustomSubstVarsInLaunchedDashboard = True
+			
+			For Each KeyVal As KeyValuePair(Of String, String) In dKeyVal
+				selectionChangedTaskResult.ModifiedCustomSubstVars.Remove(KeyVal.Key)
+				selectionChangedTaskResult.ModifiedCustomSubstVars.Add(KeyVal.Key, KeyVal.Value)
+			
+				selectionChangedTaskResult.ModifiedCustomSubstVarsForLaunchedDashboard.Add(KeyVal.Key, KeyVal.Value)			
+			Next
+			
+			
+						dbExt_ChangedResult = selectionChangedTaskResult
+
 					Return dbExt_ChangedResult
 				End If
 			Catch ex As Exception
@@ -4020,7 +4115,7 @@ Dim startTime As DateTime = DateTime.Now
 						Dim targetsqaREQReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
 						If action.ToLower = "copy" Then
 							targetSqlREQ = $"SELECT * 
-								FROM XFC_CMD_PGM_REQ
+								FROM XFC_CMD_PGM_REQ WITH (NOLOCK)
 								WHERE WFScenario_Name = '{senario}'
 								And WFCMD_Name = '{cmd}'
 								AND WFTime_Name = '{tm}'
@@ -4028,7 +4123,7 @@ Dim startTime As DateTime = DateTime.Now
 						End If
 						If action.ToLower = "rollover" Then
 							targetSqlREQ  = $"SELECT *
-								FROM XFC_CMD_PGM_REQ
+								FROM XFC_CMD_PGM_REQ WITH (NOLOCK)
 								WHERE WFScenario_Name = '{senario}'
 								And WFCMD_Name = '{cmd}'
 								AND WFTime_Name = '{tm}'
@@ -4046,12 +4141,12 @@ Dim startTime As DateTime = DateTime.Now
 						Next
 						
 						Dim SqlREQDetail As String = $"SELECT * 
-								FROM XFC_CMD_PGM_REQ_Details
+								FROM XFC_CMD_PGM_REQ_Details WITH (NOLOCK)
 								WHERE 1=0"
 						If Not String.IsNullOrWhiteSpace(GUIDs) Then
 							GUIDs = GUIDs.Substring(0,GUIDs.Length -1)
 							SqlREQDetail = $"SELECT * 
-								FROM XFC_CMD_PGM_REQ_Details
+								FROM XFC_CMD_PGM_REQ_Details WITH (NOLOCK)
 								WHERE CMD_PGM_REQ_ID in ({GUIDs})"
 						End If
 	'BRApi.ErrorLog.LogMessage(si, "target detail: " & SqlREQDetail)					
@@ -4103,7 +4198,7 @@ Dim startTime As DateTime = DateTime.Now
 											   Gen_Comments_Notes,JUON,ISR_Flag,Cost_Model,Combat_Loss,Cost_Location,Cat_A_Code,CBS_Code,MIP_Proj_Code,SS_Priority,Commit_Group,SS_Cap,Strategic_BIN,LIN,REQ_Type,
 											   DD_Priority,Portfolio,DD_Cap,JNT_Cap_Area,TBM_Cost_Pool,TBM_Tower,APMS_AITR_Num,Zero_Trust_Cap,Assoc_Directives,Cloud_IND,Strat_Cyber_Sec_PGM,
 											   Notes,FF_1,FF_2,FF_3,FF_4,FF_5,Status,Invalid,Val_Error,Create_Date,Create_User,Update_Date,Update_User,Related_REQs,Review_Entity,Demotion_Comment,Validation_List_Emails
-									   FROM XFC_CMD_PGM_REQ AS OuterREQ
+									   FROM XFC_CMD_PGM_REQ AS OuterREQ WITH (NOLOCK)
 									   WHERE{whereClause}"
 'BRApi.ErrorLog.LogMessage(si, "REQ Source: " & SqlREQ)	
 					    REQDT.AcceptChanges()
@@ -4119,20 +4214,24 @@ Dim startTime As DateTime = DateTime.Now
 							GUID_Mapping.Columns.Add("Orig_REQ_ID", GetType(String))
 							
 						'Update REQ_IDs
+						Dim statusByEntity As New Dictionary(Of String, String) 
 						For Each r In REQDT.Rows
 'BRApi.ErrorLog.LogMessage(si, "In loop")							
 							Dim orig_guid As String = r("CMD_PGM_REQ_ID").toString '= Guid.NewGuid()
 							Dim orig_id As String = r("REQ_ID")
 							If action.ToLower = "copy" Then
-								r("REQ_ID") = Me.GetNextREQID(r("Entity"))
+								r("REQ_ID") =  GBL.GBL_Assembly.GBL_REQ_ID_Helpers.GetNextREQID(si, r("Entity"), startingREQ_IDByFC)
 								r("CMD_PGM_REQ_ID") = Guid.NewGuid()
 							End If
 							r("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, r("Entity") ) & "_Formulate_PGM"
-							
+							r("Review_Entity") = r("Entity")
 							GUID_Mapping.Rows.Add( r("CMD_PGM_REQ_ID").toString, orig_guid, orig_id, r("REQ_ID"))
+							If Not statusByEntity.ContainsKey((r("Entity"))) Then
+								statusByEntity.Add(r("Entity"), r("Status"))
+							End If
 						Next
 						REQDT.Columns.Remove("orig_CMD_PGM_REQ_ID")
-						
+'BRApi.ErrorLog.LogMessage(si, "Out of loop")						
 'For Each r As DataRow In GUID_Mapping.Rows
 '	BRApi.ErrorLog.LogMessage(si,"GUID_Mapping: "&  String.Join(", ", r.ItemArray) )
 'Next						
@@ -4158,13 +4257,13 @@ Dim startTime As DateTime = DateTime.Now
 							tempTableName = tempTableName.Replace("-", "_")
 							Dim tempSQL As String = $" select 
 															tmp.CMD_PGM_REQ_ID, tmp.WFScenario_Name,tmp.WFCMD_Name,tmp.WFTime_Name,dtl.Unit_of_Measure,tmp.Entity,dtl.IC,dtl.Account,dtl.Flow,dtl.UD1,
-															dtl.UD2,dtl.UD3,dtl.UD4,dtl.UD5,dtl.UD6,dtl.UD7,dtl.UD8,dtl.Start_Year,dtl.FY_1,dtl.FY_2,dtl.FY_3,dtl.FY_4,dtl.FY_5,dtl.FY_Total,
+															dtl.UD2,dtl.UD3,dtl.UD4,dtl.UD5,dtl.UD6,dtl.UD7,dtl.UD8,'{tm}' Start_Year,dtl.FY_1,dtl.FY_2,dtl.FY_3,dtl.FY_4,dtl.FY_5,dtl.FY_Total,
 															dtl.AllowUpdate,dtl.Create_Date,dtl.Create_User,dtl.Update_Date,dtl.Update_User
 														From  {tempTableName} tmp
 														Join XFC_CMD_PGM_REQ req On req.REQ_ID = tmp.REQ_ID And req.WFScenario_Name = '{prevscName}'
 														Join XFC_CMD_PGM_REQ_Details dtl On dtl.CMD_PGM_REQ_ID = req.CMD_PGM_REQ_ID"
 							
-		BRApi.ErrorLog.LogMessage(si, "tempSQL: " & tempSQL)
+		'BRApi.ErrorLog.LogMessage(si, "tempSQL: " & tempSQL)
 							
 							tempTable.AcceptChanges()
 							sqa.AcceptChangesDuringFill = False
@@ -4210,14 +4309,25 @@ Dim startTime As DateTime = DateTime.Now
 								.Update_Date = REQDetail.Field(Of DateTime?)("Update_Date"),
 								.Update_User = REQDetail.Field(Of String)("Update_User")
 		                    }
+
 							' Fill the  DataTable
 'BRApi.ErrorLog.LogMessage(si, "query count:  " & query.Count() )							
 					        For Each row In query
 'BRApi.ErrorLog.LogMessage(si, "in query loop:  " )								
 					            tempTable.Rows.Add(row.CMD_PGM_REQ_ID,row.WFScenario_Name,row.WFCMD_Name,row.WFTime_Name,row.Unit_of_Measure,row.Entity,row.IC,row.Account,row.Flow,row.UD1,row.UD2,row.UD3,row.UD4,row.UD5,row.UD6,row.UD7,row.UD8,row.Start_Year,row.FY_1,row.FY_2,row.FY_3,row.FY_4,row.FY_5,row.FY_Total,row.AllowUpdate,row.Create_Date,row.Create_User,row.Update_Date,row.Update_User)
 					        Next
-						
+'BRApi.ErrorLog.LogMessage(si, "statusByEntity: " & statusByEntity.Count)
 						End If
+						
+						For Each r As DataRow In tempTable.Rows
+							r("Flow") = statusByEntity.GetValueOrEmpty(r("Entity"))
+							r("Create_Date") = DateTime.Now
+							r("Create_User") = si.UserName
+							r("Update_Date") = DateTime.Now
+							r("Update_User") = si.UserName
+'BRApi.ErrorLog.LogMessage(si, "Entitiy - Flow " & r("Flow")	& " - "	& r("Entity"))					
+						Next
+
 'For Each r As DataRow In targetREQDetailDT.Rows
 '	BRApi.ErrorLog.LogMessage(si, " before join targetREQDetailDT: " & r("CMD_PGM_REQ_ID").ToString & " |   row: " & String.Join(",",r.ItemArray) )
 'Next						
@@ -4245,16 +4355,25 @@ Dim startTime As DateTime = DateTime.Now
 						Dim newREQDetailRows As New List(Of DataRow)
 						'Dim newREQRow As datarow = Nothing
 						Dim FCList As New List(Of String)
-						Dim EntList As New List(Of String)
+						Dim APPNList As New List (Of String)
+						Dim StatusList As New List (Of String)
 						For Each row As DataRow In REQDT.Rows	
 							'Set up entity/status for the cube writing rule
-							If Not FCList.Contains($"E#{row("Entity")}")
-								FCList.Add($"E#{row("Entity")}")
-								Globals.SetStringValue($"FundsCenterStatusUpdates - {row("Entity")}",$"{row("Status")}")
-								EntList.Add(row("Entity").ToString)
+							Dim appn As String = row("APPN").ToString
+							Dim status As String = row("Status").ToString
+							Dim Entity As String = row("Entity").ToString
+							If Not FCList.Contains(Entity)
+								FCList.Add(Entity)
+							End If
+							If Not APPNList.Contains(appn) Then
+								APPNList.Add(appn)
+							End If
+							If Not StatusList.Contains(status) Then
+								StatusList.Add(status)
 							End If
 						Next
-
+'brapi.ErrorLog.LogMessage(si,"copy appn =" & String.Join("|",APPNList))
+'brapi.ErrorLog.LogMessage(si,"copy StatusList =" & String.Join("|",StatusList))
 						'Write to the cube
 						'@Jeff Martin - Ignore my comment above about Non-Demote status updates
 						Args.NameValuePairs.Add("new_Status", "Formulate")
@@ -4264,14 +4383,19 @@ Dim startTime As DateTime = DateTime.Now
 						'Globals.SetStringValue($"FundsCenterStatusUpdates - {api.pov.entity.name}",String.Empty)
 						'-------------------------------------
 						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
-		'Brapi.ErrorLog.LogMessage(si,"@@FCList, " & String.Join(",",FCList))
-						Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,EntList,"CMD_PGM")
-						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-						
 						Dim customSubstVars As New Dictionary(Of String, String) 
+						Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_PGM")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							Globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.join("|",APPNList))	
+						Next
+					
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
+
+						customSubstVars.Add("EntList",BaseEntityList)
 						customSubstVars.Add("ParentEntList",ParentEntityList)
-						customSubstVars.Add("EntList",String.Join(",",FCList))
-		'Brapi.ErrorLog.LogMessage(si,"@@ ParentEntityList: " & ParentEntityList)				
 						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
 						Dim currentYear As Integer = Convert.ToInt32(wfInfoDetails("TimeName"))
 						customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
@@ -4291,72 +4415,11 @@ Brapi.ErrorLog.LogMessage(si,$"**The method took {elapsed.TotalMilliseconds} mil
 			 
 		End Function
 
-		'@Jeff Martin & Yosef - This needs to be GBL function, I think this is 3rd place I have seen this exact same thing.
-#Region "GetNextREQID"
-
-	Dim startingREQ_IDByFC As Dictionary(Of String, Integer) = New Dictionary(Of String, Integer)
-	Function GetNextREQID (fundCenter As String) As String
-		Dim currentREQID As Integer
-		Dim newREQ_ID As String
-		If startingREQ_IDByFC.TryGetValue(fundCenter, currentREQID) Then
-'BRApi.ErrorLog.LogMessage(si,"IF Fund Center: " & fundCenter & ", currentREQID: " & currentREQID )			
-			currentREQID = currentREQID + 1
-			Dim modifiedFC As String = fundCenter
-			modifiedFC = modifiedFC.Replace("_General", "")
-			If modifiedFC.Length = 3 Then modifiedFC = modifiedFC & "xx"
-			newREQ_ID =  modifiedFC &"_" & currentREQID.ToString("D5")
-			startingREQ_IDByFC(fundCenter) = currentREQID
-		Else	
-			newREQ_ID = GBL.GBL_Assembly.GBL_REQ_ID_Helpers.Get_FC_REQ_ID(si,fundCenter)
-'BRApi.ErrorLog.LogMessage(si,"ELSE Fund Center: " & fundCenter & ", newREQ_ID: " & newREQ_ID.Split("_")(1) )				
-			startingREQ_IDByFC.Add(fundCenter.Trim, newREQ_ID.Split("_")(1))
-		End If 
-			
-		Return newREQ_ID
-	End Function
-#End Region	
-
 		'@Yosef - Looking through Import, Rollover and Copy, It feels like we could & should merge these with parameters
 			'My justification for this is we have a pretty good idea that these relational tables will be relatively fluid and it will be painful to sustain this
 			'Here are my thoughts....  No doubt Import will have to run the split table function and that would be Imports unique piece
 			'I see it like this for all of these - 'Stage Data' so to speak -> Fill DT -> Map source to target -> Determine if Insert or Update -> Write to DB
 			
-
-		Public Sub UpdateNewREQColumns(ByRef newRow As DataRow, ByRef action As String) 
-			'update the columns
-			newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
-			Dim trgtfundCenter = newRow("Entity")
-			newRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, trgtfundCenter) & "_Formulate_PGM"
-			
-			If action.XFEqualsIgnoreCase("copy") Then
-				Dim newREQ_ID As String= GetNextREQID(trgtfundCenter)
-				newRow("REQ_ID") = newREQ_ID
-				newRow("Title") = newRow("Title") & " - Copy" 'args.NameValuePairs.XFGetValue("NewREQName")
-				
-			End If
-			
-			If action.XFEqualsIgnoreCase("rollover") Then
-				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-				newRow("WFScenario_Name") = wfInfoDetails("ScenarioName")
-				newRow("WFTime_Name") = wfInfoDetails("TimeName")				
-			End If
-			
-		End Sub
-		
-
-		Public Sub UpdateCopyREQColumns(ByRef newRow As DataRow) 
-			'update the columns
-			Dim trgtfundCenter = newRow("Entity")'BRApi.Utilities.GetWorkspaceSessionSetting(si,si.UserName,"REQPrompts","Entity","")
-
-			Dim newREQ_ID As String= GetNextREQID(trgtfundCenter)
-			newRow("REQ_ID") = newREQ_ID
-'BRApi.ErrorLog.LogMessage(si,"Copied REQ_ID: " & newREQ_ID)			
-			newRow("CMD_PGM_REQ_ID") = Guid.NewGuid()
-			newRow("Title") = newRow("Title") & " - Copy" 'args.NameValuePairs.XFGetValue("NewREQName")
-			newRow("Status") = GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si, trgtfundCenter) & "_Formulate_PGM"
-			'newRow("Entity") = trgtfundCenter
-			
-		End Sub
 		
 		Public Sub UpdateCopyREQDetailColumns(ByRef newRow As DataRow, ByRef newCMD_PGM_REQ_ID As String) 
 			'update the columns
@@ -4721,8 +4784,10 @@ End Function
 #Region "Set reqid for details popup"
 Public Function Setreqidfordetails() As Object
 Dim reqid As String = args.NameValuePairs.XFGetValue("REQ")
+Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity")
 	Dim dKeyVal As New Dictionary(Of String, String)					
-	dKeyVal.Add("IV_CMD_TGT_REQTitleList",reqid)	
+	dKeyVal.Add("IV_CMD_PGM_REQTitleList",reqid)
+	dKeyVal.Add("BL_CMD_PGM_FundsCenter",sEntity)
 	Return Me.SetParameter(si, globals, api, dKeyVal)
 		
 End Function
@@ -4794,7 +4859,7 @@ End Function
 
 #Region "Clear Selections"
 		Public Function ClearSelections(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs, ByVal ParamsToClear As String)As Object
-'BRApi.ErrorLog.LogMessage(si,$"ParamsToClear = {ParamsToClear}")
+'BRApi.ErrorLog.LogMessage(si,$"ParamsToClear in clear = {ParamsToClear}")
 			Dim objDictionary = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues
 			For i As Integer = 0 To objDictionary.Count -1
 				'Clear only prompts that are passed in as parameters
@@ -5066,6 +5131,9 @@ Public Function SetRelatedREQs()
 				Dim sEntity As String = args.NameValuePairs.XFGetValue("Entity")
 				Dim sSourcePosition As String = args.NameValuePairs.XFGetValue("Cprobe")
 				Dim sScenario As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
+			
+				Dim APPNList As New List (Of String)
+				Dim StatusList As New List (Of String)
 
 				 Dim REQDT As DataTable = New DataTable()
 				 Dim REQDetailDT As DataTable = New DataTable()
@@ -5144,10 +5212,14 @@ Public Function SetRelatedREQs()
 						params.Add("REQ_ID_VAL",REQ_ID_VAL.ToString)
 						params.Add("Entity",sEntity)
 						BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "Copy_Manpower", Params)
-						
 						Dim customSubstVars As New Dictionary(Of String, String) 
-						globals.SetStringValue($"FundsCenterStatusUpdates - {sEntity}", $"L2_Formulate_PGM|L2_Formulate_PGM")
-						customSubstVars.Add("EntList","E#" & sEntity)
+						Dim FCList As New List(Of String)
+						FCList.Add(sEntity)
+						Dim EntityLists  = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
+						customSubstVars.Add("EntList",BaseEntityList)
+						customSubstVars.Add("ParentEntList", ParentEntityList)
 						customSubstVars.Add("WFScen",sScenario)
 						Dim currentYear As Integer = Convert.ToInt32(tm)
 						customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
@@ -5164,8 +5236,8 @@ Public Function SetRelatedREQs()
 #Region "Save Adjust Funding Line "		
 Public Function Save_AdjustFundingLine() As xfselectionchangedTaskResult
 		
-		Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_CMD_PGM_REQTitleList","NA")
-		req_IDs = req_IDs.Split(" ").Last()
+		Dim req_IDs As String = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_CMD_PGM_REQTitleList","")
+		
 
 		'@Jeff Martin - Use GBLs for this entire block through 1992
 		Dim WFInfoDetails As New Dictionary(Of String, String)()
@@ -5203,7 +5275,7 @@ Public Function Save_AdjustFundingLine() As xfselectionchangedTaskResult
 		Dim sqa2 As New SqlDataAdapter()
         Dim sqaReaderdetail As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
 		Dim parentIds As New List(Of String)()
-'Brapi.ErrorLog.LogMessage(si, "HERE 3:" & dt.Rows.Count)	
+Brapi.ErrorLog.LogMessage(si, "HERE 3:" & dt.Rows.Count)	
 		For Each parentRow As DataRow In dt.Rows
 'Brapi.ErrorLog.LogMessage(si, "HERE 4")	
 		    If Not IsDBNull(parentRow("CMD_PGM_REQ_ID")) Then
@@ -5521,7 +5593,7 @@ End Function
 
 #Region "Delete Requirement ID"
 		Public Function DeleteRequirementID() As XFSelectionChangedTaskResult
-			Try
+		
 				Dim sCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
 				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 				' Get list of REQ IDs from args and split into list
@@ -5533,6 +5605,9 @@ End Function
 				' Build a cleaned list of REQ IDs (handle single value, comma separated, or space-delimited passed-in values)
 				Dim Req_ID_List As List(Of String) = New List(Of String)()
 				Dim raw As String = req_IDsRaw.Trim()
+				Dim fclist As New List (Of String)
+				Dim APPNList As New List (Of String)
+				Dim StatusList As New List (Of String)
 
 				If String.IsNullOrWhiteSpace(raw) Then
 					Req_ID_List = New List(Of String)()
@@ -5544,15 +5619,16 @@ End Function
 				Else
 					Req_ID_List.Add(raw)
 				End If
-'brapi.ErrorLog.LogMessage(si,"here1")
+
 				' Remove duplicates if any
 				Req_ID_List = Req_ID_List.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
+'brapi.ErrorLog.LogMessage(si,$"here1 {req_IDsRaw}")
 				' Prepare datatables to be filled and fill them from DB
 				Dim REQDT As New DataTable()
 				Dim REQDetailDT As New DataTable()
 				Dim REQCMTDT As New DataTable()
 				Dim Status As String = ""
-				Dim StatusList As String = ""
+				'Dim StatusList As String = ""
 				
 				Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
 
@@ -5633,15 +5709,19 @@ End Function
 						Dim GUIDROW As String = rows.FirstOrDefault().Item("CMD_PGM_REQ_ID").ToString
 					
 						Dim ent As String = rows.FirstOrDefault().Item("Entity").ToString
+						Dim APPN As String = rows.FirstOrDefault().Item("APPN").ToString
 						entitiesFromReqList.Add(ent)
 						Status  = rows.FirstOrDefault().Item("Status").ToString
-						If StatusList.XFEqualsIgnoreCase("") Then
-							StatusList = Status
-						Else
-							If Not statuslist.XFContainsIgnoreCase(Status) Then
-								statuslist += StatusList & "|" & Status
-							End If
-						End If 
+						If Not FCList.Contains(ent) Then
+							FCList.Add(ent)
+						End If
+						If Not APPNList.Contains(APPN) Then
+							APPNList.Add(APPN)
+						End If
+						If Not StatusList.Contains(Status) Then
+							StatusList.Add(Status)
+						End If
+						
 						For Each row As DataRow In rows
 							row.Delete()
 						Next
@@ -5653,40 +5733,53 @@ End Function
 						For Each srow As DataRow In cmtRows
 							srow.Delete()
 						Next
-						globals.SetStringValue($"FundsCenterStatusUpdates - {ent}", statuslist)
+					
 					Next
 					' Persist changes back to DB
 					sqa_xfc_CMD_PGM_req_details.Update_XFC_CMD_PGM_REQ_Details(REQDetailDT, sqa)
 					sqa_xfc_CMD_PGM_req.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
 					sqa_xfc_CMD_PGM_req_cmt.Update_XFC_CMD_PGM_REQ_CMT(REQCMTDT, sqa)
-					Dim workspaceID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "10 CMD PGM")	
-					Dim customSubstVars As New Dictionary(Of String, String)
-					Dim FCList As New List (Of String)
-					If Not String.IsNullOrWhiteSpace(sEntity) Then
-						FCList.Add(sEntity)
-					Else
-						Dim entities As String
-						entitiesFromReqList = entitiesFromReqList.Distinct(StringComparer.OrdinalIgnoreCase).ToList()
-						entities = String.Join(",", entitiesFromReqList.Select(Function (r) "E#" & r))
-						FCList.Add(entities)
-					End If
-					Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList)
-					Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
-					Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
-					customSubstVars.Add("EntList",BaseEntityList)
-					customSubstVars.Add("ParentEntList",ParentEntityList)
-					customSubstVars.Add("WFScen", sScenario)
-					Dim currentYear As Integer = Convert.ToInt32(tm)
-					customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
-					BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
 					
 
-				End Using
+					
+'brapi.ErrorLog.LogMessage(si,"delete appn =" & String.Join("|",APPNList))
+'brapi.ErrorLog.LogMessage(si,"delete StatusList =" & String.Join("|",StatusList))					
+						Dim wsID  = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False,"10 CMD PGM")
+						Dim customSubstVars As New Dictionary(Of String, String) 
+						Dim EntityLists = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLists(si,FCList,"CMD_PGM")
+						Dim joinedentitylist = EntityLists.Item1.union(EntityLists.Item2).ToList()
+						For Each JoinedEntity As String In joinedentitylist
+							Globals.SetStringValue($"FundsCenterStatusUpdates - {JoinedEntity}", String.join("|",StatusList))	
+							Globals.setStringValue($"FundsCenterStatusappnUpdates - {JoinedEntity}",String.join("|",APPNList))	
+						Next
+					
+						Dim ParentEntityList As String = String.Join(", ", EntityLists.Item1.Select(Function(s) $"E#{s}"))
+						Dim BaseEntityList As String = String.Join(", ", EntityLists.Item2.Select(Function(s) $"E#{s}"))
 
-				Return Nothing
-			Catch ex As Exception
-				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-			End Try
+						customSubstVars.Add("EntList",BaseEntityList)
+						customSubstVars.Add("ParentEntList",ParentEntityList)
+						customSubstVars.Add("WFScen",wfInfoDetails("ScenarioName"))
+						Dim currentYear As Integer = Convert.ToInt32(wfInfoDetails("TimeName"))
+						customSubstVars.Add("WFTime",$"T#{currentYear.ToString()},T#{(currentYear+1).ToString()},T#{(currentYear+2).ToString()},T#{(currentYear+3).ToString()},T#{(currentYear+4).ToString()}")
+						BRApi.Utilities.ExecuteDataMgmtSequence(si, wsID, "CMD_PGM_Proc_Status_Updates", customSubstVars)
+
+						
+				End Using
+'				If args.LoadDashboardTaskInfo.Reason = LoadDashboardReasonType.ComponentSelectionChanged Then
+'				Dim loadDashboardTaskResult As New XFLoadDashboardTaskResult()
+											
+'								loadDashboardTaskResult.ChangeCustomSubstVarsInDashboard = True
+'								loadDashboardTaskResult.ModifiedCustomSubstVars.Add("IV_CMD_PGM_REQTitleList","")
+														
+'				Return loadDashboardTaskResult
+'				End If
+				
+				
+						Dim dKeyVal As New Dictionary(Of String, String)					
+						dKeyVal.Add("IV_CMD_PGM_REQTitleList","")	
+						Dim xfselectionchnagedtaskresult = Me.SetParameter(si, globals, api, dKeyVal)
+						Return xfselectionchnagedtaskresult
+			
 			
 		End Function
 
@@ -6238,15 +6331,15 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 											FirstOrDefault(Function(r) Not String.IsNullOrEmpty(r.Field(Of String)("Invalid Errors")) )
 											
 				If errRow IsNot Nothing Then validFile = False
-				Dim REQDataTable As New DataTable("XFC_CMD_PGM_REQ")
-				Dim REQDetailDataTable As New DataTable("XFC_CMD_PGM_REQ_Details")
+				Dim targetREQDT As New DataTable("XFC_CMD_PGM_REQ")
+				Dim targetREQDetailDT As New DataTable("XFC_CMD_PGM_REQ_Details")
 				
 				Dim existingREQs As New List(Of String)
 				Dim REQsinDB As Dictionary(Of (String, String, String), String)
 			
 				If validFile Then
 					'Get current REQs for the current scenario and command
-					REQsinDB = Me.GetDbValuesIntoREQTables(Importreq_DT, REQDataTable, REQDetailDataTable)
+					REQsinDB = Me.GetDbValuesIntoREQTables(targetREQDT, targetREQDetailDT)
 					validFile = REQ_IDIsValid( Importreq_DT, REQsinDB)
 				End If
 				
@@ -6264,19 +6357,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					'Update additional columns
 					PostProcessNewREQ(ImportREQ_DT, FCList, APPNList, StatusList)
 
-					'Get existing duplicate Reqs
-					
-					existingREQs = Me.GetExistingDupREQs(Importreq_DT, REQDataTable, REQsinDB)
-					'Call delete to delte rows
-					If existingREQs.Count > 0 Then
-						Dim deleter As New CMD_PGM_Helper.MainClass
-						Args.NameValuePairs.Add("req_IDs", String.Join(",", existingREQs))
-						'Args.NameValuePairs.Add("Entity", comd)
-						Args.NameValuePairs.Add("Action", "Delete")
-						deleter.main(si, globals, api, args)
-					End If
 					'Spltit imported data to REQ and detail tables
-					Me.SplitAndUpdateREQTables(ImportREQ_DT, REQDataTable, REQDetailDataTable)
+					Me.SplitAndUpdateREQTables(ImportREQ_DT, targetREQDT, targetREQDetailDT)
 					
 					'write to cube
 					Dim REQ_IDs As New List(Of String)
@@ -6387,13 +6469,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			'If String.IsNullOrWhiteSpace(REQ_ID) Then 
 			If String.IsNullOrWhiteSpace(row("REQ_ID").ToString) Then 
 				row("REQ_ID") = GetNextREQID(fundCenter)
-				row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
-			Else
-				If String.IsNullOrWhiteSpace(row("REQ_ID").ToString) Then 
-					row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
-				End If
 			End If
-			row("CMD_PGM_REQ_ID") = Guid.NewGuid()
+			If String.IsNullOrWhiteSpace(row("Status").ToString) Then 
+				row("Status") = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,fundCenter) &"_Formulate_PGM"
+			End If
+			
 			row("WFScenario_Name") =  wfInfoDetails("ScenarioName")
 			row("WFTime_Name") =  wfInfoDetails("TimeName")
 			row("WFCMD_Name") =  wfInfoDetails("CMDName")
@@ -6405,6 +6485,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			row("FundsCenter") = fundCenter
 			row("APE9") =  row("APPN") & "_" & row("APE9") 'CMD_PGM_Utilities.GetUD3(si, row("APPN"), row("APE9")) '"OMA_122011000"
 			row("REQ_ID_Type") = "Requirement"
+			row("Review_Entity") = fundCenter
 			row("Create_Date") = DateTime.Now
 			row("Create_User") = si.UserName
 			row("Update_Date") = DateTime.Now
@@ -6452,7 +6533,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		dt.Columns.Add("WFScenario_Name",GetType(String))
 		dt.Columns.Add("WFCMD_Name",GetType(String))
 		dt.Columns.Add("WFTime_Name",GetType(String))
-		
+		dt.Columns.Add("Review_Entity",GetType(String))
 		'Add columns for detail
 		dt.Columns.Add("IC",GetType(String))
 		dt.Columns.Add("Account",GetType(String))
@@ -6461,26 +6542,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		dt.Columns.Add("UD8",GetType(String))
 		dt.Columns.Add("FY_Total",GetType(String))
 		dt.Columns.Add("AllowUpdate",GetType(Boolean))
+		
        
         Return Nothing
 	
 	End Function	
-#End Region
-
-#Region "Get Existing Row"
-
-		Public Function GetExistingDupREQs(ByRef Importreq_DT As DataTable, ByRef REQDataTable As DataTable, ByRef existingREQs As Dictionary(Of (String, String, String), String)) As List(Of String)
-	
-	        'Identify dupliacate rows to delete based on the new data
-	        Dim rowsToDelete As New List(Of String)
-	        For Each newRow As DataRow In Importreq_DT.Rows
-	            Dim key = ((newRow("REQ_ID").ToString, newRow("WFScenario_Name").ToString(), newRow("FundsCenter").ToString()))
-	            If existingREQs.ContainsKey(key) Then
-	                rowsToDelete.Add(existingREQs(key))
-	            End If
-	        Next	
-			Return rowsToDelete
-		End Function
 #End Region
 
 #Region "CleanUp Special Characters"	
@@ -6523,7 +6589,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 #Region "setup Split And Insert Into REQ Tables"	
 
-	Function GetDbValuesIntoREQTables(ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable ) As Dictionary(Of (String, String, String), String)
+	Function GetDbValuesIntoREQTables(ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable ) As Dictionary(Of (String, String, String), String)
 
 		Dim sqa As New SqlDataAdapter()
 		Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
@@ -6536,7 +6602,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sqlConn.Open()
                 Dim sqaREQReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
                 Dim SqlREQ As String = $"SELECT * 
-									FROM XFC_CMD_PGM_REQ
+									FROM XFC_CMD_PGM_REQ  WITH (NOLOCK)
 									WHERE WFScenario_Name = '{scName}'
 									And WFCMD_Name = '{cmd}'
 									AND WFTime_Name = '{tm}'"
@@ -6548,10 +6614,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				'Prepare Detail	
 				 Dim sqaREQDetailReader As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
 				 Dim SqlREQDetail As String = $"SELECT * 
-									FROM XFC_CMD_PGM_REQ_Details
+									FROM XFC_CMD_PGM_REQ_Details  WITH (NOLOCK)
 									WHERE WFScenario_Name = '{scName}'
 									And WFCMD_Name = '{cmd}'
-									AND WFTime_Name = '{tm}'"
+									AND WFTime_Name = '{tm}'
+				 					AND UNIT_OF_MEASURE = 'Funding'"
 
 				Dim sqlparamsREQDetails As SqlParameter() = New SqlParameter() {}
                 sqaREQDetailReader.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa, REQDTDetail, SqlREQDetail, sqlparamsREQDetails)
@@ -6566,7 +6633,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 		Return existingREQs
 	End Function
 	
-	Function SplitAndUpdateREQTables(ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable )
+	Function SplitAndUpdateREQTables(ByRef fullDT As DataTable, ByRef targetREQDT As DataTable, ByRef tergetREQDTDetail As DataTable )
 
 'Brapi.ErrorLog.LogMessage(si,"here * 1")	
 		Dim sqa As New SqlDataAdapter()
@@ -6575,11 +6642,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 sqlConn.Open()
 				Dim sqaREQReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
 				Dim sqaREQDetailReader As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
+				
+				Dim srcREQDT As DataTable = targetREQDT.Clone()
+				Dim srcREQDetailDT As DataTable = tergetREQDTDetail.Clone()
 				 
-				Me.SplitFullDataTable(fullDT, REQDT, REQDTDetail)
-			
-				sqaREQReader.Update_XFC_CMD_PGM_REQ(REQDT, sqa)
-				sqaREQDetailReader.Update_XFC_CMD_PGM_REQ_Details(REQDTDetail,sqa)
+				Me.SplitFullDataTable(fullDT, srcREQDT, srcREQDetailDT, targetREQDT)
+
+				sqaREQReader.MergeandSync_XFC_CMD_PGM_REQ_toDB(si, srcREQDT, targetREQDT)
+				sqaREQDetailReader.MergeandSync_XFC_CMD_PGM_REQ_Details_toDB(si, srcREQDetailDT, tergetREQDTDetail)
 
 			End Using
 		End Using
@@ -6590,7 +6660,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 #End Region
 
 #Region"Split dataset"
-	Public Function SplitFullDataTable (ByRef fullDT As DataTable, ByRef REQDT As DataTable, ByRef REQDTDetail As DataTable) As Object
+	Public Function SplitFullDataTable (ByRef fullDT As DataTable, ByRef srcREQDT As DataTable, ByRef srcREQDTDetail As DataTable, ByRef tgtREQDT As DataTable) As Object
 		' Split and translate data per row
 		For Each row As DataRow In fullDT.Rows
 			
@@ -6599,10 +6669,22 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 			MappingForREQ = GetMappingForREQ()
 		    'Dim existingRowREQDT As DataRow = REQDT.Rows.Find(row("CMD_PGM_REQ_ID")) 
 
-			' Create a new row
-	        Dim newRowREQDT As DataRow = REQDT.NewRow()
+			'Check if REQ_ID exists if not create a new row
+			Dim req_id = row("REQ_ID")
+			Dim currentGuid =""
+			Dim newRowREQDT As DataRow = srcREQDT.NewRow()
+			Dim newRowREQDTFind As DataRow = tgtREQDT.Select($"REQ_ID = '{req_id}'").FirstOrDefault()
+			If newRowREQDTFind Is Nothing Then
+				currentGuid =  Guid.NewGuid().ToString()
+			Else
+				currentGuid = newRowREQDTFind("CMD_PGM_REQ_ID").ToString()
+			End If 
+			newRowREQDT("CMD_PGM_REQ_ID") = currentGuid
+			'Update the row GUID so it makes processing details easier
+			row("CMD_PGM_REQ_ID") = currentGuid
+
 	        For Each fullCol As KeyValuePair (Of String, String) In MappingForREQ
-				If REQDT.Columns(fullCol.Value).DataType Is GetType(DateTime) Then
+				If srcREQDT.Columns(fullCol.Value).DataType Is GetType(DateTime) Then
                     Dim tempDate As DateTime
 					'Account for blank date fields. Has to be set to dbnull
                     If DateTime.TryParse(row(fullCol.Key), tempDate) Then
@@ -6611,38 +6693,41 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         newRowREQDT(MappingForREQ(fullCol.Key)) = DBNull.Value
                     End If
                 Else
-					newRowREQDT(MappingForREQ(fullCol.Key)) = row(fullCol.Key)
+					'Don't update the GUID is is handled earlier
+					If Not fullCol.Key.XFEqualsIgnoreCase("CMD_PGM_REQ_ID") Then
+						newRowREQDT(MappingForREQ(fullCol.Key)) = row(fullCol.Key)
+					End If
 				End If 
-	        Next		
-		    
-			REQDT.Rows.Add(newRowREQDT)
-			
+	        Next	
+			srcREQDT.Rows.Add(newRowREQDT)
 		    ' Handle REQDTDetail Base FYDP
 	        ' Create a new row
 			Dim MappingForREQDetails As New Dictionary(Of String, String)
 			MappingForREQDetails = GetMappingForREQDetailsBase()
-	        Dim newRowREQDTDetail As DataRow = REQDTDetail.NewRow()
+			
+	        Dim newRowREQDTDetail As DataRow = srcREQDTDetail.NewRow()
+			
 	        For Each fullCol As String In MappingForREQDetails.Keys
 	            newRowREQDTDetail(MappingForREQDetails(fullCol)) = row(fullCol)
 	        Next
 			
 			newRowREQDTDetail("UNIT_OF_MEASURE") = "Funding"
-			REQDTDetail.Rows.Add(newRowREQDTDetail)
-		   
+			
+			srcREQDTDetail.Rows.Add(newRowREQDTDetail)
 			
 			' Handle REQDTDetail Items 
 			If  CheckItems(row) Then
 				Dim MappingForREQDetailsItems As New Dictionary(Of String, String)
 				MappingForREQDetailsItems = GetMappingForREQDetailsItem()
 		        ' Create a new row
-		        Dim newRowREQDTDetailItem As DataRow = REQDTDetail.NewRow()
+		        Dim newRowREQDTDetailItem As DataRow = srcREQDTDetail.NewRow()
 		        For Each fullCol As String In MappingForREQDetailsItems.Keys
 		            newRowREQDTDetailItem(MappingForREQDetailsItems(fullCol)) = row(fullCol)
 		        Next
 				
 				newRowREQDTDetailItem("Account") = "DD_PEG_Item"
 				'row("UNIT_OF_MEASURE")
-				REQDTDetail.Rows.Add(newRowREQDTDetailItem)
+				srcREQDTDetail.Rows.Add(newRowREQDTDetailItem)
 			End If
 			
 			' Handle REQDTDetail Cost 
@@ -6650,7 +6735,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Dim MappingForREQDetailsCost As New Dictionary(Of String, String)
 				MappingForREQDetailsCost = GetMappingForREQDetailsCost() 
 		        ' Create a new row
-		        Dim newRowREQDTDetailCost As DataRow = REQDTDetail.NewRow()
+		        Dim newRowREQDTDetailCost As DataRow = srcREQDTDetail.NewRow()
 		        For Each fullCol As String In MappingForREQDetailsCost.Keys
 		            newRowREQDTDetailCost(MappingForREQDetailsCost(fullCol)) = row(fullCol)
 		        Next
@@ -6658,7 +6743,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				newRowREQDTDetailCost("Account") = "DD_PEG_Cost"
 				'row("UNIT_OF_MEASURE") & "_Cost"
 				
-				REQDTDetail.Rows.Add(newRowREQDTDetailCost)
+				srcREQDTDetail.Rows.Add(newRowREQDTDetailCost)
 			End If
 			
 			' Handle REQDTDetail Quantity
@@ -6667,14 +6752,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Dim MappingForREQDetailsQTY As New Dictionary(Of String, String)
 				MappingForREQDetailsQTY = GetMappingForREQDetailsQTY()
 		        ' Create a new row
-		        Dim newRowREQDTDetailQTY As DataRow = REQDTDetail.NewRow()
+		        Dim newRowREQDTDetailQTY As DataRow = srcREQDTDetail.NewRow()
 		        For Each fullCol As String In MappingForREQDetailsQTY.Keys
 		            newRowREQDTDetailQTY(MappingForREQDetailsQTY(fullCol)) = row(fullCol)
 		        Next
 					
 				newRowREQDTDetailQTY("Account") = "Quantity"
 				
-				REQDTDetail.Rows.Add(newRowREQDTDetailQTY)
+				srcREQDTDetail.Rows.Add(newRowREQDTDetailQTY)
 				
 			End If						
 			
@@ -6683,10 +6768,17 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 	End Function
 	
-	Public Sub UpdateExistingREQIDs(ByRef dr As DataRow, ByVal existingCMD_PGM_REQ_ID As String, ByVal existingREQ_ID As String )
-		dr("CMD_PGM_REQ_ID") = existingCMD_PGM_REQ_ID
-		dr("REQ_ID") = existingREQ_ID
-	End Sub
+	Public Function GetExistingDetailRow(ByRef dr As DataRow,  ByRef existingREQDTDetail As DataTable, ByRef account As String) As DataRow
+		Dim newRow As DataRow = existingREQDTDetail.Select($"CMD_PGM_REQ_ID = '{dr("CMD_PGM_REQ_ID")}' 
+															AND Account = '{account}' 
+															AND UD1 = '{dr("UD1")}' 
+															AND UD2 = '{dr("UD2")}' 
+															AND UD3 = '{dr("UD3")}' 
+															AND UD4 = '{dr("UD4")}' 
+															AND UD5 = '{dr("UD5")}'   
+															AND UD6 = '{dr("UD6")}' ").FirstOrDefault()
+		Return newRow
+	End Function
 #End Region
 
 #Region	"Get Mapping XFC_CMD_PGM_REQ_Details"
@@ -6916,6 +7008,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				{"FLEX5","FF_5"},
 				{"Status","Status"},
 				{"Invalid","Invalid"},
+				{"Review_Entity","Review_Entity"},
 				{"Create_Date","Create_Date"},
 				{"Create_User","Create_User"},
 				{"Update_Date","Update_Date"},
@@ -9963,7 +10056,7 @@ Private Function dg_CMD_PGM_REQFundingLine() As Object
 	 Dim dt As New DataTable()
 	 Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition)
 	 Dim EditValue As String = args.CustomSubstVars.XFGetValue("DL_CMD_PGM_AdjustFundingLine")
-	  
+	
 	'If EditValue.XFEqualsIgnoreCase("lock") Then
 
 	Dim Scenario As New XFDynamicGridColumnDefinition()
@@ -10108,7 +10201,7 @@ Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 							
 						' Get the data you want To put In the grid
 						
-		Dim ReqID As String = args.CustomSubstVars.XFGetValue("IV_CMD_TGT_REQTitleList")
+		Dim ReqID As String = args.CustomSubstVars.XFGetValue("IV_CMD_PGM_REQTitleList")
 				If String.IsNullOrWhiteSpace(ReqID)
 					Return Nothing
 				Else 
@@ -10178,14 +10271,21 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
     If saveDataArgs Is Nothing Then
         Return Nothing
     End If
-'Brapi.ErrorLog.LogMessage(si, "HERE 1")
+	
+
     ' Get the edited rows
     Dim editedDataRows As List(Of XFEditedDataRow) = saveDataArgs.EditedDataRows
     If editedDataRows Is Nothing OrElse editedDataRows.Count = 0 Then
         Return Nothing
     End If
+'	'Dim reqid As String  = args.SaveDataArgs.editedDataRows.Item(0).ModifiedDataRow("CMD_PGM_REQ_ID").ToString
+'			 For Each column As String In editedDataRows.Item(0).ModifiedDataRow.Items.Keys
+''brapi.ErrorLog.LogMessage(si,$"save req funding column {column} = {editedDataRows.Item(0).ModifiedDataRow.Item(column)} - {editedDataRows.Item(0).InsertUpdateOrDelete.ToString()}")
+''editedDataRows.Item(0).InsertUpdateOrDelete.ToString()
+'Next 
+	Dim ReqID As String = args.CustomSubstVars.XFGetValue("IV_CMD_PGM_REQTitleList")
+'Brapi.ErrorLog.LogMessage(si, "CMD_PGM_ID" & ReqID)
 	
-	'Brapi.ErrorLog.LogMessage(si, "HERE 2")
 		Dim WFInfoDetails As New Dictionary(Of String, String)()
             Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
             Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
@@ -10210,22 +10310,23 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
             Dim dt As New DataTable()
             Dim sqa As New SqlDataAdapter()
             Dim sqaReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)
-            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_PGM_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_PGM_REQ_ID  = @CMD_PGM_REQ_ID"
+            Dim sqlMain As String = $"SELECT * FROM XFC_CMD_PGM_REQ WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND REQ_ID = '{ReqID}'"
             Dim sqlParams As SqlParameter() = New SqlParameter() {
                 New SqlParameter("@WFScenario_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("ScenarioName")},
                 New SqlParameter("@WFCMD_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("CMDName")},
-                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")},
-				New SqlParameter("@CMD_PGM_REQ_ID", SqlDbType.UniqueIdentifier) With {.Value = editedDataRows.Item(0).ModifiedDataRow("CMD_PGM_REQ_ID")}
+                New SqlParameter("@WFTime_Name", SqlDbType.NVarChar) With {.Value = wfInfoDetails("TimeName")}
 						}
               sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa, dt, sqlMain, sqlParams)
-			  
-		'Brapi.ErrorLog.LogMessage(si, "HERE 4")	
-
+		
+	Dim req_ID_GUID As Guid = Guid.Empty
+	req_ID_GUID = dt.Rows(0)("CMD_PGM_REQ_ID")
+	
+	Brapi.ErrorLog.LogMessage(si, "REQ_ID" & req_ID_GUID.ToString )
             ' --- Details Table (XFC_CMD_PGM_REQ_Details) ---
             Dim dt_Details As New DataTable()
 			 Dim sqa2 As New SqlDataAdapter()
             Dim sqaReaderdetail As New SQA_XFC_CMD_PGM_REQ_Details(sqlConn)
-            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_PGM_REQ_ID  = @CMD_PGM_REQ_ID"
+            Dim sqlDetail As String = $"SELECT * FROM XFC_CMD_PGM_REQ_Details WHERE WFScenario_Name = @WFScenario_Name AND WFCMD_Name = @WFCMD_Name AND WFTime_Name = @WFTime_Name AND CMD_PGM_REQ_ID  = '{req_ID_GUID}'"
             sqaReaderdetail.Fill_XFC_CMD_PGM_REQ_Details_DT(sqa2, dt_Details, sqlDetail, sqlParams)
 
 			Dim sqa_xfc_cmd_pgm_req_details_audit = New SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT(sqlConn)
@@ -10236,22 +10337,23 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 								WHERE WFScenario_Name = @WFScenario_Name
 								AND WFCMD_Name = @WFCMD_Name
 								AND WFTime_Name = @WFTime_Name
-								AND CMD_PGM_REQ_ID  = @CMD_PGM_REQ_ID"
+								AND CMD_PGM_REQ_ID  = '{req_ID_GUID}'"
 		sqa_xfc_cmd_pgm_req_details_audit.Fill_XFC_CMD_PGM_REQ_DETAILS_Audit_DT(sqa, SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT, SQL_Audit, sqlParams)
 			
 			
 			
             ' ************************************
             ' ************************************
-          
+      
 	
 			
 	 For Each editedDataRow As XFEditedDataRow In editedDataRows
-		
+'		 For Each column As XFDataColumn In editedDataRow.ModifiedDataRow.Items
+'brapi.ErrorLog.LogMessage(si,"save req funding column = " & column.Name & "," & column.DataType)
+'Next 
 		
     Dim targetRow As DataRow 											
-	Dim req_ID_Val As Guid
-	req_ID_Val = editedDataRow.ModifiedDataRow.Item("CMD_PGM_REQ_ID")
+
 	If Not status.Contains(editedDataRow.ModifiedDataRow.Item("Flow"))
 		status.Add(editedDataRow.ModifiedDataRow.Item("Flow"))
 	End If 
@@ -10261,9 +10363,9 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 	If Not UD1.Contains(editedDataRow.ModifiedDataRow.Item("UD1"))
 		UD1.Add(editedDataRow.ModifiedDataRow.Item("UD1"))
 	End If 
-'brapi.ErrorLog.LogMessage(si,"save req funding = " & status & Entity & UD1)	
+
 			
-	targetRow = dt.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}'").FirstOrDefault()
+	targetRow = dt.Select($"CMD_PGM_REQ_ID = '{req_ID_GUID}'").FirstOrDefault()
 			
 		
 			
@@ -10274,7 +10376,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 				targetRow("Update_User") = si.UserName																																																																																				
 
 		Dim targetRowFunding As DataRow
-			targetRowFunding = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+			targetRowFunding = dt_Details.Select($"CMD_PGM_REQ_ID = '{req_ID_GUID}' AND Account = 'Req_Funding'").FirstOrDefault()
 			
 			If targetRowFunding IsNot Nothing Then
 			
@@ -10287,7 +10389,7 @@ Dim saveDataArgs As DashboardDynamicGridSaveDataArgs = args.SaveDataArgs
 			'Added Audit update before funding line updates are written to the table			
 					If SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Rows.Count > 0 Then
 								Dim drow As DataRow
-									drow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Select($"CMD_PGM_REQ_ID = '{req_ID_Val}' AND Account = 'Req_Funding'").FirstOrDefault()
+									drow = SQA_XFC_CMD_PGM_REQ_DETAILS_AUDIT_DT.Select($"CMD_PGM_REQ_ID = '{req_ID_GUID}' AND Account = 'Req_Funding'").FirstOrDefault()
 									drow("Orig_FY1") = targetRowFunding("FY_1")
 									drow("Updated_FY1") = FY1
 									drow("Orig_FY2") = targetRowFunding("FY_2")
@@ -11367,8 +11469,11 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				End If
 			
 				If args.CustomCalculateArgs.FunctionName.XFEqualsIgnoreCase("CalculateWeightedScoreAndRank") Then
-					
 					Me.CalculateWeightedScoreAndRank()
+				End If
+				
+				If args.CustomCalculateArgs.FunctionName.XFEqualsIgnoreCase("Consol_Aggregated") Then
+					Me.Consol_Aggregated()
 				End If
 
             	Catch ex As Exception
@@ -11391,7 +11496,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Dim origin_Filter As String = "O#Import"
 			Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")
 			Dim entityID As Integer = api.Members.GetMemberId(dimType.Entity.Id,api.Pov.Entity.Name)
-			
 			Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk,entityID)
 			
 			If Ent_Base = False Then
@@ -11456,10 +11560,10 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				finalUD1WhereClause = $"UD1 like '{appnbyFundsCenter}%'"
 				appnbyFundsCenter = $",[U1#{appnbyFundsCenter}]"
 			End If
-			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(REMOVEZeros(V#Periodic),[origin_Filter]{StatusbyFundsCenter}{appnbyFundsCenter})")
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(REMOVEZeros(V#Periodic),[{origin_Filter}]{StatusbyFundsCenter}{appnbyFundsCenter})")
 			Dim destBuffer As DataBuffer = New DataBuffer()
 			Dim ClearCubeData As DataBuffer = New DataBuffer()
-'BRApi.ErrorLog.LogMessage(si, $"CurrCubeBuffer script: FilterMembers(REMOVEZeros(V#Periodic),[origin_Filter]{StatusbyFundsCenter})")
+'BRApi.ErrorLog.LogMessage(si, $"CurrCubeBuffer script: FilterMembers(REMOVEZeros(V#Periodic),{origin_Filter}{StatusbyFundsCenter})")
 			'Define the SQL Statement 
 			Dim sql = $"SELECT Entity, Account, IC, Flow, UD1, UD2, UD3, UD4, UD5, UD6, UD7, UD8, '{tgt_origin}' as Origin, SUM(FY_{table_FY}) AS Tot_Annual
 						FROM XFC_CMD_PGM_REQ_Details
@@ -11949,7 +12053,74 @@ End Function
     End Function
 #End Region
 			
-				
+#Region "Consol Aggregated"
+Private Sub Consol_Aggregated()
+		If api.Pov.Entity.Name.XFContainsIgnoreCase("E#None") Then Return
+		Dim entDimPk As DimPk = BRApi.Finance.Dim.GetDimPk(si, "E_Army")
+		Dim entityLevel As String = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetEntityLevel(si,api.Pov.Entity.Name)
+		Dim entityID As Integer = api.Members.GetMemberId(dimType.Entity.Id,api.Pov.Entity.Name)
+		Dim Ent_Base = Not BRApi.Finance.Members.HasChildren(si, entDimPk,entityID)
+'brapi.ErrorLog.LogMessage(si,"entity = " & api.Pov.Entity.Name)
+		If Not Ent_Base
+			Dim Src_Data = String.Empty
+			Dim acctFilter = "A#Req_Funding"
+			Dim originFilter = "O#AdjConsolidated,O#Forms,O#Import"
+			Dim flowFilter = "F#L2_Formulate_PGM,F#L3_Formulate_PGM,F#L4_Formulate_PGM,F#L5_Formulate_PGM,F#L3_Validate_PGM,F#L4_Validate_PGM,F#L5_Validate_PGM,F#L3_Approve_PGM,F#L2_Validate_PGM,F#L2_Approve_PGM,F#L2_Final_PGM"
+			Select Case entityLevel
+				Case "L3"
+					flowFilter =  "F#L3_Formulate_PGM,F#L4_Formulate_PGM,F#L5_Formulate_PGM,F#L3_Validate_PGM,F#L4_Validate_PGM,F#L5_Validate_PGM,F#L3_Approve_PGM,F#L2_Validate_PGM,F#L2_Approve_PGM,F#L2_Final_PGM"
+				Case "L4"
+					flowFilter =  "F#L4_Formulate_PGM,F#L5_Formulate_PGM,F#L3_Validate_PGM,F#L4_Validate_PGM,F#L5_Validate_PGM,F#L3_Approve_PGM,F#L2_Validate_PGM,F#L2_Approve_PGM,F#L2_Final_PGM"
+			End Select
+			Dim src_DataBuffer As New DataBuffer()
+			Dim CurrCubeBuffer As DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData(V#Periodic),[{originFilter}],[{flowFilter}],[{acctFilter}])")
+			Dim destBuffer As DataBuffer = New DataBuffer()
+			Dim ClearCubeData As DataBuffer = New DataBuffer()
+			
+			Dim entList = BRApi.Finance.Members.GetMembersUsingFilter(si, entDimPk, $"E#{api.Pov.Entity.Name}.Children", True)
+			For Each Ent As MemberInfo In entList
+
+				If Src_Data.Length > 0
+					Src_Data = $"{Src_Data} + cb#{api.Pov.Cube.Name}:E#{Ent.Member.Name}:C#Aggregated:V#Periodic"
+				Else
+					Src_Data = $"cb#{api.Pov.Cube.Name}:E#{Ent.Member.Name}:C#Aggregated:V#Periodic"
+				End If
+			Next
+			
+			src_DataBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers(RemoveNoData({Src_Data}),[O#AdjConsolidated,O#AdjInput,O#Forms,O#Import],[{flowFilter}],[{acctFilter}])")
+'CurrCubeBuffer.LogDataBuffer(api,$"{api.pov.entity.name}_CurrBufferConsol",500)
+'Src_DataBuffer.LogDataBuffer(api,$"{api.pov.entity.name}_SrcBufferConsol - C#{api.Pov.Cons.Name} - T#{api.Pov.Time.name}",500)  
+
+			For Each Src_DataCell As DataBufferCell In Src_DataBuffer.DataBufferCells.Values
+				Dim destOrigin = Src_DataCell.GetOriginName(api)
+				If Src_DataCell.GetOriginName(api).XFEqualsIgnoreCase("AdjInput")
+					destOrigin = "AdjConsolidated"
+				End If
+				Dim Destcell As New DataBufferCell(UpdateCellDefinition(Src_DataCell,,,destOrigin))
+				UpdateValue(Destcell, CurrCubeBuffer, destBuffer, Destcell.CellAmount)
+				CurrCubeBuffer.DataBufferCells.Remove(Destcell.DataBufferCellPk)
+			Next
+			
+			Dim destInfo As ExpressionDestinationInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
+			api.Data.SetDataBuffer(destBuffer, destInfo,,,,,,,,,,,,,True)
+			destBuffer.DataBufferCells.Clear()
+	
+			For Each ClearCubeCell As DataBufferCell In CurrCubeBuffer.DataBufferCells.Values
+				Dim Status As New DataCellStatus(False)
+				Dim ClearCell As New DataBufferCell(ClearCubeCell.DataBufferCellPk, 0, Status)
+				ClearCubeData.SetCell(si, ClearCell)
+			Next
+	
+			Dim ClearInfo = api.Data.GetExpressionDestinationInfo("V#Periodic")
+			api.Data.SetDataBuffer(ClearCubeData, ClearInfo)
+		End If
+		
+	End Sub
+#End Region
+
+
+
+
 	End Class
 
 	
@@ -13714,12 +13885,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		    AddHandler tgtTable.TableNewRow, handler
 	
 		    Try
-'For Each r As DataRow In tgtTable.Rows
-'	Brapi.ErrorLog.LogMessage(si,$"Hit Sync tgtTable: " & r("CMD_PGM_REQ_ID").ToString & " REQ_ID: " &   r("REQ_ID") & " Title: " & r("title"))
-'Next
-'For Each r As DataRow In srcTable.Rows
-'	Brapi.ErrorLog.LogMessage(si,$"Hit Sync srcTable: " & r("CMD_PGM_REQ_ID").ToString & " REQ_ID: " &   r("REQ_ID") & " Title: " & r("title"))
-'Next
+
 		        tgtTable.Merge(srcTable, False, MissingSchemaAction.Add)
 'For Each r As DataRow In tgtTable.Rows
 '	Brapi.ErrorLog.LogMessage(si,$"Hit After merger tgtTable: " & r("CMD_PGM_REQ_ID").ToString & " REQ_ID: " &   r("REQ_ID") & " Title: " & r("title"))
@@ -13757,9 +13923,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                bulkCopy.DestinationTableName = tempTableName
 		                bulkCopy.WriteToServer(changes)
 		            End Using
-For Each r As DataRow In changes.Rows
-	Brapi.ErrorLog.LogMessage(si,$"Hit Sync changes: " & r("CMD_PGM_REQ_ID").ToString & " : " & r("title"))
-Next	
+	
 		            ' We use the GUID column as the unique identifier for the join
 		            Dim mergeSql As String = $"MERGE INTO XFC_CMD_PGM_REQ AS Target
 								                USING {tempTableName} AS Source
@@ -14722,7 +14886,8 @@ Public GBL_DataSet As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardDataS
 		Public Function displaydashboard() As String
 			Dim reqTitle = args.NameValuePairs.XFGetValue("REQTitle")
 			Dim sDashName = args.NameValuePairs.XFGetValue("DashName",String.Empty)
-'brapi.ErrorLog.LogMessage(si, "TRV: REQ Title: " & reqTitle)			
+'Dim tStart As DateTime = Date.Now()
+'brapi.ErrorLog.LogMessage(si, $"394_PGMSTRGHLP_TRV: REQ Title: {reqTitle} | Time: {tStart}")			
 			If String.IsNullOrEmpty(reqTitle)
 				Dim wsID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "10 CMD PGM")
 				Dim cmd_PGM_Base_Info As New DashboardFileResource 
@@ -14800,6 +14965,7 @@ Public GBL_DataSet As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardDataS
 			
 		End Function
 #End Region
+
 '****Component Showhide*****
 #Region "ShowHide"
 'Purpose: Any component, cv, object etc., add a case statment 
@@ -15705,7 +15871,7 @@ End Function
 		Public Function displaypegdashboard() As String
 			Dim reqTitle = args.NameValuePairs.XFGetValue("REQTitle")
 			Dim sPEG = args.NameValuePairs.XFGetValue("Peg")
-
+			
 			Dim WFInfoDetails As New Dictionary(Of String, String)()
             Dim wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si)
             Dim wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo()
@@ -15727,9 +15893,9 @@ End Function
             Dim sqaReader As New SQA_XFC_CMD_PGM_REQ(sqlConn)		
 			
 			
-				If String.IsNullOrWhiteSpace(reqTitle)
+				If String.IsNullOrWhiteSpace(reqTitle) Then
 					Return Nothing
-				Else 
+				End If 
 				'Fill the DataTable 
 				Dim sql As String = $"SELECT MDEP 
 									FROM XFC_CMD_PGM_REQ 
@@ -15748,22 +15914,25 @@ End Function
    		}
 			sqaReader.Fill_XFC_CMD_PGM_REQ_DT(sqa,dt,sql, sqlparams)
 			
-		
+	
 			
 		If dt.Rows.Count > 0 Then
-			
+					
     		MDEP = dt.Rows(0)("MDEP")
+		Else 
+		Return Nothing
 		End If
-	End If 
+	
 	End Using
 End Using 
 	
 		Dim iU2MbrID As Integer = BRapi.Finance.Members.GetMemberId(si,dimtype.UD2.Id, MDEP)
 		Dim sParentPEG As String = BRApi.Finance.Members.GetParents(si, BRApi.Finance.Dim.GetDimPk(si, "U2_MDEP"), iU2MbrID, False)(0).Name
-
+		
 		
 				
 			Select Case True
+		
 				Case (sParentPEG = "DD"	And sPEG = "DD")	
 					Return True
 				Case (sParentPEG = "SS"	And sPEG = "SS")		
@@ -15771,6 +15940,7 @@ End Using
 				Case Else	
 					Return False
 			End Select
+		
 		End Function
 #End Region
 
@@ -16009,7 +16179,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         Private Function Get_REQ_Base_Info() As TableView
             Dim dt As New DataTable()
             Dim xftv As New TableView()
-			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList")
+			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList")
 			'Brapi.ErrorLog.LogMessage(si,"REQID XFTV" & ReqID)
 				If String.IsNullOrWhiteSpace(ReqID)
 				Return Nothing
@@ -16128,7 +16298,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         Private Function Get_REQ_cWork_OOC() As TableView
             Dim dt As New DataTable()
             Dim xftv As New TableView()
-			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList")
+			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList")
 				If String.IsNullOrWhiteSpace(ReqID)
 				Return Nothing
 			Else
@@ -16164,7 +16334,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         Private Function Get_REQ_SS_PEG() As TableView
             Dim dt As New DataTable()
             Dim xftv As New TableView()
-			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList")
+			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList")
 				If String.IsNullOrWhiteSpace(ReqID)
 				Return Nothing
 			Else
@@ -16213,7 +16383,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         Private Function Get_REQ_DD_PEG() As TableView
             Dim dt As New DataTable()
             Dim xftv As New TableView()
-			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList")
+			Dim ReqID As String = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList")
 				If String.IsNullOrWhiteSpace(ReqID)
 				Return Nothing
 			Else
@@ -16446,7 +16616,7 @@ Private Function Save_Create_New_REQ_Base_Info() As Object
 #Region "Save BaseInfo"
         Private Function Save_REQ_Base_Info() As Object
 			'Dim REQ_ID_List As New List(Of String) 
-		Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList","NA")
+		Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList","NA")
 			
             Dim xftv As New TableView()
 			xftv = args.TableView
@@ -16613,7 +16783,7 @@ Private Function Save_Create_New_REQ_Base_Info() As Object
 			Else
 				
 			
-				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList","NA")
+				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList","NA")
 				If String.IsNullOrWhiteSpace(REQID)
 					Return Nothing
 						
@@ -16711,7 +16881,7 @@ Private Function Save_Create_New_REQ_Base_Info() As Object
 				Return Nothing
 			End If
 				
-				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList","NA")
+				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList","NA")
 				If String.IsNullOrWhiteSpace(REQID)
 					Return Nothing
 						
@@ -16859,7 +17029,7 @@ Public Function Save_DD_PEG() As Object
             If xftv Is Nothing OrElse xftv.Rows.Count = 0 Then 
 				Return Nothing
 			End If
-				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_TGT_REQTitleList","NA")
+				Dim REQID As String  = args.CustSubstVarsAlreadyResolved.XFGetValue("IV_CMD_PGM_REQTitleList","NA")
 				If String.IsNullOrWhiteSpace(REQID)
 					Return Nothing	
 				End If
@@ -22782,7 +22952,7 @@ Where COMMAND = '|WFCube|' and Column_Name = 'Risk_Not_Funded'</sqlQuery>
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
-                            <parameter name="IV_CMD_TGT_REQTitleList" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
+                            <parameter name="IV_CMD_PGM_REQTitleList" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
                                 <defaultValue></defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
@@ -23003,7 +23173,7 @@ Where COMMAND = '|WFCube|' and Column_Name = 'Risk_Not_Funded'</sqlQuery>
                                 <memberFilter></memberFilter>
                             </parameter>
                             <parameter name="LV_CMD_PGM_Test" description="" userPrompt="" parameterType="InputValue" sortOrder="0">
-                                <defaultValue>XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_TGT_REQTitleList!|, DashName=BaseInfoGeneralText)</defaultValue>
+                                <defaultValue>XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_PGM_REQTitleList!|, DashName=BaseInfoGeneralText)</defaultValue>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
                                 <parameterCommandType>Unknown</parameterCommandType>
@@ -23637,7 +23807,7 @@ returnType=SAG
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>BusinessRule</methodType>
-                                <methodQuery>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_DataSet}{Get_FC_Req_TreeView}{req_IDs=[|!IV_CMD_TGT_REQTitleList!|],Entity=[|!BL_CMD_PGM_FundsCenter!|],Dashboard=|!DL_GBL_WF_MenuOptions!|}</methodQuery>
+                                <methodQuery>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_DataSet}{Get_FC_Req_TreeView}{req_IDs=[|!IV_CMD_PGM_REQTitleList!|],Entity=[|!BL_CMD_PGM_FundsCenter!|],Dashboard=|!DL_GBL_WF_MenuOptions!|}</methodQuery>
                                 <resultsTableName></resultsTableName>
                                 <DashboardAdapterOptions>
                                     <CubeViewDataTableOptions>
@@ -24205,7 +24375,7 @@ returnType=MDEP
                             </component>
                             <component name="btn_CMD_PGM_ApproveREQ" description="" xfText="Submit for Approval" toolTip="Submit for approval." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, ComponentName=SubCMDApprove)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Approve_Reqs}{req_IDs = |!IV_CMD_TGT_REQTitleList!|, new_Status = Validate, Mode = Single}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Approve_Reqs}{req_IDs = |!IV_CMD_PGM_REQTitleList!|, new_Status = Validate, Mode = Single}</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>GBL_WF_0_Main</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -24234,7 +24404,7 @@ returnType=MDEP
                             </component>
                             <component name="btn_CMD_PGM_AttachDoc" description="" xfText="Add Attachment(s)" toolTip="Add an attachment to include in the requirement." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="FilePath" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, MarginTop = 0, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{AttachDocument}{FilePath=[|!FilePath!|],REQ_ID=[|!IV_CMD_TGT_REQTitleList!|]}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{AttachDocument}{FilePath=[|!FilePath!|],REQ_ID=[|!IV_CMD_PGM_REQTitleList!|]}</selectionChangedTaskArgs>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="FileUpload">
                                         <ImageFileSourceType>DashboardFile</ImageFileSourceType>
@@ -24324,7 +24494,7 @@ returnType=MDEP
                                 <adapterMembers />
                             </component>
                             <component name="btn_CMD_PGM_DDPEGDetails" description="cWork OOC" xfText="DD PEG" toolTip="" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
-                                <displayFormat>|!LV_CMD_PGM_fmt_btn_PEGDetails!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaypegdashboard,REQTitle=|!IV_CMD_TGT_REQTitleList!|, Peg=DD)</displayFormat>
+                                <displayFormat>|!LV_CMD_PGM_fmt_btn_PEGDetails!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaypegdashboard,REQTitle=|!IV_CMD_PGM_REQTitleList!|, Peg=DD)</displayFormat>
                                 <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{cachedashboard}{Db=DD PEG}</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>CMD_PGM_0b2_Body_GeneralText_Info</dashboardsToRedraw>
                                 <componentDefinition>
@@ -24340,7 +24510,7 @@ returnType=MDEP
                             </component>
                             <component name="btn_CMD_PGM_DeleteREQDialog" description="" xfText="Delete" toolTip="Delete requirement." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="CloseDialog" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Dialog_Format!|</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{deleterequirementids}{req_IDs=|!LV_CMD_PGM_DeleteREQTitle!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{deleterequirementids}{req_IDs=|!IV_CMD_PGM_REQTitleList!|}</selectionChangedTaskArgs>
                                 <dashboardsToHide>CMD_PGM_0_Body_REQDetailsMain</dashboardsToHide>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -24355,7 +24525,7 @@ returnType=MDEP
                             </component>
                             <component name="btn_CMD_PGM_DemoteREQDialog" description="" xfText="Demote" toolTip="Demote requirement." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="CloseDialog" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Dialog_Format!|</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Submit_Reqs}{req_IDs = |!BL_CMD_PGM_REQTitleList!|, new_Status = |!BL_CMD_PGM_DemoteStatusList!|, Mode =Single, Demote=True,demotecomment=|!LV_CMD_PGM_DemoteREQJustification!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Submit_Reqs}{req_IDs = |!IV_CMD_PGM_REQTitleList!|, new_Status = |!BL_CMD_PGM_DemoteStatusList!|, Mode =Single, Demote=True,demotecomment=|!LV_CMD_PGM_DemoteREQJustification!|}</selectionChangedTaskArgs>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
                                         <ImageFileSourceType>DashboardFile</ImageFileSourceType>
@@ -24383,7 +24553,7 @@ returnType=MDEP
                             </component>
                             <component name="btn_CMD_PGM_Dialog_AdjustFundingLine" description="" xfText="Adjust Requirement" toolTip="Adjust the requirement's funding line." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="false" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, MarginTop=0, MarginLeft = 0, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|, REQ=|!IV_CMD_TGT_REQTitleList!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|, REQ=|!IV_CMD_PGM_REQTitleList!|}</selectionChangedTaskArgs>
                                 <dashboardForDialog>CMD_PGM_0a2_Dialog_FundDetailAmt_AdjustFilters</dashboardForDialog>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -24396,9 +24566,9 @@ returnType=MDEP
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="btn_CMD_PGM_Dialog_DeleteREQ" description="" xfText="Delete Requirement" toolTip="Delete currently selected requirement." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
+                            <component name="btn_CMD_PGM_Dialog_DeleteREQ" description="" xfText="Delete Requirement" toolTip="Delete currently selected requirement." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsApplyChangesAndRefresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|, REQ=|!IV_CMD_TGT_REQTitleList!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|, REQ=|!IV_CMD_PGM_REQTitleList!|}</selectionChangedTaskArgs>
                                 <dashboardForDialog>CMD_PGM_1a_Dialog_DeleteREQ</dashboardForDialog>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -24413,7 +24583,7 @@ returnType=MDEP
                             </component>
                             <component name="btn_CMD_PGM_Dialog_DemoteREQ" description="" xfText="Demote Requirement" toolTip="Demote requirement." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|, REQ=|!IV_CMD_TGT_REQTitleList!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|, REQ=|!IV_CMD_PGM_REQTitleList!|}</selectionChangedTaskArgs>
                                 <dashboardForDialog>CMD_PGM_2_Dialog_DemoteREQ</dashboardForDialog>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -24523,9 +24693,8 @@ returnType=MDEP
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="btn_CMD_PGM_Dialog_LinkREQs" description="" xfText="Link Requirements" toolTip="Link related requirements." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
+                            <component name="btn_CMD_PGM_Dialog_LinkREQs" description="" xfText="Link Requirements" toolTip="Link related requirements." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, MarginTop=0, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|,REQ= |!IV_CMD_TGT_REQTitleList!|}</selectionChangedTaskArgs>
                                 <dashboardForDialog>CMD_PGM_1b_Dialog_LinkREQs</dashboardForDialog>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -24553,9 +24722,9 @@ returnType=MDEP
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="btn_CMD_PGM_Dialog_NotifyUsers" description="" xfText="Notify Users" toolTip="Select users to be emailed about future requirement status changes." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
+                            <component name="btn_CMD_PGM_Dialog_NotifyUsers" description="" xfText="Notify Users" toolTip="Select users to be emailed about future requirement status changes." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, MarginLeft = 0, MarginTop = 0, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|,REQ= |!IV_CMD_TGT_REQTitleList!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|,REQ= |!IV_CMD_PGM_REQTitleList!|}</selectionChangedTaskArgs>
                                 <dashboardForDialog>CMD_PGM_1c_Dialog_NotifyUsers</dashboardForDialog>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -24582,9 +24751,9 @@ returnType=MDEP
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="btn_CMD_PGM_Dialog_UpdateREQ" description="" xfText="Update Requirement" toolTip="Update requirement(s)." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
+                            <component name="btn_CMD_PGM_Dialog_UpdateREQ" description="" xfText="Update Requirement" toolTip="Update requirement(s)." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsApplyChangesAndRefresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{Setreqidfordetails}{REQ=[|!IV_CMD_PGM_REQ_IDs!|]}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{Setreqidfordetails}{REQ=|!IV_CMD_PGM_REQ_IDs!|,Entity=[|!BL_CMD_PGM_FundsCenter!|]}</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>GBL_WF_0_Main</dashboardsToRedraw>
                                 <dashboardForDialog>CMD_PGM_4_Dialog_UpdateREQDetails</dashboardForDialog>
                                 <componentDefinition>
@@ -24600,7 +24769,7 @@ returnType=MDEP
                             </component>
                             <component name="btn_CMD_PGM_Dialog_ViewDocuments" description="" xfText="View Attached Documents" toolTip="View Attached Documents" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="OpenDialogWithNoButtonsAndRefresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, MarginTop=0, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|,REQ= |!IV_CMD_TGT_REQTitleList!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{CachePrompts}{Entity=|!BL_CMD_PGM_FundsCenter!|,REQ= |!IV_CMD_PGM_REQTitleList!|}</selectionChangedTaskArgs>
                                 <dashboardForDialog>CMD_PGM_1d_Dialog_ViewDocuments</dashboardForDialog>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -24962,6 +25131,36 @@ returnType=SAG
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
+                            <component name="btn_CMD_PGM_HeaderClose" description="" xfText="" toolTip="Close Header" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>Height = 30, Width = 5, VerticallAlignment = Center, Bold = True, TextColor = White, BackgroundColor = XFLightBlue3, BorderColor = XFDarkGray</displayFormat>
+                                <dashboardsToShow>CMD_PGM_6_Body_Open</dashboardsToShow>
+                                <dashboardsToHide>trv_CMD_PGM_REQList, CMD_PGM_5_Body_Close</dashboardsToHide>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>Unknown</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName />
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="btn_CMD_PGM_HeaderOpen" description="" xfText="" toolTip="Open Header" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>Height = 30, Width = 5, VerticallAlignment = Center, Bold = True, TextColor = White, BackgroundColor = XFLightBlue3, BorderColor = XFDarkGray</displayFormat>
+                                <dashboardsToShow>trv_CMD_PGM_REQList, CMD_PGM_5_Body_Close</dashboardsToShow>
+                                <dashboardsToHide>CMD_PGM_6_Body_Open</dashboardsToHide>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>Unknown</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName />
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
                             <component name="btn_CMD_PGM_ImportDeleteCancel" description="" xfText="Cancel" toolTip="Cancel." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="CloseDialog" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Cancel_Format!|</displayFormat>
                                 <dashboardsToHide>CMD_PGM_0a_Dialog_ImportREQDeletion</dashboardsToHide>
@@ -25072,7 +25271,7 @@ returnType=SAG
                             </component>
                             <component name="btn_CMD_PGM_ManpowerREQApprove" description="" xfText="Approve Manpower Requirement" toolTip="Approve manpower requirement." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide,entity=|!BL_CMD_PGM_FundsCenter!|,REQ_ID=|!BL_CMD_PGM_REQTitleList!|,ComponentName=ManpowerApprove)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Approve_Reqs}{req_IDs = |!IV_CMD_TGT_REQTitleList!|, new_Status = Final, Mode = Single,Dashboard=|!DL_GBL_WF_MenuOptions!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Approve_Reqs}{req_IDs = |!IV_CMD_PGM_REQTitleList!|, new_Status = Final, Mode = Single,Dashboard=|!DL_GBL_WF_MenuOptions!|}</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>GBL_WF_0_Main</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -25101,7 +25300,7 @@ returnType=SAG
                             </component>
                             <component name="btn_CMD_PGM_ManpowerREQRevertApproved" description="" xfText="Revert Approved Requirement" toolTip="Revert approved requirement." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide,entity=|!BL_CMD_PGM_FundsCenter!|,REQ_ID=|!BL_CMD_PGM_REQTitleList!|,ComponentName=ManpowerRevert)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Approve_Reqs}{req_IDs = |!IV_CMD_TGT_REQTitleList!|, new_Status = Formulate, Mode = Single,Dashboard=|!DL_GBL_WF_MenuOptions!|}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Approve_Reqs}{req_IDs = |!IV_CMD_PGM_REQTitleList!|, new_Status = Formulate, Mode = Single,Dashboard=|!DL_GBL_WF_MenuOptions!|}</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>GBL_WF_0_Main</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -25294,7 +25493,7 @@ returnType=SAG
                                 <adapterMembers />
                             </component>
                             <component name="btn_CMD_PGM_SSPEGDetails" description="cWork OOC" xfText="SS PEG" toolTip="" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
-                                <displayFormat>|!LV_CMD_PGM_fmt_btn_PEGDetails!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaypegdashboard,REQTitle=|!IV_CMD_TGT_REQTitleList!|, Peg=SS)</displayFormat>
+                                <displayFormat>|!LV_CMD_PGM_fmt_btn_PEGDetails!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaypegdashboard,REQTitle=|!IV_CMD_PGM_REQTitleList!|, Peg=SS)</displayFormat>
                                 <selectionChangedTaskArgs>{Workspace.Current.CMD_PGM_Assembly.CMD_PGM_Helper}{cachedashboard}{Db=SS PEG}</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>CMD_PGM_0b2_Body_GeneralText_Info</dashboardsToRedraw>
                                 <componentDefinition>
@@ -25325,8 +25524,9 @@ returnType=SAG
                             </component>
                             <component name="btn_CMD_PGM_SubmitREQ" description="" xfText="Submit for Validation" toolTip="Submit requirement for validation." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="SaveDataForAllComponents" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Submit_Reqs}{req_IDs = |!IV_CMD_TGT_REQTitleList!|, new_Status = Validate, Mode =Single }</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Submit_Reqs}{req_IDs = |!IV_CMD_PGM_REQTitleList!|, new_Status = Validate, Mode =Single }</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>GBL_WF_0_Main</dashboardsToRedraw>
+                                <dashboardsToHide>CMD_PGM_0_Body_REQDetailsMain</dashboardsToHide>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
                                         <ImageFileSourceType>DashboardFile</ImageFileSourceType>
@@ -25370,7 +25570,7 @@ returnType=SAG
                             </component>
                             <component name="btn_CMD_PGM_SubmitREQToApprove" description="" xfText="Submit to Approve" toolTip="Skip requirement prioritization and submit directly for approval." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="SaveDataForAllComponents" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Submit_Reqs}{req_IDs = |!IV_CMD_TGT_REQTitleList!|, new_Status = Approve, Mode =Single }</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Submit_Reqs}{req_IDs = |!IV_CMD_PGM_REQTitleList!|, new_Status = Approve, Mode =Single }</selectionChangedTaskArgs>
                                 <dashboardsToHide>CMD_PGM_0_Body_REQDetailsMain</dashboardsToHide>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -25385,7 +25585,7 @@ returnType=SAG
                             </component>
                             <component name="btn_CMD_PGM_ValidateREQ" description="" xfText="Submit for Prioritization" toolTip="Submit requirement for prioritization." componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="SaveDataForAllComponents" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBusinessRule" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_btn_Format!|, IsVisible = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,ShowHide, entity=|!BL_CMD_PGM_FundsCenter!|)</displayFormat>
-                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Validate_Reqs}{req_IDs = |!IV_CMD_TGT_REQTitleList!|, new_Status = Prioritize, Mode = Single}</selectionChangedTaskArgs>
+                                <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{Validate_Reqs}{req_IDs = |!IV_CMD_PGM_REQTitleList!|, new_Status = Prioritize, Mode = Single}</selectionChangedTaskArgs>
                                 <dashboardsToRedraw>GBL_WF_0_Main</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFButtonDefinition ButtonType="Standard">
@@ -25491,38 +25691,38 @@ returnType=SAG
                             </component>
                             <component name="cbx_CMD_PGM_FormulateAPEPT" description="" xfText="APE9:" toolTip="Select an APE9." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="ML_CMD_PGM_FormulateAPEPT" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_cbx_Format!|</displayFormat>
-                                <dashboardsToRedraw>CMD_PGM_0a_Dialog_FormulateREQ</dashboardsToRedraw>
+                                <dashboardsToRedraw>CMD_PGM_0a2_Dialog_FormulateREQ</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
                             <component name="cbx_CMD_PGM_FormulateAPPN" description="" xfText="APPN:" toolTip="Select an appropriation." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="ML_CMD_PGM_FormulateAPPN" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBRStageServer" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_cbx_Format!|, MarginLeft = 0</displayFormat>
                                 <selectionChangedTaskArgs>{Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_Helper}{ClearKey5params_NoFCAppn}{}</selectionChangedTaskArgs>
-                                <dashboardsToRedraw>CMD_PGM_0a_Dialog_FormulateREQ</dashboardsToRedraw>
+                                <dashboardsToRedraw>CMD_PGM_0a2_Dialog_FormulateREQ</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
                             <component name="cbx_CMD_PGM_FormulatecType" description="" xfText="cType:" toolTip="Select a cType." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="ML_CMD_PGM_FormulateCType" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_cbx_Format!|</displayFormat>
-                                <dashboardsToRedraw>CMD_PGM_0a_Dialog_FormulateREQ</dashboardsToRedraw>
+                                <dashboardsToRedraw>CMD_PGM_0a2_Dialog_FormulateREQ</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
                             <component name="cbx_CMD_PGM_FormulateDollarType" description="" xfText="Dollar Type:" toolTip="Select a dollar type." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="ML_CMD_PGM_FormulateDollarType" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_cbx_Format!|</displayFormat>
-                                <dashboardsToRedraw>CMD_PGM_0a_Dialog_FormulateREQ</dashboardsToRedraw>
+                                <dashboardsToRedraw>CMD_PGM_0a2_Dialog_FormulateREQ</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
                             <component name="cbx_CMD_PGM_FormulateMDEP" description="" xfText="MDEP:" toolTip="Select a MDEP." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="ML_CMD_PGM_FormulateMDEP" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_cbx_Format!|</displayFormat>
-                                <dashboardsToRedraw>CMD_PGM_0a_Dialog_FormulateREQ</dashboardsToRedraw>
+                                <dashboardsToRedraw>CMD_PGM_0a2_Dialog_FormulateREQ</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
                             <component name="cbx_CMD_PGM_FormulateObjectClass" description="" xfText="Object Class:" toolTip="Select an object class." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="ML_CMD_PGM_FormulateObjectClass" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_cbx_Format!|</displayFormat>
-                                <dashboardsToRedraw>CMD_PGM_0a_Dialog_FormulateREQ</dashboardsToRedraw>
+                                <dashboardsToRedraw>CMD_PGM_0a2_Dialog_FormulateREQ</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
                             <component name="cbx_CMD_PGM_FormulateSAG" description="" xfText="SAG:" toolTip="Select a SAG." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="ML_CMD_PGM_FormulateSAG" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <displayFormat>|!LV_GBL_cbx_Format!|</displayFormat>
-                                <dashboardsToRedraw>CMD_PGM_0a_Dialog_FormulateREQ</dashboardsToRedraw>
+                                <dashboardsToRedraw>CMD_PGM_0a2_Dialog_FormulateREQ</dashboardsToRedraw>
                                 <adapterMembers />
                             </component>
                             <component name="cbx_CMD_PGM_FundsCenter" description=" " xfText="Funds Center:" toolTip="Select a funds center." componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_CMD_PGM_FundsCenter" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
@@ -26171,11 +26371,11 @@ returnType=SAG
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="emb Dynamic CMD_PGM_0_Body_REQDetailsMain" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_TGT_REQTitleList!|)" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="emb Dynamic CMD_PGM_0_Body_REQDetailsMain" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_PGM_REQTitleList!|)" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="emb Dynamic CMD_PGM_0b_Body_BaseInfoGeneralText" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_TGT_REQTitleList!|, DashName=BaseInfoGeneralText)" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="emb Dynamic CMD_PGM_0b_Body_BaseInfoGeneralText" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_PGM_REQTitleList!|, DashName=BaseInfoGeneralText)" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -26183,11 +26383,11 @@ returnType=SAG
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="emb Dynamic CMD_PGM_3a1_Body_FormulateMprREQ" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_TGT_REQTitleList!|, DashName=FormulateMprREQ)" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="emb Dynamic CMD_PGM_3a1_Body_FormulateMprREQ" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_PGM_REQTitleList!|, DashName=FormulateMprREQ)" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="emb Dynamic CMD_PGM_3a1_Body_FormulateMprREQ_Copy" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_TGT_REQTitleList!|, DashName=FormulateMprREQ)" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                            <component name="emb Dynamic CMD_PGM_3a1_Body_FormulateMprREQ_Copy" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,displaydashboard,REQTitle=|!IV_CMD_PGM_REQTitleList!|, DashName=FormulateMprREQ)" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -26419,6 +26619,10 @@ returnType=SAG
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
+                            <component name="Embedded CMD_PGM_1_Header_REQDetails_UpdateDialog" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="CMD_PGM_1_Header_REQDetails_UpdateDialog" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
                             <component name="Embedded CMD_PGM_1_Header_ReviewAllREQs" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="CMD_PGM_1_Header_ReviewAllREQs" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
@@ -26591,6 +26795,10 @@ returnType=SAG
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
+                            <component name="Embedded CMD_PGM_5_Body_Close" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="CMD_PGM_5_Body_Close" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
                             <component name="Embedded CMD_PGM_5_Header_ReviewMDEPSummary" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="CMD_PGM_5_Header_ReviewMDEPSummary" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
@@ -26604,6 +26812,10 @@ returnType=SAG
                                 <adapterMembers />
                             </component>
                             <component name="Embedded CMD_PGM_5a2_Body_ReviewMDEPSummary" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="CMD_PGM_5a2_Body_ReviewMDEPSummary" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded CMD_PGM_6_Body_Open" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="CMD_PGM_6_Body_Open" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -26826,7 +27038,7 @@ returnType=SAG
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="lbl_CMD_PGM_DemoteREQ" description="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,CreateLblText, LabelName=DemoteREQ, REQTitle=|!BL_CMD_PGM_REQTitleList!|)" xfText="Demoting the following requirement:" toolTip="" componentType="Label" templateParameterValues="" brText1="" brText2="">
+                            <component name="lbl_CMD_PGM_DemoteREQ" description="XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,CreateLblText, LabelName=DemoteREQ, REQTitle=|!IV_CMD_PGM_REQTitleList!|)" xfText="Demoting the following requirement:" toolTip="" componentType="Label" templateParameterValues="" brText1="" brText2="">
                                 <displayFormat>MarginRight = 5</displayFormat>
                                 <componentDefinition />
                                 <adapterMembers />
@@ -26836,7 +27048,7 @@ returnType=SAG
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
-                            <component name="lbl_CMD_PGM_DemoteREQTitle" description="" xfText="|!BL_CMD_PGM_REQTitleList!|" toolTip="" componentType="Label" templateParameterValues="" brText1="" brText2="">
+                            <component name="lbl_CMD_PGM_DemoteREQTitle" description="" xfText="|!IV_CMD_PGM_REQTitleList!|" toolTip="" componentType="Label" templateParameterValues="" brText1="" brText2="">
                                 <displayFormat>LabelBold = True, LabelFontSize = 14</displayFormat>
                                 <componentDefinition />
                                 <adapterMembers />
@@ -27012,6 +27224,9 @@ returnType=SAG
                                 <adapterMembers />
                             </component>
                             <component name="sp_IV_CMD_PGM_REQDetailsShowHide" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_CMD_PGM_REQDetailsShowHide" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="sp_IV_CMD_PGM_REQTitleList" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_CMD_PGM_REQTitleList" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
                                 <adapterMembers />
                             </component>
                             <component name="sp_IV_CMD_PGM_WFTime" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_GBL_WFTime" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
@@ -27254,7 +27469,7 @@ returnType=SAG
                                         <CreateTableIfNecessary>false</CreateTableIfNecessary>
                                         <TableCreationScript />
                                         <TableColumnNames>CMD_PGM_REQ_ID, General_Comment, Update_User, Update_Date</TableColumnNames>
-                                        <WhereClause>CMD_PGM_REQ_ID  = 'XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,GetREQID,REQ = |!IV_CMD_TGT_REQTitleList!|)'</WhereClause>
+                                        <WhereClause>CMD_PGM_REQ_ID  = 'XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,GetREQID,REQ = |!IV_CMD_PGM_REQTitleList!|)'</WhereClause>
                                         <OrderByClause>Update_Date</OrderByClause>
                                         <FilterMode>Popup</FilterMode>
                                         <DefaultForColumnsAreVisible>false</DefaultForColumnsAreVisible>
@@ -27286,7 +27501,7 @@ returnType=SAG
                                         <VarySaveStateBy>Unknown</VarySaveStateBy>
                                         <ColumnDefinitions>
                                             <ColumnDefinition>
-                                                <ColumnFormat>ColumnName = CMD_PGM_REQ_ID, DefaultValue = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,GetREQID,REQ = |!IV_CMD_TGT_REQTitleList!|)</ColumnFormat>
+                                                <ColumnFormat>ColumnName = CMD_PGM_REQ_ID, DefaultValue = XFBR(Workspace.CMD_PGM.CMD_PGM_Assembly.CMD_PGM_String_Helper,GetREQID,REQ = |!IV_CMD_PGM_REQTitleList!|)</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>ColumnName = General_Comment, Description = Comment, IsMultilineText = True, IsVisible = True, Width = 725</ColumnFormat>
@@ -27482,7 +27697,7 @@ returnType=SAG
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
-                            <component name="trv_CMD_PGM_REQList" description="" xfText="" toolTip="" componentType="TreeView" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_CMD_TGT_REQTitleList" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                            <component name="trv_CMD_PGM_REQList" description="" xfText="" toolTip="" componentType="TreeView" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_CMD_PGM_REQTitleList" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
                                 <dashboardsToRedraw>CMD_PGM_0a_Body_REQDetailsDashboard</dashboardsToRedraw>
                                 <componentDefinition>
                                     <XFTreeViewDefinition TreeType="Search">
@@ -27921,6 +28136,29 @@ returnType=SAG
                                             <componentMember name="lbl_CMD_PGM_MgrProcessCtrlNotice" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
+                                    <dashboard name="CMD_PGM_1_Header_REQDetails_UpdateDialog" description="Update Requirement Details" pageCaption="Requirement Details" dashboardType="Unknown" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_Dashboard_Header_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="btn_CMD_PGM_Refresh" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="btn_CMD_PGM_SaveTableView" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="btn_CMD_PGM_Dialog_DeleteREQ" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="btn_CMD_PGM_SubmitREQ" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbl_CMD_PGM_MgrProcessCtrlNotice" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
                                     <dashboard name="CMD_PGM_1a_Dialog_DeleteREQ" description="" pageCaption="Delete Requirement:" dashboardType="Unknown" layoutType="VerticalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <displayFormat>BorderPaddingLeft = 5, BorderPaddingTop = 5, DialogHeight = 105, DialogWidth = 600</displayFormat>
                                         <DashboardDefinition>
@@ -27939,6 +28177,7 @@ returnType=SAG
                                         <componentMembers>
                                             <componentMember name="Embedded CMD_PGM_1a1_Dialog_DeleteREQ" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="Embedded CMD_PGM_1a2_Dialog_DeleteREQ" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_1a1_Dialog_DeleteREQ" description="" pageCaption="Delete Requirement:" dashboardType="Unknown" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -27999,6 +28238,7 @@ returnType=SAG
                                             <componentMember name="lbx_CMD_PGM_RelatedREQList" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="Embedded CMD_PGM_1b1_Dialog_LinkREQs" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_CMD_PGM_FundsCenter" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_1b1_Dialog_LinkREQs" description="" pageCaption="Select Related Requirements:" dashboardType="Unknown" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -28041,6 +28281,7 @@ returnType=SAG
                                             <componentMember name="Embedded CMD_PGM_1c2_Dialog_NotifyUsers" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="Embedded CMD_PGM_1c3_Dialog_NotifyUsers" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_CMD_PGM_FundsCenter" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_1c1_Dialog_NotifyUsers" description="" pageCaption="Select Users to Notify:" dashboardType="Unknown" layoutType="VerticalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -29340,7 +29581,7 @@ returnType=SAG
                                         <componentMembers>
                                             <componentMember name="trv_CMD_PGM_REQList" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="Embedded CMD_PGM_0a_Body_REQDetailsDashboard" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_BL_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_CMD_PGM_REQ_IDs" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_0_Body_REQDetailsHide" description="" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -29450,9 +29691,6 @@ returnType=SAG
                                         <componentMembers>
                                             <componentMember name="sp_BL_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_CMD_PGM_Dialog_AdjustFundingLine" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="btn_CMD_PGM_SaveGridView" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="btn_CMD_PGM_Dialog_DeleteREQ" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="btn_CMD_PGM_SubmitREQ" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_0a2_Dialog_FundDetailAmt_AdjustFilters" description="Adjust Funding Line" pageCaption="" dashboardType="Unknown" layoutType="VerticalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -29475,13 +29713,13 @@ returnType=SAG
                                             <componentMember name="Embedded CMD_PGM_0a2b_Dialog_FundDetailAmt_AdjustFilters" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="SP_DL_GBL_WF_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_CMD_PGM_FundsCenter" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_BL_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateDollarTypeFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_FormulateAPPNFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateSAGAPEFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateMDEPFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateObjClass" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateCType" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_0a2a_Dialog_FundDetailAmt_AdjustFilters" description="Adjust Funding Line" pageCaption="" dashboardType="Unknown" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -29514,13 +29752,13 @@ returnType=SAG
                                             <componentMember name="btn_CMD_PGM_AdjustFundingLineCType" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_CMD_PGM_ResetFundingLineFilters" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_CMD_PGM_FundsCenter" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_BL_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateDollarTypeFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateMDEPFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateObjClass" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateSAGAPEFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_FormulateAPPNFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateCType" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_0a2b_Dialog_FundDetailAmt_AdjustFilters" description="Adjust Funding Line" pageCaption="" dashboardType="Unknown" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -29541,13 +29779,13 @@ returnType=SAG
                                             <componentMember name="btn_CMD_PGM_SaveAdjustFundingLineDialog" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="btn_CMD_PGM_CancelDialogFormulate" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_CMD_PGM_FundsCenter" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_BL_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateDollarTypeFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_FormulateAPPNFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateSAGAPEFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateObjClass" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateMDEPFilter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_ML_CMD_PGM_CreateCType" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_0a3_Dialog_FundsCenterList" description="Funds Center List Popup" pageCaption="" dashboardType="Unknown" layoutType="VerticalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -29919,8 +30157,8 @@ returnType=SAG
                                             <componentMember name="txt_CMD_PGM_DemoteREQJustification" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="Embedded CMD_PGM_2b_Dialog_DemoteREQ" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_CMD_PGM_FundsCenter" left="" top="" width="" height="" dockPosition="Left" />
-                                            <componentMember name="sp_BL_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="SP_DL_GBL_WF_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="sp_IV_CMD_PGM_REQTitleList" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                     <dashboard name="CMD_PGM_2a_Dialog_DemoteREQ" description="Demote Requirement" pageCaption="" dashboardType="Unknown" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
@@ -30053,15 +30291,63 @@ returnType=SAG
                                                     <ColumnDefinition ColumnType="Component" Width="*" />
                                                 </ColumnDefinitions>
                                                 <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="65" />
                                                     <RowDefinition RowType="Component" Height="*" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
                                             <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
                                         <componentMembers>
+                                            <componentMember name="Embedded CMD_PGM_1_Header_REQDetails_UpdateDialog" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="Embedded CMD_PGM_0_Body_REQDetails" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="sp_BL_CMD_PGM_FundsCenter" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="SP_DL_GBL_WF_MenuOptions" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="CMD_PGM_5_Body_Close" description="Header" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_OpenCloseDB_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="btn_CMD_PGM_HeaderClose" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="CMD_PGM_6_Body_Open" description="Header" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="false" loadDashboardTaskType="NoTask">
+                                        <displayFormat>|!LV_GBL_OpenCloseDB_Format!|</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="btn_CMD_PGM_HeaderOpen" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                 </dashboards>
@@ -31478,7 +31764,7 @@ T#YearNext4(|WFTime|)Period(|WFTime|)</memberFilter>
                                                     <memberExpansions>
                                                         <memberExpansion>
                                                             <primaryDimType>Account</primaryDimType>
-                                                            <memberFilter>A#CMD_PGM_Allow_Req_Creation, A#CMD_PGM_Allow_Req_Validation, A#CMD_PGM_Allow_Req_Priority, A#CMD_PGM_Allow_Req_Approval</memberFilter>
+                                                            <memberFilter>A#CMD_PGM_Allow_Req_Creation, A#CMD_PGM_Allow_Req_Validation, A#CMD_PGM_Allow_Req_Priority</memberFilter>
                                                             <initialIndentLevel>0</initialIndentLevel>
                                                         </memberExpansion>
                                                     </memberExpansions>
@@ -37881,7 +38167,7 @@ U4Filter=)</memberFilter>
                                                     <topLevelFilterForNextLevelExp />
                                                 </parent>
                                                 <consolidation>
-                                                    <name>Local</name>
+                                                    <name>Aggregated</name>
                                                     <memberFilter />
                                                     <topLevelFilterForNextLevelExp />
                                                 </consolidation>
@@ -39890,6 +40176,35 @@ T#YearNext4(|WFTime|)Period(|WFTime|)</TimeFilter>
                                             </DataMgmtCalculateDefinition>
                                         </stepDefinition>
                                     </dataManagementStep>
+                                    <dataManagementStep name="CMD_PGM_Consol_Load_to_Cube" description="" stepType="CustomCalculate">
+                                        <stepDefinition>
+                                            <DataMgmtCustomCalculateDefinition>
+                                                <UseDetailedLogging>false</UseDetailedLogging>
+                                                <Cube>|WFCube|</Cube>
+                                                <EntityFilter>|!consolEntityList!|</EntityFilter>
+                                                <ParentFilter />
+                                                <ConsFilter>C#Aggregated</ConsFilter>
+                                                <Scenario>|!WFScen!|</Scenario>
+                                                <TimeFilter>|!WFTime!|</TimeFilter>
+                                                <View />
+                                                <Account />
+                                                <Flow />
+                                                <Origin />
+                                                <IC />
+                                                <UD1 />
+                                                <UD2 />
+                                                <UD3 />
+                                                <UD4 />
+                                                <UD5 />
+                                                <UD6 />
+                                                <UD7 />
+                                                <UD8 />
+                                                <BusinessRuleName>Workspace.CMD_SPLN.WS</BusinessRuleName>
+                                                <FunctionName>Consol_Aggregated</FunctionName>
+                                                <Parameters />
+                                            </DataMgmtCustomCalculateDefinition>
+                                        </stepDefinition>
+                                    </dataManagementStep>
                                     <dataManagementStep name="CMD_PGM_Copy_Manpower" description="" stepType="CustomCalculate">
                                         <stepDefinition>
                                             <DataMgmtCustomCalculateDefinition>
@@ -40116,6 +40431,45 @@ T#YearNext4(|WFTime|)Period(|WFTime|)</TimeFilter>
                                         </sequenceDefinition>
                                         <stepMembers>
                                             <stepMember name="CMD_PGM_Agg_Org" />
+                                        </stepMembers>
+                                    </dataManagementSequence>
+                                    <dataManagementSequence name="CMD_PGM_Consol_Load_to_Cube" description="">
+                                        <sequenceDefinition>
+                                            <DataMgmtSequenceDefinition>
+                                                <AppServer />
+                                                <EnableNotifications>false</EnableNotifications>
+                                                <NotificationServer />
+                                                <NotificationEventType>SuccessOrFailure</NotificationEventType>
+                                                <Parameters>
+                                                    <Parameter SubstVarName="">
+                                                        <DefaultValue />
+                                                    </Parameter>
+                                                    <Parameter SubstVarName="">
+                                                        <DefaultValue />
+                                                    </Parameter>
+                                                    <Parameter SubstVarName="">
+                                                        <DefaultValue />
+                                                    </Parameter>
+                                                    <Parameter SubstVarName="">
+                                                        <DefaultValue />
+                                                    </Parameter>
+                                                    <Parameter SubstVarName="">
+                                                        <DefaultValue />
+                                                    </Parameter>
+                                                    <Parameter SubstVarName="">
+                                                        <DefaultValue />
+                                                    </Parameter>
+                                                    <Parameter SubstVarName="">
+                                                        <DefaultValue />
+                                                    </Parameter>
+                                                    <Parameter SubstVarName="">
+                                                        <DefaultValue />
+                                                    </Parameter>
+                                                </Parameters>
+                                            </DataMgmtSequenceDefinition>
+                                        </sequenceDefinition>
+                                        <stepMembers>
+                                            <stepMember name="CMD_PGM_Consol_Load_to_Cube" />
                                         </stepMembers>
                                     </dataManagementSequence>
                                     <dataManagementSequence name="CMD_PGM_Prioritization" description="">

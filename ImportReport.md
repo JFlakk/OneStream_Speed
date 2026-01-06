@@ -326,3 +326,144 @@
   - `CMD_SPLN_String_Helper.vb` (DashboardStringFunction)
   - `CMD_SPLN_REQ_ID_XFTV.vb` (Spreadsheet)
 
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 15
+
+### 70 CMD UFR/CMD UFR GBL/CMD_UFR_Assembly
+
+- **Compiler Language:** VisualBasic
+- **Dependencies:** GBL_Assembly, Global_Buffers, Global_Functions
+- **Files:**
+  - `CMD_UFR_DataSet.vb` (Unknown)
+  - `CMD_UFR_Helper.vb` (DashboardExtender)
+  - `CMD_UFR_Dyn_Grid_Svc.vb` (Unknown)
+  - `CMD_UFR_FinCustCalc.vb` (Unknown)
+  - `CMD_UFR_Svc_Factory.vb` (Unknown)
+  - `CMD_UFR_REQ.vb` (Unknown)
+  - `CMD_UFR_Utilities.vb` (Unknown)
+  - `SQA_XFC_CMD_Staffing_Input.vb` (Unknown)
+  - `SQA_XFC_CMD_UFR_Attachment.vb` (Unknown)
+  - `SQA_XFC_CMD_UFR_Details_Audit.vb` (Unknown)
+  - `SQA_XFC_CMD_UFR_Details.vb` (Unknown)
+  - `SQA_XFC_CMD_UFR_Priority.vb` (Unknown)
+  - `SQA_XFC_CMD_UFR.vb` (Unknown)
+  - `CMD_UFR_String_Helper.vb` (Unknown)
+  - `CMD_UFR_REQ_ID_XFTV.vb` (Spreadsheet)
+
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 20
+
+### 10 CMD PGM/CMD PGM GBL/CMD_PGM_Assembly
+
+- **Compiler Language:** VisualBasic
+- **Dependencies:** GBL_Assembly, Global_Buffers, Global_Functions
+- **Files:**
+  - `CMD_PGM_DataSet.vb` (Unknown)
+  - `CMD_PGM_Export_Helper.vb` (DashboardExtender)
+  - `CMD_PGM_Helper.vb` (DashboardExtender)
+  - `CMD_PGM_Import_Helper.vb` (DashboardExtender)
+  - `CMD_PGM_Rollover_Helper.vb` (DashboardExtender)
+  - `CMD_PGM_Dyn_Grid_Svc.vb` (Unknown)
+  - `CMD_PGM_FinCustCalc.vb` (Unknown)
+  - `CMD_PGM_Svc_Factory.vb` (Unknown)
+  - `CMD_PGM_REQ.vb` (Unknown)
+  - `CMD_PGM_Utilities.vb` (Unknown)
+  - `CMD_PGM_Validations.vb` (Unknown)
+  - `SQA_XFC_CMD_PGM_REQ_Attachment.vb` (Unknown)
+  - `SQA_XFC_CMD_PGM_REQ_Cmt.vb` (Unknown)
+  - `SQA_XFC_CMD_PGM_REQ_Details_Audit.vb` (Unknown)
+  - `SQA_XFC_CMD_PGM_REQ_Details.vb` (Unknown)
+  - `SQA_XFC_CMD_PGM_REQ_Priority.vb` (Unknown)
+  - `SQA_XFC_CMD_PGM_REQ.vb` (Unknown)
+  - `CMD_PGM_DataBuffers.vb` (DashboardStringFunction)
+  - `CMD_PGM_String_Helper.vb` (DashboardStringFunction)
+  - `CMD_PGM_REQ_ID_XFTV.vb` (Spreadsheet)
+
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 6
+
+### 60 HQ SPLN/HQ SPLN GBL/HQ_SPLN_Assembly
+
+- **Compiler Language:** VisualBasic
+- **Dependencies:** GBL_Assembly, Global_Buffers, Global_Functions
+- **Files:**
+  - `HQ_SPLN_DataSet.vb` (DashboardDataSet)
+  - `HQ_SPLN_SolutionHelper.vb` (DashboardExtender)
+  - `HQ_SPLN_FinCustCalc.vb` (Unknown)
+  - `HQ_SPLN_Svc_Factory.vb` (Unknown)
+  - `HQ_SPLN_DataBuffers.vb` (DashboardStringFunction)
+  - `HQ_SPLN_String_Helper.vb` (DashboardStringFunction)
+
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 2
+
+### 20 cPROBE/cPROBE GBL/cPROBE_Assembly
+
+- **Compiler Language:** VisualBasic
+- **Dependencies:** GBL_Assembly, Global_Buffers
+- **Files:**
+  - `cPROBE_DataBuffers.vb` (DashboardStringFunction)
+  - `cPROBE_String_Helper.vb` (DashboardStringFunction)
+
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 9
+
+### 40 CMD TGT/CMD TGT GBL/CMD_TGT_Assembly
+
+- **Compiler Language:** VisualBasic
+- **Dependencies:** GBL_Assembly, Global_Buffers, Global_Functions
+- **Files:**
+  - `CMD_TGT_Helper.vb` (DashboardExtender)
+  - `CMD_TGT_Import_Helper.vb` (DashboardExtender)
+  - `CMD_TGT_Dyn_Grid_Svc.vb` (Unknown)
+  - `CMD_TGT_FinCustCalc.vb` (Unknown)
+  - `CMD_TGT_Svc_Factory.vb` (Unknown)
+  - `CMD_TGT_Dist.vb` (Unknown)
+  - `CMD_TGT_WH.vb` (Unknown)
+  - `CMD_TGT_DataBuffers.vb` (DashboardStringFunction)
+  - `CMD_TGT_String_Helper.vb` (Unknown)
+
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 17
+
+### 50 CMD SPLN/CMD SPLN GBL/CMD_SPLN_Assembly
+
+- **Compiler Language:** VisualBasic
+- **Dependencies:** GBL_Assembly, Global_Buffers, Global_Functions
+- **Files:**
+  - `CMD_SPLN_DataSet.vb` (Unknown)
+  - `CMD_SPLN_Export_Helper.vb` (DashboardExtender)
+  - `CMD_SPLN_Helper.vb` (DashboardExtender)
+  - `CMD_SPLN_Import_Helper.vb` (DashboardExtender)
+  - `CMD_SPLN_Rollover_Helper.vb` (CubeViewExtender)
+  - `CMD_SPLN_Dyn_Grid_Svc.vb` (Unknown)
+  - `CMD_SPLN_FinCustCalc.vb` (Unknown)
+  - `CMD_SPLN_Svc_Factory.vb` (Unknown)
+  - `CMD_SPLN_REQ.vb` (Unknown)
+  - `CMD_SPLN_Utilities.vb` (Unknown)
+  - `SQA_XFC_CMD_SPLN_REQ_Attachment.vb` (Unknown)
+  - `SQA_XFC_CMD_SPLN_REQ_Details_Audit.vb` (Unknown)
+  - `SQA_XFC_CMD_SPLN_REQ_Details.vb` (Unknown)
+  - `SQA_XFC_CMD_SPLN_REQ.vb` (Unknown)
+  - `CMD_SPLN_DataBuffers.vb` (DashboardStringFunction)
+  - `CMD_SPLN_String_Helper.vb` (DashboardStringFunction)
+  - `CMD_SPLN_REQ_ID_XFTV.vb` (Spreadsheet)
+

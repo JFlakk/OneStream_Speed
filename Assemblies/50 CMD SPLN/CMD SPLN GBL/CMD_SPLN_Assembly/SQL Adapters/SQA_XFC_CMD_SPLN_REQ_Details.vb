@@ -182,9 +182,9 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		    Finally
 		        RemoveHandler tgtTable.TableNewRow, handler
 		    End Try
-brapi.ErrorLog.LogMessage(si,"count tgtTable =" & tgtTable.Rows.Count & ": " & tgtTable.Rows.Item(0).RowState.ToString)			
+'brapi.ErrorLog.LogMessage(si,"count tgtTable =" & tgtTable.Rows.Count & ": " & tgtTable.Rows.Item(0).RowState.ToString)			
 		    Dim changes As DataTable = tgtTable.GetChanges(DataRowState.Added Or DataRowState.Modified)
-brapi.ErrorLog.LogMessage(si,"count changes =" & changes.Rows.Count)			
+'brapi.ErrorLog.LogMessage(si,"count changes =" & changes.Rows.Count)			
 		    If changes IsNot Nothing AndAlso changes.Rows.Count > 0 Then
 		        ' Execute the bulk and SQL merge process
 		        XFC_CMD_SPLN_REQ_Details_BulkSync(si, changes)

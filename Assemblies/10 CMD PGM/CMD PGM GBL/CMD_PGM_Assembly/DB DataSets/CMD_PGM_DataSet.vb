@@ -261,6 +261,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 				Else
 					sFundCenter = FCParam
 				End If
+				
 				Dim sdashboard as String = String.Empty
 				If String.IsNullOrWhiteSpace(dashboardparam)
 					sdashboard = args.NameValuePairs.XFGetValue("Dashboard")
@@ -271,8 +272,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 If String.IsNullOrWhiteSpace(sFundCenter) Then
                     Return dt
                 End If
-
-                Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " & sFundCenter.Replace("_General", "") & ")"
+				
+				
+ 				Dim FCArray() As String = sFundCenter.Split(","c)
+                Dim FCList As List(Of String) = FCArray.ToList()
+ 				Dim FCMulti As New Text.StringBuilder()
+				 For Each FC As String In FCList
+                    FC = FC.Trim()
+                Dim mbrScrpt As String = "E#" & sCube & ".DescendantsInclusive.Where(Name Contains " & FC.Replace("_General", "") & ")"
                 Dim cbMembers As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_" & sCube, mbrScrpt, True)
 
                 If Not cbMembers.Count > 0 Then
@@ -282,31 +289,48 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
                 Dim entityPk = BRApi.Finance.Dim.GetDimPk(si, "E_" & sCube)
                 Dim nAncestorID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sCube)
-                Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, sFundCenter.Replace("_General", ""))
+                Dim nBaseID As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Entity.Id, FC)
                 Dim isBase As Boolean = BRApi.Finance.Members.IsBase(si, entityPk, nAncestorID, nBaseID)
 
                 If Not isBase Then
                     If Not sProfileName.XFContainsIgnoreCase("Formulate") Then
-                        sFundCenter = sFundCenter & ".DescendantsInclusive"
+                        FC = FC & ".DescendantsInclusive"
                     End If
                 End If
 
-                Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#" & sFundCenter, True)
+                Dim LFundCenters As List(Of MemberInfo) = BRApi.Finance.Metadata.GetMembersUsingFilter(si, "E_ARMY", "E#" & FC, True)
 
-                Dim allFCs As String = ""
+              
                 If LFundCenters.Count = 0 Then
                     Return dt
                 End If
+ 				If Not isBase Then
+                        If Not sProfileName.XFContainsIgnoreCase("Formulate") Then
+                            FC = FC & ".DescendantsInclusive"
+                        End If
+                 End If
 
-                If Not isBase Then allFcs = "'" & sFundCenter.Replace(".DescendantsInclusive", "") & "',"
+                   
+                    For Each FundCenter As MemberInfo In LFundCenters
+                        If FCMulti.Length > 0 Then
+                            FCMulti.Append(",")
+                        End If
+                        FCMulti.Append($"'{FundCenter.Member.Name}'")
+                    Next
+					Next
+''                If Not isBase Then allFcs = "'" & FC.Replace(".DescendantsInclusive", "") & "',"
 
-                For Each FundCenter As MemberInfo In LFundCenters
-                    allFcs = allFcs & "'" & FundCenter.Member.Name & "',"
-                Next
+''                For Each FundCenter As MemberInfo In LFundCenters
+''                    allFcs = allFcs & "'" & FundCenter.Member.Name & "',"
+''                Next
 
 
-                allFCs = allFcs.Substring(0, allFcs.Length - 1)
+''                allFCs = allFcs.Substring(0, allFcs.Length - 1)
+''				Next
+ 				Dim allFCs As String = ""
 
+                allFCs = FCMulti.ToString()
+Brapi.ErrorLog.LogMessage(si, "FCs" & allFCs)
                 Dim SQL As String
                 SQL = $"Select Req.Title,
 						  	   Req.Entity,
@@ -338,8 +362,8 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     End If
                     Dim REQStatus As String = dataRow.Item("Status")
                     Dim REQType As String = dataRow.Item("REQ_ID_Type")
-                    Dim sFC As String = sFundCenter.Replace(".DescendantsInclusive", "")
-                    Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sFC).Member
+                    'Dim sFC As String = 
+                    Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, FundCenter).Member
                     Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
                     Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Time.Id, sREQTime)
                     Dim entityText3 As String = BRApi.Finance.Entity.Text(si, entityMem.MemberId, 3, wfScenarioTypeID, wfTimeId)
@@ -717,9 +741,24 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             Try
                 Dim wfCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
                 Dim sEntityGeneral As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, "REQPrompts", "Entity", "")
-                Dim sOrigEntity As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, "REQPrompts", "REQ", "").Split(" ")(0)
+                Dim sOrigEntity As String = BRApi.Utilities.GetWorkspaceSessionSetting(si, si.UserName, "REQPrompts", "REQ", "")
                 Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
                 Dim sEntity As String = ""
+				
+				If sOrigEntity.Contains("xx") Then
+                If sOrigEntity.Length >= 3 Then
+                    sOrigEntity = sOrigEntity.Substring(0, 3)
+                Else
+                    sOrigEntity = sOrigEntity 
+                End If
+            Else
+                If sOrigEntity.Length >= 5 Then
+                    sOrigEntity = sOrigEntity.Substring(0, 5)
+                Else
+                    sOrigEntity = sOrigEntity 
+                End If
+            End If
+
 
                 If sEntityGeneral.XFContainsIgnoreCase("General") Then
                     sEntity = sEntityGeneral.Replace("_General", "")
@@ -734,9 +773,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 End If
 
                 Dim x As Integer = InStr(wfProfileName, ".")
-                Dim sProfileName As String = wfProfileName.Substring(x + 0).Split(" ")(0)
+                Dim sProfileName As String = wfProfileName.Substring(x + 0).Split(" ")(0)	
+				
                 Dim entityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sOrigEntity).Member
+				Brapi.ErrorLog.LogMessage(si, "Here Dataset .5" & entityMem.ToString)
                 Dim CurrEntityMem As Member = BRApi.Finance.Metadata.GetMember(si, DimType.Entity.Id, sEntity).Member
+				Brapi.ErrorLog.LogMessage(si, "Here Dataset 1" & CurrEntityMem.ToString)
                 Dim wfScenarioTypeID As Integer = BRApi.Finance.Scenario.GetScenarioType(si, si.WorkflowClusterPk.ScenarioKey).Id
                 Dim wfTime As String = BRApi.Finance.Time.GetNameFromId(si, si.WorkflowClusterPk.TimeKey)
                 Dim wfTimeId As Integer = BRApi.Finance.Members.GetMemberId(si, DimType.Time.Id, wfTime)
@@ -1056,20 +1098,31 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 				Dim hierarchy_reqID_mbrs As New List(Of XFTreeItem)()
 				Dim hierarchy_FC_mbrs As New List(Of XFTreeItem)()
 				Dim hierarchy_No_mbrs As New List(Of XFTreeItem)()
-				Dim Entity As String = args.NameValuePairs.XFGetValue("Entity")
+				Dim Entity as String  = args.NameValuePairs.XFGetValue("Entity")
 				Dim dashboard As String  = args.NameValuePairs.XFGetValue("Dashboard")
-				'Substring the entity From the first requirement selected By a user.
-'			    Dim REQIDS As String = args.NameValuePairs.XFGetValue("req_IDs")
 				
+				 Dim FCArray() As String = Entity.Split(","c)
+                Dim FCList As List(Of String) = FCArray.ToList()
+				'Substring the entity From the first requirement selected By a user.
+'			    Dim sREQID As String = args.NameValuePairs.XFGetValue("req_IDs")
+'brapi.ErrorLog.LogMessage(si, $"Entity: {Entity}")					
 '				Dim cube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName		
-'				Dim REQIDs_list As New List(Of String)
-'				REQIDs_list = REQIDS.Split(",").ToList
-'				Dim Entity As String = REQIDs_list(0).Substring(0, REQIDs_list(0).IndexOf("_"))
-'				If Entity = $"{cube}xx"
-'					Entity = Entity.Replace("x","")
-'				End If		
-
-				Dim req_DT = Me.REQTitleList(si, Entity,Dashboard)
+'				If sREQID.Contains("xx") Then
+'                If sREQID.Length >= 3 Then
+'                    sREQID = sREQID.Substring(0, 3)
+'                Else
+'                    sREQID = sREQID 
+'                End If
+'            Else
+'                If sREQID.Length >= 5 Then
+'                    sREQID = sREQID.Substring(0, 5)
+'                Else
+'                    sREQID = sREQID 
+'                End If
+'            End If
+'Dim Entity As String = String.Empty
+'Entity = sREQID
+				Dim req_DT = Me.REQTitleList(si,Entity,Dashboard)
 'brapi.ErrorLog.LogMessage(si, req_DT.Rows.Count)				
 'For Each req As DataRow In req_DT.Rows()				
 '	brapi.ErrorLog.LogMessage(si,"HERE: " & req("Name").ToString)	
@@ -1092,25 +1145,29 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 '					                      And Title Is Not NULL"
 ''brapi.ErrorLog.LogMessage(si,sql)		
 '	                Using dbConn As DbConnInfo = BRApi.Database.CreateApplicationDbConnInfo(si)
-'	                    dt = BRApi.Database.ExecuteSql(dbConn, SQL.ToString(), True)
+'	                    dt = BRApi.Database.ExecuteSql(dbConn, SQL.T,oString(), True)
 '	                End Using
 		
 			        ' Build the tree structure from the DataTable
+					For Each sEntity As String In FCList 
 			        For Each row As DataRow In req_DT.Rows
+						If  Reqidval.Split(" ")(0) = sEntity
 	                	Dim Reqidval As String  = row("Value").ToString
+						
 						Reqidval = Reqidval.Split(" ")(1)
 					
 		                Dim ReqID_xftreeitem As New XFTreeItem(Reqidval,row("Name"), String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_No_mbrs, TriStateBool.TrueValue)
 						hierarchy_mbrs.Add(ReqID_xftreeitem)
-						hierarchy_reqID_mbrs.Add(ReqID_xftreeitem)
-					Next
-					Dim FC_xftreeitem As New XFTreeItem(Entity,Entity, String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_reqID_mbrs, TriStateBool.TrueValue)
-		        	'Dim FC_xftreeitem As New XFTreeItem(FundsCenter("Value"),FundsCenter("Name"), String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_reqID_mbrs, TriStateBool.TrueValue)
+					hierarchy_reqID_mbrs.Add(ReqID_xftreeitem)
+				end if 
+				Next
+					'Dim FC_xftreeitem As New XFTreeItem(Entity,Entity, String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_reqID_mbrs, TriStateBool.TrueValue)
+		        	Dim FC_xftreeitem As New XFTreeItem(sEntity,sEntity, String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_reqID_mbrs, TriStateBool.TrueValue)
 		        	
 					hierarchy_FC_mbrs.Add(FC_xftreeitem)
 					hierarchy_mbrs.Add(FC_xftreeitem)
-					
-'				Next
+				
+				Next
 				Dim Top_xftreeitem As New XFTreeItem("Top","Top", String.Empty,False, True, True, True, XFImageFileSourceType.Unknown, String.Empty, String.Empty, hierarchy_FC_mbrs, TriStateBool.TrueValue)
 				hierarchy_mbrs.Add(Top_xftreeitem)
 		        

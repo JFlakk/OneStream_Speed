@@ -195,12 +195,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		    AddHandler tgtTable.TableNewRow, handler
 	
 		    Try
-'For Each r As DataRow In tgtTable.Rows
-'	Brapi.ErrorLog.LogMessage(si,$"Hit Sync tgtTable: " & r("CMD_PGM_REQ_ID").ToString & " REQ_ID: " &   r("REQ_ID") & " Title: " & r("title"))
-'Next
-'For Each r As DataRow In srcTable.Rows
-'	Brapi.ErrorLog.LogMessage(si,$"Hit Sync srcTable: " & r("CMD_PGM_REQ_ID").ToString & " REQ_ID: " &   r("REQ_ID") & " Title: " & r("title"))
-'Next
+
 		        tgtTable.Merge(srcTable, False, MissingSchemaAction.Add)
 'For Each r As DataRow In tgtTable.Rows
 '	Brapi.ErrorLog.LogMessage(si,$"Hit After merger tgtTable: " & r("CMD_PGM_REQ_ID").ToString & " REQ_ID: " &   r("REQ_ID") & " Title: " & r("title"))
@@ -238,9 +233,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                bulkCopy.DestinationTableName = tempTableName
 		                bulkCopy.WriteToServer(changes)
 		            End Using
-For Each r As DataRow In changes.Rows
-	Brapi.ErrorLog.LogMessage(si,$"Hit Sync changes: " & r("CMD_PGM_REQ_ID").ToString & " : " & r("title"))
-Next	
+	
 		            ' We use the GUID column as the unique identifier for the join
 		            Dim mergeSql As String = $"MERGE INTO XFC_CMD_PGM_REQ AS Target
 								                USING {tempTableName} AS Source
