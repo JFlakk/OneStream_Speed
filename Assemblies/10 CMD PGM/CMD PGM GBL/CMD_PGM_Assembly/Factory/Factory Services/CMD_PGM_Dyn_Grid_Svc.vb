@@ -984,6 +984,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_1.IsFromTable = True
 			FY_1.IsVisible = True
 			FY_1.Description = WFYear
+			FY_1.AllowUpdates = False
 			columnDefinitions.Add(FY_1)
 
 			Dim FY_2 As New XFDynamicGridColumnDefinition()
@@ -991,6 +992,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_2.IsFromTable = True
 			FY_2.IsVisible = True
 			FY_2.Description = WFYear + 1
+			FY_2.AllowUpdates = False
 			columnDefinitions.Add(FY_2)
 
 			Dim FY_3 As New XFDynamicGridColumnDefinition()
@@ -998,6 +1000,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_3.IsFromTable = True
 			FY_3.IsVisible = True
 			FY_3.Description = WFYear + 2
+			FY_3.AllowUpdates = False
 			columnDefinitions.Add(FY_3)
 
 			Dim FY_4 As New XFDynamicGridColumnDefinition()
@@ -1005,6 +1008,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_4.IsFromTable = True
 			FY_4.IsVisible = True
 			FY_4.Description = WFYear + 3
+			FY_4.AllowUpdates = False
 			columnDefinitions.Add(FY_4)
 
 			Dim FY_5 As New XFDynamicGridColumnDefinition()
@@ -1012,6 +1016,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_5.IsFromTable = True
 			FY_5.IsVisible = True
 			FY_5.Description = WFYear + 4
+			FY_5.AllowUpdates = False
 			columnDefinitions.Add(FY_5)
 
 			Dim Status As New XFDynamicGridColumnDefinition()
@@ -1020,6 +1025,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Status.IsVisible = True
 			Status.Description = "Status"
 			Status.FilterByColumnName = "Flow"
+			Status.AllowUpdates = False
 			columnDefinitions.Add(Status)
 
 			Dim sEntity As String  = args.CustomSubstVars.XFGetValue("IV_FundsCenter","NA")
@@ -1060,6 +1066,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_1.IsFromTable = True
 			FY_1.IsVisible = True
 			FY_1.Description = WFYear
+			FY_1.AllowUpdates = False
 			columnDefinitions.Add(FY_1)
 
 			Dim FY_2 As New XFDynamicGridColumnDefinition()
@@ -1067,6 +1074,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_2.IsFromTable = True
 			FY_2.IsVisible = True
 			FY_2.Description = WFYear + 1
+			FY_2.AllowUpdates = False
 			columnDefinitions.Add(FY_2)
 
 			Dim FY_3 As New XFDynamicGridColumnDefinition()
@@ -1074,6 +1082,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_3.IsFromTable = True
 			FY_3.IsVisible = True
 			FY_3.Description = WFYear + 2
+			FY_3.AllowUpdates = False
 			columnDefinitions.Add(FY_3)
 
 			Dim FY_4 As New XFDynamicGridColumnDefinition()
@@ -1081,6 +1090,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_4.IsFromTable = True
 			FY_4.IsVisible = True
 			FY_4.Description = WFYear + 3
+			FY_4.AllowUpdates = False
 			columnDefinitions.Add(FY_4)
 
 			Dim FY_5 As New XFDynamicGridColumnDefinition()
@@ -1088,6 +1098,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_5.IsFromTable = True
 			FY_5.IsVisible = True
 			FY_5.Description = WFYear + 4
+			FY_5.AllowUpdates = False
 			columnDefinitions.Add(FY_5)
 
 			Dim Entity As New XFDynamicGridColumnDefinition()
@@ -1095,6 +1106,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Entity.IsFromTable = True
 			Entity.IsVisible = True
 			Entity.Description = "Funds Center"
+			Entity.AllowUpdates = False
 			columnDefinitions.Add(Entity)
 
 			Dim UD1 As New XFDynamicGridColumnDefinition()
@@ -1102,6 +1114,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD1.IsFromTable = True
 			UD1.IsVisible = True
 			UD1.Description = "APPN"
+			UD1.AllowUpdates = False
 			columnDefinitions.Add(UD1)
 
 			Dim UD2 As New XFDynamicGridColumnDefinition()
@@ -1109,6 +1122,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD2.IsFromTable = True
 			UD2.IsVisible = True
 			UD2.Description = "MDEP"
+			UD2.AllowUpdates = False
 			columnDefinitions.Add(UD2)
 
 			Dim UD3 As New XFDynamicGridColumnDefinition()
@@ -1116,6 +1130,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD3.IsFromTable = True
 			UD3.IsVisible = True
 			UD3.Description = "APE9"
+			UD3.AllowUpdates = False
 			columnDefinitions.Add(UD3)
 
 			Dim UD4 As New XFDynamicGridColumnDefinition()
@@ -1123,6 +1138,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD4.IsFromTable = True
 			UD4.IsVisible = True
 			UD4.Description = "Dollar Type"
+			UD4.AllowUpdates = False
 			columnDefinitions.Add(UD4)
 
 			Dim UD5 As New XFDynamicGridColumnDefinition()
@@ -1130,6 +1146,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD5.IsFromTable = True
 			UD5.IsVisible = True
 			UD5.Description = "CType"
+			UD5.AllowUpdates = False
 			columnDefinitions.Add(UD5)
 
 			Dim UD6 As New XFDynamicGridColumnDefinition()
@@ -1137,6 +1154,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD6.IsFromTable = True
 			UD6.IsVisible = True
 			UD6.Description = "Object Class"
+			UD6.AllowUpdates = False
 			columnDefinitions.Add(UD6)
 
 			Dim dt As New DataTable()
@@ -1207,6 +1225,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_1.IsFromTable = True
 			FY_1.IsVisible = True
 			FY_1.Description = WFYear
+			FY_1.AllowUpdates = False
 			columnDefinitions.Add(FY_1)
 
 			Dim FY_2 As New XFDynamicGridColumnDefinition()
@@ -1214,6 +1233,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_2.IsFromTable = True
 			FY_2.IsVisible = True
 			FY_2.Description = WFYear + 1
+			FY_2.AllowUpdates = False
 			columnDefinitions.Add(FY_2)
 
 			Dim FY_3 As New XFDynamicGridColumnDefinition()
@@ -1221,6 +1241,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_3.IsFromTable = True
 			FY_3.IsVisible = True
 			FY_3.Description = WFYear + 2
+			FY_3.AllowUpdates = False
 			columnDefinitions.Add(FY_3)
 
 			Dim FY_4 As New XFDynamicGridColumnDefinition()
@@ -1228,6 +1249,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_4.IsFromTable = True
 			FY_4.IsVisible = True
 			FY_4.Description = WFYear + 3
+			FY_4.AllowUpdates = False
 			columnDefinitions.Add(FY_4)
 
 			Dim FY_5 As New XFDynamicGridColumnDefinition()
@@ -1235,6 +1257,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_5.IsFromTable = True
 			FY_5.IsVisible = True
 			FY_5.Description = WFYear + 4
+			FY_5.AllowUpdates = False
 			columnDefinitions.Add(FY_5)
 
 			Dim Entity As New XFDynamicGridColumnDefinition()
@@ -1242,6 +1265,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Entity.IsFromTable = True
 			Entity.IsVisible = True
 			Entity.Description = "Funds Center"
+			Entity.AllowUpdates = False
 			columnDefinitions.Add(Entity)
 
 			Dim UD1 As New XFDynamicGridColumnDefinition()
@@ -1249,6 +1273,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD1.IsFromTable = True
 			UD1.IsVisible = True
 			UD1.Description = "APPN"
+			UD1.AllowUpdates = False
 			columnDefinitions.Add(UD1)
 
 			Dim UD2 As New XFDynamicGridColumnDefinition()
@@ -1256,6 +1281,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD2.IsFromTable = True
 			UD2.IsVisible = True
 			UD2.Description = "MDEP"
+			UD2.AllowUpdates = False
 			columnDefinitions.Add(UD2)
 
 			Dim UD3 As New XFDynamicGridColumnDefinition()
@@ -1263,6 +1289,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD3.IsFromTable = True
 			UD3.IsVisible = True
 			UD3.Description = "APE9"
+			UD3.AllowUpdates = False
 			columnDefinitions.Add(UD3)
 
 			Dim UD4 As New XFDynamicGridColumnDefinition()
@@ -1270,6 +1297,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD4.IsFromTable = True
 			UD4.IsVisible = True
 			UD4.Description = "Dollar Type"
+			UD4.AllowUpdates = False
 			columnDefinitions.Add(UD4)
 
 			Dim UD5 As New XFDynamicGridColumnDefinition()
@@ -1277,6 +1305,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD5.IsFromTable = True
 			UD5.IsVisible = True
 			UD5.Description = "CType"
+			UD5.AllowUpdates = False
 			columnDefinitions.Add(UD5)
 
 			Dim UD6 As New XFDynamicGridColumnDefinition()
@@ -1284,6 +1313,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD6.IsFromTable = True
 			UD6.IsVisible = True
 			UD6.Description = "Object Class"
+			UD6.AllowUpdates = False
 			columnDefinitions.Add(UD6)
 
 			Dim dt As New DataTable()
@@ -1353,6 +1383,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_1.IsFromTable = True
 			FY_1.IsVisible = True
 			FY_1.Description = WFYear
+			FY_1.AllowUpdates = False
 			columnDefinitions.Add(FY_1)
 
 			Dim FY_2 As New XFDynamicGridColumnDefinition()
@@ -1360,6 +1391,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_2.IsFromTable = True
 			FY_2.IsVisible = True
 			FY_2.Description = WFYear + 1
+			FY_2.AllowUpdates = False
 			columnDefinitions.Add(FY_2)
 
 			Dim FY_3 As New XFDynamicGridColumnDefinition()
@@ -1367,6 +1399,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_3.IsFromTable = True
 			FY_3.IsVisible = True
 			FY_3.Description = WFYear + 2
+			FY_3.AllowUpdates = False
 			columnDefinitions.Add(FY_3)
 
 			Dim FY_4 As New XFDynamicGridColumnDefinition()
@@ -1374,6 +1407,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_4.IsFromTable = True
 			FY_4.IsVisible = True
 			FY_4.Description = WFYear + 3
+			FY_4.AllowUpdates = False
 			columnDefinitions.Add(FY_4)
 
 			Dim FY_5 As New XFDynamicGridColumnDefinition()
@@ -1381,6 +1415,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			FY_5.IsFromTable = True
 			FY_5.IsVisible = True
 			FY_5.Description = WFYear + 4
+			FY_5.AllowUpdates = False
 			columnDefinitions.Add(FY_5)
 
 			Dim Entity As New XFDynamicGridColumnDefinition()
@@ -1388,6 +1423,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Entity.IsFromTable = True
 			Entity.IsVisible = True
 			Entity.Description = "Funds Center"
+			Entity.AllowUpdates = False
 			columnDefinitions.Add(Entity)
 
 			Dim UD1 As New XFDynamicGridColumnDefinition()
@@ -1395,6 +1431,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD1.IsFromTable = True
 			UD1.IsVisible = True
 			UD1.Description = "APPN"
+			UD1.AllowUpdates = False
 			columnDefinitions.Add(UD1)
 
 			Dim UD2 As New XFDynamicGridColumnDefinition()
@@ -1402,6 +1439,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD2.IsFromTable = True
 			UD2.IsVisible = True
 			UD2.Description = "MDEP"
+			UD2.AllowUpdates = False
 			columnDefinitions.Add(UD2)
 
 			Dim UD3 As New XFDynamicGridColumnDefinition()
@@ -1409,6 +1447,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD3.IsFromTable = True
 			UD3.IsVisible = True
 			UD3.Description = "APE9"
+			UD3.AllowUpdates = False
 			columnDefinitions.Add(UD3)
 
 			Dim UD4 As New XFDynamicGridColumnDefinition()
@@ -1416,6 +1455,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD4.IsFromTable = True
 			UD4.IsVisible = True
 			UD4.Description = "Dollar Type"
+			UD4.AllowUpdates = False
 			columnDefinitions.Add(UD4)
 
 			Dim UD5 As New XFDynamicGridColumnDefinition()
@@ -1423,6 +1463,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD5.IsFromTable = True
 			UD5.IsVisible = True
 			UD5.Description = "CType"
+			UD5.AllowUpdates = False
 			columnDefinitions.Add(UD5)
 
 			Dim UD6 As New XFDynamicGridColumnDefinition()
@@ -1430,6 +1471,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			UD6.IsFromTable = True
 			UD6.IsVisible = True
 			UD6.Description = "Object Class"
+			UD6.AllowUpdates = False
 			columnDefinitions.Add(UD6)
 
 			Dim dt As New DataTable()
@@ -1640,6 +1682,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Review_Entity.ColumnName = "Review_Entity"
 			Review_Entity.IsFromTable = True
 			Review_Entity.IsVisible = False
+			Review_Entity.AllowUpdates = False
 			columnDefinitions.Add(Review_Entity)
 
 			Dim CatName As  List(Of String) = Me.GetCategoryAndWeight(si)
@@ -2220,36 +2263,42 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		CMD_PGM_REQ_ID.ColumnName = "CMD_PGM_REQ_ID"
 		CMD_PGM_REQ_ID.IsFromTable = True
 		CMD_PGM_REQ_ID.IsVisible = False
+		CMD_PGM_REQ_ID.AllowUpdates = False
 		columnDefinitions.Add(CMD_PGM_REQ_ID)
 
 		Dim Entity As New XFDynamicGridColumnDefinition()
 		Entity.ColumnName = "Funds Center"
 		Entity.IsFromTable = True
 		Entity.IsVisible = True
+		Entity.AllowUpdates = False
 		columnDefinitions.Add(Entity)
 
 		Dim REQ_ID As New XFDynamicGridColumnDefinition()
 		REQ_ID.ColumnName = "REQ_ID"
 		REQ_ID.IsFromTable = True
 		REQ_ID.IsVisible = True
+		REQ_ID.AllowUpdates = False
 		columnDefinitions.Add(REQ_ID)
 
 		Dim APPN As New XFDynamicGridColumnDefinition()
 		APPN.ColumnName = "APPN"
 		APPN.IsFromTable = True
 		APPN.IsVisible = True
+		APPN.AllowUpdates = False
 		columnDefinitions.Add(APPN)
 
 		Dim MDEP As New XFDynamicGridColumnDefinition()
 		MDEP.ColumnName = "MDEP"
 		MDEP.IsFromTable = True
 		MDEP.IsVisible = True
+		MDEP.AllowUpdates = False
 		columnDefinitions.Add(MDEP)
 
 		Dim APE As New XFDynamicGridColumnDefinition()
 		APE.ColumnName = "APE"
 		APE.IsFromTable = True
 		APE.IsVisible = True
+		APE.AllowUpdates = False
 		columnDefinitions.Add(APE)
 
 		Dim Flow As New XFDynamicGridColumnDefinition()
@@ -2257,36 +2306,42 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		Flow.IsFromTable = True
 		Flow.IsVisible = False
 		Flow.Description = "Status"
+		Flow.AllowUpdates = False
 		columnDefinitions.Add(Flow)
 
 		Dim Title As New XFDynamicGridColumnDefinition()
 		Title.ColumnName = "Title"
 		Title.IsFromTable = True
 		Title.IsVisible = True
+		Title.AllowUpdates = False
 		columnDefinitions.Add(Title)
 
 		Dim DollarType As New XFDynamicGridColumnDefinition()
 		DollarType.ColumnName = "DollarType"
 		DollarType.IsFromTable = True
 		DollarType.IsVisible = True
+		DollarType.AllowUpdates = False
 		columnDefinitions.Add(DollarType)
 
 		Dim ObjectClass As New XFDynamicGridColumnDefinition()
 		ObjectClass.ColumnName = "Object Class"
 		ObjectClass.IsFromTable = True
 		ObjectClass.IsVisible = False
+		ObjectClass.AllowUpdates = False
 		columnDefinitions.Add(ObjectClass)
 
 		Dim ctypecol As New XFDynamicGridColumnDefinition()
 		ctypecol.ColumnName = "cType"
 		ctypecol.IsFromTable = True
 		ctypecol.IsVisible = False
+		ctypecol.AllowUpdates = False
 		columnDefinitions.Add(ctypecol)
 
 		Dim account As New XFDynamicGridColumnDefinition()
 		account.ColumnName = "account"
 		account.IsFromTable = True
 		account.IsVisible = False
+		account.AllowUpdates = False
 		columnDefinitions.Add(account)
 
 		Dim FY_1 As New XFDynamicGridColumnDefinition()
@@ -2294,6 +2349,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_1.IsFromTable = True
 		FY_1.IsVisible = False
 		FY_1.Description = WFYear
+		FY_1.AllowUpdates = False
 		columnDefinitions.Add(FY_1)
 
 		Dim FY_2 As New XFDynamicGridColumnDefinition()
@@ -2301,6 +2357,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_2.IsFromTable = True
 		FY_2.IsVisible = True
 		FY_2.Description = WFYear
+		FY_2.AllowUpdates = False
 		columnDefinitions.Add(FY_2)
 
 		Dim FY_3 As New XFDynamicGridColumnDefinition()
@@ -2308,6 +2365,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_3.IsFromTable = True
 		FY_3.IsVisible = False
 		FY_3.Description = WFYear + 1
+		FY_3.AllowUpdates = False
 		columnDefinitions.Add(FY_3)
 
 		Dim FY_4 As New XFDynamicGridColumnDefinition()
@@ -2315,6 +2373,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_4.IsFromTable = True
 		FY_4.IsVisible = False
 		FY_4.Description = WFYear + 2
+		FY_4.AllowUpdates = False
 		columnDefinitions.Add(FY_4)
 
 		Dim FY_5 As New XFDynamicGridColumnDefinition()
@@ -2322,6 +2381,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_5.IsFromTable = True
 		FY_5.IsVisible = False
 		FY_5.Description = WFYear + 3
+		FY_5.AllowUpdates = False
 		columnDefinitions.Add(FY_5)
 
 		Dim sEntity As String  = args.CustomSubstVars("BL_CMD_PGM_FundsCenter")
@@ -2451,6 +2511,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_1.IsVisible = True
 		FY_1.Description = WFYear
 		FY_1.DataFormatString = "N0"
+		FY_1.AllowUpdates = False
 		columnDefinitions.Add(FY_1)
 
 		Dim FY_2 As New XFDynamicGridColumnDefinition()
@@ -2459,6 +2520,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_2.IsVisible = True
 		FY_2.Description = WFYear + 1
 		FY_2.DataFormatString = "N0"
+		FY_2.AllowUpdates = False
 		columnDefinitions.Add(FY_2)
 
 		Dim FY_3 As New XFDynamicGridColumnDefinition()
@@ -2467,6 +2529,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_3.IsVisible = True
 		FY_3.Description = WFYear + 2
 		FY_3.DataFormatString = "N0"
+		FY_3.AllowUpdates = False
 		columnDefinitions.Add(FY_3)
 
 		Dim FY_4 As New XFDynamicGridColumnDefinition()
@@ -2475,6 +2538,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_4.IsVisible = True
 		FY_4.Description = WFYear + 3
 		FY_4.DataFormatString = "N0"
+		FY_4.AllowUpdates = False
 		columnDefinitions.Add(FY_4)
 
 		Dim FY_5 As New XFDynamicGridColumnDefinition()
@@ -2483,6 +2547,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_5.IsVisible = True
 		FY_5.Description = WFYear + 4
 		FY_5.DataFormatString = "N0"
+		FY_5.AllowUpdates = False
 		columnDefinitions.Add(FY_5)
 
 		Dim Status As New XFDynamicGridColumnDefinition()
@@ -2490,6 +2555,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		Status.IsFromTable = True
 		Status.IsVisible = False
 		Status.Description = "Status"
+		Status.AllowUpdates = False
 		columnDefinitions.Add(Status)
 
 		Dim ReqID As String = args.CustomSubstVars.XFGetValue("IV_CMD_PGM_REQTitleList")
@@ -2997,6 +3063,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_1.IsVisible = True
 		FY_1.Description = WFYear
 		FY_1.DataFormatString = "N0"
+		FY_1.AllowUpdates = False
 		columnDefinitions.Add(FY_1)
 
 		Dim FY_2 As New XFDynamicGridColumnDefinition()
@@ -3005,6 +3072,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_2.IsVisible = True
 		FY_2.Description = WFYear + 1
 		FY_2.DataFormatString = "N0"
+		FY_2.AllowUpdates = False
 		columnDefinitions.Add(FY_2)
 
 		Dim FY_3 As New XFDynamicGridColumnDefinition()
@@ -3013,6 +3081,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_3.IsVisible = True
 		FY_3.Description = WFYear + 2
 		FY_3.DataFormatString = "N0"
+		FY_3.AllowUpdates = False
 		columnDefinitions.Add(FY_3)
 
 		Dim FY_4 As New XFDynamicGridColumnDefinition()
@@ -3021,6 +3090,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_4.IsVisible = True
 		FY_4.Description = WFYear + 3
 		FY_4.DataFormatString = "N0"
+		FY_4.AllowUpdates = False
 		columnDefinitions.Add(FY_4)
 
 		Dim FY_5 As New XFDynamicGridColumnDefinition()
@@ -3029,6 +3099,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		FY_5.IsVisible = True
 		FY_5.Description = WFYear + 4
 		FY_5.DataFormatString = "N0"
+		FY_5.AllowUpdates = False
 		columnDefinitions.Add(FY_5)
 
 		dt.Rows.Add(createrow)
