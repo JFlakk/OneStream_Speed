@@ -144,7 +144,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 			Dim skp As New Dictionary(Of String, Object)
 			Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition)
-			#Region "columnDefinitions"
+	#Region "columnDefinitions"
 			Dim ValidationError As New XFDynamicGridColumnDefinition()
 			ValidationError.ColumnName = "Invalid Errors"
 			ValidationError.IsFromTable = True
@@ -944,7 +944,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			AllowUpdate.AllowUpdates = False
 			columnDefinitions.Add(AllowUpdate)
 
-			#End Region
+	#End Region
 			Dim Filteredtable As DataTable = Me.FilterTable(dt)
 
 			Dim xfdt As New XFDataTable(si,Filteredtable,Nothing,10000)
@@ -963,14 +963,14 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Dim WfYear As Integer = TimeDimHelper.GetYearFromId(si.WorkflowClusterPk.TimeKey)
 
 			Dim columnDefinitions As New List(Of XFDynamicGridColumnDefinition)
-
+	#Region "columnDefinitions"
 			Dim Account As New XFDynamicGridColumnDefinition()
 			Account.ColumnName = "Account"
 			Account.IsFromTable = True
 			Account.IsVisible = False
 			Account.AllowUpdates = False
-
 			columnDefinitions.Add(Account)
+			
 			Dim CMD_PGM_ID As New XFDynamicGridColumnDefinition()
 			CMD_PGM_ID.ColumnName = "CMD_PGM_REQ_ID"
 			CMD_PGM_ID.IsFromTable = True
