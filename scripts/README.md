@@ -15,7 +15,7 @@ A Python script that generates a basic Dashboard XML structure through an intera
 **Usage:**
 
 ```bash
-cd /home/runner/work/OneStream_Speed/OneStream_Speed
+# From the repository root directory
 python scripts/generate_simple_dashboard.py
 ```
 

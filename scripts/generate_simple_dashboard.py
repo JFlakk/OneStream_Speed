@@ -10,6 +10,8 @@ This script generates a simple dashboard XML based on user input.
 For complex dashboards, use this as a starting point and modify as needed.
 """
 
+import os
+import traceback
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
@@ -269,7 +271,6 @@ def generate_simple_dashboard():
     output_file = output_file.replace(" ", "_")
     
     # Ensure the GeneratedXML directory exists
-    import os
     os.makedirs("GeneratedXML", exist_ok=True)
     
     print(f"\nGenerating XML file: {output_file}")
@@ -291,5 +292,4 @@ if __name__ == "__main__":
         print("\n\nOperation cancelled by user.")
     except Exception as e:
         print(f"\nError: {e}")
-        import traceback
         traceback.print_exc()
