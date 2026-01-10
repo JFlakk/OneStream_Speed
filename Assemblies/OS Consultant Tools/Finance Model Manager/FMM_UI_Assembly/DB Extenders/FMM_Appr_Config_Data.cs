@@ -119,42 +119,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     case DashboardExtenderFunctionType.SqlTableEditorSaveData:
                         var save_Result = new XFSqlTableEditorSaveDataTaskResult();
-                        if (args.FunctionName.XFEqualsIgnoreCase("Save_Calc_Config_Rows"))
-                        {
-                            GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
-                            save_Result = Save_Calc_Config_Rows();
-                            if (GBL_Model_Type == "Cube")
-                            {
-                                Evaluate_Calc_Config_Setup(GBL_Calc_ID);
-                            }
-
-                            return save_Result;
-                        }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("save_Dest_Cell_Rows"))
-                        {
-                            GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
-                            save_Result = save_Dest_Cell_Rows();
-                            if (GBL_Model_Type == "Cube")
-                            {
-                                Evaluate_Calc_Config_Setup(GBL_Calc_ID);
-                            }
-
-                            return save_Result;
-
-                        }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Src_Cell_Rows"))
-                        {
-                            GBL_Model_Type = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Calc_Type");
-                            save_Result = Save_Src_Cell_Rows();
-                            if (GBL_Model_Type == "Cube")
-                            {
-                                Evaluate_Calc_Config_Setup(GBL_Calc_ID);
-                            }
-
-                            return save_Result;
-
-                        }
-                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Act_Config"))
+                        if (args.FunctionName.XFEqualsIgnoreCase("Save_Act_Config"))
                         {
                             save_Result = Save_Act_Config();
 
@@ -214,7 +179,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					                    
 					case DashboardExtenderFunctionType.ComponentSelectionChanged:
                         var changed_Result = new XFSelectionChangedTaskResult();
-                        if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Cube_Config"))
+                        if (args.FunctionName.XFEqualsIgnoreCase("Save_Calc_Config_Rows"))
+                        {
+                            GBL_Model_Type = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_Calc_Type");
+                            changed_Result = Save_Calc_Config_Rows();
+                            if (GBL_Model_Type == "Cube")
+                            {
+                                Evaluate_Calc_Config_Setup(GBL_Calc_ID);
+                            }
+                            return changed_Result;
+                        }
+                        else if (args.FunctionName.XFEqualsIgnoreCase("save_Dest_Cell_Rows"))
+                        {
+                            GBL_Model_Type = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_Calc_Type");
+                            changed_Result = save_Dest_Cell_Rows();
+                            if (GBL_Model_Type == "Cube")
+                            {
+                                Evaluate_Calc_Config_Setup(GBL_Calc_ID);
+                            }
+                            return changed_Result;
+                        }
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_Src_Cell_Rows"))
+                        {
+                            GBL_Model_Type = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_Calc_Type");
+                            changed_Result = Save_Src_Cell_Rows();
+                            if (GBL_Model_Type == "Cube")
+                            {
+                                Evaluate_Calc_Config_Setup(GBL_Calc_ID);
+                            }
+                            return changed_Result;
+                        }
+                        else if (args.FunctionName.XFEqualsIgnoreCase("Save_New_Cube_Config"))
                         {
                             // Implement Dashboard Component Selection Changed logic here.
                             changed_Result = Save_Cube_Config("New");
@@ -355,20 +350,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #region "Model TED Inputs"
 
         //Save Calc Config Rows Function - New Adds will also insert into FMM_Dest_Cell 
-        private XFSqlTableEditorSaveDataTaskResult Save_Calc_Config_Rows()
+        private XFSelectionChangedTaskResult Save_Calc_Config_Rows()
         {
             try
             {
-                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSelectionChangedTaskResult();
 
                 // Save the Calc Config data rows
-                var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
+                var save_Task_Info = args.SelectionChangedTaskInfo;
 
                 DimChecker checker = new DimChecker();
                 var createNewDestCell = false;
-                var Cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
-                var Act_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
-                var Model_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Model_ID", "0").XFConvertToInt();
+                var Cube_ID = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
+                var Act_ID = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
+                var Model_ID = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Model_ID", "0").XFConvertToInt();
                 var Calc_ID = 0;
                 var Dest_Cell_ID = 0;
 
@@ -589,16 +584,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private XFSqlTableEditorSaveDataTaskResult save_Dest_Cell_Rows()
+        private XFSelectionChangedTaskResult save_Dest_Cell_Rows()
         {
             try
             {
-                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSelectionChangedTaskResult();
 
                 // Save the Calc Config data rows
-                var save_Task_Info = args.SqlTableEditorSaveDataTaskInfo;
+                var save_Task_Info = args.SelectionChangedTaskInfo;
 
-                GBL_Calc_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Calc_ID", "0").XFConvertToInt();
+                GBL_Calc_ID = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Calc_ID", "0").XFConvertToInt();
 
 
                 // Create SQL connection and adapters
@@ -662,13 +657,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         }
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Src_Cell_Rows()
+        private XFSelectionChangedTaskResult Save_Src_Cell_Rows()
         {
             try
             {
-                var Calc_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Calc_ID");
+                var Calc_ID = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_Calc_ID");
                 GBL_Calc_ID = Convert.ToInt32(Calc_ID);
-                var save_Result = new XFSqlTableEditorSaveDataTaskResult();
+                var save_Result = new XFSelectionChangedTaskResult();
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
