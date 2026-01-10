@@ -184,7 +184,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             };
 
             var entDimPk = BRApi.Finance.Dim.GetDimPk(si, api.Pov.EntityDim.Name);
-            int entityID = api.Members.GetMemberId(DimType.Entity.Id, api.Pov.Entity.Name);
+            int entityID = api.Members.GetMemberId(dimType.Entity.Id, api.Pov.Entity.Name);
             info.IsBaseEntity = !BRApi.Finance.Members.HasChildren(si, entDimPk, entityID);
 
             // Get entity level if available via helper
