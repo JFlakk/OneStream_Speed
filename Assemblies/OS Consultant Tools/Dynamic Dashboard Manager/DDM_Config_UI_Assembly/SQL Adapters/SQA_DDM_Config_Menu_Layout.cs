@@ -50,85 +50,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
-                // 1. Define the full Insert Query
-                string insertQuery = @"
-                INSERT INTO DDM_Config_Menu_Layout
-                       (DDM_Config_ID, DDM_Menu_ID, DDM_Type, Scen_Type, Profile_Key, Workspace_ID, MaintUnit_ID, 
-                        Sort_Order, Name, Option_Type, Top_Option_Type, TopLeft_Option_Type, TopRight_Option_Type, 
-                        Bottom_Option_Type, BottomLeft_Option_Type, BottomRight_Option_Type, Left_Option_Type, 
-                        Right_Option_Type, Top_Height, Left_Width, Custom_DB_Header, Custom_DB_Content, 
-                        DB_Name, CV_Name, DB_Name_Top, CV_Name_Top, DB_Name_Bottom, CV_Name_Bottom, 
-                        DB_Name_TopLeft, CV_Name_TopLeft, DB_Name_TopRight, CV_Name_TopRight, 
-                        DB_Name_BottomLeft, CV_Name_BottomLeft, DB_Name_BottomRight, CV_Name_BottomRight, 
-                        Status, Create_Date, Create_User, Update_Date, Update_User)
-                VALUES
-                       (@DDM_Config_ID, @DDM_Menu_ID, @DDM_Type, @Scen_Type, @Profile_Key, @Workspace_ID, @MaintUnit_ID, 
-                        @Sort_Order, @Name, @Option_Type, @Top_Option_Type, @TopLeft_Option_Type, @TopRight_Option_Type, 
-                        @Bottom_Option_Type, @BottomLeft_Option_Type, @BottomRight_Option_Type, @Left_Option_Type, 
-                        @Right_Option_Type, @Top_Height, @Left_Width, @Custom_DB_Header, @Custom_DB_Content, 
-                        @DB_Name, @CV_Name, @DB_Name_Top, @CV_Name_Top, @DB_Name_Bottom, @CV_Name_Bottom, 
-                        @DB_Name_TopLeft, @CV_Name_TopLeft, @DB_Name_TopRight, @CV_Name_TopRight, 
-                        @DB_Name_BottomLeft, @CV_Name_BottomLeft, @DB_Name_BottomRight, @CV_Name_BottomRight, 
-                        @Status, @Create_Date, @Create_User, @Update_Date, @Update_User)";
-
-                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                AddParameters(sqa.InsertCommand);
-
-                // 2. Define the full Update Query
-                string updateQuery = @"
-                UPDATE DDM_Config_Menu_Layout
-                SET DDM_Config_ID = @DDM_Config_ID,
-                    DDM_Type = @DDM_Type,
-                    Scen_Type = @Scen_Type,
-                    Profile_Key = @Profile_Key,
-                    Workspace_ID = @Workspace_ID,
-                    MaintUnit_ID = @MaintUnit_ID,
-                    Sort_Order = @Sort_Order,
-                    Name = @Name,
-                    Option_Type = @Option_Type,
-                    Top_Option_Type = @Top_Option_Type,
-                    TopLeft_Option_Type = @TopLeft_Option_Type,
-                    TopRight_Option_Type = @TopRight_Option_Type,
-                    Bottom_Option_Type = @Bottom_Option_Type,
-                    BottomLeft_Option_Type = @BottomLeft_Option_Type,
-                    BottomRight_Option_Type = @BottomRight_Option_Type,
-                    Left_Option_Type = @Left_Option_Type,
-                    Right_Option_Type = @Right_Option_Type,
-                    Top_Height = @Top_Height,
-                    Left_Width = @Left_Width,
-                    Custom_DB_Header = @Custom_DB_Header,
-                    Custom_DB_Content = @Custom_DB_Content,
-                    DB_Name = @DB_Name,
-                    CV_Name = @CV_Name,
-                    DB_Name_Top = @DB_Name_Top,
-                    CV_Name_Top = @CV_Name_Top,
-                    DB_Name_Bottom = @DB_Name_Bottom,
-                    CV_Name_Bottom = @CV_Name_Bottom,
-                    DB_Name_TopLeft = @DB_Name_TopLeft,
-                    CV_Name_TopLeft = @CV_Name_TopLeft,
-                    DB_Name_TopRight = @DB_Name_TopRight,
-                    CV_Name_TopRight = @CV_Name_TopRight,
-                    DB_Name_BottomLeft = @DB_Name_BottomLeft,
-                    CV_Name_BottomLeft = @CV_Name_BottomLeft,
-                    DB_Name_BottomRight = @DB_Name_BottomRight,
-                    CV_Name_BottomRight = @CV_Name_BottomRight,
-                    Status = @Status,
-                    Update_Date = @Update_Date,
-                    Update_User = @Update_User
-                WHERE DDM_Menu_ID = @DDM_Menu_ID";
-
-                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                AddParameters(sqa.UpdateCommand);
-                sqa.UpdateCommand.Parameters["@DDM_Menu_ID"].SourceVersion = DataRowVersion.Original;
-
-                // 3. Define the Delete Query
-                string deleteQuery = "DELETE FROM DDM_Config_Menu_Layout WHERE DDM_Menu_ID = @DDM_Menu_ID";
-                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add("@DDM_Menu_ID", SqlDbType.Int).SourceColumn = "DDM_Menu_ID";
-                sqa.DeleteCommand.Parameters["@DDM_Menu_ID"].SourceVersion = DataRowVersion.Original;
-
                 try
                 {
+                    // Build commands dynamically based on DataTable columns
+                    GBL_SQA_Helper.BuildInsertCommand(sqa, _connection, transaction, dt, "DDM_Config_Menu_Layout");
+                    GBL_SQA_Helper.BuildUpdateCommand(sqa, _connection, transaction, dt, "DDM_Config_Menu_Layout", "DDM_Menu_ID");
+                    GBL_SQA_Helper.BuildDeleteCommand(sqa, _connection, transaction, dt, "DDM_Config_Menu_Layout", "DDM_Menu_ID");
+
                     sqa.Update(dt);
                     transaction.Commit();
                 }
@@ -144,6 +72,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     sqa.DeleteCommand = null;
                 }
             }
+        }
+
+        /// <summary>
+        /// Performs a MERGE operation (upsert) on DDM_Config_Menu_Layout table
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="dt">DataTable containing data to merge</param>
+        /// <param name="deleteUnmatched">If true, deletes records not in the source DataTable</param>
+        /// <param name="deleteCondition">Optional SQL condition for conditional deletes (e.g., "Status = 'Inactive'")</param>
+        public void Merge_DDM_Config_Menu_Layout(SessionInfo si, DataTable dt, bool deleteUnmatched = false, string deleteCondition = null)
+        {
+            GBL_SQA_Helper.MergeData(si, _connection, dt, "DDM_Config_Menu_Layout", "DDM_Menu_ID", deleteUnmatched, deleteCondition);
+        }
+
+        /// <summary>
+        /// Synchronizes DDM_Config_Menu_Layout table with the DataTable (full sync with delete of unmatched records)
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="dt">DataTable containing data to sync</param>
+        /// <param name="syncCondition">Optional SQL condition to limit which records can be deleted</param>
+        public void Sync_DDM_Config_Menu_Layout(SessionInfo si, DataTable dt, string syncCondition = null)
+        {
+            GBL_SQA_Helper.SyncData(si, _connection, dt, "DDM_Config_Menu_Layout", "DDM_Menu_ID", syncCondition);
         }
 
         private void AddParameters(SqlCommand cmd)

@@ -50,81 +50,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
-                // 1. Define Insert Query
-                string insertQuery = @"
-                    INSERT INTO DDM_Config_Hdr_Ctrls
-                           (DDM_Config_ID, DDM_Menu_ID, DDM_Hdr_Ctrl_ID, DDM_Type, Scen_Type, Profile_Key, 
-                            Workspace_ID, MaintUnit_ID, Sort_Order, Name, Option_Type, Fltr_Dependency_Tier, 
-                            Fltr_Dim_Type, Fltr_Dim_Name, Fltr_MFB, Fltr_Default, Fltr_Btn, Fltr_Btn_Lbl, 
-                            Fltr_Btn_ToolTip, Fltr_Cbx, Fltr_Cbx_Lbl, Fltr_Cbx_ToolTip, Fltr_BtnCbx_BoundParam, 
-                            Fltr_Txt, Fltr_Txt_Lbl, Fltr_Txt_ToolTip, Fltr_Txt_BoundParam, Btn_Type, Btn_Lbl, 
-                            Btn_ToolTip, Btn_Image_URL, Btn_ServerTask, Btn_DBOpen, Btn_DBRefresh, Status,
-                            Create_Date, Create_User, Update_Date, Update_User)
-                     VALUES
-                           (@DDM_Config_ID, @DDM_Menu_ID, @DDM_Hdr_Ctrl_ID, @DDM_Type, @Scen_Type, @Profile_Key, 
-                            @Workspace_ID, @MaintUnit_ID, @Sort_Order, @Name, @Option_Type, @Fltr_Dependency_Tier, 
-                            @Fltr_Dim_Type, @Fltr_Dim_Name, @Fltr_MFB, @Fltr_Default, @Fltr_Btn, @Fltr_Btn_Lbl, 
-                            @Fltr_Btn_ToolTip, @Fltr_Cbx, @Fltr_Cbx_Lbl, @Fltr_Cbx_ToolTip, @Fltr_BtnCbx_BoundParam, 
-                            @Fltr_Txt, @Fltr_Txt_Lbl, @Fltr_Txt_ToolTip, @Fltr_Txt_BoundParam, @Btn_Type, @Btn_Lbl, 
-                            @Btn_ToolTip, @Btn_Image_URL, @Btn_ServerTask, @Btn_DBOpen, @Btn_DBRefresh, @Status,
-                            @Create_Date, @Create_User, @Update_Date, @Update_User)";
-
-                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                AddParameters(sqa.InsertCommand);
-
-                // 2. Define Update Query
-                string updateQuery = @"
-                    UPDATE DDM_Config_Hdr_Ctrls
-                       SET DDM_Config_ID = @DDM_Config_ID
-                          ,DDM_Menu_ID = @DDM_Menu_ID
-                          ,DDM_Type = @DDM_Type
-                          ,Scen_Type = @Scen_Type
-                          ,Profile_Key = @Profile_Key
-                          ,Workspace_ID = @Workspace_ID
-                          ,MaintUnit_ID = @MaintUnit_ID
-                          ,Sort_Order = @Sort_Order
-                          ,Name = @Name
-                          ,Option_Type = @Option_Type
-                          ,Fltr_Dependency_Tier = @Fltr_Dependency_Tier
-                          ,Fltr_Dim_Type = @Fltr_Dim_Type
-                          ,Fltr_Dim_Name = @Fltr_Dim_Name
-                          ,Fltr_MFB = @Fltr_MFB
-                          ,Fltr_Default = @Fltr_Default
-                          ,Fltr_Btn = @Fltr_Btn
-                          ,Fltr_Btn_Lbl = @Fltr_Btn_Lbl
-                          ,Fltr_Btn_ToolTip = @Fltr_Btn_ToolTip
-                          ,Fltr_Cbx = @Fltr_Cbx
-                          ,Fltr_Cbx_Lbl = @Fltr_Cbx_Lbl
-                          ,Fltr_Cbx_ToolTip = @Fltr_Cbx_ToolTip
-                          ,Fltr_BtnCbx_BoundParam = @Fltr_BtnCbx_BoundParam
-                          ,Fltr_Txt = @Fltr_Txt
-                          ,Fltr_Txt_Lbl = @Fltr_Txt_Lbl
-                          ,Fltr_Txt_ToolTip = @Fltr_Txt_ToolTip
-                          ,Fltr_Txt_BoundParam = @Fltr_Txt_BoundParam
-                          ,Btn_Type = @Btn_Type
-                          ,Btn_Lbl = @Btn_Lbl
-                          ,Btn_ToolTip = @Btn_ToolTip
-                          ,Btn_Image_URL = @Btn_Image_URL
-                          ,Btn_ServerTask = @Btn_ServerTask
-                          ,Btn_DBOpen = @Btn_DBOpen
-                          ,Btn_DBRefresh = @Btn_DBRefresh
-						  ,Status = @Status
-                          ,Update_Date = @Update_Date
-                          ,Update_User = @Update_User
-                     WHERE DDM_Hdr_Ctrl_ID = @DDM_Hdr_Ctrl_ID";
-
-                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                AddParameters(sqa.UpdateCommand);
-                sqa.UpdateCommand.Parameters["@DDM_Hdr_Ctrl_ID"].SourceVersion = DataRowVersion.Original;
-
-                // 3. Define Delete Query
-                string deleteQuery = "DELETE FROM DDM_Config_Hdr_Ctrls WHERE DDM_Hdr_Ctrl_ID = @DDM_Hdr_Ctrl_ID";
-                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add("@DDM_Hdr_Ctrl_ID", SqlDbType.Int).SourceColumn = "DDM_Hdr_Ctrl_ID";
-                sqa.DeleteCommand.Parameters["@DDM_Hdr_Ctrl_ID"].SourceVersion = DataRowVersion.Original;
-
                 try
                 {
+                    // Build commands dynamically based on DataTable columns
+                    GBL_SQA_Helper.BuildInsertCommand(sqa, _connection, transaction, dt, "DDM_Config_Hdr_Ctrls");
+                    GBL_SQA_Helper.BuildUpdateCommand(sqa, _connection, transaction, dt, "DDM_Config_Hdr_Ctrls", "DDM_Hdr_Ctrl_ID");
+                    GBL_SQA_Helper.BuildDeleteCommand(sqa, _connection, transaction, dt, "DDM_Config_Hdr_Ctrls", "DDM_Hdr_Ctrl_ID");
+
                     sqa.Update(dt);
                     transaction.Commit();
                 }
@@ -133,13 +65,30 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     transaction.Rollback();
                     throw;
                 }
-                finally
-                {
-                    sqa.InsertCommand = null;
-                    sqa.UpdateCommand = null;
-                    sqa.DeleteCommand = null;
-                }
             }
+        }
+
+        /// <summary>
+        /// Performs a MERGE operation (upsert) on DDM_Config_Hdr_Ctrls table
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="dt">DataTable containing data to merge</param>
+        /// <param name="deleteUnmatched">If true, deletes records not in the source DataTable</param>
+        /// <param name="deleteCondition">Optional SQL condition for conditional deletes (e.g., "Status = 'Inactive'")</param>
+        public void Merge_DDM_Config_Hdr_Ctrls(SessionInfo si, DataTable dt, bool deleteUnmatched = false, string deleteCondition = null)
+        {
+            GBL_SQA_Helper.MergeData(si, _connection, dt, "DDM_Config_Hdr_Ctrls", "DDM_Hdr_Ctrl_ID", deleteUnmatched, deleteCondition);
+        }
+
+        /// <summary>
+        /// Synchronizes DDM_Config_Hdr_Ctrls table with the DataTable (full sync with delete of unmatched records)
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="dt">DataTable containing data to sync</param>
+        /// <param name="syncCondition">Optional SQL condition to limit which records can be deleted</param>
+        public void Sync_DDM_Config_Hdr_Ctrls(SessionInfo si, DataTable dt, string syncCondition = null)
+        {
+            GBL_SQA_Helper.SyncData(si, _connection, dt, "DDM_Config_Hdr_Ctrls", "DDM_Hdr_Ctrl_ID", syncCondition);
         }
 
         private void AddParameters(SqlCommand cmd)
