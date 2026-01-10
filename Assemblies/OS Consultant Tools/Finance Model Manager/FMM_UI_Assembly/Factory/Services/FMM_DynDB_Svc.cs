@@ -30,7 +30,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
 					if (storedDashboard.Name.XFEqualsIgnoreCase("0b3a3b_FMM_Model_Content_Cube"))
 					{
-						
+						// Build dynamic embedded dashboards for Cube Calc vs Reg Calc
+						return FMM_Content.Get_DynamicModelContentDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved);
 					}
 					else
 					{

@@ -46,6 +46,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     var col = args.NameValuePairs.XFGetValue("col");
                     return Get_Model_Col_Format(curr_TED, curr_ModelType, col);
                 }
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_Calc_Type_Dashboard"))
+                {
+                    // Determine which dashboard to show: Cube Calc vs Reg Calc
+                    var modelType = args.NameValuePairs.XFGetValue("IV_FMM_Model_Type");
+                    return Get_CalcTypeDashboard(modelType);
+                }
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_Calc_Config_Params"))
+                {
+                    // Get parameter mappings from FMM_Config_Helpers for dynamic dashboard configuration
+                    var configType = args.NameValuePairs.XFGetValue("ConfigType");
+                    var modelType = args.NameValuePairs.XFGetValue("ModelType");
+                    return Get_CalcConfigParams(configType, modelType);
+                }
 
                 return null;
             }
@@ -54,6 +67,75 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
+		
+		/// <summary>
+		/// Determine which dashboard to present: Cube Calc or Reg Calc
+		/// </summary>
+		public static string Get_CalcTypeDashboard(string modelType)
+		{
+			if (modelType.XFEqualsIgnoreCase("Cube"))
+			{
+				return "0b3a3a_FMM_Model_Content_Cube";
+			}
+			else if (modelType.XFEqualsIgnoreCase("Table") || modelType.XFEqualsIgnoreCase("Reg"))
+			{
+				return "0b3a3b1_FMM_Model_Content_Cube";
+			}
+			return "0b3a3a_FMM_Model_Content_Cube"; // Default to Cube
+		}
+		
+		/// <summary>
+		/// Get configuration parameters from FMM_Config_Helpers registry
+		/// </summary>
+		public static string Get_CalcConfigParams(string configType, string modelType)
+		{
+			var helper = new FMM_Config_Helpers();
+			
+			if (modelType.XFEqualsIgnoreCase("Cube"))
+			{
+				// Get Cube Calc configuration
+				int configTypeInt = 0;
+				if (configType.XFEqualsIgnoreCase("CalcConfig")) configTypeInt = 1;
+				else if (configType.XFEqualsIgnoreCase("DestConfig")) configTypeInt = 2;
+				else if (configType.XFEqualsIgnoreCase("SrcConfig")) configTypeInt = 3;
+				
+				var config = helper.Get_CubeCalcConfigType(configTypeInt);
+				if (config != null && config.ParameterMappings != null)
+				{
+					// Return first parameter mapping as example
+					foreach (var mapping in config.ParameterMappings)
+					{
+						foreach (var param in mapping.Value)
+						{
+							return param.Key; // Return first parameter name
+						}
+					}
+				}
+			}
+			else
+			{
+				// Get Reg Calc configuration
+				int configTypeInt = 0;
+				if (configType.XFEqualsIgnoreCase("CalcConfig")) configTypeInt = 1;
+				else if (configType.XFEqualsIgnoreCase("DestConfig")) configTypeInt = 2;
+				else if (configType.XFEqualsIgnoreCase("SrcConfig")) configTypeInt = 3;
+				
+				var config = helper.Get_RegCalcConfigType(configTypeInt);
+				if (config != null && config.ParameterMappings != null)
+				{
+					// Return first parameter mapping as example
+					foreach (var mapping in config.ParameterMappings)
+					{
+						foreach (var param in mapping.Value)
+						{
+							return param.Key; // Return first parameter name
+						}
+					}
+				}
+			}
+			
+			return string.Empty;
+		}
 
         public static string Get_Model_Col_Format(string curr_TED, string curr_ModelType, string col)
         {
