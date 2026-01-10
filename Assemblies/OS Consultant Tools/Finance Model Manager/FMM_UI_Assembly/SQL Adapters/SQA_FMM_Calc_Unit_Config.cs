@@ -51,54 +51,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
-                // Define the insert query and parameters
-                string insertQuery = @"
-                    INSERT INTO FMM_Calc_Unit_Config (
-                        Cube_ID, Calc_Unit_ID, Entity_MFB, WFChannel, Status, 
-                        Create_Date, Create_User, Update_Date, Update_User)
-                    VALUES
-                        (@Cube_ID, @Calc_Unit_ID, @Entity_MFB, @WFChannel, @Status, 
-                        @Create_Date, @Create_User, @Update_Date, @Update_User)";
-                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                sqa.InsertCommand.UpdatedRowSource = UpdateRowSource.None;
-                sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Calc_Unit_ID", SqlDbType.Int).SourceColumn = "Calc_Unit_ID";
-                sqa.InsertCommand.Parameters.Add("@Entity_MFB", SqlDbType.NVarChar, 250).SourceColumn = "Entity_MFB";
-                sqa.InsertCommand.Parameters.Add("@WFChannel", SqlDbType.NVarChar, 100).SourceColumn = "WFChannel";
-                sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
-                sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
-                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
-                sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
-
-                // Define the update query and parameters
-                string updateQuery = @"
-                    UPDATE FMM_Calc_Unit_Config SET
-                        Entity_MFB = @Entity_MFB,
-                        WFChannel = @WFChannel,
-                        Status = @Status,
-                        Update_Date = @Update_Date,
-                        Update_User = @Update_User
-                    WHERE Calc_Unit_ID = @Calc_Unit_ID";
-                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                sqa.UpdateCommand.UpdatedRowSource = UpdateRowSource.None;
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Calc_Unit_ID", SqlDbType.Int) { SourceColumn = "Calc_Unit_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add("@Entity_MFB", SqlDbType.NVarChar, 250).SourceColumn = "Entity_MFB";
-                sqa.UpdateCommand.Parameters.Add("@WFChannel", SqlDbType.NVarChar, 100).SourceColumn = "WFChannel";
-                sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
-                sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
-
-                // Define the delete query and parameters
-                string deleteQuery = @"
-                    DELETE FROM FMM_Calc_Unit_Config 
-                    WHERE Calc_Unit_ID = @Calc_Unit_ID";
-                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.UpdatedRowSource = UpdateRowSource.None;
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Calc_Unit_ID", SqlDbType.Int) { SourceColumn = "Calc_Unit_ID", SourceVersion = DataRowVersion.Original });
-
                 try
                 {
+                    // Build commands dynamically based on DataTable columns
+                    GBL_SQA_Helper.BuildInsertCommand(sqa, _connection, transaction, dt, "FMM_Calc_Unit_Config");
+                    GBL_SQA_Helper.BuildUpdateCommand(sqa, _connection, transaction, dt, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
+                    GBL_SQA_Helper.BuildDeleteCommand(sqa, _connection, transaction, dt, "FMM_Calc_Unit_Config", "Calc_Unit_ID");
+
                     sqa.Update(dt);
                     transaction.Commit();
                     sqa.InsertCommand = null;
@@ -111,6 +70,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     throw;
                 }
             }
+        }
+
+        /// <summary>
+        /// Performs a MERGE operation (upsert) on FMM_Calc_Unit_Config table
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="dt">DataTable containing data to merge</param>
+        /// <param name="deleteUnmatched">If true, deletes records not in the source DataTable</param>
+        /// <param name="deleteCondition">Optional SQL condition for conditional deletes (e.g., "Status = 'Inactive'")</param>
+        public void Merge_FMM_Calc_Unit_Config(SessionInfo si, DataTable dt, bool deleteUnmatched = false, string deleteCondition = null)
+        {
+            GBL_SQA_Helper.MergeData(si, _connection, dt, "FMM_Calc_Unit_Config", "Calc_Unit_ID", deleteUnmatched, deleteCondition);
+        }
+
+        /// <summary>
+        /// Synchronizes FMM_Calc_Unit_Config table with the DataTable (full sync with delete of unmatched records)
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="dt">DataTable containing data to sync</param>
+        /// <param name="syncCondition">Optional SQL condition to limit which records can be deleted (e.g., "Cube_ID = 1")</param>
+        public void Sync_FMM_Calc_Unit_Config(SessionInfo si, DataTable dt, string syncCondition = null)
+        {
+            GBL_SQA_Helper.SyncData(si, _connection, dt, "FMM_Calc_Unit_Config", "Calc_Unit_ID", syncCondition);
         }
     }
 }

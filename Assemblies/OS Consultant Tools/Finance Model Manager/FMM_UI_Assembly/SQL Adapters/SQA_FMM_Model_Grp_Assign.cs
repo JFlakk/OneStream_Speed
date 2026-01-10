@@ -51,54 +51,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
-                // Define the insert query and parameters
-                string insertQuery = @"
-                    INSERT INTO FMM_Model_Grp_Assign (
-                        Cube_ID, Model_Grp_ID, Model_ID, Model_Grp_Assign_ID,
-                        Sequence, Status, Create_Date, Create_User, Update_Date, Update_User)
-                    VALUES
-                        (@Cube_ID, @Model_Grp_ID, @Model_ID, @Model_Grp_Assign_ID,
-                        @Sequence, @Status, @Create_Date, @Create_User, @Update_Date, @Update_User)";
-                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Model_Grp_ID", SqlDbType.Int).SourceColumn = "Model_Grp_ID";
-                sqa.InsertCommand.Parameters.Add("@Model_ID", SqlDbType.Int).SourceColumn = "Model_ID";
-                sqa.InsertCommand.Parameters.Add("@Model_Grp_Assign_ID", SqlDbType.Int).SourceColumn = "Model_Grp_Assign_ID";
-                sqa.InsertCommand.Parameters.Add("@Sequence", SqlDbType.Int).SourceColumn = "Sequence";
-                sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
-                sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
-                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
-                sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
-
-                // Define the update query and parameters
-                string updateQuery = @"
-                    UPDATE FMM_Model_Grp_Assign SET
-                        Sequence = @Sequence,
-                        Status = @Status,
-                        Update_Date = @Update_Date,
-                        Update_User = @Update_User
-                    WHERE Cube_ID = @Cube_ID AND Model_Grp_ID = @Model_Grp_ID AND Model_ID = @Model_ID";
-                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Cube_ID", SqlDbType.Int) { SourceColumn = "Cube_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Model_Grp_ID", SqlDbType.Int) { SourceColumn = "Model_Grp_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Model_ID", SqlDbType.Int) { SourceColumn = "Model_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add("@Sequence", SqlDbType.Int).SourceColumn = "Sequence";
-                sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 10).SourceColumn = "Status";
-                sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
-
-                // Define the delete query and parameters
-                string deleteQuery = @"
-                    DELETE FROM FMM_Model_Grp_Assign 
-                    WHERE Cube_ID = @Cube_ID AND Model_Grp_ID = @Model_Grp_ID AND Model_ID = @Model_ID";
-                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Cube_ID", SqlDbType.Int) { SourceColumn = "Cube_ID", SourceVersion = DataRowVersion.Original });
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Model_Grp_ID", SqlDbType.Int) { SourceColumn = "Model_Grp_ID", SourceVersion = DataRowVersion.Original });
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Model_ID", SqlDbType.Int) { SourceColumn = "Model_ID", SourceVersion = DataRowVersion.Original });
-
                 try
                 {
+                    // Build commands dynamically based on DataTable columns
+                    GBL_SQA_Helper.BuildInsertCommand(sqa, _connection, transaction, dt, "FMM_Model_Grp_Assign");
+                    GBL_SQA_Helper.BuildUpdateCommand(sqa, _connection, transaction, dt, "FMM_Model_Grp_Assign", "Model_Grp_Assign_ID");
+                    GBL_SQA_Helper.BuildDeleteCommand(sqa, _connection, transaction, dt, "FMM_Model_Grp_Assign", "Model_Grp_Assign_ID");
+
                     sqa.Update(dt);
                     transaction.Commit();
                     sqa.InsertCommand = null;
@@ -111,6 +70,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     throw;
                 }
             }
+        }
+
+        /// <summary>
+        /// Performs a MERGE operation (upsert) on FMM_Model_Grp_Assign table
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="dt">DataTable containing data to merge</param>
+        /// <param name="deleteUnmatched">If true, deletes records not in the source DataTable</param>
+        /// <param name="deleteCondition">Optional SQL condition for conditional deletes (e.g., "Status = 'Inactive'")</param>
+        public void Merge_FMM_Model_Grp_Assign(SessionInfo si, DataTable dt, bool deleteUnmatched = false, string deleteCondition = null)
+        {
+            GBL_SQA_Helper.MergeData(si, _connection, dt, "FMM_Model_Grp_Assign", "Model_Grp_Assign_ID", deleteUnmatched, deleteCondition);
+        }
+
+        /// <summary>
+        /// Synchronizes FMM_Model_Grp_Assign table with the DataTable (full sync with delete of unmatched records)
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="dt">DataTable containing data to sync</param>
+        /// <param name="syncCondition">Optional SQL condition to limit which records can be deleted (e.g., "Cube_ID = 1")</param>
+        public void Sync_FMM_Model_Grp_Assign(SessionInfo si, DataTable dt, string syncCondition = null)
+        {
+            GBL_SQA_Helper.SyncData(si, _connection, dt, "FMM_Model_Grp_Assign", "Model_Grp_Assign_ID", syncCondition);
         }
     }
 }
