@@ -49,16 +49,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Cube_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
                 string insertQuery = @"
 		            INSERT INTO FMM_Cube_Config (
 		                Cube_ID, Cube, Scen_Type, Descr, Entity_Dim, Entity_MFB, Agg_Consol,  
-						Status,Create_Date,Create_User,Update_Date,Update_User
+						Status, Create_Date, Create_User, Update_Date, Update_User
 		            ) VALUES (
-		                @Cube_ID, @Cube, @Scen_Type, @Descr,@Entity_Dim, @Entity_MFB,@Agg_Consol,
-						@Status,@Create_Date,@Create_User,@Update_Date,@Update_User
+		                @Cube_ID, @Cube, @Scen_Type, @Descr, @Entity_Dim, @Entity_MFB, @Agg_Consol,
+						@Status, @Create_Date, @Create_User, @Update_Date, @Update_User
 		            )";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
@@ -110,9 +111,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

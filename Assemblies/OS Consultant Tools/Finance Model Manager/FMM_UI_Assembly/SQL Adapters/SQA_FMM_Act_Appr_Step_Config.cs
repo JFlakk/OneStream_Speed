@@ -48,6 +48,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Act_Appr_Step_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
@@ -123,15 +124,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     DELETE FROM FMM_Act_Appr_Step_Config 
                     WHERE Appr_Step_Act_ID = @Appr_Step_Act_ID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Appr_Step_Act_ID", SqlDbType.Int) { SourceColumn = "FMM_Act_Appr_Step_Config_ID", SourceVersion = DataRowVersion.Original });
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Appr_Step_Act_ID", SqlDbType.Int) { SourceColumn = "Appr_Step_Act_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

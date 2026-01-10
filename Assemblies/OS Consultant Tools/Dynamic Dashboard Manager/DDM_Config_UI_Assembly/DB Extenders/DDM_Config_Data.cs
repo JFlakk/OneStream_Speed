@@ -25,9 +25,6 @@ using Workspace.OSConsTools.GBL_UI_Assembly;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.DDM_Config_Data
 {
-    /// <summary>
-    /// MainClass handles Dynamic Dashboard Manager configuration data operations.
-    /// </summary>
     public class MainClass
     {
         #region "Global Variables"
@@ -68,10 +65,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         private StringBuilder debugString;
         #endregion
 
-        /// <summary>
-        /// Main entry point for the Dashboard Extender business rule.
-        /// Handles different function types such as saving data or handling component selection changes.
-        /// </summary>
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
             try
@@ -143,10 +136,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        /// <summary>
-        /// Saves DDM Profile Config Menu Options Rows.
-        /// This method specifically handles the saving of profile config rows.
-        /// </summary>
         private XFSqlTableEditorSaveDataTaskResult Save_DDM_Profile_Config_Rows()
         {
             try
@@ -209,11 +198,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-		
-        /// <summary>
-        /// Saves a new profile configuration.
-        /// This method is called when the component selection changes to save a new profile config.
-        /// </summary>
+
         private XFSelectionChangedTaskResult Save_New_Profile_Config()
         {
             try
@@ -327,7 +312,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	            // 3. Lookup in your LayoutRegistry class
 	            if (DDM_Config_Helpers.LayoutRegistry.Configs.TryGetValue(optionType, out var config))
 	            {
-BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 					// 4. Update the UI Subst Var so the Dashboard flips to the correct UI
 	                UpdateCustomSubstVar(ref select_Result, "IV_DDM_Layout_Option_Type", config.DashboardName);
 				}
@@ -372,13 +356,23 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		
 		            // 2. Extract Option_Type and Convert to Enum
 		            DDM_Config_Helpers.Layout_OptionType optionType = (DDM_Config_Helpers.Layout_OptionType)row["Option_Type"];
-		
+					UpdateCustomSubstVar(ref select_Result, "DL_DDM_Layout_Type", row["Option_Type"].ToString());
 		            // 3. Lookup in your LayoutRegistry class
 		            if (DDM_Config_Helpers.LayoutRegistry.Configs.TryGetValue(optionType, out var config))
 		            {
-		                // 4. Update the UI Subst Var so the Dashboard flips to the correct UI
-		                UpdateCustomSubstVar(ref select_Result, "IV_DDM_Layout_Option_Type", config.DashboardName);
+						foreach (var step in config.ParameterMappings)
+						{
+						    // The 'step.Value' is the inner Dictionary<string, string>
+						    // It usually contains just one pair, but we loop to be safe
+						    foreach (var map in step.Value)
+						    {
+						        string tgtParamName = map.Key;   // e.g. "IV_DDM_Layout_Top_Height"
+						        string columnName = map.Value;  // e.g. "Top_Height"
+								UpdateCustomSubstVar(ref select_Result, tgtParamName, row[columnName].ToString());
+							}
+						}
 					}
+					
 				}
 				return select_Result;
 			}
@@ -396,8 +390,8 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		        var select_Result = new XFSelectionChangedTaskResult();
 				var ddm_Config_Menu_Layout_DT = new DataTable();
 
-				var optionintValue = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_DDM_Layout_Option_Type", "0").XFConvertToInt();
-				var histoptionintValue = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_DDM_Layout_Option_Type", "0").XFConvertToInt();
+				var optionintValue = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_DDM_Layout_Type", "0").XFConvertToInt();
+				var histoptionintValue = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_DDM_Layout_Type", "0").XFConvertToInt();
 
 				//UpdateCustomSubstVar(ref select_Result,"IV_DDM_Config_Menu_UI","0b1b2b2_DDM_Config_Content_NewUpdates");
 BRApi.ErrorLog.LogMessage(si,$"Hit {optionintValue} - {histoptionintValue} - {args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Layout_Option_Type", "NA")} - {args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_DDM_Layout_Option_Type", "NA")}");
@@ -510,7 +504,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		        var configID = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Config_ID", "0").XFConvertToInt();
 		        var menuName = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Menu_Name", string.Empty);
 		        var sortOrder = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Menu_Sort_Order", "0").XFConvertToInt();
-		        var optionType = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_DDM_Layout_Option_Type", "0").XFConvertToInt();
+		        var optionType = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_DDM_Layout_Type", "0").XFConvertToInt();
 		
 		        // 1. Run Duplicate Check before proceeding
 		        // We 'Initiate' to fill GBL_Menu dictionaries from the DB

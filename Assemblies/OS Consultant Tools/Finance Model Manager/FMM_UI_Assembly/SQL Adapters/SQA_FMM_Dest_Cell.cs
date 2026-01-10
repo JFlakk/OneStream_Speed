@@ -48,13 +48,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Dest_Cell(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
                 string insertQuery = @"
 		            INSERT INTO FMM_Dest_Cell (
 		                Cube_ID, Act_ID, Model_ID, Calc_ID, Dest_Cell_ID, 
-		                Location, Calc_Plan_Units, Acct, View, 
+		                Location, Calc_Plan_Units, Acct, [View], 
 		                Origin, IC, Flow, UD1, 
 		                UD2, UD3, UD4, UD5, 
 		                UD6, UD7, UD8, Time_Filter, 
@@ -101,7 +102,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Flow_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Flow_Filter";
                 for (int i = 1; i <= 8; i++)
                 {
-                    sqa.InsertCommand.Parameters.Add($"@OS_UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"OS_UD{i}_Filter";
+                    sqa.InsertCommand.Parameters.Add($"@UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"UD{i}_Filter";
                 }
                 sqa.InsertCommand.Parameters.Add("@Conditional_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "Conditional_Filter";
                 sqa.InsertCommand.Parameters.Add("@Curr_Cube_Buffer_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "Curr_Cube_Buffer_Filter";
@@ -117,7 +118,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		                Cube_ID = @Cube_ID, Act_ID = @Act_ID, Model_ID = @Model_ID,
 		                Calc_ID = @Calc_ID, Location = @Location, 
 		                Calc_Plan_Units = @Calc_Plan_Units, Acct = @Acct, 
-		                View = @View, Origin = @Origin, 
+		                [View] = @View, Origin = @Origin, 
 		                IC = @IC, Flow = @Flow, 
 		                UD1 = @UD1, UD2 = @UD2, 
 		                UD3 = @UD3, UD4 = @UD4, 
@@ -160,7 +161,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Flow_Filter", SqlDbType.NVarChar, 200).SourceColumn = "Flow_Filter";
                 for (int i = 1; i <= 8; i++)
                 {
-                    sqa.UpdateCommand.Parameters.Add($"@OS_UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"OS_UD{i}_Filter";
+                    sqa.UpdateCommand.Parameters.Add($"@UD{i}_Filter", SqlDbType.NVarChar, 200).SourceColumn = $"UD{i}_Filter";
                 }
                 sqa.UpdateCommand.Parameters.Add("@Conditional_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "Conditional_Filter";
                 sqa.UpdateCommand.Parameters.Add("@Curr_Cube_Buffer_Filter", SqlDbType.NVarChar, 1000).SourceColumn = "Curr_Cube_Buffer_Filter";
@@ -180,9 +181,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

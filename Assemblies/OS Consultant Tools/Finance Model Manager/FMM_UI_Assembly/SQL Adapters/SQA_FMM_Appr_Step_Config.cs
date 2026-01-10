@@ -48,6 +48,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Appr_Step_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
@@ -55,12 +56,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     INSERT INTO FMM_Appr_Step_Config (
                         Cube_ID, Appr_ID, Appr_Step_ID, Step_Num,
                         WFProfile_Step, User_Group, Logic, Item,
-                        Level, Config, Init_Status, Appr_Status,
+                        Level, Appr_Config, Init_Status, Appr_Status,
                         Rej_Status, Status, Create_Date, Create_User, Update_Date, Update_User)
                     VALUES
                         (@Cube_ID, @Appr_ID, @Appr_Step_ID, @Step_Num,
                         @WFProfile_Step, @User_Group, @Logic, @Item,
-                        @Level, @Config, @Init_Status, @Appr_Status,
+                        @Level, @Appr_Config, @Init_Status, @Appr_Status,
                         @Rej_Status, @Status, @Create_Date, @Create_User, @Update_Date, @Update_User)";
 
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
@@ -73,7 +74,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Logic", SqlDbType.NVarChar, 100).SourceColumn = "Logic";
                 sqa.InsertCommand.Parameters.Add("@Item", SqlDbType.NVarChar, 100).SourceColumn = "Item";
                 sqa.InsertCommand.Parameters.Add("@Level", SqlDbType.Int).SourceColumn = "Level";
-                sqa.InsertCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
+                sqa.InsertCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
                 sqa.InsertCommand.Parameters.Add("@Init_Status", SqlDbType.NVarChar, 100).SourceColumn = "Init_Status";
                 sqa.InsertCommand.Parameters.Add("@Appr_Status", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Status";
                 sqa.InsertCommand.Parameters.Add("@Rej_Status", SqlDbType.NVarChar, 100).SourceColumn = "Rej_Status";
@@ -92,7 +93,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         Logic = @Logic,
                         Item = @Item,
                         Level = @Level,
-                        Config = @Config,
+                        Appr_Config = @Appr_Config,
                         Init_Status = @Init_Status,
                         Appr_Status = @Appr_Status,
                         Rej_Status = @Rej_Status,
@@ -109,7 +110,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Logic", SqlDbType.NVarChar, 100).SourceColumn = "Logic";
                 sqa.UpdateCommand.Parameters.Add("@Item", SqlDbType.NVarChar, 100).SourceColumn = "Item";
                 sqa.UpdateCommand.Parameters.Add("@Level", SqlDbType.Int).SourceColumn = "Level";
-                sqa.UpdateCommand.Parameters.Add("@Config", SqlDbType.Int).SourceColumn = "Config";
+                sqa.UpdateCommand.Parameters.Add("@Appr_Config", SqlDbType.Int).SourceColumn = "Appr_Config";
                 sqa.UpdateCommand.Parameters.Add("@Init_Status", SqlDbType.NVarChar, 100).SourceColumn = "Init_Status";
                 sqa.UpdateCommand.Parameters.Add("@Appr_Status", SqlDbType.NVarChar, 100).SourceColumn = "Appr_Status";
                 sqa.UpdateCommand.Parameters.Add("@Rej_Status", SqlDbType.NVarChar, 100).SourceColumn = "Rej_Status";

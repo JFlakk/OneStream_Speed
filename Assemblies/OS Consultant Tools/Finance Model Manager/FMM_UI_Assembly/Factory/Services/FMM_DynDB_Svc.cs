@@ -28,8 +28,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    return api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.Unknown, WsDynamicItemStateType.Unknown);
-                }
+					if (storedDashboard.Name.XFEqualsIgnoreCase("0b3a3b_FMM_Model_Content_Cube"))
+					{
+						
+					}
+					else
+					{
+                    	return api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.Unknown, WsDynamicItemStateType.Unknown);
+                	}
+				}
 
                 return null;
             }

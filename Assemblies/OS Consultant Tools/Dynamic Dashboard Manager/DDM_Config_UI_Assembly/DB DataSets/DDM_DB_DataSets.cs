@@ -90,6 +90,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return Get_Config_Hdr_Ctrls();
                         }	
+						else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFP_ScenTypes"))
+                        {
+                            return Get_WFP_ScenTypes();
+                        }	
 						break;
                 }
                 return null;
@@ -130,7 +134,35 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
         #endregion
-
+        private DataTable Get_WFP_ScenTypes()
+        {
+            try
+            {
+				var dt = new DataTable();
+				dt.Columns.Add("Key",typeof(int));
+				dt.Columns.Add("Value",typeof(string));
+				var topWFP = "Army_RMW_Consol_CMD_PGM";
+				var cubeList = BRApi.Finance.Cubes.GetTopLevelCubesForWorkflow(si);
+				
+				foreach (Cube topCube in cubeList)
+				{
+					var topCubeInfo = BRApi.Finance.Cubes.GetCubeInfo(si, topCube.Name);
+				    var scenTypeDict = topCubeInfo.GetScenarioTypesUsedByTopLevelCubeWFPName(si, topWFP);
+					if (scenTypeDict != null)
+		            {
+		                foreach (var entry in scenTypeDict)
+		                {
+		                    dt.Rows.Add(entry.Key, entry.Value);
+		                }
+		            }
+				}
+				return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
         #region "Get WFProfile TreeView"
 
         /// <summary>

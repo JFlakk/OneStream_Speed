@@ -50,7 +50,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 		            JOIN FMM_Calc_Unit_Assign_Model_Group Calc_Unit_Mod_Grp
 		            ON Mod_Grp_Seqs.Model_Grp_Seq_ID = Calc_Unit_Mod_Grp.Model_Grp_Seq_ID
 		            AND Mod_Grp_Seqs.Cube_ID = Calc_Unit_Mod_Grp.Cube_ID
-		            JOIN FMM_Model_Grps Mod_Grps
+		            JOIN FMM_Model_Groups Mod_Grps
 		            ON Calc_Unit_Mod_Grp.Cube_ID = Mod_Grps.Cube_ID
 		            AND Calc_Unit_Mod_Grp.Model_Grp_ID = Mod_Grps.Model_Grp_ID
 		            JOIN FMM_Calc_Unit_Config WF_DU
@@ -64,7 +64,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 		            AND Modl.Model_ID = Mod_Grp_Assgn.Model_ID
 		            JOIN FMM_Activity_Config Act
 		            ON Modl.Cube_ID = Act.Cube_ID
-		            AND Modl.Act_ID = Act.Act_ID
+		            AND Modl.Activity_ID = Act.Activity_ID
 					JOIN FMM_Cube_Config CubeCon
 					ON Modl.Cube_ID = CubeCon.Cube_ID
 		            WHERE Mod_Grp_Seqs.Name = @Mod_Grp_Seqs
@@ -174,7 +174,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                             }
                             else if (calcType == "Cube")
                             {
-                                var workspace_ID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Build Toolkit");
+                                var workspace_ID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Consultant Tools");
 
                                 var customSubstVars_Dict = new Dictionary<string, string>
                                 {

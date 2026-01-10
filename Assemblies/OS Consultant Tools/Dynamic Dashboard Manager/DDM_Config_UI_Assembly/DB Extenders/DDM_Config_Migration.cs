@@ -2,9 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using Microsoft.CSharp;
+using Microsoft.Data.SqlClient;
 using OneStream.Finance.Database;
 using OneStream.Finance.Engine;
 using OneStream.Shared.Common;
@@ -18,20 +24,31 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 {
     public class MainClass
     {
+		private SessionInfo si;
+        private BRGlobals globals;
+        private object api;
+        private DashboardExtenderArgs args;
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
             try
             {
-                string functionName = args.FunctionName;
-                
-                switch (functionName.XFEqualsIgnoreCase())
+				this.si = si;
+                this.globals = globals;
+                this.api = api;
+                this.args = args;
+                switch (args.FunctionType)
                 {
-                    case "EXPORT_CONFIG":
-                        return ExportConfig(si);
-
-                    case "IMPORT_CONFIG":
-                        string fileGUID = args.NameValuePairs.XFGetValue("FileID");
-                        return ImportConfig(si, fileGUID);
+					case DashboardExtenderFunctionType.ComponentSelectionChanged:
+						if (args.FunctionName.XFEqualsIgnoreCase("Export_DDM_Config"))
+						{
+							return ExportConfig(si);
+						}
+						else if (args.FunctionName.XFEqualsIgnoreCase("Import_DDM_Config"))
+						{
+	                        string fileGUID = args.NameValuePairs.XFGetValue("FileID");
+	                        return ImportConfig(si, fileGUID);
+						}
+						break;
                 }
                 return null;
             }
@@ -54,7 +71,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 dt.TableName = "DDM_Config";
                 ds.Tables.Add(dt.Copy());
             }
-
+			
+BRApi.ErrorLog.LogMessage(si,"Hit 1 in Export");
             // 3. Fetch Data for Table 2: DDM_Config_Menu_Layout
             using (DataTable dt = BRApi.Database.ExecuteSql(dbConn, "SELECT * FROM DDM_Config_Menu_Layout", false))
             {
@@ -68,17 +86,31 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 dt.TableName = "DDM_Config_Hdr_Ctrls";
                 ds.Tables.Add(dt.Copy());
             }
-
+BRApi.ErrorLog.LogMessage(si,"Hit 2 in Export");
             // 5. Convert DataSet to XML String
-            string xmlContent = ds.GetXml();
-
+            var xmlContent = ds.GetXml();
+			var fileBytes = Encoding.UTF8.GetBytes(xmlContent);
+			BRApi.ErrorLog.LogMessage(si,"Hit 3 in Export");
+			//Define folder to hold file
+			var sFolderPath = $"Documents/Users/{si.UserName}";
+			var objXFFolderEx = BRApi.FileSystem.GetFolder(si, FileSystemLocation.ApplicationDatabase, sFolderPath);
+		    sFolderPath = $"{sFolderPath}/DDM_Migration_{DateTime.Now:yyyyMMdd_HHmm}.xml";
             // 6. Return File to User
-            string fileName = $"DDM_Migration_{DateTime.Now:yyyyMMdd_HHmm}.xml";
-            XFFileContent fileContent = new XFFileContent(fileName, Encoding.UTF8.GetBytes(xmlContent));
+			var objXFFileInfoEx = BRApi.FileSystem.GetFileInfo(si, FileSystemLocation.ApplicationDatabase,sFolderPath, true);
+						BRApi.ErrorLog.LogMessage(si,"Hit 4 in Export");
+			var objXFFileEx = new XFFileEx();
+			objXFFileEx	= BRApi.FileSystem.GetFile(si, FileSystemLocation.ApplicationDatabase,sFolderPath, true, true);	
+			BRApi.ErrorLog.LogMessage(si,"Hit 5 in Export");
+			var ddmExportFileInfo = new XFFileInfo(FileSystemLocation.ApplicationDatabase,sFolderPath);
+			var ddmExport = new XFFile(ddmExportFileInfo,string.Empty,fileBytes);
+//			ddmExport = objXFFileEx.XFFile;
+			
+			BRApi.FileSystem.InsertOrUpdateFile(si, ddmExport);
+////        	XFFileContent fileContent = new XFFileContent(fileName, Encoding.UTF8.GetBytes(xmlContent));
 
             XFSelectionChangedTaskResult result = new XFSelectionChangedTaskResult();
-            result.TaskType = XFSelectionChangedTaskResultType.DownloadFile;
-            result.FileContent = fileContent;
+//            result.TaskType = XFSelectionChangedTaskResultType.DownloadFile;
+//            result.FileContent = fileContent;
             result.Message = "Export generated successfully.";
 
             return result;
@@ -88,24 +120,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #region Import Logic
         private XFSelectionChangedTaskResult ImportConfig(SessionInfo si, string fileGUID)
         {
-            if (string.IsNullOrEmpty(fileGUID)) 
-                throw new XFException(si, "No file selected.");
+//            if (string.IsNullOrEmpty(fileGUID)) 
+//                throw new XFException(si, "No file selected.");
 
             // 1. Read File
-            XFFile file = BRApi.FileSystem.GetFile(si, Guid.Parse(fileGUID));
-            string xmlData = Encoding.UTF8.GetString(file.FileBytes);
+//            XFFile file = BRApi.FileSystem.GetFile(si, Guid.Parse(fileGUID));
+//            string xmlData = Encoding.UTF8.GetString(file.FileBytes);
 
             // 2. Load XML back into DataSet
             DataSet ds = new DataSet();
-            using (StringReader sr = new StringReader(xmlData))
-            {
-                ds.ReadXml(sr);
-            }
+//            using (StringReader sr = new StringReader(xmlData))
+//            {
+//                ds.ReadXml(sr);
+//            }
 
             // 3. Process Import in Transaction
-            DbConnInfo dbConn = BRApi.Database.CreateApplicationDbConnInfo(si);
-            
-            using (DbConnection conn = BRApi.Database.CreateDbConnection(dbConn))
+            var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+            using (var conn = new SqlConnection(dbConnApp.ConnectionString))
+           
             {
                 conn.Open();
                 using (DbTransaction trans = conn.BeginTransaction())
@@ -139,62 +171,62 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private void ProcessTableImport(DbConnection conn, DbTransaction trans, DataTable dt, string pkColumnName)
         {
-            foreach (DataRow row in dt.Rows)
-            {
-                // 1. Check if record exists
-                object pkValue = row[pkColumnName];
+//            foreach (DataRow row in dt.Rows)
+//            {
+//                // 1. Check if record exists
+//                object pkValue = row[pkColumnName];
                 
-                string checkSql = $"SELECT COUNT(1) FROM [{dt.TableName}] WHERE [{pkColumnName}] = @PK";
-                List<DbParam> checkParams = new List<DbParam> { new DbParam("@PK", pkValue) };
+//                string checkSql = $"SELECT COUNT(1) FROM [{dt.TableName}] WHERE [{pkColumnName}] = @PK";
+//                List<DbParam> checkParams = new List<DbParam> { new DbParam("@PK", pkValue) };
 
-                object existsObj = BRApi.Database.ExecuteScalar(conn, trans, CommandType.Text, checkSql, checkParams);
-                int count = Convert.ToInt32(existsObj);
+//                object existsObj = BRApi.Database.ExecuteScalar(conn, trans, CommandType.Text, checkSql, checkParams);
+//                int count = Convert.ToInt32(existsObj);
 
-                List<DbParam> upsertParams = new List<DbParam>();
-                StringBuilder sql = new StringBuilder();
+//                List<DbParam> upsertParams = new List<DbParam>();
+//                StringBuilder sql = new StringBuilder();
 
-                if (count > 0)
-                {
-                    // === UPDATE ===
-                    sql.Append($"UPDATE [{dt.TableName}] SET ");
+//                if (count > 0)
+//                {
+//                    // === UPDATE ===
+//                    sql.Append($"UPDATE [{dt.TableName}] SET ");
                     
-                    bool isFirst = true;
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        if (col.ColumnName.XFEqualsIgnoreCase(pkColumnName)) continue;
+//                    bool isFirst = true;
+//                    foreach (DataColumn col in dt.Columns)
+//                    {
+//                        if (col.ColumnName.XFEqualsIgnoreCase(pkColumnName)) continue;
 
-                        if (!isFirst) sql.Append(", ");
-                        sql.Append($"[{col.ColumnName}] = @{col.ColumnName}");
+//                        if (!isFirst) sql.Append(", ");
+//                        sql.Append($"[{col.ColumnName}] = @{col.ColumnName}");
                         
-                        object val = row[col];
-                        upsertParams.Add(new DbParam($"@{col.ColumnName}", 
-                            (val == null || val == DBNull.Value) ? DBNull.Value : val));
+//                        object val = row[col];
+//                        upsertParams.Add(new DbParam($"@{col.ColumnName}", 
+//                            (val == null || val == DBNull.Value) ? DBNull.Value : val));
 
-                        isFirst = false;
-                    }
+//                        isFirst = false;
+//                    }
                     
-                    sql.Append($" WHERE [{pkColumnName}] = @PK_Where");
-                    upsertParams.Add(new DbParam("@PK_Where", pkValue));
-                }
-                else
-                {
-                    // === INSERT ===
-                    sql.Append($"INSERT INTO [{dt.TableName}] (");
-                    sql.Append(string.Join(", ", dt.Columns.Cast<DataColumn>().Select(c => $"[{c.ColumnName}]")));
-                    sql.Append(") VALUES (");
-                    sql.Append(string.Join(", ", dt.Columns.Cast<DataColumn>().Select(c => $"@{c.ColumnName}")));
-                    sql.Append(")");
+//                    sql.Append($" WHERE [{pkColumnName}] = @PK_Where");
+//                    upsertParams.Add(new DbParam("@PK_Where", pkValue));
+//                }
+//                else
+//                {
+//                    // === INSERT ===
+//                    sql.Append($"INSERT INTO [{dt.TableName}] (");
+//                    sql.Append(string.Join(", ", dt.Columns.Cast<DataColumn>().Select(c => $"[{c.ColumnName}]")));
+//                    sql.Append(") VALUES (");
+//                    sql.Append(string.Join(", ", dt.Columns.Cast<DataColumn>().Select(c => $"@{c.ColumnName}")));
+//                    sql.Append(")");
 
-                    foreach (DataColumn col in dt.Columns)
-                    {
-                        object val = row[col];
-                        upsertParams.Add(new DbParam($"@{col.ColumnName}", 
-                            (val == null || val == DBNull.Value) ? DBNull.Value : val));
-                    }
-                }
+//                    foreach (DataColumn col in dt.Columns)
+//                    {
+//                        object val = row[col];
+//                        upsertParams.Add(new DbParam($"@{col.ColumnName}", 
+//                            (val == null || val == DBNull.Value) ? DBNull.Value : val));
+//                    }
+//                }
 
-                BRApi.Database.ExecuteNonQuery(conn, trans, CommandType.Text, sql.ToString(), upsertParams);
-            }
+//                BRApi.Database.ExecuteNonQuery(conn, trans, CommandType.Text, sql.ToString(), upsertParams);
+//            }
         }
         #endregion
     }

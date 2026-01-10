@@ -48,6 +48,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Col_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
@@ -60,6 +61,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         @Alias, @Order, @Default, @Param, @Format, @Filter_Param, @Create_Date, @Create_User, @Update_Date, @Update_User)";
 
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
+                sqa.InsertCommand.UpdatedRowSource = UpdateRowSource.None;
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
                 sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
                 sqa.InsertCommand.Parameters.Add("@Reg_Config_ID", SqlDbType.Int).SourceColumn = "Reg_Config_ID";
@@ -97,6 +99,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     WHERE Col_ID = @Col_ID";
 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
+                sqa.UpdateCommand.UpdatedRowSource = UpdateRowSource.None;
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Col_ID", SqlDbType.Int) { SourceColumn = "Col_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
                 sqa.UpdateCommand.Parameters.Add("@InUse", SqlDbType.Bit).SourceColumn = "InUse";
@@ -117,15 +120,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     WHERE Col_ID = @Col_ID";
 
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
+                sqa.DeleteCommand.UpdatedRowSource = UpdateRowSource.None;
                 sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Col_ID", SqlDbType.Int) { SourceColumn = "Col_ID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

@@ -30,27 +30,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
 
-        public void Fill_RegPlan_Audit_DT(SessionInfo si, SqlDataAdapter adapter, DataTable dataTable, string selectQuery, params SqlParameter[] parameters)
+        public void Fill_RegPlan_Audit_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
         {
-            using (SqlCommand command = new SqlCommand(selectQuery, _connection))
+            using (SqlCommand command = new SqlCommand(sql, _connection))
             {
                 command.CommandType = CommandType.Text;
-                if (parameters != null)
+                if (sqlparams != null)
                 {
-                    command.Parameters.AddRange(parameters);
+                    command.Parameters.AddRange(sqlparams);
                 }
 
-                adapter.SelectCommand = command;
-                adapter.Fill(dataTable);
+                sqa.SelectCommand = command;
+                sqa.Fill(dt);
+				command.Parameters.Clear();
+				sqa.SelectCommand = null;
             }
         }
 
-        public void Update_RegPlan_Audit(SessionInfo si, DataTable dataTable, SqlDataAdapter adapter)
+        public void Update_RegPlan_Audit(SessionInfo si, dt dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
 
-                // Define the insert query and parameters
+                // Define the insert query and sqlparams
                 string insertQuery = @"
 				    INSERT INTO [dbo].[RegPlan_Audit] (
 				        [Register_Plan_ID], [WF_Scenario_Name], [Project_ID], [Entity], 
@@ -81,31 +83,31 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 						 @Date_Value_1,@Date_Value_2,@Date_Value_3,
 						 @Date_Value_4,@Date_Value_5);";
 
-                adapter.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                adapter.InsertCommand.Parameters.Add("@Register_Plan_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Register_Plan_ID";
-                adapter.InsertCommand.Parameters.Add("@WF_Scenario_Name", SqlDbType.NVarChar).SourceColumn = "WF_Scenario_Name";
-                adapter.InsertCommand.Parameters.Add("@Project_ID", SqlDbType.VarChar).SourceColumn = "Project_ID";
-                adapter.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar).SourceColumn = "Entity";
-                adapter.InsertCommand.Parameters.Add("@Resource_ID", SqlDbType.NVarChar).SourceColumn = "Resource_ID";
-                adapter.InsertCommand.Parameters.Add("@Spread_Amount", SqlDbType.Decimal).SourceColumn = "Spread_Amount";
-                adapter.InsertCommand.Parameters.Add("@Spread_Curve", SqlDbType.NVarChar).SourceColumn = "Spread_Curve";
-                // Add parameters for Attribute_1 through Attribute_20
+                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
+                sqa.InsertCommand.sqlparams.Add("@Register_Plan_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Register_Plan_ID";
+                sqa.InsertCommand.sqlparams.Add("@WF_Scenario_Name", SqlDbType.NVarChar).SourceColumn = "WF_Scenario_Name";
+                sqa.InsertCommand.sqlparams.Add("@Project_ID", SqlDbType.VarChar).SourceColumn = "Project_ID";
+                sqa.InsertCommand.sqlparams.Add("@Entity", SqlDbType.NVarChar).SourceColumn = "Entity";
+                sqa.InsertCommand.sqlparams.Add("@Resource_ID", SqlDbType.NVarChar).SourceColumn = "Resource_ID";
+                sqa.InsertCommand.sqlparams.Add("@Spread_Amount", SqlDbType.Decimal).SourceColumn = "Spread_Amount";
+                sqa.InsertCommand.sqlparams.Add("@Spread_Curve", SqlDbType.NVarChar).SourceColumn = "Spread_Curve";
+                // Add sqlparams for Attribute_1 through Attribute_20
                 for (int i = 1; i <= 20; i++)
                 {
-                    adapter.InsertCommand.Parameters.Add("@Attribute_{i}", SqlDbType.NVarChar).SourceColumn = "Attribute_{i}";
+                    sqa.InsertCommand.sqlparams.Add("@Attribute_{i}", SqlDbType.NVarChar).SourceColumn = "Attribute_{i}";
                 }
-                // Add parameters for Attribute_Value_1 through Attribute_Value_12
+                // Add sqlparams for Attribute_Value_1 through Attribute_Value_12
                 for (int i = 1; i <= 12; i++)
                 {
-                    adapter.InsertCommand.Parameters.Add("@Attribute_Value_{i}", SqlDbType.Decimal).SourceColumn = "Attribute_Value_{i}";
+                    sqa.InsertCommand.sqlparams.Add("@Attribute_Value_{i}", SqlDbType.Decimal).SourceColumn = "Attribute_Value_{i}";
                 }
-                // Add parameters for Date_Value_1 through Date_Value_5
+                // Add sqlparams for Date_Value_1 through Date_Value_5
                 for (int i = 1; i <= 5; i++)
                 {
-                    adapter.InsertCommand.Parameters.Add("@Date_Value_{i}", SqlDbType.DateTime).SourceColumn = "Date_Value_{i}";
+                    sqa.InsertCommand.sqlparams.Add("@Date_Value_{i}", SqlDbType.DateTime).SourceColumn = "Date_Value_{i}";
                 }
 
-                // Define the update query and parameters
+                // Define the update query and sqlparams
                 string updateQuery = @"
 				    UPDATE [dbo].[Register_Plan] SET
 				        [WF_Scenario_Name] = @WF_Scenario_Name, 
@@ -136,49 +138,52 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					AND [Project_ID] = @Project_ID
 					AND [Entity] = @Entity";
 
-                adapter.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                adapter.UpdateCommand.Parameters.Add("@Register_Plan_ID", SqlDbType.UniqueIdentifier).SourceVersion = DataRowVersion.Original;
-                adapter.UpdateCommand.Parameters.Add("@WF_Scenario_Name", SqlDbType.NVarChar).SourceVersion = DataRowVersion.Original;
-                adapter.UpdateCommand.Parameters.Add("@Project_ID", SqlDbType.VarChar).SourceVersion = DataRowVersion.Original;
-                adapter.UpdateCommand.Parameters.Add("@Entity", SqlDbType.NVarChar).SourceVersion = DataRowVersion.Original;
-                adapter.UpdateCommand.Parameters.Add("@Resource_ID", SqlDbType.NVarChar).SourceColumn = "Resource_ID";
-                adapter.UpdateCommand.Parameters.Add("@Spread_Amount", SqlDbType.Decimal).SourceColumn = "Spread_Amount";
-                adapter.UpdateCommand.Parameters.Add("@Spread_Curve", SqlDbType.NVarChar).SourceColumn = "Spread_Curve";
-                // Add parameters for Attribute_1 through Attribute_20
+                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
+                sqa.UpdateCommand.sqlparams.Add("@Register_Plan_ID", SqlDbType.UniqueIdentifier).SourceVersion = DataRowVersion.Original;
+                sqa.UpdateCommand.sqlparams.Add("@WF_Scenario_Name", SqlDbType.NVarChar).SourceVersion = DataRowVersion.Original;
+                sqa.UpdateCommand.sqlparams.Add("@Project_ID", SqlDbType.VarChar).SourceVersion = DataRowVersion.Original;
+                sqa.UpdateCommand.sqlparams.Add("@Entity", SqlDbType.NVarChar).SourceVersion = DataRowVersion.Original;
+                sqa.UpdateCommand.sqlparams.Add("@Resource_ID", SqlDbType.NVarChar).SourceColumn = "Resource_ID";
+                sqa.UpdateCommand.sqlparams.Add("@Spread_Amount", SqlDbType.Decimal).SourceColumn = "Spread_Amount";
+                sqa.UpdateCommand.sqlparams.Add("@Spread_Curve", SqlDbType.NVarChar).SourceColumn = "Spread_Curve";
+                // Add sqlparams for Attribute_1 through Attribute_20
                 for (int i = 1; i <= 20; i++)
                 {
-                    adapter.UpdateCommand.Parameters.Add("@Attribute_{i}", SqlDbType.NVarChar);
+                    sqa.UpdateCommand.sqlparams.Add("@Attribute_{i}", SqlDbType.NVarChar);
                 }
-                // Add parameters for Attribute_Value_1 through Attribute_Value_12
+                // Add sqlparams for Attribute_Value_1 through Attribute_Value_12
                 for (int i = 1; i <= 12; i++)
                 {
-                    adapter.UpdateCommand.Parameters.Add("@Attribute_Value_{i}", SqlDbType.Decimal);
+                    sqa.UpdateCommand.sqlparams.Add("@Attribute_Value_{i}", SqlDbType.Decimal);
                 }
 
-                // Add parameters for Date_Value_1 through Date_Value_5
+                // Add sqlparams for Date_Value_1 through Date_Value_5
                 for (int i = 1; i <= 5; i++)
                 {
-                    adapter.UpdateCommand.Parameters.Add("@Date_Value_{i}", SqlDbType.DateTime);
+                    sqa.UpdateCommand.sqlparams.Add("@Date_Value_{i}", SqlDbType.DateTime);
                 }
 
-                // Define the delete query and parameters
+                // Define the delete query and sqlparams
                 string deleteQuery = @"
 							DELETE FROM [dbo].[Register_Plan]
 							WHERE RegisterID = @RegisterID AND RegisterIDInstance = @RegisterIDInstance
 						    AND WFProfileName = @WFProfileName AND WFScenarioName = @WFScenarioName
 						    AND WFTimeName = @WFTimeName";
 
-                adapter.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                adapter.DeleteCommand.Parameters.Add("@RegisterID", SqlDbType.VarChar);
-                adapter.DeleteCommand.Parameters.Add("@RegisterIDInstance", SqlDbType.Int);
-                adapter.DeleteCommand.Parameters.Add("@WFProfileName", SqlDbType.VarChar);
-                adapter.DeleteCommand.Parameters.Add("@WFScenarioName", SqlDbType.VarChar);
-                adapter.DeleteCommand.Parameters.Add("@WFTimeName", SqlDbType.VarChar);
+                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
+                sqa.DeleteCommand.sqlparams.Add("@RegisterID", SqlDbType.VarChar);
+                sqa.DeleteCommand.sqlparams.Add("@RegisterIDInstance", SqlDbType.Int);
+                sqa.DeleteCommand.sqlparams.Add("@WFProfileName", SqlDbType.VarChar);
+                sqa.DeleteCommand.sqlparams.Add("@WFScenarioName", SqlDbType.VarChar);
+                sqa.DeleteCommand.sqlparams.Add("@WFTimeName", SqlDbType.VarChar);
 
                 try
                 {
-                    adapter.Update(dataTable);
+                    sqa.Update(dt);
                     transaction.Commit();
+					sqa.InsertCommand = null;
+					sqa.UpdateCommand = null;
+					sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {

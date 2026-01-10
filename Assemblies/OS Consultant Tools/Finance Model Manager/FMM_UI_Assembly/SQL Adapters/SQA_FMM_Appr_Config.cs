@@ -48,20 +48,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Appr_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
+            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 // Define the insert query and parameters
                 string insertQuery = @"
                     INSERT INTO FMM_Appr_Config (
-                        Cube_ID,Appr_ID, Name, 
+                        Cube_ID,Appr_ID, Name, Type, Item, Item_Level,
                         Status, Create_Date, Create_User, Update_Date, Update_User)
                     VALUES
-                        (@Cube_ID,@Appr_ID, @Name, 
+                        (@Cube_ID,@Appr_ID, @Name, @Type, @Item, @Item_Level,
                         @Status, @Create_Date, @Create_User, @Update_Date, @Update_User)";
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
                 sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
                 sqa.InsertCommand.Parameters.Add("@Appr_ID", SqlDbType.Int).SourceColumn = "Appr_ID";
                 sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
+                sqa.InsertCommand.Parameters.Add("@Type", SqlDbType.NVarChar, 20).SourceColumn = "Type";	
+				sqa.InsertCommand.Parameters.Add("@Item", SqlDbType.NVarChar, 100).SourceColumn = "Item";
+				sqa.InsertCommand.Parameters.Add("@Item_Level", SqlDbType.Int).SourceColumn = "Item_Level";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
@@ -72,6 +76,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string updateQuery = @"
                     UPDATE FMM_Appr_Config SET
                         Name = @Name,
+						Type = @Type,
+						Item = @Item,
+						Item_Level = @Item_Level,
                         Status = @Status,
                         Update_Date = @Update_Date,
                         Update_User = @Update_User
@@ -79,6 +86,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
                 sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Appr_ID", SqlDbType.Int) { SourceColumn = "Appr_ID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
+                sqa.UpdateCommand.Parameters.Add("@Type", SqlDbType.NVarChar, 20).SourceColumn = "Type";	
+				sqa.UpdateCommand.Parameters.Add("@Item", SqlDbType.NVarChar, 100).SourceColumn = "Item";
+				sqa.UpdateCommand.Parameters.Add("@Item_Level", SqlDbType.Int).SourceColumn = "Item_Level";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
                 sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
                 sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
@@ -94,9 +104,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     sqa.Update(dt);
                     transaction.Commit();
-					sqa.InsertCommand = null;
-					sqa.UpdateCommand = null;
-					sqa.DeleteCommand = null;
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {
