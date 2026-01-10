@@ -33,9 +33,13 @@ This repository follows the OneStream rule type organization used in XML exports
 ### Utility Folders
 - **GeneratedXML/** - XML files generated for export
 - **Documentation/** - Project documentation
+  - Dashboard XML Generation Guide - Comprehensive guide for Dashboard XML generation
+  - Dashboard Generation Request Template - Template for requesting new dashboards
 - **Resources/** - Additional resources
-- **Scripts/SQL/** - SQL scripts
-- **Scripts/PowerShell/** - PowerShell scripts
+- **Scripts/** - Utility scripts
+  - **scripts/generate_simple_dashboard.py** - Python script to generate basic dashboard XML
+  - **Scripts/SQL/** - SQL scripts
+  - **Scripts/PowerShell/** - PowerShell scripts
 - **Tests/** - Test files and scripts
 
 ## Usage
@@ -43,6 +47,43 @@ This repository follows the OneStream rule type organization used in XML exports
 1. Place your OneStream code files in the appropriate folders
 2. Use the Code Utility for OneStream VS Code extension to manage exports/imports
 3. Maintain version control with Git
+
+## Dashboard XML Generation
+
+This repository includes tools and documentation for generating Dashboard objects in XML format.
+
+### Quick Start
+
+Generate a basic dashboard using the Python script:
+
+```bash
+python scripts/generate_simple_dashboard.py
+```
+
+### Documentation
+
+- **[Dashboard XML Generation Guide](Documentation/Dashboard_XML_Generation_Guide.md)** - Complete guide on Dashboard XML structure and generation
+- **[Dashboard Generation Request Template](Documentation/Dashboard_Generation_Request_Template.md)** - Template for specifying dashboard requirements
+
+### What Information is Needed?
+
+To generate a Dashboard XML file, you need:
+
+1. **Workspace Information**: Name, namespace prefix, access groups
+2. **Maintenance Unit Details**: Name and configuration
+3. **Dashboard Specifications**: Type, layout, components
+4. **Parameters**: Input values, delimited lists, literal values
+5. **Components**: Buttons, combo boxes, embedded dashboards, cube views, etc.
+6. **Layout Configuration**: Grid definitions with rows and columns
+7. **Business Rules** (optional): Dashboard extenders, string functions, data sets
+
+### Example Dashboard Structures
+
+Reference examples can be found in:
+- `obj/PPBE_Workspaces/00 GBL/GBL Dashboard/` - Main dashboard examples
+- `obj/PPBE_Workspaces/00 GBL/GBL Admin Dashboards/` - Administrative dashboard examples
+
+See the [Dashboard XML Generation Guide](Documentation/Dashboard_XML_Generation_Guide.md) for detailed information.
 
 ## Code Utility for OneStream Extension
 
