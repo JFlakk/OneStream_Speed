@@ -64,6 +64,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                            ,Appr_ID
                            ,Mbr_PrefSuff
                            ,Mbr_PrefSuff_Txt
+                           ,Src_Type
+                           ,File_Path
+                           ,Column_Mappings
+                           ,Text_Property_Mappings
+                           ,ScenarioType_Field
+                           ,Time_Field
                            ,Create_Date
                            ,Create_User
                            ,Update_Date
@@ -80,6 +86,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                            ,@Appr_ID
                            ,@Mbr_PrefSuff
                            ,@Mbr_PrefSuff_Txt
+                           ,@Src_Type
+                           ,@File_Path
+                           ,@Column_Mappings
+                           ,@Text_Property_Mappings
+                           ,@ScenarioType_Field
+                           ,@Time_Field
                            ,@Create_Date
                            ,@Create_User
                            ,@Update_Date
@@ -97,6 +109,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.InsertCommand.Parameters.Add("@Appr_ID", SqlDbType.Int).SourceColumn = "Appr_ID";
                 sqa.InsertCommand.Parameters.Add("@Mbr_PrefSuff", SqlDbType.NVarChar, 20).SourceColumn = "Mbr_PrefSuff";
                 sqa.InsertCommand.Parameters.Add("@Mbr_PrefSuff_Txt", SqlDbType.NVarChar, -1).SourceColumn = "Mbr_PrefSuff_Txt";
+                sqa.InsertCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 50).SourceColumn = "Src_Type";
+                sqa.InsertCommand.Parameters.Add("@File_Path", SqlDbType.NVarChar, 500).SourceColumn = "File_Path";
+                sqa.InsertCommand.Parameters.Add("@Column_Mappings", SqlDbType.NVarChar, -1).SourceColumn = "Column_Mappings";
+                sqa.InsertCommand.Parameters.Add("@Text_Property_Mappings", SqlDbType.NVarChar, -1).SourceColumn = "Text_Property_Mappings";
+                sqa.InsertCommand.Parameters.Add("@ScenarioType_Field", SqlDbType.NVarChar, 100).SourceColumn = "ScenarioType_Field";
+                sqa.InsertCommand.Parameters.Add("@Time_Field", SqlDbType.NVarChar, 100).SourceColumn = "Time_Field";
                 sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
                 sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
                 sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
@@ -115,6 +133,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                           ,Appr_ID = @Appr_ID
                           ,Mbr_PrefSuff = @Mbr_PrefSuff
                           ,Mbr_PrefSuff_Txt = @Mbr_PrefSuff_Txt
+                          ,Src_Type = @Src_Type
+                          ,File_Path = @File_Path
+                          ,Column_Mappings = @Column_Mappings
+                          ,Text_Property_Mappings = @Text_Property_Mappings
+                          ,ScenarioType_Field = @ScenarioType_Field
+                          ,Time_Field = @Time_Field
                           ,Update_Date = @Update_Date
                           ,Update_User = @Update_User
                      WHERE CDC_Config_ID = @CDC_Config_ID";
@@ -131,6 +155,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand.Parameters.Add("@Appr_ID", SqlDbType.Int).SourceColumn = "Appr_ID";
                 sqa.UpdateCommand.Parameters.Add("@Mbr_PrefSuff", SqlDbType.NVarChar, 20).SourceColumn = "Mbr_PrefSuff";
                 sqa.UpdateCommand.Parameters.Add("@Mbr_PrefSuff_Txt", SqlDbType.NVarChar, -1).SourceColumn = "Mbr_PrefSuff_Txt";
+                sqa.UpdateCommand.Parameters.Add("@Src_Type", SqlDbType.NVarChar, 50).SourceColumn = "Src_Type";
+                sqa.UpdateCommand.Parameters.Add("@File_Path", SqlDbType.NVarChar, 500).SourceColumn = "File_Path";
+                sqa.UpdateCommand.Parameters.Add("@Column_Mappings", SqlDbType.NVarChar, -1).SourceColumn = "Column_Mappings";
+                sqa.UpdateCommand.Parameters.Add("@Text_Property_Mappings", SqlDbType.NVarChar, -1).SourceColumn = "Text_Property_Mappings";
+                sqa.UpdateCommand.Parameters.Add("@ScenarioType_Field", SqlDbType.NVarChar, 100).SourceColumn = "ScenarioType_Field";
+                sqa.UpdateCommand.Parameters.Add("@Time_Field", SqlDbType.NVarChar, 100).SourceColumn = "Time_Field";
                 sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
                 sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
 
