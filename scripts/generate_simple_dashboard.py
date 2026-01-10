@@ -17,7 +17,7 @@ def prettify_xml(elem):
     """Return a pretty-printed XML string for the Element."""
     rough_string = ET.tostring(elem, encoding='utf-8')
     reparsed = minidom.parseString(rough_string)
-    return reparsed.toprettyxml(indent="    ", encoding="utf-8").decode('utf-8')
+    return reparsed.toprettyxml(indent="    ")
 
 def create_parameter(name, param_type, default_value="", display_items="", value_items=""):
     """Create a parameter element."""
@@ -167,6 +167,8 @@ def generate_simple_dashboard():
     dashboard_name = input("Dashboard Name (e.g., 'Test_Main'): ") or "Test_Main"
     
     # Create root
+    # Note: Version number should match your OneStream installation version
+    # This is currently set for OneStream 9.0.1.17403
     root = ET.Element("OneStreamXF")
     root.set("version", "9.0.1.17403")
     
@@ -265,6 +267,10 @@ def generate_simple_dashboard():
     
     output_file = f"GeneratedXML/{workspace_name}_{maint_unit_name}.xml"
     output_file = output_file.replace(" ", "_")
+    
+    # Ensure the GeneratedXML directory exists
+    import os
+    os.makedirs("GeneratedXML", exist_ok=True)
     
     print(f"\nGenerating XML file: {output_file}")
     
