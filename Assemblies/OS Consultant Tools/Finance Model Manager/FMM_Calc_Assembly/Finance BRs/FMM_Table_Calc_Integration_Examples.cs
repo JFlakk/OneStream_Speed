@@ -332,5 +332,240 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         #endregion
+
+        #region Hours * Rate Example: Table Data with Cube Data
+
+        /// <summary>
+        /// Example showing how to calculate costs using hours from a details table
+        /// and rates from the cube (or another table).
+        /// Demonstrates the use case: hours * rate where rate comes from cube
+        /// </summary>
+        public static void Example_HoursTimesRate_TableWithCube(
+            SessionInfo si,
+            BRGlobals globals,
+            FinanceRulesApi api,
+            FinanceRulesArgs args)
+        {
+            try
+            {
+                BRApi.ErrorLog.LogMessage(si, "Starting Hours * Rate calculation example");
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+                // ================================================================
+                // OPTION 1: Pure SQL Approach (Fastest - use when both in tables)
+                // ================================================================
+                
+                // If rates are also in a table, use SQL JOIN for best performance
+                var sqlConfig = new FMM_Table_Calc_Config
+                {
+                    ConfigName = "ProjectCosts_HoursRate_SQL",
+                    SourceTable = "XFC_Project_Hours",
+                    TimeCalculation = "Annual",
+                    HandleParentEntities = true,
+                    ClearStaleData = true,
+                    TargetView = "V#Periodic",
+                    
+                    // SQL performs hours * rate calculation at database level
+                    CustomSQL = @"
+                        SELECT 
+                            ph.Entity,
+                            ph.Account AS Account,
+                            ph.Flow,
+                            ph.UD1 AS Project,
+                            SUM(ph.Hours * COALESCE(pr.Rate, 0)) AS Tot_Amount
+                        FROM XFC_Project_Hours ph
+                        LEFT JOIN XFC_Pay_Rates pr 
+                            ON ph.Entity = pr.Entity
+                            AND ph.Pay_Grade = pr.Pay_Grade
+                            AND ph.Scenario = pr.Scenario
+                            AND ph.Fiscal_Year = pr.Fiscal_Year
+                        WHERE ph.Scenario = @Scenario
+                          AND ph.Fiscal_Year = @FiscalYear
+                        GROUP BY ph.Entity, ph.Account, ph.Flow, ph.UD1
+                    ",
+                    
+                    Parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@Scenario", System.Data.SqlDbType.NVarChar) 
+                            { Value = api.Pov.Scenario.Name },
+                        new SqlParameter("@FiscalYear", System.Data.SqlDbType.NVarChar) 
+                            { Value = api.Pov.Time.Name }
+                    }
+                };
+                
+                sqlConfig.SetStandardDimensionMapping();
+                sqlConfig.GroupByColumns = new List<string> { "Entity", "Account", "Flow", "Project" };
+                
+                var engine = new FMM_Table_Calc_Engine(si, globals, api, args);
+                engine.LoadTableDataToCube(sqlConfig);
+                
+                stopwatch.Stop();
+                BRApi.ErrorLog.LogMessage(si, $"SQL approach completed in {stopwatch.ElapsedMilliseconds}ms");
+                
+                // ================================================================
+                // OPTION 2: Hybrid Approach (Use when rate is in cube)
+                // ================================================================
+                
+                stopwatch.Restart();
+                
+                // Step 1: Load rate buffer from cube
+                var rateInfo = api.Data.GetCalculationInfo("V#Periodic", "A#[Pay_Rate].Base");
+                var rateBuffer = api.Data.GetDataBuffer(rateInfo);
+                
+                // Cache the rate buffer for reuse
+                string rateCacheKey = "PayRateBuffer_" + api.Pov.Scenario.Name;
+                globals.SetObject(rateCacheKey, rateBuffer);
+                
+                // Step 2: Get hours from detail table
+                var hoursTable = GetProjectHoursFromTable(si, api.Pov.Scenario.Name, api.Pov.Time.Name);
+                
+                // Step 3: Initialize global functions for GetBCValue
+                var globalFunctions = new FMM_Global_Functions(si, globals, api, args);
+                
+                // Step 4: Create destination buffer
+                var destBuffer = new DataBuffer();
+                
+                // Step 5: Iterate through hours and multiply by cube rates
+                foreach (System.Data.DataRow hourRow in hoursTable.Rows)
+                {
+                    string entity = hourRow["Entity"].ToString();
+                    string account = hourRow["Account"].ToString();
+                    string project = hourRow["Project"].ToString();
+                    string payGrade = hourRow["Pay_Grade"].ToString();
+                    decimal hours = Convert.ToDecimal(hourRow["Hours"]);
+                    
+                    // Create cell reference to look up rate in cube
+                    var rateCell = new DataBufferCell();
+                    rateCell.DataBufferCellPk.SetEntity(api, entity);
+                    rateCell.DataBufferCellPk.SetAccount(api, "Pay_Rate");
+                    rateCell.DataBufferCellPk.SetFlow(api, "Input");
+                    rateCell.DataBufferCellPk.SetOrigin(api, "Import");
+                    rateCell.DataBufferCellPk.SetUD1(api, payGrade);
+                    
+                    // Get rate from cube using GetBCValue
+                    decimal rate = globalFunctions.GetBCValue(
+                        ref rateCell, 
+                        rateBuffer,
+                        DriverDB_Acct: "Pay_Rate",
+                        DriverDB_Flow: "Input",
+                        DriverDB_Origin: "Import",
+                        DriverDB_UD1: payGrade);
+                    
+                    // Calculate: Hours * Rate
+                    decimal totalCost = hours * rate;
+                    
+                    // Write result to destination buffer
+                    if (totalCost != 0)
+                    {
+                        var destCell = new DataBufferCell();
+                        destCell.DataBufferCellPk.SetEntity(api, entity);
+                        destCell.DataBufferCellPk.SetAccount(api, account);
+                        destCell.DataBufferCellPk.SetFlow(api, "Input");
+                        destCell.DataBufferCellPk.SetOrigin(api, "AdjInput");
+                        destCell.DataBufferCellPk.SetUD1(api, project);
+                        
+                        destCell.CellAmount = totalCost;
+                        destCell.CellStatus = new DataCellStatus(true);
+                        
+                        destBuffer.SetCell(si, destCell);
+                    }
+                }
+                
+                // Step 6: Write buffer to cube
+                if (destBuffer.DataBufferCells.Count > 0)
+                {
+                    var destInfo = api.Data.GetExpressionDestinationInfo("V#Periodic");
+                    api.Data.SetDataBuffer(destBuffer, destInfo);
+                }
+                
+                stopwatch.Stop();
+                BRApi.ErrorLog.LogMessage(si, 
+                    $"Hybrid approach (table + cube) completed: {destBuffer.DataBufferCells.Count} cells written in {stopwatch.ElapsedMilliseconds}ms");
+                
+                // ================================================================
+                // OPTION 3: Cube View to Table Approach (CMD PGM/SPLN pattern)
+                // ================================================================
+                
+                // Load rates from cube view into temp table, then SQL JOIN
+                // This is useful when you need complex cube calculations before the join
+                
+                stopwatch.Restart();
+                
+                var objDashboardWorkspace = BRApi.Dashboards.Workspaces.GetWorkspace(si, false, "Finance");
+                var cubeViewData = new System.Data.DataTable();
+                var nvbParams = new NameValueFormatBuilder();
+                
+                // Execute cube view to get rates
+                cubeViewData = BRApi.Import.Data.FdxExecuteCubeView(
+                    si, 
+                    objDashboardWorkspace.WorkspaceID, 
+                    "PayRates_CubeView",  // Cube view with rate data
+                    api.Pov.Entity.Dimension.Name, 
+                    $"E#{api.Pov.Entity.Name}", 
+                    api.Pov.Scenario.Dimension.Name, 
+                    $"S#{api.Pov.Scenario.Name}", 
+                    api.Pov.Time.Name, 
+                    nvbParams, 
+                    false, false, string.Empty, 8, true);
+                
+                // Now cubeViewData contains rates from cube - could write to temp table
+                // Then use SQL JOIN between hours table and temp rate table
+                
+                stopwatch.Stop();
+                BRApi.ErrorLog.LogMessage(si, 
+                    $"Cube view extraction completed in {stopwatch.ElapsedMilliseconds}ms - {cubeViewData.Rows.Count} rate rows extracted");
+                
+                BRApi.ErrorLog.LogMessage(si, "Hours * Rate calculation example completed successfully");
+            }
+            catch (Exception ex)
+            {
+                BRApi.ErrorLog.LogMessage(si, $"Error in Hours * Rate example: {ex.Message}");
+                throw new XFException(si, ex);
+            }
+        }
+
+        /// <summary>
+        /// Helper method to retrieve project hours from details table
+        /// </summary>
+        private static System.Data.DataTable GetProjectHoursFromTable(
+            SessionInfo si, 
+            string scenario, 
+            string fiscalYear)
+        {
+            var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+            var dt = new System.Data.DataTable();
+            
+            using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+            {
+                connection.Open();
+                
+                var sql = @"
+                    SELECT 
+                        Entity, 
+                        Account, 
+                        Project, 
+                        Pay_Grade, 
+                        Hours
+                    FROM XFC_Project_Hours
+                    WHERE Scenario = @Scenario
+                      AND Fiscal_Year = @FiscalYear
+                      AND Hours > 0";
+                
+                using (var command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@Scenario", scenario);
+                    command.Parameters.AddWithValue("@FiscalYear", fiscalYear);
+                    
+                    using (var adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+            }
+            
+            return dt;
+        }
+
+        #endregion
     }
 }
