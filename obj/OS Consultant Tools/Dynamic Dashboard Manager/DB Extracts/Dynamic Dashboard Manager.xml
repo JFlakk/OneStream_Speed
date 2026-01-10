@@ -3882,7 +3882,59 @@ FROM Dim
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
+                            <component name="Embedded 0b1b2b2a2e2a_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2e2a_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2e2b_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2e2b_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2e2b1_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2e2b1_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2e2b2_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2e2b2_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2e2c_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2e2c_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
                             <component name="Embedded 0b1b2b2a2f_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2f_DDM_Config_Content_NewUpdates_DB_1Top2Bottom_Copy" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f_DDM_Config_Content_NewUpdates_DB_1Top2Bottom_Copy" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2f1_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f1_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2f2_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f2_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2f2a_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f2a_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2f2b_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f2b_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2f2c_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f2c_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2f2c1_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f2c1_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded 0b1b2b2a2f2c2_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="0b1b2b2a2f2c2_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
                                 <componentDefinition />
                                 <adapterMembers />
                             </component>
@@ -5983,17 +6035,20 @@ FROM Dim
                                             <CustomControlDbrdDefinition RequiredInputParameters="" />
                                             <GridLayoutDefinition>
                                                 <ColumnDefinitions>
-                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
                                                 </ColumnDefinitions>
                                                 <RowDefinitions>
-                                                    <RowDefinition RowType="Component" Height="*" />
                                                     <RowDefinition RowType="Component" Height="Auto" />
-                                                    <RowDefinition RowType="Line" Height="*" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
                                             <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
-                                        <componentMembers />
+                                        <componentMembers>
+                                            <componentMember name="Embedded 0b1b2b2a2e1_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2e2_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2e2c_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
                                     </dashboard>
                                     <dashboard name="0b1b2b2a2e1_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
@@ -6026,15 +6081,140 @@ FROM Dim
                                                     <ColumnDefinition ColumnType="Component" Width="*" />
                                                 </ColumnDefinitions>
                                                 <RowDefinitions>
-                                                    <RowDefinition RowType="Component" Height="*" />
-                                                    <RowDefinition RowType="Component" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
                                                     <RowDefinition RowType="Line" Height="*" />
-                                                    <RowDefinition RowType="Component" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Line" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
                                                 </RowDefinitions>
                                             </GridLayoutDefinition>
                                             <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
-                                        <componentMembers />
+                                        <componentMembers>
+                                            <componentMember name="Embedded 0b1b2b2a2e2a_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2e2b_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2e2c_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2e2a_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="txt_DDM_Layout_Top_Height" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_DDM_Layout_Left_Width" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2e2b_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded 0b1b2b2a2e2b1_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2e2b2_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2e2b1_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="250" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_DDM_Layout_TopLeft_Option_Type" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_DDM_Layout_Name_TopLeft" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2e2b2_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="250" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_DDM_Layout_TopRight_Option_Type" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_DDM_Layout_Name_TopRight" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2e2c_DDM_Config_Content_NewUpdates_DB_2Top1Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_DDM_Layout_Bottom_Option_Type" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_DDM_Layout_Name_Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
                                     </dashboard>
                                     <dashboard name="0b1b2b2a2f_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
@@ -6050,7 +6230,192 @@ FROM Dim
                                             </GridLayoutDefinition>
                                             <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded 0b1b2b2a2f1_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2f2_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2f_DDM_Config_Content_NewUpdates_DB_1Top2Bottom_Copy" description="" pageCaption="" dashboardType="Embedded" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
                                         <componentMembers />
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2f1_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions />
+                                                <RowDefinitions />
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Img_DDM_Layout_1Top2Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2f2_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Line" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Line" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded 0b1b2b2a2f2a_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2f2b_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2f2c_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2f2a_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="txt_DDM_Layout_Top_Height" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_DDM_Layout_Left_Width" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2f2b_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_DDM_Layout_Top_Option_Type" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_DDM_Layout_Name_Top" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2f2c_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded 0b1b2b2a2f2c1_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded 0b1b2b2a2f2c2_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2f2c1_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="250" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_DDM_Layout_BottomLeft_Option_Type" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_DDM_Layout_Name_BottomLeft" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="0b1b2b2a2f2c2_DDM_Config_Content_NewUpdates_DB_1Top2Bottom" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="250" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_DDM_Layout_BottomRight_Option_Type" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_DDM_Layout_Name_BottomRight" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
                                     </dashboard>
                                     <dashboard name="0b1b2b2a2g_DDM_Config_Content_NewUpdates_DB_2Left1Right" description="" pageCaption="" dashboardType="Embedded" layoutType="HorizontalStackPanel" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
                                         <DashboardDefinition>
