@@ -3802,7 +3802,7 @@ Where OS_ApprovalStatus = 'Pre-Submission'</sqlQuery>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
                                 <parameterCommandType>SQL</parameterCommandType>
-                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValConfig_VAL] WHERE 1=1</sqlQuery>
+                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValConfig_VAL]</sqlQuery>
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>Unknown</methodType>
@@ -3824,7 +3824,7 @@ Where OS_ApprovalStatus = 'Pre-Submission'</sqlQuery>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
                                 <parameterCommandType>SQL</parameterCommandType>
-                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValResults_VAL] WHERE 1=1</sqlQuery>
+                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValResults_VAL]</sqlQuery>
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>Unknown</methodType>
@@ -3846,7 +3846,7 @@ Where OS_ApprovalStatus = 'Pre-Submission'</sqlQuery>
                                 <resultFormatStringType>Default</resultFormatStringType>
                                 <resultCustomFormatString></resultCustomFormatString>
                                 <parameterCommandType>SQL</parameterCommandType>
-                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValResults_VAL] WHERE 1=1</sqlQuery>
+                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValResults_VAL]</sqlQuery>
                                 <dbLocation>Application</dbLocation>
                                 <externalDBConnName></externalDBConnName>
                                 <methodType>Unknown</methodType>

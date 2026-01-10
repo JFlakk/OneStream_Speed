@@ -214,6 +214,12 @@ SELECT * INTO MDM_ValConfigCriteriaDetail_VAL_BACKUP FROM MDM_ValConfigCriteriaD
 #### 2.2 Migrate Data to New Structure
 
 ```sql
+-- Get the ValidationTypeID once
+DECLARE @HierCompTypeID INT;
+SELECT @HierCompTypeID = ValidationTypeID 
+FROM MDM_DimValidationTypes 
+WHERE ValidationTypeCode = 'HIER_COMPARISON';
+
 -- Migrate existing configurations
 INSERT INTO MDM_DimValidationConfig (
     ValidationName, ValidationTypeID, Description, DimID, 
@@ -221,7 +227,7 @@ INSERT INTO MDM_DimValidationConfig (
 )
 SELECT 
     OS_ValidationName,
-    (SELECT ValidationTypeID FROM MDM_DimValidationTypes WHERE ValidationTypeCode = 'HIER_COMPARISON'),
+    @HierCompTypeID,
     'Migrated from legacy system',
     OS_DimID,
     1,
