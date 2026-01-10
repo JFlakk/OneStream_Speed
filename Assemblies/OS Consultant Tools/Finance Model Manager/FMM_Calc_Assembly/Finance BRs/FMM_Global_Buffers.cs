@@ -27,7 +27,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (args.CustomCalculateArgs.FunctionName.XFEqualsIgnoreCase("GetCVDataBuffer"))
                 {
-                    var filter = globals.GetStringValue("Filter");
+                    var filter = brGlobals.GetStringValue("Filter");
 
                     DataBuffer dynDataBuffer = api.Data.GetDataBufferUsingFormula(filter);
                     var dynResults = new Dictionary<MemberScriptBuilder, DataBufferCell>();
@@ -38,11 +38,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         dynResults[msb] = cell;
                     }
 
-                    globals.SetObject("Results", dynResults);
+                    brGlobals.SetObject("Results", dynResults);
                     //dynDataBuffer.LogDataBuffer(api, " - Buffer", 200);
                 }
                 // else if block commented out in the original code
-                return null;
             }
             catch (Exception ex)
             {
