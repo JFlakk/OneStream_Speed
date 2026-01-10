@@ -131,15 +131,10 @@ def create_dashboard(name, description, dashboard_type, layout_type, is_visible=
     cc_def = ET.SubElement(dash_def, "CustomControlDbrdDefinition")
     cc_def.set("RequiredInputParameters", "")
     
-    # Grid layout definition
-    if layout_type == "Grid":
-        grid_def = ET.SubElement(dash_def, "GridLayoutDefinition")
-        ET.SubElement(grid_def, "ColumnDefinitions")
-        ET.SubElement(grid_def, "RowDefinitions")
-    else:
-        grid_def = ET.SubElement(dash_def, "GridLayoutDefinition")
-        ET.SubElement(grid_def, "ColumnDefinitions")
-        ET.SubElement(grid_def, "RowDefinitions")
+    # Grid layout definition (used by all layout types)
+    grid_def = ET.SubElement(dash_def, "GridLayoutDefinition")
+    ET.SubElement(grid_def, "ColumnDefinitions")
+    ET.SubElement(grid_def, "RowDefinitions")
     
     # Component members
     comp_members = ET.SubElement(dashboard, "componentMembers")
