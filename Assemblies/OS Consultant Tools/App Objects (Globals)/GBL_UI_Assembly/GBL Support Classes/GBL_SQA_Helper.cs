@@ -29,6 +29,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     {
         private readonly SqlConnection _connection;
 
+        // Constants for column size defaults
+        private const int DEFAULT_STRING_SIZE = 255;
+        private const int MAX_NON_MAX_SIZE = 8000;
+
         public GBL_SQA_Helper(SqlConnection connection)
         {
             _connection = connection;
@@ -503,8 +507,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             if (dotNetType == typeof(byte[]))
                 return SqlDbType.VarBinary;
 
-            // Default to NVarChar for unknown types
-            return SqlDbType.NVarChar;
+            // Unknown type - throw exception with helpful message
+            throw new NotSupportedException(
+                $"Unable to map .NET type '{dotNetType.FullName}' to SqlDbType. " +
+                $"Supported types: string, int, long, short, byte, bool, DateTime, decimal, double, float, Guid, byte[]. " +
+                $"Please ensure the DataTable column uses a supported type.");
         }
 
         /// <summary>
@@ -516,9 +523,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             if (column.DataType == typeof(string))
             {
                 // If MaxLength is -1 or very large, use a reasonable default
-                if (column.MaxLength <= 0 || column.MaxLength > 8000)
+                if (column.MaxLength <= 0 || column.MaxLength > MAX_NON_MAX_SIZE)
                 {
-                    return 255; // Default reasonable size
+                    return DEFAULT_STRING_SIZE;
                 }
                 return column.MaxLength;
             }
@@ -526,9 +533,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             // For byte arrays (VarBinary), use MaxLength if specified
             if (column.DataType == typeof(byte[]))
             {
-                if (column.MaxLength <= 0 || column.MaxLength > 8000)
+                if (column.MaxLength <= 0 || column.MaxLength > MAX_NON_MAX_SIZE)
                 {
-                    return 8000; // Max for non-MAX types
+                    return MAX_NON_MAX_SIZE;
                 }
                 return column.MaxLength;
             }
