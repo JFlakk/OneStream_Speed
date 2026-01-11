@@ -180,7 +180,6 @@ _helper.UpdateDataTableDynamic(si, dt, sqa, "TableName",
 Comprehensive documentation added:
 - **SQA_Updates_Documentation.md**: Technical details and type mapping rules
 - **DynamicUpdateExample.md**: 4+ practical scenarios with code examples
-- **ConceptualTests_UpdateDataTableDynamic.cs**: Test examples demonstrating all patterns
 
 ## Testing Notes
 
