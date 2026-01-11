@@ -39,22 +39,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Act_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
-            var columnDefinitions = new List<ColumnDefinition>
-            {
-                new ColumnDefinition("Cube_ID", SqlDbType.Int),
-                new ColumnDefinition("Act_ID", SqlDbType.Int),
-                new ColumnDefinition("Name", SqlDbType.NVarChar, 100),
-                new ColumnDefinition("Calc_Type", SqlDbType.NVarChar, 20),
-                new ColumnDefinition("Status", SqlDbType.NVarChar, 10),
-                new ColumnDefinition("Create_Date", SqlDbType.DateTime),
-                new ColumnDefinition("Create_User", SqlDbType.NVarChar, 50),
-                new ColumnDefinition("Update_Date", SqlDbType.DateTime),
-                new ColumnDefinition("Update_User", SqlDbType.NVarChar, 50)
-            };
-
             var primaryKeyColumns = new List<string> { "Act_ID" };
 
-            _helper.UpdateDataTable(si, dt, sqa, "FMM_Act_Config", columnDefinitions, primaryKeyColumns, autoTimestamps: false);
+            _helper.UpdateDataTableDynamic(si, dt, sqa, "FMM_Act_Config", primaryKeyColumns, autoTimestamps: false);
         }
     }
 }
