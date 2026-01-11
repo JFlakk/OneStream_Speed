@@ -416,6 +416,126 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             // First, perform merge
             MergeDataTable(si, sourceTable, targetTableName, columnDefinitions, primaryKeyColumns, syncDeleteCondition);
         }
+
+        /// <summary>
+        /// Updates a DataTable back to the database by inferring column definitions from the DataTable schema.
+        /// This allows updating only specific columns without defining all table columns.
+        /// Supports both single and composite primary keys.
+        /// </summary>
+        /// <param name="si">Session information</param>
+        /// <param name="dt">DataTable to update (only columns present in DataTable will be updated)</param>
+        /// <param name="sqa">SqlDataAdapter to use</param>
+        /// <param name="tableName">Name of the database table</param>
+        /// <param name="primaryKeyColumns">List of primary key column names (must be present in DataTable)</param>
+        /// <param name="excludeFromUpdate">Optional list of columns to exclude from UPDATE SET clause</param>
+        /// <param name="autoTimestamps">Automatically handle Create_Date/Update_Date with GETDATE() and Create_User/Update_User with si.UserName</param>
+        public void UpdateDataTableDynamic(
+            SessionInfo si,
+            DataTable dt,
+            SqlDataAdapter sqa,
+            string tableName,
+            List<string> primaryKeyColumns,
+            List<string> excludeFromUpdate = null,
+            bool autoTimestamps = false)
+        {
+            // Validate that all primary key columns are present in the DataTable
+            foreach (var pkCol in primaryKeyColumns)
+            {
+                if (!dt.Columns.Contains(pkCol))
+                {
+                    throw new ArgumentException($"Primary key column '{pkCol}' is not present in the DataTable. All primary key columns must be included.");
+                }
+            }
+
+            // Infer column definitions from DataTable schema
+            var columnDefinitions = InferColumnDefinitionsFromDataTable(dt);
+
+            // Use the standard UpdateDataTable method
+            UpdateDataTable(si, dt, sqa, tableName, columnDefinitions, primaryKeyColumns, excludeFromUpdate, autoTimestamps);
+        }
+
+        /// <summary>
+        /// Infers column definitions from a DataTable's schema.
+        /// Maps .NET types to SQL types automatically.
+        /// </summary>
+        private List<ColumnDefinition> InferColumnDefinitionsFromDataTable(DataTable dt)
+        {
+            var columnDefinitions = new List<ColumnDefinition>();
+
+            foreach (DataColumn column in dt.Columns)
+            {
+                var sqlDbType = MapDotNetTypeToSqlDbType(column.DataType);
+                var size = GetColumnSize(column);
+                
+                columnDefinitions.Add(new ColumnDefinition(column.ColumnName, sqlDbType, size));
+            }
+
+            return columnDefinitions;
+        }
+
+        /// <summary>
+        /// Maps a .NET Type to the corresponding SqlDbType.
+        /// </summary>
+        private SqlDbType MapDotNetTypeToSqlDbType(Type dotNetType)
+        {
+            if (dotNetType == typeof(string))
+                return SqlDbType.NVarChar;
+            if (dotNetType == typeof(int))
+                return SqlDbType.Int;
+            if (dotNetType == typeof(long))
+                return SqlDbType.BigInt;
+            if (dotNetType == typeof(short))
+                return SqlDbType.SmallInt;
+            if (dotNetType == typeof(byte))
+                return SqlDbType.TinyInt;
+            if (dotNetType == typeof(bool))
+                return SqlDbType.Bit;
+            if (dotNetType == typeof(DateTime))
+                return SqlDbType.DateTime;
+            if (dotNetType == typeof(decimal))
+                return SqlDbType.Decimal;
+            if (dotNetType == typeof(double))
+                return SqlDbType.Float;
+            if (dotNetType == typeof(float))
+                return SqlDbType.Real;
+            if (dotNetType == typeof(Guid))
+                return SqlDbType.UniqueIdentifier;
+            if (dotNetType == typeof(byte[]))
+                return SqlDbType.VarBinary;
+
+            // Default to NVarChar for unknown types
+            return SqlDbType.NVarChar;
+        }
+
+        /// <summary>
+        /// Gets the appropriate size for a column based on its DataType and MaxLength.
+        /// </summary>
+        private int GetColumnSize(DataColumn column)
+        {
+            // For string types, use MaxLength if specified
+            if (column.DataType == typeof(string))
+            {
+                // If MaxLength is -1 or very large, use a reasonable default
+                if (column.MaxLength <= 0 || column.MaxLength > 8000)
+                {
+                    return 255; // Default reasonable size
+                }
+                return column.MaxLength;
+            }
+
+            // For byte arrays (VarBinary), use MaxLength if specified
+            if (column.DataType == typeof(byte[]))
+            {
+                if (column.MaxLength <= 0 || column.MaxLength > 8000)
+                {
+                    return 8000; // Max for non-MAX types
+                }
+                return column.MaxLength;
+            }
+
+            // For other types, size is not needed
+            return 0;
+        }
     }
 
     /// <summary>

@@ -21,6 +21,9 @@ A comprehensive helper class that provides:
 - ✅ Auto-timestamp support (GETDATE() and si.UserName)
 - ✅ Transaction management
 - ✅ Error handling
+- ✅ **NEW: UpdateDataTableDynamic** - Automatic column schema inference from DataTable
+- ✅ **NEW: Type mapping** - Automatic .NET to SQL type conversion
+- ✅ **NEW: Partial column updates** - Update only specific columns without defining entire schema
 
 **ColumnDefinition Class**
 
@@ -47,6 +50,7 @@ Helper class for defining table columns with type and size information.
 - Architecture overview
 - Migration guide with before/after examples
 - Usage examples for single and composite keys
+- **NEW: Dynamic schema inference examples**
 - Benefits and testing recommendations
 
 **SQA_Refactoring_Guide.md**
@@ -55,6 +59,12 @@ Helper class for defining table columns with type and size information.
 - Quick reference checklist
 - List of remaining files with estimates
 - Common pitfalls and solutions
+
+**DynamicUpdateExample.md** (NEW)
+- Practical examples of partial column updates
+- Single and composite key scenarios
+- Type inference rules and best practices
+- Side-by-side comparison of traditional vs dynamic approaches
 
 **This Summary (Summary.md)**
 - Project overview and deliverables

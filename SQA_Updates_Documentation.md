@@ -266,6 +266,62 @@ for (int i = 1; i <= 20; i++)
 }
 ```
 
+### **NEW: Dynamic Schema Inference (Partial Column Updates)**
+
+The `UpdateDataTableDynamic` method allows you to update only specific columns without defining the entire table schema. The helper automatically infers column definitions from the DataTable's schema.
+
+**Use Case**: Update a single column across many rows without having to define all 50+ columns in the table.
+
+```csharp
+// Example: Update only the "Status" column
+// DataTable only contains: ID (primary key) + Status (data to update)
+DataTable dt = new DataTable();
+dt.Columns.Add("ID", typeof(int));
+dt.Columns.Add("Status", typeof(string));
+
+// Add rows to update
+dt.Rows.Add(1, "Active");
+dt.Rows.Add(2, "Inactive");
+
+// Update - automatically infers column types and sizes from DataTable
+var primaryKeyColumns = new List<string> { "ID" };
+_helper.UpdateDataTableDynamic(si, dt, sqa, "MyTable", primaryKeyColumns);
+
+// No need to define all columns in the table!
+```
+
+**Composite Key Example**:
+```csharp
+// Update only Month1 value in RegPlan_Details
+DataTable dt = new DataTable();
+dt.Columns.Add("RegPlan_ID", typeof(Guid));
+dt.Columns.Add("Year", typeof(string));
+dt.Columns.Add("Plan_Units", typeof(string));
+dt.Columns.Add("Account", typeof(string));
+dt.Columns.Add("Month1", typeof(decimal));  // Only updating this one column
+
+// Populate DataTable with values...
+
+var primaryKeyColumns = new List<string> { "RegPlan_ID", "Year", "Plan_Units", "Account" };
+_helper.UpdateDataTableDynamic(si, dt, sqa, "RegPlan_Details", primaryKeyColumns);
+```
+
+**Type Mapping**: The helper automatically maps .NET types to SQL types:
+- `string` → `NVarChar` (with MaxLength from DataTable.Column.MaxLength)
+- `int` → `Int`
+- `long` → `BigInt`
+- `bool` → `Bit`
+- `DateTime` → `DateTime`
+- `decimal` → `Decimal`
+- `Guid` → `UniqueIdentifier`
+- And more...
+
+**Benefits of Dynamic Schema Inference**:
+1. **Minimal DataTable Setup**: Only include columns you're actually updating
+2. **No Manual Column Definitions**: Types and sizes inferred automatically
+3. **Efficient Updates**: Run only the columns you need through the SQA
+4. **Same Power**: Works with single and composite keys, transactions, etc.
+
 ## Benefits
 
 1. **Code Reduction**: ~70% reduction in code per SQA file (from 100-200 lines to 30-40 lines)
