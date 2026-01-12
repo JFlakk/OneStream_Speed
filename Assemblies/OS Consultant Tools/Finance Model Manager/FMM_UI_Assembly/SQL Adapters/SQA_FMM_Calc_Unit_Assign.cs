@@ -48,64 +48,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Calc_Unit_Assign(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
-            sqa.UpdateBatchSize = 0; // Set batch size for performance
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
-                // Define the insert query and parameters
-                string insertQuery = @"
-                    INSERT INTO [dbo].[FMM_Calc_Unit_Assign] (
-                        Cube_ID, Model_Grp_ID, Model_Grp_Seq_ID, Calc_Unit_ID, 
-                        Calc_Unit_Assign_ID, Seq, Status, Create_Date, 
-                        Create_User, Update_Date, Update_User)
-                    VALUES
-                        (@Cube_ID, @Model_Grp_ID, @Model_Grp_Seq_ID, @Calc_Unit_ID, 
-                        @Calc_Unit_Assign_ID, @Seq, @Status, @Create_Date, 
-                        @Create_User, @Update_Date, @Update_User)";
-                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Model_Grp_ID", SqlDbType.Int).SourceColumn = "Model_Grp_ID";
-                sqa.InsertCommand.Parameters.Add("@Model_Grp_Seq_ID", SqlDbType.Int).SourceColumn = "Model_Grp_Seq_ID";
-                sqa.InsertCommand.Parameters.Add("@Calc_Unit_ID", SqlDbType.Int).SourceColumn = "Calc_Unit_ID";
-                sqa.InsertCommand.Parameters.Add("@Calc_Unit_Assign_ID", SqlDbType.Int).SourceColumn = "Calc_Unit_Assign_ID";
-                sqa.InsertCommand.Parameters.Add("@Seq", SqlDbType.Int).SourceColumn = "Seq";
-                sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
-                sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
-                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
-                sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
-
-                // Define the update query and parameters
-                string updateQuery = @"
-                    UPDATE [dbo].[FMM_Calc_Unit_Assign] SET
-                        Cube_ID = @Cube_ID,
-                        Model_Grp_ID = @Model_Grp_ID,
-                        Model_Grp_Seq_ID = @Model_Grp_Seq_ID,
-                        Calc_Unit_ID = @Calc_Unit_ID,
-                        Seq = @Seq,
-                        Status = @Status,
-                        Update_Date = @Update_Date,
-                        Update_User = @Update_User
-                    WHERE Calc_Unit_Assign_ID = @Calc_Unit_Assign_ID";
-                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Calc_Unit_Assign_ID", SqlDbType.Int) { SourceColumn = "Calc_Unit_Assign_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.UpdateCommand.Parameters.Add("@Model_Grp_ID", SqlDbType.Int).SourceColumn = "Model_Grp_ID";
-                sqa.UpdateCommand.Parameters.Add("@Model_Grp_Seq_ID", SqlDbType.Int).SourceColumn = "Model_Grp_Seq_ID";
-                sqa.UpdateCommand.Parameters.Add("@Calc_Unit_ID", SqlDbType.Int).SourceColumn = "Calc_Unit_ID";
-                sqa.UpdateCommand.Parameters.Add("@Seq", SqlDbType.Int).SourceColumn = "Seq";
-                sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
-                sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
-
-                // Define the delete query and parameters
-                string deleteQuery = @"
-                    DELETE FROM [dbo].[FMM_Calc_Unit_Assign] 
-                    WHERE Calc_Unit_Assign_ID = @Calc_Unit_Assign_ID";
-                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Calc_Unit_Assign_ID", SqlDbType.Int) { SourceColumn = "Calc_Unit_Assign_ID", SourceVersion = DataRowVersion.Original });
-
                 try
                 {
+                    // Use GBL_SQL_Command_Builder to dynamically generate commands
+                    var builder = new GBL_SQL_Command_Builder(_connection, "FMM_Calc_Unit_Assign", dt);
+                    builder.SetPrimaryKey("Assign_ID");
+                    builder.ExcludeFromUpdate("Assign_ID", "Cube_ID", "Calc_ID", "Create_Date", "Create_User");
+                    builder.ConfigureAdapter(sqa, transaction);
+
                     sqa.Update(dt);
                     transaction.Commit();
                     sqa.InsertCommand = null;
@@ -118,6 +70,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     throw;
                 }
             }
+        }
         }
     }
 }
