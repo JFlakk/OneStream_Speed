@@ -113,7 +113,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             using (SqlCommand command = new SqlCommand(sql, _connection))
             {
                 command.CommandType = CommandType.Text;
-                if (sqlparams != null && sqlparams.Length > 0)
+                if (sqlparams?.Length > 0)
                 {
                     command.Parameters.AddRange(sqlparams);
                 }
@@ -162,13 +162,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Set primary keys on both tables if not already set
                 if (targetDt.PrimaryKey == null || targetDt.PrimaryKey.Length == 0)
                 {
-                    var targetKeys = primaryKeyColumns.Select(col => targetDt.Columns[col]).ToArray();
+                    var targetKeys = primaryKeyColumns.Select(col => 
+                    {
+                        if (targetDt.Columns[col] == null)
+                            throw new ArgumentException($"Column '{col}' does not exist in target DataTable");
+                        return targetDt.Columns[col];
+                    }).ToArray();
                     targetDt.PrimaryKey = targetKeys;
                 }
 
                 if (sourceDt.PrimaryKey == null || sourceDt.PrimaryKey.Length == 0)
                 {
-                    var sourceKeys = primaryKeyColumns.Select(col => sourceDt.Columns[col]).ToArray();
+                    var sourceKeys = primaryKeyColumns.Select(col => 
+                    {
+                        if (sourceDt.Columns[col] == null)
+                            throw new ArgumentException($"Column '{col}' does not exist in source DataTable");
+                        return sourceDt.Columns[col];
+                    }).ToArray();
                     sourceDt.PrimaryKey = sourceKeys;
                 }
 

@@ -12,6 +12,15 @@ The `SQA_GBL_Command_Builder` is a comprehensive SQL Adapter wrapper that provid
 
 ## Features
 
+**Note:** All examples below assume you have an established connection. In practice, always wrap your code in a `using` block:
+```csharp
+using (var connection = BRApi.Database.CreateApplicationDbConnInfo(si).OpenConnection())
+{
+    var builder = new SQA_GBL_Command_Builder(si, connection);
+    // ... use the builder ...
+}
+```
+
 ### 1. Update Operations
 Dynamic UPDATE operations using `GBL_SQL_Command_Builder`:
 
