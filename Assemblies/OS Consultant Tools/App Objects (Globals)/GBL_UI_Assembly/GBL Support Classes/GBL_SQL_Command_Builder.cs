@@ -94,10 +94,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     autoExclude.Add(col.ColumnName);
                 }
                 // Exclude ReadOnly columns (computed columns, timestamps)
-                else if (col.ReadOnly && col.Expression.Length == 0)
+                else if (col.ReadOnly && string.IsNullOrEmpty(col.Expression))
                 {
                     // Only exclude if ReadOnly and not a computed column with expression
-                    // (computed columns with expressions are already handled by ReadOnly=true and Expression!="")
                     autoExclude.Add(col.ColumnName);
                 }
             }
@@ -113,15 +112,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             var columns = new List<string>();
             var parameters = new List<string>();
 
-            // Combine explicitly excluded columns with auto-detected ones
-            var allExcluded = new List<string>(_excludeFromInsert);
+            // Combine explicitly excluded columns with auto-detected ones using HashSet for performance
+            var allExcluded = new HashSet<string>(_excludeFromInsert);
             var autoExcluded = GetAutoExcludeFromInsert();
             foreach (var col in autoExcluded)
             {
-                if (!allExcluded.Contains(col))
-                {
-                    allExcluded.Add(col);
-                }
+                allExcluded.Add(col);
             }
 
             foreach (DataColumn col in _dataTable.Columns)
