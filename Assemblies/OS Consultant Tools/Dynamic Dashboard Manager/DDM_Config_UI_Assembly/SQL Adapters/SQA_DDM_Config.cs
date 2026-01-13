@@ -22,11 +22,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
     public class SQA_DDM_Config
     {
-        private readonly SqlConnection _connection;
+        private readonly SQA_GBL_Command_Builder _cmdBuilder;
 
         public SQA_DDM_Config(SessionInfo si, SqlConnection connection)
         {
-            _connection = connection;
+            _cmdBuilder = new SQA_GBL_Command_Builder(si, connection);
         }
 
         public void Fill_DDM_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string selectQuery, params SqlParameter[] sqlparams)

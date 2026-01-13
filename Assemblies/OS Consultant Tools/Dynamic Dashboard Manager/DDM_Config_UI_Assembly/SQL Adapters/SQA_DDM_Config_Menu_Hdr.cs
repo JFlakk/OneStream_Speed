@@ -22,11 +22,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
     public class SQA_DDM_Config_Menu_Hdr
     {
-        private readonly SqlConnection _connection;
+        private readonly SQA_GBL_Command_Builder _cmdBuilder;
 
         public SQA_DDM_Config_Menu_Hdr(SessionInfo si, SqlConnection connection)
         {
-            _connection = connection;
+            _cmdBuilder = new SQA_GBL_Command_Builder(si, connection);
         }
 
 
