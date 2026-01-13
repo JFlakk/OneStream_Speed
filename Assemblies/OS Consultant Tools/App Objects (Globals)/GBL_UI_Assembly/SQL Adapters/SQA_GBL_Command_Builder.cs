@@ -1,11 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using Microsoft.CSharp;
 using Microsoft.Data.SqlClient;
 using OneStream.Finance.Database;
 using OneStream.Finance.Engine;
@@ -29,6 +24,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     {
         private readonly SqlConnection _connection;
 
+        /// <summary>
+        /// Initialize the SQL Adapter.
+        /// </summary>
+        /// <param name="si">Session information (maintained for consistency with other SQL Adapters)</param>
+        /// <param name="connection">SQL connection to use</param>
         public SQA_GBL_Command_Builder(SessionInfo si, SqlConnection connection)
         {
             _connection = connection;
@@ -76,16 +76,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     // Execute the update
                     sqa.Update(dt);
                     transaction.Commit();
-                    
-                    // Cleanup
-                    sqa.InsertCommand = null;
-                    sqa.UpdateCommand = null;
-                    sqa.DeleteCommand = null;
                 }
                 catch (Exception)
                 {
                     transaction.Rollback();
                     throw;
+                }
+                finally
+                {
+                    // Cleanup commands to prevent connection leaks
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
                 }
             }
         }
