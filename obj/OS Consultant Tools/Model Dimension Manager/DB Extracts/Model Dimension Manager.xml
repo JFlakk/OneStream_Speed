@@ -3795,6 +3795,72 @@ Where OS_ApprovalStatus = 'Pre-Submission'</sqlQuery>
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
+                            <parameter name="Param_VAL2_TotalValidations" description="Total active validations count" userPrompt="" parameterType="LiteralValue" sortOrder="100">
+                                <defaultValue>0</defaultValue>
+                                <isMasked>false</isMasked>
+                                <isRequired>false</isRequired>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>SQL</parameterCommandType>
+                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValConfig_VAL]</sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="Param_VAL2_TotalIssues" description="Total issues in last 7 days" userPrompt="" parameterType="LiteralValue" sortOrder="100">
+                                <defaultValue>0</defaultValue>
+                                <isMasked>false</isMasked>
+                                <isRequired>false</isRequired>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>SQL</parameterCommandType>
+                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValResults_VAL]</sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="Param_VAL2_CriticalIssues" description="Open critical issues count" userPrompt="" parameterType="LiteralValue" sortOrder="100">
+                                <defaultValue>0</defaultValue>
+                                <isMasked>false</isMasked>
+                                <isRequired>false</isRequired>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>SQL</parameterCommandType>
+                                <sqlQuery>SELECT COUNT(*) FROM [dbo].[MDM_ValResults_VAL]</sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
                         </parameters>
                         <adapters>
                             <adapter name="DA_MDM_Import_SAG_Dim" description="" commandType="Method">
@@ -8081,6 +8147,27 @@ WHERE VAL.OS_Validation_ID = |!Param_VAL_lbx_Selection!|
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
+                            <component name="lbl_VAL2_TotalValidations" description="Total Active Validations KPI" xfText="Active Validations: |!Param_VAL2_TotalValidations!|" toolTip="Total number of active validation configurations" componentType="Label" templateParameterValues="" brText1="" brText2="">
+                                <displayFormat>FontSize = 16, FontWeight = Bold, Foreground = DarkBlue, Padding = 10, BorderThickness = 1, BorderColor = LightGray, Background = AliceBlue</displayFormat>
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="lbl_VAL2_TotalIssues" description="Total Issues KPI" xfText="Total Issues (7d): |!Param_VAL2_TotalIssues!|" toolTip="Total validation issues found in last 7 days" componentType="Label" templateParameterValues="" brText1="" brText2="">
+                                <displayFormat>FontSize = 16, FontWeight = Bold, Foreground = DarkOrange, Padding = 10, BorderThickness = 1, BorderColor = LightGray, Background = Linen</displayFormat>
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="lbl_VAL2_CriticalIssues" description="Critical Issues KPI" xfText="Critical Issues: |!Param_VAL2_CriticalIssues!|" toolTip="Open critical validation issues" componentType="Label" templateParameterValues="" brText1="" brText2="">
+                                <displayFormat>FontSize = 16, FontWeight = Bold, Foreground = DarkRed, Padding = 10, BorderThickness = 1, BorderColor = LightGray, Background = MistyRose</displayFormat>
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
+                            <component name="btn_VAL2_ManageConfig" description="Manage Validations Button" xfText="Manage Validations" toolTip="Configure and manage dimension validations" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NavigateToDashboard">
+                                <displayFormat>FontSize = 14, FontWeight = Bold, Padding = 10</displayFormat>
+                                <selectionChangedNavigationArgs>VAL_LandingPage</selectionChangedNavigationArgs>
+                                <componentDefinition />
+                                <adapterMembers />
+                            </component>
                         </components>
                         <dashboardGroups>
                             <dashboardGroup name="MDM Admin Support" description="" accessGroup="Administrators">
@@ -8703,9 +8790,58 @@ WHERE VAL.OS_Validation_ID = |!Param_VAL_lbx_Selection!|
                                             <componentMember name="BIView_MemberAudit" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
-                                    <dashboard name="DBRD_Validations" description="" pageCaption="" dashboardType="Unknown" layoutType="Uniform" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="DBRD_Validations" description="Dimension Validation Dashboard - Enhanced View" pageCaption="Dimension Validations" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes>Enhanced Dimension Validation Dashboard with comprehensive validation management capabilities</Notes>
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="MoveableSplitter" Height="5" />
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
                                         <componentMembers>
+                                            <componentMember name="Embedded DBRD_VAL2_Overview" left="" top="" width="" height="" dockPosition="Left" />
                                             <componentMember name="BIView_Validations" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="DBRD_VAL2_Overview" description="Validation Overview Panel" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>BorderMarginBottom = 10, BorderThickness = 1, BorderColor = LightGray</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="lbl_VAL2_TotalValidations" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbl_VAL2_TotalIssues" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbl_VAL2_CriticalIssues" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="btn_VAL2_ManageConfig" left="" top="" width="" height="" dockPosition="Left" />
                                         </componentMembers>
                                     </dashboard>
                                 </dashboards>
@@ -11808,3 +11944,4 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         </workspaces>
     </applicationWorkspacesRoot>
 </OneStreamXF>
+
