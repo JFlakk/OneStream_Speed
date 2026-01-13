@@ -79,6 +79,33 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
+        /// Get list of columns that should be excluded from INSERT based on DataTable schema.
+        /// Automatically detects AutoIncrement and ReadOnly columns.
+        /// </summary>
+        private List<string> GetAutoExcludeFromInsert()
+        {
+            var autoExclude = new List<string>();
+            
+            foreach (DataColumn col in _dataTable.Columns)
+            {
+                // Exclude AutoIncrement columns (identity columns)
+                if (col.AutoIncrement)
+                {
+                    autoExclude.Add(col.ColumnName);
+                }
+                // Exclude ReadOnly columns (computed columns, timestamps)
+                else if (col.ReadOnly && col.Expression.Length == 0)
+                {
+                    // Only exclude if ReadOnly and not a computed column with expression
+                    // (computed columns with expressions are already handled by ReadOnly=true and Expression!="")
+                    autoExclude.Add(col.ColumnName);
+                }
+            }
+            
+            return autoExclude;
+        }
+
+        /// <summary>
         /// Build INSERT command based on DataTable schema
         /// </summary>
         public SqlCommand BuildInsertCommand(SqlTransaction transaction = null)
@@ -86,9 +113,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             var columns = new List<string>();
             var parameters = new List<string>();
 
+            // Combine explicitly excluded columns with auto-detected ones
+            var allExcluded = new List<string>(_excludeFromInsert);
+            var autoExcluded = GetAutoExcludeFromInsert();
+            foreach (var col in autoExcluded)
+            {
+                if (!allExcluded.Contains(col))
+                {
+                    allExcluded.Add(col);
+                }
+            }
+
             foreach (DataColumn col in _dataTable.Columns)
             {
-                if (_excludeFromInsert.Contains(col.ColumnName))
+                if (allExcluded.Contains(col.ColumnName))
                     continue;
 
                 columns.Add(col.ColumnName);
@@ -110,7 +148,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             foreach (DataColumn col in _dataTable.Columns)
             {
-                if (_excludeFromInsert.Contains(col.ColumnName))
+                if (allExcluded.Contains(col.ColumnName))
                     continue;
 
                 var param = command.Parameters.Add($"@{col.ColumnName}", GetSqlDbType(col.DataType));
