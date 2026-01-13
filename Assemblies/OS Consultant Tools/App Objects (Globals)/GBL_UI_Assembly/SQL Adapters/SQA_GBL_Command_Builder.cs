@@ -32,49 +32,56 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 
         public void UpdateTable(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa,
-            string[] primaryKeyColumns, string[] excludeFromUpdate = null, string[] excludeFromInsert = null)
+            string[] primaryKeyColumns, string[]? excludeFromUpdate = null, string[]? excludeFromInsert = null)
         {
-            using (SqlTransaction transaction = _connection.BeginTransaction())
+            _ = si;
+
+            string[] FilterColumns(IEnumerable<string> columns) =>
+            columns?.Where(col => dt.Columns.Contains(col))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray() ?? Array.Empty<string>();
+
+            var resolvedPrimaryKeys = FilterColumns(primaryKeyColumns);
+            if (resolvedPrimaryKeys.Length == 0)
             {
-                try
-                {
-                    // Use GBL_SQL_Command_Builder to dynamically generate commands
-                    var builder = new GBL_SQL_Command_Builder(_connection, tableName, dt);
+            throw new XFException(si, "Primary key columns must exist in the DataTable.");
+            }
 
-                    // Set primary key(s)
-                    builder.SetPrimaryKey(primaryKeyColumns);
+            var updateExclusions = FilterColumns(excludeFromUpdate);
+            var insertExclusions = FilterColumns(excludeFromInsert);
 
-                    // Set columns to exclude from UPDATE if provided
-                    if (excludeFromUpdate != null && excludeFromUpdate.Length > 0)
-                    {
-                        builder.ExcludeFromUpdate(excludeFromUpdate);
-                    }
+            using var transaction = _connection.BeginTransaction();
+            try
+            {
+            var builder = new GBL_SQL_Command_Builder(_connection, tableName, dt);
 
-                    // Set columns to exclude from INSERT if provided
-                    if (excludeFromInsert != null && excludeFromInsert.Length > 0)
-                    {
-                        builder.ExcludeFromInsert(excludeFromInsert);
-                    }
+            builder.SetPrimaryKey(resolvedPrimaryKeys);
 
-                    // Configure the adapter with generated commands
-                    builder.ConfigureAdapter(sqa, transaction);
+            if (updateExclusions.Length > 0)
+            {
+                builder.ExcludeFromUpdate(updateExclusions);
+            }
 
-                    // Execute the update
-                    sqa.Update(dt);
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-                finally
-                {
-                    // Cleanup commands to prevent connection leaks
-                    sqa.InsertCommand = null;
-                    sqa.UpdateCommand = null;
-                    sqa.DeleteCommand = null;
-                }
+            if (insertExclusions.Length > 0)
+            {
+                builder.ExcludeFromInsert(insertExclusions);
+            }
+
+            builder.ConfigureAdapter(sqa, transaction);
+
+            sqa.Update(dt);
+            transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+            transaction.Rollback();
+            throw new XFException(si, ex);
+            }
+            finally
+            {
+            sqa.InsertCommand = null;
+            sqa.UpdateCommand = null;
+            sqa.DeleteCommand = null;
             }
         }
 
@@ -98,6 +105,97 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public GBL_SQL_Command_Builder GetCommandBuilder(SessionInfo si, string tableName, DataTable dt)
         {
             return new GBL_SQL_Command_Builder(_connection, tableName, dt);
+        }
+
+        /// <summary>
+        /// Dynamically fill a DataTable from a SQL query with optional parameters
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="sqa">SqlDataAdapter to use for the Fill operation</param>
+        /// <param name="dt">DataTable to fill with results</param>
+        /// <param name="sql">SQL SELECT query to execute</param>
+        /// <param name="sqlparams">Optional SQL parameters for the query</param>
+        public void FillDataTable(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
+        {
+            using (SqlCommand command = new SqlCommand(sql, _connection))
+            {
+                command.CommandType = CommandType.Text;
+                if (sqlparams?.Length > 0)
+                {
+                    command.Parameters.AddRange(sqlparams);
+                }
+
+                sqa.SelectCommand = command;
+                sqa.Fill(dt);
+                command.Parameters.Clear();
+                sqa.SelectCommand = null;
+            }
+        }
+
+        /// <summary>
+        /// Merge source DataTable into target DataTable with primary key preservation
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="targetDt">Target DataTable to merge into</param>
+        /// <param name="sourceDt">Source DataTable to merge from</param>
+        /// <param name="preserveChanges">True to preserve changes in the target; false to overwrite</param>
+        /// <param name="missingSchemaAction">Action to take when schema doesn't match</param>
+        public void MergeDataTable(SessionInfo si, DataTable targetDt, DataTable sourceDt, 
+            bool preserveChanges = true, MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error)
+        {
+            try
+            {
+                targetDt.Merge(sourceDt, preserveChanges, missingSchemaAction);
+            }
+            catch (Exception ex)
+            {
+                throw new XFException(si, $"Error merging DataTable: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Merge source DataTable into target DataTable with composite primary key handling
+        /// </summary>
+        /// <param name="si">SessionInfo</param>
+        /// <param name="targetDt">Target DataTable to merge into</param>
+        /// <param name="sourceDt">Source DataTable to merge from</param>
+        /// <param name="primaryKeyColumns">Array of column names that form the composite primary key</param>
+        /// <param name="preserveChanges">True to preserve changes in the target; false to overwrite</param>
+        public void MergeDataTableWithKeys(SessionInfo si, DataTable targetDt, DataTable sourceDt, 
+            string[] primaryKeyColumns, bool preserveChanges = false)
+        {
+            try
+            {
+                // Set primary keys on both tables if not already set
+                if (targetDt.PrimaryKey == null || targetDt.PrimaryKey.Length == 0)
+                {
+                    var targetKeys = primaryKeyColumns.Select(col => 
+                    {
+                        if (targetDt.Columns[col] == null)
+                            throw new ArgumentException($"Column '{col}' does not exist in target DataTable");
+                        return targetDt.Columns[col];
+                    }).ToArray();
+                    targetDt.PrimaryKey = targetKeys;
+                }
+
+                if (sourceDt.PrimaryKey == null || sourceDt.PrimaryKey.Length == 0)
+                {
+                    var sourceKeys = primaryKeyColumns.Select(col => 
+                    {
+                        if (sourceDt.Columns[col] == null)
+                            throw new ArgumentException($"Column '{col}' does not exist in source DataTable");
+                        return sourceDt.Columns[col];
+                    }).ToArray();
+                    sourceDt.PrimaryKey = sourceKeys;
+                }
+
+                // Perform the merge
+                targetDt.Merge(sourceDt, preserveChanges, MissingSchemaAction.Add);
+            }
+            catch (Exception ex)
+            {
+                throw new XFException(si, $"Error merging DataTable with keys: {ex.Message}", ex);
+            }
         }
     }
 }

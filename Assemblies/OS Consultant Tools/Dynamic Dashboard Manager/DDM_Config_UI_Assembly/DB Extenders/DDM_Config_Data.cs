@@ -238,7 +238,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 	                        // Example: Get the max ID for the "MCM_Calc_Config" table
 	                        new_Profile_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config", "DDM_Config_ID");
-	                        var sqa_ddm_config = new SQA_DDM_Config(si, connection);
+							var sqa_ddm_config = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection, "DDM_Config", "DDM_Config_ID");
 	                        var DDM_Config_DT = new DataTable();
 	
 	                        // Fill the DataTable with the current data from MCM_Dest_Cell
@@ -252,7 +252,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	                        new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { Value = new_Profile_Config_ID }
 	                        };
 							
-	                        sqa_ddm_config.Fill_DDM_Config_DT(si, sqa, DDM_Config_DT, sql, sqlparams);
+							sqa_ddm_config.Fill_GBL_DT(si, sqa, DDM_Config_DT, sql, sqlparams);
 	
 	
 	
@@ -285,7 +285,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	                        DDM_Config_DT.Rows.Add(newRow);
 	
 	                        //Update the MCM_Dest_Cell table based on the changes made to the DataTable
-	                        sqa_ddm_config.Update_DDM_Config(si, DDM_Config_DT, sqa);
+							sqa_ddm_config.Update_GBL_DT(si, DDM_Config_DT, sqa);
 						}
                     }
                 }
