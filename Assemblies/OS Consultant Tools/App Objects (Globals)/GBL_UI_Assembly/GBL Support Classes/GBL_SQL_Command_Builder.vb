@@ -88,15 +88,15 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				End If
 
 				columns.Add(col.ColumnName)
-				parameters.Add($"@{col.ColumnName}")
+				parameters.Add("@" & col.ColumnName)
 			Next
 
-			Dim sql As String = $"
-				INSERT INTO {_tableName} (
-					{String.Join(", ", columns)}
-				) VALUES (
-					{String.Join(", ", parameters)}
-				)"
+			Dim sql As String = _
+				"INSERT INTO " & _tableName & " (" & Environment.NewLine & _
+				"    " & String.Join(", ", columns) & Environment.NewLine & _
+				") VALUES (" & Environment.NewLine & _
+				"    " & String.Join(", ", parameters) & Environment.NewLine & _
+				")"
 
 			Dim command As SqlCommand
 			If transaction IsNot Nothing Then
@@ -112,7 +112,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					Continue For
 				End If
 
-				Dim param = command.Parameters.Add($"@{col.ColumnName}", GetSqlDbType(col.DataType))
+				Dim param = command.Parameters.Add("@" & col.ColumnName, GetSqlDbType(col.DataType))
 				param.SourceColumn = col.ColumnName
 
 				If col.MaxLength > 0 AndAlso col.DataType Is GetType(String) Then
@@ -136,16 +136,16 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 			For Each col As DataColumn In _dataTable.Columns
 				If _primaryKeyColumns.Contains(col.ColumnName) Then
-					whereClauses.Add($"{col.ColumnName} = @{col.ColumnName}")
+					whereClauses.Add(col.ColumnName & " = @" & col.ColumnName)
 				ElseIf Not _excludeFromUpdate.Contains(col.ColumnName) Then
-					setClauses.Add($"{col.ColumnName} = @{col.ColumnName}")
+					setClauses.Add(col.ColumnName & " = @" & col.ColumnName)
 				End If
 			Next
 
-			Dim sql As String = $"
-				UPDATE {_tableName} SET
-					{String.Join("," & Environment.NewLine & "                    ", setClauses)}
-				WHERE {String.Join(" AND ", whereClauses)}"
+			Dim sql As String = _
+				"UPDATE " & _tableName & " SET" & Environment.NewLine & _
+				"    " & String.Join("," & Environment.NewLine & "    ", setClauses) & Environment.NewLine & _
+				"WHERE " & String.Join(" AND ", whereClauses)
 
 			Dim command As SqlCommand
 			If transaction IsNot Nothing Then
@@ -162,7 +162,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					Continue For
 				End If
 
-				Dim param = command.Parameters.Add($"@{col.ColumnName}", GetSqlDbType(col.DataType))
+				Dim param = command.Parameters.Add("@" & col.ColumnName, GetSqlDbType(col.DataType))
 				param.SourceColumn = col.ColumnName
 
 				If col.MaxLength > 0 AndAlso col.DataType Is GetType(String) Then
@@ -173,7 +173,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			' Add parameters for WHERE clause (primary keys)
 			For Each pkColumn As String In _primaryKeyColumns
 				Dim col As DataColumn = _dataTable.Columns(pkColumn)
-				Dim param = command.Parameters.Add($"@{pkColumn}", GetSqlDbType(col.DataType))
+				Dim param = command.Parameters.Add("@" & pkColumn, GetSqlDbType(col.DataType))
 				param.SourceColumn = pkColumn
 				param.SourceVersion = DataRowVersion.Original
 
@@ -196,12 +196,12 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Dim whereClauses As New List(Of String)()
 
 			For Each pkColumn As String In _primaryKeyColumns
-				whereClauses.Add($"{pkColumn} = @{pkColumn}")
+				whereClauses.Add(pkColumn & " = @" & pkColumn)
 			Next
 
-			Dim sql As String = $"
-				DELETE FROM {_tableName}
-				WHERE {String.Join(" AND ", whereClauses)}"
+			Dim sql As String = _
+				"DELETE FROM " & _tableName & Environment.NewLine & _
+				"WHERE " & String.Join(" AND ", whereClauses)
 
 			Dim command As SqlCommand
 			If transaction IsNot Nothing Then
@@ -214,7 +214,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 			For Each pkColumn As String In _primaryKeyColumns
 				Dim col As DataColumn = _dataTable.Columns(pkColumn)
-				Dim param = command.Parameters.Add($"@{pkColumn}", GetSqlDbType(col.DataType))
+				Dim param = command.Parameters.Add("@" & pkColumn, GetSqlDbType(col.DataType))
 				param.SourceColumn = pkColumn
 				param.SourceVersion = DataRowVersion.Original
 
