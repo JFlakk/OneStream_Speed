@@ -19,8 +19,8 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-	public class FMM_DynDB_Svc : IWsasDynamicDashboardsV800
-	{
+    public class FMM_DynDB_Svc : IWsasDynamicDashboardsV800
+    {
         public WsDynamicDashboardEx GetEmbeddedDynamicDashboard(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
             WsDynamicComponentEx parentDynamicComponentEx, Dashboard storedDashboard, Dictionary<string, string> customSubstVarsAlreadyResolved)
         {
@@ -28,15 +28,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-					if (storedDashboard.Name.XFEqualsIgnoreCase("0b3a3b_FMM_Model_Content_Cube"))
-					{
-						
-					}
-					else
-					{
-                    	return api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.Unknown, WsDynamicItemStateType.Unknown);
-                	}
-				}
+                    if (storedDashboard.Name.XFEqualsIgnoreCase("0b3a3b_FMM_Model_Content_Cube"))
+                    {
+                        // Build dynamic embedded dashboards for Cube Calc vs Reg Calc
+                        return FMM_Content.Get_DynamicModelContentDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved);
+                    }
+                    else
+                    {
+                        return api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.Unknown, WsDynamicItemStateType.Unknown);
+                    }
+                }
 
                 return null;
             }
@@ -117,5 +118,5 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 throw new XFException(si, ex);
             }
         }
-	}
+    }
 }

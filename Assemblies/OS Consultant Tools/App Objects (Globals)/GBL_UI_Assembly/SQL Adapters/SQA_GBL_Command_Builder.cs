@@ -36,15 +36,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             _ = si;
 
-            string[] FilterColumns(IEnumerable<string> columns) =>
-            columns?.Where(col => dt.Columns.Contains(col))
+            string[] FilterColumns(IEnumerable<string>? columns) =>
+            (columns ?? Array.Empty<string>())
+                .Where(dt.Columns.Contains)
                 .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToArray() ?? Array.Empty<string>();
+                .ToArray();
 
             var resolvedPrimaryKeys = FilterColumns(primaryKeyColumns);
             if (resolvedPrimaryKeys.Length == 0)
             {
-            throw new XFException(si, "Primary key columns must exist in the DataTable.");
+            throw new XFException("Primary key columns must exist in the DataTable.");
             }
 
             var updateExclusions = FilterColumns(excludeFromUpdate);
