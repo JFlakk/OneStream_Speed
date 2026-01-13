@@ -7,3 +7,6 @@
 .onestream-selections.json
 # OneStream authentication tokens
 onestream-token-*
+# Build artifacts
+obj/
+bin/
