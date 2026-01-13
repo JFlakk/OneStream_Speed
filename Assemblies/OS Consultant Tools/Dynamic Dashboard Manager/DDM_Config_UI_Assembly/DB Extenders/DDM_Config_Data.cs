@@ -252,7 +252,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	                        new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { Value = new_Profile_Config_ID }
 	                        };
 							
-							sqa_ddm_config.Fill_GBL_DT(si, sqa, DDM_Config_DT, sql, sqlparams);
+							cmdBuilder.FillDataTable(si, sqa, DDM_Config_DT, sql, sqlparams);
 	
 	
 	
@@ -285,7 +285,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 	                        DDM_Config_DT.Rows.Add(newRow);
 	
 	                        //Update the MCM_Dest_Cell table based on the changes made to the DataTable
-							sqa_ddm_config.Update_GBL_DT(si, DDM_Config_DT, sqa);
+							cmdBuilder.UpdateTableSimple(si, "DDM_Config", DDM_Config_DT, sqa, "DDM_Config_ID");
 						}
                     }
                 }
@@ -521,8 +521,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		            connection.Open();
 		            var sqa = new SqlDataAdapter();
 		            var DDM_Config_Menu_Layout_DT = new DataTable();
-		            var sqa_ddm_config_menu_layout = new SQA_DDM_Config_Menu_Layout(si, connection);
-		            var sqlSelect = "SELECT * FROM DDM_Config_Menu_Layout WHERE DDM_Menu_ID = @Menu_ID";
+		            		            var sqlSelect = "SELECT * FROM DDM_Config_Menu_Layout WHERE DDM_Menu_ID = @Menu_ID";
 		
 		            DataRow row;
 		            if (runType == "New")
@@ -532,7 +531,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		                var newID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config_Menu_Layout", "DDM_Menu_ID");
 						var DDM_Config_DT = new DataTable();
 		                
-		                sqa_ddm_config_menu_layout.Fill_DDM_Config_Menu_Layout_DT(si, sqa, DDM_Config_Menu_Layout_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@Menu_ID", -1) });
+		                cmdBuilder.FillDataTable(si, sqa, DDM_Config_Menu_Layout_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@Menu_ID", -1) });
 						sqlSelect = "SELECT * FROM DDM_Config WHERE DDM_Config_ID = @DDM_Config_ID";
 						sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, DDM_Config_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { Value = configID }});
 		                row = DDM_Config_Menu_Layout_DT.NewRow();
@@ -565,7 +564,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		            }
 		            else
 		            {
-		                sqa_ddm_config_menu_layout.Fill_DDM_Config_Menu_Layout_DT(si, sqa, DDM_Config_Menu_Layout_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@Menu_ID", existingMenuID) });
+		                cmdBuilder.FillDataTable(si, sqa, DDM_Config_Menu_Layout_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@Menu_ID", existingMenuID) });
 		                if (DDM_Config_Menu_Layout_DT.Rows.Count == 0) throw new Exception("Record not found.");
 		                row = DDM_Config_Menu_Layout_DT.Rows[0];
 		            }
@@ -601,7 +600,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		            if (!valResult.IsOK) return valResult;
 		
 		            // 3. Save to DB
-		            sqa_ddm_config_menu_layout.Update_DDM_Config(si, DDM_Config_Menu_Layout_DT, sqa);
+		            cmdBuilder.UpdateTableSimple(si, "DDM_Config_Menu_Layout", DDM_Config_Menu_Layout_DT, sqa, "DDM_Menu_ID");
 		            save_Result.Message = "Save Successful.";
 		        }
 		
@@ -649,8 +648,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		            connection.Open();
 		            var sqa = new SqlDataAdapter();
 		            var DDM_Config_Hdr_Ctrls_DT = new DataTable();
-		            var sqa_ddm_config_hdr_ctrls = new SQA_DDM_Config_Hdr_Ctrls(si, connection);
-		            var sqlSelect = "SELECT * FROM DDM_Config_Hdr_Ctrls WHERE DDM_Hdr_Ctrl_ID = @DDM_Hdr_Ctrl_ID";
+		            		            var sqlSelect = "SELECT * FROM DDM_Config_Hdr_Ctrls WHERE DDM_Hdr_Ctrl_ID = @DDM_Hdr_Ctrl_ID";
 		
 		            DataRow row;
 		            if (runType == "New")
@@ -660,7 +658,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		                var newID = sql_gbl_get_max_id.Get_Max_ID(si, "DDM_Config_Hdr_Ctrls", "DDM_Hdr_Ctrl_ID");
 						var DDM_Config_DT = new DataTable();
 		                
-		                sqa_ddm_config_hdr_ctrls.Fill_DDM_Config_Hdr_Ctrls_DT(si, sqa, DDM_Config_Hdr_Ctrls_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@DDM_Hdr_Ctrl_ID", -1) });
+		                cmdBuilder.FillDataTable(si, sqa, DDM_Config_Hdr_Ctrls_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@DDM_Hdr_Ctrl_ID", -1) });
 						sqlSelect = "SELECT * FROM DDM_Config WHERE DDM_Config_ID = @DDM_Config_ID";
 						sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, DDM_Config_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@DDM_Config_ID", SqlDbType.Int) { Value = configID }});
 		                row = DDM_Config_Hdr_Ctrls_DT.NewRow();
@@ -691,7 +689,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		            }
 		            else
 		            {
-		                sqa_ddm_config_hdr_ctrls.Fill_DDM_Config_Hdr_Ctrls_DT(si, sqa, DDM_Config_Hdr_Ctrls_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@DDM_Hdr_Ctrl_ID", existingHdrCtrlID) });
+		                cmdBuilder.FillDataTable(si, sqa, DDM_Config_Hdr_Ctrls_DT, sqlSelect, new SqlParameter[] { new SqlParameter("@DDM_Hdr_Ctrl_ID", existingHdrCtrlID) });
 		                if (DDM_Config_Hdr_Ctrls_DT.Rows.Count == 0) throw new Exception("Record not found.");
 		                row = DDM_Config_Hdr_Ctrls_DT.Rows[0];
 		            }
@@ -729,7 +727,7 @@ BRApi.ErrorLog.LogMessage(si,$"Hit {config.DashboardName}");
 		            if (!valResult.IsOK) return valResult;
 		
 		            // 3. Save to DB
-		            sqa_ddm_config_hdr_ctrls.Update_DDM_Config_Hdr_Ctrls(si, DDM_Config_Hdr_Ctrls_DT, sqa);
+		            cmdBuilder.UpdateTableSimple(si, "DDM_Config_Hdr_Ctrls", DDM_Config_Hdr_Ctrls_DT, sqa, "Hdr_Ctrl_ID");
 		            save_Result.Message = "Save Successful.";
 		        }
 		
