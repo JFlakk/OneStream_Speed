@@ -33,19 +33,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Fill_FMM_Reg_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
         {
-            using (SqlCommand command = new SqlCommand(sql, _connection))
-            {
-                command.CommandType = CommandType.Text;
-                if (sqlparams != null)
-                {
-                    command.Parameters.AddRange(sqlparams);
-                }
-
-                sqa.SelectCommand = command;
-                sqa.Fill(dt);
-				command.Parameters.Clear();
-				sqa.SelectCommand = null;
-            }
+            _cmdBuilder.FillDataTable(si, sqa, dt, sql, sqlparams);
         }
 
         public void Update_FMM_Reg_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
