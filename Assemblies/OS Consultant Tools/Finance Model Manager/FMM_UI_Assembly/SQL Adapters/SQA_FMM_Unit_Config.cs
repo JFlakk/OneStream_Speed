@@ -51,64 +51,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public void Update_FMM_Unit_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
-            sqa.UpdateBatchSize = 0; // Set batch size for performance
-            using (SqlTransaction transaction = _connection.BeginTransaction())
-            {
-                // Define the insert query and parameters
-                string insertQuery = @"
-                    INSERT INTO FMM_Unit_Config (
-                        Cube_ID, Act_ID, Unit_ID, Name, Status, 
-                        Create_Date, Create_User, Update_Date, Update_User)
-                    VALUES
-                        (@Cube_ID, @Act_ID, @Unit_ID, @Name, @Status, 
-                        @Create_Date, @Create_User, @Update_Date, @Update_User)";
-                sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                sqa.InsertCommand.Parameters.Add("@Cube_ID", SqlDbType.Int).SourceColumn = "Cube_ID";
-                sqa.InsertCommand.Parameters.Add("@Act_ID", SqlDbType.Int).SourceColumn = "Act_ID";
-                sqa.InsertCommand.Parameters.Add("@Unit_ID", SqlDbType.Int).SourceColumn = "Unit_ID";
-                sqa.InsertCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
-                sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
-                sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
-                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
-                sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
-
-                // Define the update query and parameters
-                string updateQuery = @"
-                    UPDATE FMM_Unit_Config SET
-                        Name = @Name,
-                        Status = @Status,
-                        Update_Date = @Update_Date,
-                        Update_User = @Update_User
-                    WHERE Unit_ID = @Unit_ID";
-                sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@Unit_ID", SqlDbType.Int) { SourceColumn = "Unit_ID", SourceVersion = DataRowVersion.Original });
-                sqa.UpdateCommand.Parameters.Add("@Name", SqlDbType.NVarChar, 100).SourceColumn = "Name";
-                sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 20).SourceColumn = "Status";
-                sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
-
-                // Define the delete query and parameters
-                string deleteQuery = @"
-                    DELETE FROM FMM_Unit_Config 
-                    WHERE Unit_ID = @Unit_ID";
-                sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@Unit_ID", SqlDbType.Int) { SourceColumn = "Unit_ID", SourceVersion = DataRowVersion.Original });
-
-                try
-                {
-                    sqa.Update(dt);
-                    transaction.Commit();
-                    sqa.InsertCommand = null;
-                    sqa.UpdateCommand = null;
-                    sqa.DeleteCommand = null;
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
+            _cmdBuilder.UpdateTableSimple(si, "FMM_Unit_Config", dt, sqa, "Unit_ID");
         }
     }
 }
