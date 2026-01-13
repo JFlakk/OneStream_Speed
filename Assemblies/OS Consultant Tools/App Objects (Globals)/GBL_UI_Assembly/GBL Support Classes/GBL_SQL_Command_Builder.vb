@@ -256,7 +256,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				Return SqlDbType.Decimal
 			ElseIf dataType Is GetType(Double) Then
 				Return SqlDbType.Float
-			ElseIf dataType Is GetType(Single) Then
+			ElseIf dataType Is GetType(Single) Then  ' VB.NET Single = C# float
 				Return SqlDbType.Real
 			ElseIf dataType Is GetType(Guid) Then
 				Return SqlDbType.UniqueIdentifier

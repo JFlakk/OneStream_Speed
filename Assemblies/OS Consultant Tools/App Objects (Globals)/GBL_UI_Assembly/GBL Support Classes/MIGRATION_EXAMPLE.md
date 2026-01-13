@@ -114,7 +114,8 @@ End Class
 ### After (Using GBL_SQL_Command_Builder - 35 lines)
 
 ```vb
-Imports Workspace.OSConsTools.GBL_UI_Assembly  ' Add this import
+' Note: In OneStream, GBL_SQL_Command_Builder is typically accessible
+' without explicit imports as it's in the same global assembly
 
 Public Class SQA_XFC_APPN_Mapping
     Private ReadOnly _connection As SqlConnection
@@ -172,8 +173,12 @@ End Class
 ## Migration Steps
 
 ### Step 1: Add Import Statement
+
+**Note:** In OneStream, you typically don't need to add namespace imports for classes within the same workspace/assembly. The `GBL_SQL_Command_Builder` should be accessible directly as it's in the same global assembly. If you do need an import, use:
+
 ```vb
-Imports Workspace.OSConsTools.GBL_UI_Assembly
+' Only if needed - usually not required in OneStream
+Imports Workspace.__WsNamespacePrefix.GBL_UI_Assembly
 ```
 
 ### Step 2: Replace Update Method
