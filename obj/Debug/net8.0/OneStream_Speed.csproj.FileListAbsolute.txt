@@ -1,0 +1,6 @@
+/home/runner/work/OneStream_Speed/OneStream_Speed/obj/Debug/net8.0/OneStream_Speed.csproj.AssemblyReference.cache
+/home/runner/work/OneStream_Speed/OneStream_Speed/obj/Debug/net8.0/OneStream_Speed.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/OneStream_Speed/OneStream_Speed/obj/Debug/net8.0/OneStream_Speed.AssemblyInfoInputs.cache
+/home/runner/work/OneStream_Speed/OneStream_Speed/obj/Debug/net8.0/OneStream_Speed.AssemblyInfo.cs
+/home/runner/work/OneStream_Speed/OneStream_Speed/obj/Debug/net8.0/OneStream_Speed.csproj.CoreCompileInputs.cache
+/home/runner/work/OneStream_Speed/OneStream_Speed/obj/Debug/net8.0/OneStream_Speed.sourcelink.json
