@@ -25,6 +25,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     /// Generic SQL Command Builder that dynamically generates INSERT/UPDATE/DELETE commands
     /// based on DataTable schema. This eliminates hardcoded SQL statements and provides
     /// automatic synchronization when schema changes occur.
+    /// 
+    /// This class works with any SqlConnection, including those created from:
+    /// - BRApi.Database.CreateApplicationDbConnInfo(si)
+    /// - BRApi.Database.CreateMergeDbConnInfo(si)
+    /// - Any other database connection type
     /// </summary>
     public class GBL_SQL_Command_Builder
     {
@@ -38,7 +43,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// <summary>
         /// Initialize the SQL Command Builder
         /// </summary>
-        /// <param name="connection">SQL connection to use</param>
+        /// <param name="connection">SQL connection to use (can be from App DB or Merge DB)</param>
         /// <param name="tableName">Name of the table to generate commands for</param>
         /// <param name="dataTable">DataTable with schema information</param>
         public GBL_SQL_Command_Builder(SqlConnection connection, string tableName, DataTable dataTable)

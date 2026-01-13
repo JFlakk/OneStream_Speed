@@ -3,11 +3,21 @@
 ## Overview
 The `GBL_SQL_Command_Builder` is a utility class that dynamically generates INSERT, UPDATE, and DELETE SQL commands based on DataTable schema. This eliminates the need for hardcoded SQL statements and provides automatic schema synchronization.
 
+**Available in Both Languages:**
+- C# version: `GBL_SQL_Command_Builder.cs`
+- VB.NET version: `GBL_SQL_Command_Builder.vb`
+
+Both versions provide identical functionality and work with **any** `SqlConnection`, including:
+- Application Database connections (`CreateApplicationDbConnInfo`)
+- Merge Database connections (`CreateMergeDbConnInfo`)
+- Any other database connection type
+
 ## Purpose
 - **Eliminate Hardcoded SQL**: No more manually writing INSERT/UPDATE/DELETE statements
 - **Automatic Schema Sync**: When database schema changes, the builder automatically adapts
 - **Reduce Maintenance**: Centralized logic reduces code duplication
 - **Improve Consistency**: All SQA files use the same pattern
+- **Multi-Database Support**: Works seamlessly with Application DB and Merge DB
 
 ## Basic Usage
 
@@ -36,7 +46,7 @@ builder.ExcludeFromUpdate("ID", "Create_Date", "Create_User");
 builder.ConfigureAdapter(sqlDataAdapter, transaction);
 ```
 
-## Complete Example
+## Complete Example (C#)
 
 ```csharp
 public void Update_FMM_Models(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
@@ -67,6 +77,34 @@ public void Update_FMM_Models(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         }
     }
 }
+```
+
+## Complete Example (VB.NET)
+
+```vb
+Public Sub Update_FMM_Models(si As SessionInfo, dt As DataTable, sqa As SqlDataAdapter)
+    Using transaction As SqlTransaction = _connection.BeginTransaction()
+        Try
+            ' Create and configure the builder
+            Dim builder As New GBL_SQL_Command_Builder(_connection, "FMM_Models", dt)
+            builder.SetPrimaryKey("Model_ID")
+            builder.ExcludeFromUpdate("Model_ID", "Cube_ID", "Act_ID", "Create_Date", "Create_User")
+            builder.ConfigureAdapter(sqa, transaction)
+
+            ' Execute the update
+            sqa.Update(dt)
+            transaction.Commit()
+            
+            ' Cleanup
+            sqa.InsertCommand = Nothing
+            sqa.UpdateCommand = Nothing
+            sqa.DeleteCommand = Nothing
+        Catch
+            transaction.Rollback()
+            Throw
+        End Try
+    End Using
+End Sub
 ```
 
 ## Advanced Features
@@ -149,24 +187,106 @@ catch (Exception)
 }
 ```
 
+## Database Connection Support
+
+The command builder works with **any** `SqlConnection`, allowing you to use it with different database types:
+
+### Application Database (C#)
+```csharp
+var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+{
+    connection.Open();
+    var sqa = new SQA_FMM_Models(si, connection);
+    var dt = new DataTable();
+    var adapter = new SqlDataAdapter();
+    
+    // ... fill data ...
+    
+    // The builder works with Application DB
+    sqa.Update_FMM_Models(si, dt, adapter);
+}
+```
+
+### Merge Database (C#)
+```csharp
+var dbConnMerge = BRApi.Database.CreateMergeDbConnInfo(si);
+using (var connection = new SqlConnection(dbConnMerge.ConnectionString))
+{
+    connection.Open();
+    var sqa = new SQA_FMM_Models(si, connection);
+    var dt = new DataTable();
+    var adapter = new SqlDataAdapter();
+    
+    // ... fill data ...
+    
+    // The builder works with Merge DB too!
+    sqa.Update_FMM_Models(si, dt, adapter);
+}
+```
+
+### Application Database (VB.NET)
+```vb
+Dim dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si)
+Using connection As New SqlConnection(dbConnApp.ConnectionString)
+    connection.Open()
+    Dim sqa As New SQA_XFC_CMD_PGM_REQ(connection)
+    Dim dt As New DataTable()
+    Dim adapter As New SqlDataAdapter()
+    
+    ' ... fill data ...
+    
+    ' The builder works with Application DB
+    sqa.Update_XFC_CMD_PGM_REQ(dt, adapter)
+End Using
+```
+
+### Merge Database (VB.NET)
+```vb
+Dim dbConnMerge = BRApi.Database.CreateMergeDbConnInfo(si)
+Using connection As New SqlConnection(dbConnMerge.ConnectionString)
+    connection.Open()
+    Dim sqa As New SQA_XFC_CMD_PGM_REQ(connection)
+    Dim dt As New DataTable()
+    Dim adapter As New SqlDataAdapter()
+    
+    ' ... fill data ...
+    
+    ' The builder works with Merge DB too!
+    sqa.Update_XFC_CMD_PGM_REQ(dt, adapter)
+End Using
+```
+
 ## Common Patterns
 
-### Single Primary Key
+### Single Primary Key (C#)
 ```csharp
 builder.SetPrimaryKey("ID");
 builder.ExcludeFromUpdate("ID", "Create_Date", "Create_User");
 ```
 
-### Composite Primary Key
+### Composite Primary Key (C#)
 ```csharp
 builder.SetPrimaryKey("ID1", "ID2");
 builder.ExcludeFromUpdate("ID1", "ID2", "Create_Date", "Create_User");
 ```
 
-### Many Columns with Foreign Keys
+### Many Columns with Foreign Keys (C#)
 ```csharp
 builder.SetPrimaryKey("Record_ID");
 builder.ExcludeFromUpdate("Record_ID", "Parent_ID", "Related_ID", "Create_Date", "Create_User");
+```
+
+### Single Primary Key (VB.NET)
+```vb
+builder.SetPrimaryKey("ID")
+builder.ExcludeFromUpdate("ID", "Create_Date", "Create_User")
+```
+
+### Composite Primary Key (VB.NET)
+```vb
+builder.SetPrimaryKey("ID1", "ID2")
+builder.ExcludeFromUpdate("ID1", "ID2", "Create_Date", "Create_User")
 ```
 
 ## Troubleshooting
@@ -182,7 +302,7 @@ builder.ExcludeFromUpdate("Record_ID", "Parent_ID", "Related_ID", "Create_Date",
 
 ## Migration Guide
 
-### Before (Hardcoded)
+### C# - Before (Hardcoded)
 ```csharp
 string insertQuery = @"INSERT INTO Table (...) VALUES (...)";
 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
@@ -190,12 +310,28 @@ sqa.InsertCommand.Parameters.Add("@Col1", SqlDbType.Int).SourceColumn = "Col1";
 // ... 50+ lines of parameter definitions ...
 ```
 
-### After (Dynamic)
+### C# - After (Dynamic)
 ```csharp
 var builder = new GBL_SQL_Command_Builder(_connection, "Table", dt);
 builder.SetPrimaryKey("ID");
 builder.ExcludeFromUpdate("ID", "Create_Date", "Create_User");
 builder.ConfigureAdapter(sqa, transaction);
+```
+
+### VB.NET - Before (Hardcoded)
+```vb
+Dim insertQuery As String = "INSERT INTO Table (...) VALUES (...)"
+sqa.InsertCommand = New SqlCommand(insertQuery, _connection, transaction)
+sqa.InsertCommand.Parameters.Add("@Col1", SqlDbType.Int).SourceColumn = "Col1"
+' ... 50+ lines of parameter definitions ...
+```
+
+### VB.NET - After (Dynamic)
+```vb
+Dim builder As New GBL_SQL_Command_Builder(_connection, "Table", dt)
+builder.SetPrimaryKey("ID")
+builder.ExcludeFromUpdate("ID", "Create_Date", "Create_User")
+builder.ConfigureAdapter(sqa, transaction)
 ```
 
 ## Performance Considerations
@@ -207,9 +343,28 @@ builder.ConfigureAdapter(sqa, transaction);
 
 ## See Also
 
-- SQA_FMM_Models.cs - Simple single-key example
-- SQA_RegPlan_Audit.cs - Complex composite-key example
-- SQA_DDM_Config_Menu_Layout.cs - Many-column example
+- **C# Examples:**
+  - SQA_FMM_Models.cs - Simple single-key example
+  - SQA_RegPlan_Audit.cs - Complex composite-key example
+  - SQA_DDM_Config_Menu_Layout.cs - Many-column example
+
+- **VB.NET Examples:**
+  - After migration: SQA_XFC_CMD_PGM_REQ.vb
+  - After migration: SQA_XFC_CMD_SPLN_REQ.vb
+  - After migration: SQA_XFC_CMD_UFR.vb
+
+## Language Support
+
+The command builder is available in both languages:
+
+| Language | File | Status |
+|----------|------|--------|
+| C# | GBL_SQL_Command_Builder.cs | ✓ In use by all C# SQA files |
+| VB.NET | GBL_SQL_Command_Builder.vb | ✓ Available for VB.NET SQA files |
+
+**Current Implementation Status:**
+- **26 C# SQA files**: Already using GBL_SQL_Command_Builder ✓
+- **18 VB.NET SQA files**: Can now migrate to use GBL_SQL_Command_Builder
 
 ## Support
 
