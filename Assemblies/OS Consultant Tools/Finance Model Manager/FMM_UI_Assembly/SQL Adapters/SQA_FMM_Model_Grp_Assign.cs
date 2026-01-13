@@ -18,15 +18,17 @@ using OneStream.Stage.Engine;
 using OneStreamWorkspacesApi;
 using OneStreamWorkspacesApi.V800;
 
+using Workspace.OSConsTools.GBL_UI_Assembly;
+
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
     public class SQA_FMM_Model_Grp_Assign
     {
-        private readonly SqlConnection _connection;
+        private readonly SQA_GBL_Command_Builder _cmdBuilder;
 
         public SQA_FMM_Model_Grp_Assign(SessionInfo si, SqlConnection connection)
         {
-            _connection = connection;
+            _cmdBuilder = new SQA_GBL_Command_Builder(si, connection);
         }
 
         public void Fill_FMM_Model_Grp_Assign_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)

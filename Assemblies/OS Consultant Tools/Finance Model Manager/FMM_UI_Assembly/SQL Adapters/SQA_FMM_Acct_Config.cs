@@ -19,15 +19,17 @@ using OneStreamWorkspacesApi;
 using OneStreamWorkspacesApi.V800;
 using OneStreamWorkspacesApi.V820;
 
+using Workspace.OSConsTools.GBL_UI_Assembly;
+
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
     public class SQA_FMM_Acct_Config
     {
-        private readonly SqlConnection _connection;
+        private readonly SQA_GBL_Command_Builder _cmdBuilder;
 
         public SQA_FMM_Acct_Config(SessionInfo si, SqlConnection connection)
         {
-            _connection = connection;
+            _cmdBuilder = new SQA_GBL_Command_Builder(si, connection);
         }
 
         public void Fill_FMM_Acct_Config_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string sql, params SqlParameter[] sqlparams)
