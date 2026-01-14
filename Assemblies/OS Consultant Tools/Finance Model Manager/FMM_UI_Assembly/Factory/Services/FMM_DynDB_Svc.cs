@@ -32,45 +32,45 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     {
                         // retrieve our items
                         var src_CellDB = new FMM_Src_CellDB(si);
-                        var src_Cells = src_CellDB.GetSRCCells();
+                        var src_Cells = src_CellDB.GetSrcCellsByCalcId(1, 1);
 
                         // prepare a list of repeated components			
 
                         var repeatArgs = new List<WsDynamicComponentRepeatArgs>();
 
                         // loop through our items, populating dictionaries that will contain Parameter values for each "row"
-                        foreach (ConfigModel config in src_Cells)
+                        foreach (FMM_Src_CellModel cellModel in src_Cells)
                         {
                             Dictionary<string, string> nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>()
                             {
                                 {
                                     "ConfID",
-                                    config.ID.ToString()
+                                    cellModel.ID.ToString()
                                 },
                                 {
                                     "WfID",
-                                    config.WfID.ToString()
+                                    cellModel.WfID.ToString()
                                 },
                                 {
                                     "ScenarioTypeID",
-                                    config.ScenarioTypeID.ToString()
+                                    cellModel.ScenarioTypeID.ToString()
                                 },
                                 {
                                     "Frequency",
-                                    config.Frequency
+                                    cellModel.Frequency
                                 },
                                 {
                                     "DefaultDashboardID",
-                                    config.DefaultDashboardID.ToString()
+                                    cellModel.DefaultDashboardID.ToString()
                                 },
                                 {
                                     "MatchDashboardID",
-                                    config.MatchDashboardID.ToString()
+                                    cellModel.MatchDashboardID.ToString()
                                 }
                             };
 
                             repeatArgs.Add(new WsDynamicComponentRepeatArgs(
-                                config.ID.ToString(),
+                                cellModel.ID.ToString(),
                                 nextLevelTemplateSubstVarsToAdd));
                         }
 

@@ -25,12 +25,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public string TableName { get; } = "FMM_Src_Cell";
 
         // SessionInfo instance
-        public SessionInfo SI { get; }
+        public SessionInfo si { get; }
 
         // constructor
         public FMM_Src_CellDB(SessionInfo si)
         {
-            this.SI = si;
+            this.si = si;
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public List<string> GetRequiredColumnsByCalcType(int calcType)
         {
             var columns = new List<string>();
-            
+
             // Always include core identification and common fields
             columns.AddRange(new[] {
                 "Cell_ID", "Cube_ID", "Act_ID", "Model_ID", "Calc_ID", "Src_Order",
@@ -52,7 +52,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             var helpers = new FMM_Config_Helpers();
             var srcConfig = helpers.Get_SrcConfigType(calcType);
-            
+
             if (srcConfig != null && srcConfig.ParameterMappings != null)
             {
                 foreach (var mapping in srcConfig.ParameterMappings.Values)
@@ -67,7 +67,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     }
                 }
             }
-            
+
             return columns;
         }
 
@@ -93,21 +93,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 var columns = GetSelectColumnsForCalcType(calcType);
                 string sql = $"SELECT {columns} FROM {this.TableName} WHERE Cell_ID = @cellID";
-                
+
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@cellID", cellId) };
-                
-                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.SI))
+
+                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
                     DataTable dt = BRApi.Database.ExecuteSql(dbConn, sql, paramList, false);
                     if (dt.Rows.Count < 1) return null;
-                    
+
                     DataRow dr = dt.Rows[0];
                     return MapDataRowToModel(dr);
                 }
             }
             catch (Exception ex)
             {
-                throw new XFException(SI, ex);
+                throw new XFException(si, ex);
             }
         }
 
@@ -120,25 +120,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 var columns = GetSelectColumnsForCalcType(calcType);
                 string sql = $"SELECT {columns} FROM {this.TableName} WHERE Calc_ID = @calcID ORDER BY Src_Order";
-                
+
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@calcID", calcId) };
-                
-                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.SI))
+
+                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
                     DataTable dt = BRApi.Database.ExecuteSql(dbConn, sql, paramList, false);
                     List<FMM_Src_CellModel> result = new List<FMM_Src_CellModel>();
-                    
+
                     foreach (DataRow dr in dt.Rows)
                     {
                         result.Add(MapDataRowToModel(dr));
                     }
-                    
+
                     return result;
                 }
             }
             catch (Exception ex)
             {
-                throw new XFException(SI, ex);
+                throw new XFException(si, ex);
             }
         }
 
@@ -151,23 +151,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             try
             {
                 string sql = $"SELECT * FROM {this.TableName} ORDER BY Calc_ID, Src_Order";
-                
-                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.SI))
+
+                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
                     DataTable dt = BRApi.Database.ExecuteSql(dbConn, sql, false);
                     List<FMM_Src_CellModel> result = new List<FMM_Src_CellModel>();
-                    
+
                     foreach (DataRow dr in dt.Rows)
                     {
                         result.Add(MapDataRowToModel(dr));
                     }
-                    
+
                     return result;
                 }
             }
             catch (Exception ex)
             {
-                throw new XFException(SI, ex);
+                throw new XFException(si, ex);
             }
         }
 
@@ -189,7 +189,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 Open_Parens = dr.Field<string>("Open_Parens") ?? string.Empty,
                 Math_Operator = dr.Field<string>("Math_Operator") ?? string.Empty,
                 Close_Parens = dr.Field<string>("Close_Parens") ?? string.Empty,
-                
+
                 // Dimension fields - only present if column exists
                 Entity = dr.Table.Columns.Contains("Entity") ? dr.Field<string>("Entity") : null,
                 Cons = dr.Table.Columns.Contains("Cons") ? dr.Field<string>("Cons") : null,
@@ -208,7 +208,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 UD6 = dr.Table.Columns.Contains("UD6") ? dr.Field<string>("UD6") : null,
                 UD7 = dr.Table.Columns.Contains("UD7") ? dr.Field<string>("UD7") : null,
                 UD8 = dr.Table.Columns.Contains("UD8") ? dr.Field<string>("UD8") : null,
-                
+
                 // Additional fields
                 DB_Name = dr.Table.Columns.Contains("DB_Name") ? dr.Field<string>("DB_Name") : null,
                 Dyn_Calc_Script = dr.Table.Columns.Contains("Dyn_Calc_Script") ? dr.Field<string>("Dyn_Calc_Script") : null,
@@ -216,7 +216,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 Unbal_Src_Cell_Buffer_Filter = dr.Table.Columns.Contains("Unbal_Src_Cell_Buffer_Filter") ? dr.Field<string>("Unbal_Src_Cell_Buffer_Filter") : null,
                 Unbal_Buffer_Filter = dr.Table.Columns.Contains("Unbal_Buffer_Filter") ? dr.Field<string>("Unbal_Buffer_Filter") : null,
                 Override_Value = dr.Table.Columns.Contains("Override_Value") ? dr.Field<string>("Override_Value") : null,
-                
+
                 // Unbalanced dimension overrides
                 Unbal_Acct_Override = dr.Table.Columns.Contains("Unbal_Acct_Override") ? dr.Field<string>("Unbal_Acct_Override") : null,
                 Unbal_Origin_Override = dr.Table.Columns.Contains("Unbal_Origin_Override") ? dr.Field<string>("Unbal_Origin_Override") : null,
@@ -230,7 +230,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 Unbal_UD6_Override = dr.Table.Columns.Contains("Unbal_UD6_Override") ? dr.Field<string>("Unbal_UD6_Override") : null,
                 Unbal_UD7_Override = dr.Table.Columns.Contains("Unbal_UD7_Override") ? dr.Field<string>("Unbal_UD7_Override") : null,
                 Unbal_UD8_Override = dr.Table.Columns.Contains("Unbal_UD8_Override") ? dr.Field<string>("Unbal_UD8_Override") : null,
-                
+
                 // Audit fields
                 Create_Date = dr.Field<DateTime?>("Create_Date"),
                 Create_User = dr.Field<string>("Create_User"),
@@ -248,15 +248,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 string sql = $"DELETE FROM {this.TableName} WHERE Cell_ID = @cellID";
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@cellID", cellId) };
-                
-                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.SI))
+
+                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
                     BRApi.Database.ExecuteActionQuery(dbConn, sql, paramList, false, true);
                 }
             }
             catch (Exception ex)
             {
-                throw new XFException(SI, ex);
+                throw new XFException(si, ex);
             }
         }
 
