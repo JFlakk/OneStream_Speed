@@ -305,7 +305,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Model_ID", SqlDbType.Int) { Value = model_ID }
                     };
 
-                    cmdBuilder.Fill_FMM_Calc_Config_DT(si, sqa, FMM_Calc_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Calc_Config_DT, sql, sqlparams);
                     FMM_Calc_Config_DT.PrimaryKey = new DataColumn[] { FMM_Calc_Config_DT.Columns["Calc_ID"] };
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -371,7 +371,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new SqlParameter("@Dest_Cell_ID", SqlDbType.Int) { Value = dest_Cell_ID }
                             };
 
-                            sqa_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, sqa, FMM_Dest_Cell_DT, sql, sqlparams);
+                            cmdBuilder.FillDataTable(si, sqa, FMM_Dest_Cell_DT, sql, sqlparams);
 
                             BRApi.ErrorLog.LogMessage(si, "New row kickoff for OSCalc: " + calc_ID + " OSCalcDestCellID: " + dest_Cell_ID);
                             var new_Row = FMM_Dest_Cell_DT.NewRow();
@@ -473,18 +473,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
                         // Update the database with the changes made to the FMM_Calc_Config DataTable
-                        sqa_fmm_calc_config.Update_FMM_Calc_Config(si, FMM_Calc_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, FMM_Calc_Config_DT, sqa);
 
                         // Update the FMM_Dest_Cell table based on the changes made to the DataTable
                         if (createNewDestCell == true)
                         {
-                            sqa_FMM_Dest_Cell.Update_FMM_Dest_Cell(si, FMM_Dest_Cell_DT, sqa);
+                            cmdBuilder.UpdateTableSimple(si, FMM_Dest_Cell_DT, sqa);
                         }
                     }
                 }
 
-                // Set return value
-                save_Result.CancelDefaultSave = true;
 
                 return save_Result;
             }
