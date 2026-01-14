@@ -161,6 +161,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
+                    connection.Open();
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(this.si, connection);
                     var sqa = new SqlDataAdapter();
                     var currentTable = new DataTable();
@@ -171,7 +172,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     };
 
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
-                    currentTable.PrimaryKey = new[] { currentTable.Columns["Cell_ID"]! };
+                    
+                    if (currentTable.Columns.Contains("Cell_ID"))
+                    {
+                        currentTable.PrimaryKey = new[] { currentTable.Columns["Cell_ID"]! };
+                    }
 
                     currentTable.Merge(mergeTable, false, MissingSchemaAction.Add);
 
