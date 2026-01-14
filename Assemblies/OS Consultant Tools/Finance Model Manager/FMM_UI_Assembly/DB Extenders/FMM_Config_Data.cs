@@ -473,12 +473,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
                         // Update the database with the changes made to the FMM_Calc_Config DataTable
-                        cmdBuilder.UpdateTableSimple(si, FMM_Calc_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Calc_Config", FMM_Calc_Config_DT, sqa, "Calc_ID");
 
                         // Update the FMM_Dest_Cell table based on the changes made to the DataTable
                         if (createNewDestCell == true)
                         {
-                            cmdBuilder.UpdateTableSimple(si, FMM_Dest_Cell_DT, sqa);
+                            cmdBuilder.UpdateTableSimple(si, "FMM_Dest_Cell", FMM_Dest_Cell_DT, sqa, "Dest_Cell_ID");
                         }
                     }
                 }
@@ -508,10 +508,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-
-                    var sqa_FMM_Dest_Cell = new SQA_FMM_Dest_Cell(si, connection);
-                    var FMM_Dest_Cell_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+
+                    var FMM_Dest_Cell_DT = new DataTable();
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
                     var sql = @"SELECT * 
@@ -523,7 +523,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID }
                     };
 
-                    sqa_FMM_Dest_Cell.Fill_FMM_Dest_Cell_DT(si, sqa, FMM_Dest_Cell_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Dest_Cell_DT, sql, sqlparams);
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
                     {
                         // Find the row to update and modify its data
@@ -544,7 +544,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                     }
 
-                    sqa_FMM_Dest_Cell.Update_FMM_Dest_Cell(si, FMM_Dest_Cell_DT, sqa);
+                    cmdBuilder.UpdateTableSimple(si, "FMM_Dest_Cell", FMM_Dest_Cell_DT, sqa, "Dest_Cell_ID");
                 }
 
                 // Set return value
@@ -574,9 +574,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_src_cell = new SQA_FMM_Src_Cell(si, connection);
-                    var FMM_Src_Cell_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Src_Cell_DT = new DataTable();
 
                     // Fill the DataTable with the current data from FMM_Dest_Cell
                     var sql = @"SELECT * 
@@ -588,7 +588,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = gbl_Calc_ID },
                     };
 
-                    sqa_fmm_src_cell.Fill_FMM_Src_Cell_DT(si, sqa, FMM_Src_Cell_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Src_Cell_DT, sql, sqlparams);
 
                     FMM_Src_Cell_DT.PrimaryKey = new DataColumn[] { FMM_Src_Cell_DT.Columns["Cell_ID"] };
                     // Save the Calc Config data rows
@@ -720,7 +720,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                     }
 
-                    sqa_fmm_src_cell.Update_FMM_Src_Cell(si, FMM_Src_Cell_DT, sqa);
+                    cmdBuilder.UpdateTableSimple(si, "FMM_Src_Cell", FMM_Src_Cell_DT, sqa, "Src_Cell_ID");
 
 
                     //                    if (gbl_Bal_Calc == "Unbalanced" || gbl_Bal_Calc == "UnbalAlloc")
@@ -765,9 +765,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_act_config = new SQA_FMM_Act_Config(si, connection);
-                    var FMM_Act_Config_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Act_Config_DT = new DataTable();
                     var cube_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     Duplicate_Act_Config(cube_ID, "Initiate", ref save_Result);
 
@@ -780,7 +780,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID }
                     };
-                    sqa_fmm_act_config.Fill_FMM_Act_Config_DT(si, sqa, FMM_Act_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Act_Config_DT, sql, sqlparams);
 
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
                     {
@@ -853,7 +853,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
-                        sqa_fmm_act_config.Update_FMM_Act_Config(si, FMM_Act_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Act_Config", FMM_Act_Config_DT, sqa, "Act_ID");
                     }
                 }
 
@@ -880,9 +880,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_calc_unit_config = new SQA_FMM_Calc_Unit_Config(si, connection);
-                    var FMM_Calc_Unit_Config_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Calc_Unit_Config_DT = new DataTable();
                     var cube_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     Duplicate_Calc_Unit_Config(cube_ID, "Initiate", ref save_Result);
 
@@ -895,7 +895,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID }
                     };
-                    sqa_fmm_calc_unit_config.Fill_FMM_Calc_Unit_Config_DT(si, sqa, FMM_Calc_Unit_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Calc_Unit_Config_DT, sql, sqlparams);
 
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -967,7 +967,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
-                        sqa_fmm_calc_unit_config.Update_FMM_Calc_Unit_Config(si, FMM_Calc_Unit_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Calc_Unit_Config", FMM_Calc_Unit_Config_DT, sqa, "Calc_Unit_ID");
                     }
                 }
 
@@ -1001,9 +1001,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_unit_config = new SQA_FMM_Unit_Config(si, connection);
-                    var FMM_Unit_Config_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Unit_Config_DT = new DataTable();
                     var cube_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var act_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
                     Duplicate_Unit_Config(cube_ID, act_ID, "Initiate", ref save_Result);
@@ -1020,7 +1020,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID },
                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = act_ID }
                     };
-                    sqa_fmm_unit_config.Fill_FMM_Unit_Config_DT(si, sqa, FMM_Unit_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Unit_Config_DT, sql, sqlparams);
 
                     BRApi.ErrorLog.LogMessage(si, "Hit: " + cube_ID + " | " + act_ID);
                     // Loops through each row in the table editor that was added or updated prior to hitting save
@@ -1091,7 +1091,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
-                        sqa_fmm_unit_config.Update_FMM_Unit_Config(si, FMM_Unit_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Unit_Config", FMM_Unit_Config_DT, sqa, "Unit_ID");
                     }
                 }
 
@@ -1121,9 +1121,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var SQA_FMM_Acct_Config = new SQA_FMM_Acct_Config(si, connection);
-                    var FMM_Acct_Config_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Acct_Config_DT = new DataTable();
                     var cube_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var act_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
                     var unit_ID = args.SqlTableEditorSaveDataTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Unit_ID", "0").XFConvertToInt();
@@ -1140,7 +1140,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = act_ID }
                     };
 
-                    SQA_FMM_Acct_Config.Fill_FMM_Acct_Config_DT(si, sqa, FMM_Acct_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Acct_Config_DT, sql, sqlparams);
 
 
                     // Loops through each row in the table editor that was added or updated prior to hitting save
@@ -1228,7 +1228,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
-                        SQA_FMM_Acct_Config.Update_FMM_Acct_Config(si, FMM_Acct_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Acct_Config", FMM_Acct_Config_DT, sqa, "Acct_ID");
                     }
                 }
 
@@ -1260,9 +1260,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_reg_config = new SQA_FMM_Reg_Config(si, connection);
-                    var FMM_Reg_Config_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Reg_Config_DT = new DataTable();
                     var cube_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var act_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
                     Duplicate_Reg_Config(cube_ID, act_ID, "Initiate", ref save_Result);
@@ -1278,7 +1278,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID },
                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = act_ID }
                     };
-                    sqa_fmm_reg_config.Fill_FMM_Reg_Config_DT(si, sqa, FMM_Reg_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Reg_Config_DT, sql, sqlparams);
 
                     BRApi.ErrorLog.LogMessage(si, "Hit: " + cube_ID + " | " + act_ID);
                     // Loops through each row in the table editor that was added or updated prior to hitting save
@@ -1364,7 +1364,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
-                        sqa_fmm_reg_config.Update_FMM_Reg_Config(si, FMM_Reg_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Reg_Config", FMM_Reg_Config_DT, sqa, "Reg_Config_ID");
                     }
                     foreach (var reg_config_ID in new_Reg_List)
                     {
@@ -1395,9 +1395,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_col_config = new SQA_FMM_Col_Config(si, connection);
-                    var FMM_Col_Config_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Col_Config_DT = new DataTable();
                     var cube_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var act_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Act_ID", "0").XFConvertToInt();
                     var reg_Config_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Reg_Config_ID", "0").XFConvertToInt();
@@ -1416,7 +1416,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Act_ID", SqlDbType.Int) { Value = act_ID },
                         new SqlParameter("@Reg_Config_ID", SqlDbType.Int) { Value = reg_Config_ID }
                     };
-                    sqa_fmm_col_config.Fill_FMM_Col_Config_DT(si, sqa, FMM_Col_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Col_Config_DT, sql, sqlparams);
 
                     BRApi.ErrorLog.LogMessage(si, "Hit: " + cube_ID + " | " + act_ID);
                     // Loops through each row in the table editor that was added or updated prior to hitting save
@@ -1474,7 +1474,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
                         // Update the FMM_Act_Config table based on the changes made to the DataTable
-                        sqa_fmm_col_config.Update_FMM_Col_Config(si, FMM_Col_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Col_Config", FMM_Col_Config_DT, sqa, "Col_ID");
                     }
                 }
 
@@ -1503,9 +1503,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_appr_config = new SQA_FMM_Appr_Config(si, connection);
-                    var FMM_Appr_Config_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Appr_Config_DT = new DataTable();
                     var cube_ID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     BRApi.ErrorLog.LogMessage(si, "Hit" + cube_ID);
                     Duplicate_Config(cube_ID, "Initiate", ref save_Result);
@@ -1519,7 +1519,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID }
                     };
-                    sqa_fmm_appr_config.Fill_FMM_Appr_Config_DT(si, sqa, FMM_Appr_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Appr_Config_DT, sql, sqlparams);
 
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
@@ -1589,7 +1589,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         save_Result.IsOK = true;
                         save_Result.ShowMessageBox = false;
-                        sqa_fmm_appr_config.Update_FMM_Appr_Config(si, FMM_Appr_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Appr_Config", FMM_Appr_Config_DT, sqa, "Appr_ID");
                     }
                 }
 
@@ -1618,9 +1618,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     connection.Open();
-                    var sqa_fmm_appr_step_config = new SQA_FMM_Appr_Step_Config(si, connection);
-                    var FMM_Appr_Step_Config_DT = new DataTable();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
+                    var FMM_Appr_Step_Config_DT = new DataTable();
                     var cube_ID = customSubstVars.XFGetValue("IV_FMM_Cube_ID", "0").XFConvertToInt();
                     var appr_ID = customSubstVars.XFGetValue("IV_FMM_Appr_ID", "0").XFConvertToInt();
                     Duplicate_Appr_Step_Config(cube_ID, appr_ID, "Update Row", ref save_Result);
@@ -1636,7 +1636,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cube_ID },
                         new SqlParameter("@Appr_ID", SqlDbType.Int) { Value = appr_ID }
                     };
-                    sqa_fmm_appr_step_config.Fill_FMM_Appr_Step_Config_DT(si, sqa, FMM_Appr_Step_Config_DT, sql, sqlparams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_Appr_Step_Config_DT, sql, sqlparams);
 
                     // Loops through each row in the table editor that was added or updated prior to hitting save
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
