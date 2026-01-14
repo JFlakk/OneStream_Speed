@@ -4778,7 +4778,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 get_FMM_Act_Config_Data(
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = src_Cube_ID } },
                     new SqlParameter[] { new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = tgt_Cube_ID } },
-                    sql_gbl_get_datasets, cmdBuilder,
+                    sql_gbl_get_datasets,
                     ref src_FMM_Act_Config_DT, ref tgt_FMM_Act_Config_DT, sql_gbl_get_max_id
                 );
 

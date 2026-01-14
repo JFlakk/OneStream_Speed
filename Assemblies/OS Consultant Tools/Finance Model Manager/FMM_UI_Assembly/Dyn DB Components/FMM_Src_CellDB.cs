@@ -22,7 +22,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     public class FMM_Src_CellDB
     {
         // Database table that will contain our objects
-        public string TableName { get; } = "XFCBF_Configs";
+        public string TableName { get; } = "FMM_Src_Cell";
 
         // SessionInfo instance
         public SessionInfo SI { get; }
