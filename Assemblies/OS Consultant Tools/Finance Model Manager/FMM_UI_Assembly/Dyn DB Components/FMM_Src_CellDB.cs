@@ -173,11 +173,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
                     
-                    if (currentTable.Columns.Contains("Cell_ID"))
+                    // Set primary key if Cell_ID column exists in the result set
+                    if (currentTable.Columns.Contains("Cell_ID") && currentTable.Columns["Cell_ID"] != null)
                     {
                         currentTable.PrimaryKey = new[] { currentTable.Columns["Cell_ID"]! };
                     }
 
+                    // Merge the new/updated records with existing data
+                    // preserveChanges=false: Overwrite existing rows with new values (upsert behavior)
                     currentTable.Merge(mergeTable, false, MissingSchemaAction.Add);
 
                     cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "Cell_ID");
