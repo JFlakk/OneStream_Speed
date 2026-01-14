@@ -393,6 +393,78 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			return properties;
 		}
 
+		public List<FMM_Src_CellModel> BuildSrcCellModels(
+			IDictionary<string, string> customSubstVarsWithUserSelectedValues,
+			string componentId,
+			string dynamicSuffix,
+			Func<string, string, string> getDynamicParamValue,
+			Func<string, Guid> getDynamicParamGuid)
+		{
+			try
+			{
+				var cellModels = new List<FMM_Src_CellModel>();
+
+				if (customSubstVarsWithUserSelectedValues == null)
+				{
+					return cellModels;
+				}
+
+				var calcTypeInt = 0;
+				if (customSubstVarsWithUserSelectedValues.TryGetValue("IV_FMM_Calc_Type", out var calcTypeValue))
+				{
+					int.TryParse(calcTypeValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out calcTypeInt);
+				}
+
+				var srcConfig = Get_SrcConfigType(calcTypeInt);
+				if (srcConfig?.ParameterMappings == null)
+				{
+					return cellModels;
+				}
+
+				foreach (var mapping in srcConfig.ParameterMappings.Values)
+				{
+					var paramName = mapping.Keys.FirstOrDefault();
+					if (string.IsNullOrWhiteSpace(paramName))
+					{
+						continue;
+					}
+
+					customSubstVarsWithUserSelectedValues.TryGetValue(paramName, out var defaultValue);
+
+					var dynamicParamName = $"{paramName}{dynamicSuffix}";
+					var model = new FMM_Src_CellModel();
+					SetPropertyIfExists(model, new[] { "DynamicParamGuid", "DynamicParameterGuid", "ParamGuid" }, getDynamicParamGuid(dynamicParamName));
+					SetPropertyIfExists(model, new[] { "DynamicParamName", "DynamicParameterName", "ParamName" }, dynamicParamName);
+					SetPropertyIfExists(model, new[] { "Value", "ParamValue", "DynamicParameterValue" }, getDynamicParamValue(paramName, defaultValue ?? string.Empty));
+					cellModels.Add(model);
+				}
+
+				return cellModels;
+			}
+			catch (Exception ex)
+			{
+				throw new XFException(ex.Message, ex);
+			}
+		}
+
+		private static void SetPropertyIfExists(object target, IEnumerable<string> candidateNames, object value)
+		{
+			if (target == null)
+			{
+				return;
+			}
+
+			foreach (var candidate in candidateNames)
+			{
+				var prop = target.GetType().GetProperty(candidate);
+				if (prop != null && prop.CanWrite)
+				{
+					prop.SetValue(target, value);
+					break;
+				}
+			}
+		}
+
 		public enum CalcType
 		{
 			None = 0,
