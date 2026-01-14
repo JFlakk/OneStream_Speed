@@ -3742,7 +3742,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Cube_Config_Count_DT, sql, sqlparams);
 
-                    var sqa_fmm_cube_config = new SQA_FMM_Cube_Config(si, connection);
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var FMM_Cube_Config_DT = new DataTable();
 
                     // Insert new cube config record
@@ -3764,7 +3764,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = new_Cube_ID }
                         };
 
-                        sqa_fmm_cube_config.Fill_FMM_Cube_Config_DT(si, sqa, FMM_Cube_Config_DT, sql, sqlparams);
+                        cmdBuilder.FillDataTable(si, sqa, FMM_Cube_Config_DT, sql, sqlparams);
 
                         var new_DataRow = FMM_Cube_Config_DT.NewRow();
                         new_DataRow["Cube_ID"] = new_Cube_ID;
@@ -3783,7 +3783,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         FMM_Cube_Config_DT.Rows.Add(new_DataRow);
 
                         // Save the changes to the database
-                        sqa_fmm_cube_config.Update_FMM_Cube_Config(si, FMM_Cube_Config_DT, sqa);
+                        cmdBuilder.UpdateTableSimple(si, "FMM_Cube_Config", FMM_Cube_Config_DT, sqa, "Cube_ID");
 
                         save_Result.IsOK = true;
                         save_Result.Message = "New Cube Config Saved.";
@@ -3799,7 +3799,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = new_Cube_ID }
                         };
 
-                        sqa_fmm_cube_config.Fill_FMM_Cube_Config_DT(si, sqa, FMM_Cube_Config_DT, sql, sqlparams);
+                        cmdBuilder.FillDataTable(si, sqa, FMM_Cube_Config_DT, sql, sqlparams);
 
                         // Update the existing row
                         if (FMM_Cube_Config_DT.Rows.Count > 0)
@@ -3813,7 +3813,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             rowToUpdate["Update_User"] = si.UserName;
 
                             // Update the database with the changes
-                            sqa_fmm_cube_config.Update_FMM_Cube_Config(si, FMM_Cube_Config_DT, sqa);
+                            cmdBuilder.UpdateTableSimple(si, "FMM_Cube_Config", FMM_Cube_Config_DT, sqa, "Cube_ID");
 
                             save_Result.IsOK = true;
                             save_Result.Message = "Cube Config Updates Saved.";
