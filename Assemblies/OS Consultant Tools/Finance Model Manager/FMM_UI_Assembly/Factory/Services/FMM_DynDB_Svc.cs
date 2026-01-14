@@ -28,10 +28,64 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    if (storedDashboard.Name.XFEqualsIgnoreCase("0b3a3b_FMM_Model_Content_Cube"))
+                    if (storedDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R1C1R2R3R2"))
                     {
-                        // Build dynamic embedded dashboards for Cube Calc vs Reg Calc
-                        return FMM_Content.Get_DynamicModelContentDashboard(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved);
+                        // retrieve our items
+                        var src_CellDB = new FMM_Src_CellDB(si);
+                        var src_Cells = src_CellDB.GetSRCCells();
+
+                        // prepare a list of repeated components			
+
+                        var repeatArgs = new List<WsDynamicComponentRepeatArgs>();
+
+                        // loop through our items, populating dictionaries that will contain Parameter values for each "row"
+                        foreach (ConfigModel config in src_Cells)
+                        {
+                            Dictionary<string, string> nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>()
+                            {
+                                {
+                                    "ConfID",
+                                    config.ID.ToString()
+                                },
+                                {
+                                    "WfID",
+                                    config.WfID.ToString()
+                                },
+                                {
+                                    "ScenarioTypeID",
+                                    config.ScenarioTypeID.ToString()
+                                },
+                                {
+                                    "Frequency",
+                                    config.Frequency
+                                },
+                                {
+                                    "DefaultDashboardID",
+                                    config.DefaultDashboardID.ToString()
+                                },
+                                {
+                                    "MatchDashboardID",
+                                    config.MatchDashboardID.ToString()
+                                }
+                            };
+
+                            repeatArgs.Add(new WsDynamicComponentRepeatArgs(
+                                config.ID.ToString(),
+                                nextLevelTemplateSubstVarsToAdd));
+                        }
+
+                        WsDynamicDashboardEx contentDashboard = api.GetEmbeddedDynamicDashboard(si,
+                            workspace, parentDynamicComponentEx, storedDashboard, string.Empty,
+                            null, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
+
+                        // attach our List of repeaters 
+                        contentDashboard.DynamicDashboard.Tag = repeatArgs;
+
+                        // save the state and return the dashboard
+                        api.SaveDynamicDashboardState(si, parentDynamicComponentEx.DynamicComponent, contentDashboard, WsDynamicItemStateType.NotUsed);
+                        if (contentDashboard.DynamicDashboard.Dashboard != null)
+                            return contentDashboard;
+                        return null;
                     }
                     else
                     {
