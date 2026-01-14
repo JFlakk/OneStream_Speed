@@ -342,6 +342,57 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 			return null;
 		}
+
+		/// <summary>
+		/// Gets the list of database column names (property names) that are enabled for a given CalcType in SrcRegistry
+		/// </summary>
+		public List<string> GetEnabledSrcProperties(int calctypeintValue)
+		{
+			var properties = new List<string>();
+			var srcConfig = Get_SrcConfigType(calctypeintValue);
+
+			if (srcConfig != null && srcConfig.ParameterMappings != null)
+			{
+				foreach (var mapping in srcConfig.ParameterMappings.Values)
+				{
+					foreach (var propertyName in mapping.Values)
+					{
+						if (!properties.Contains(propertyName) && !string.IsNullOrEmpty(propertyName))
+						{
+							properties.Add(propertyName);
+						}
+					}
+				}
+			}
+
+			return properties;
+		}
+
+		/// <summary>
+		/// Gets the list of database column names (property names) that are enabled for a given CalcType in DestRegistry
+		/// </summary>
+		public List<string> GetEnabledDestProperties(int calctypeintValue)
+		{
+			var properties = new List<string>();
+			var destConfig = Get_DestConfigType(calctypeintValue);
+
+			if (destConfig != null && destConfig.ParameterMappings != null)
+			{
+				foreach (var mapping in destConfig.ParameterMappings.Values)
+				{
+					foreach (var propertyName in mapping.Values)
+					{
+						if (!properties.Contains(propertyName) && !string.IsNullOrEmpty(propertyName))
+						{
+							properties.Add(propertyName);
+						}
+					}
+				}
+			}
+
+			return properties;
+		}
+
 		public enum CalcType
 		{
 			None = 0,
