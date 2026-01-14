@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.CSharp;
+using Microsoft.Data.SqlClient;
 using OneStream.Finance.Database;
 using OneStream.Finance.Engine;
 using OneStream.Shared.Common;
@@ -142,7 +143,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
         /// <summary>
-        /// Merge a collection of source cells using the generic SQA merge script
+        /// Merge a collection of source cells using the generic SQA process
         /// </summary>
         public void Merge(List<FMM_Src_CellModel> models, int calcType)
         {
@@ -150,36 +151,49 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             try
             {
-            var mergeTable = BuildMergeTable(models, calcType);
+                var mergeTable = BuildMergeTable(models, calcType);
 
-            var calcId = models[0].Calc_ID;
-            var selectColumns = GetSelectColumnsForCalcType(calcType);
-            var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE Calc_ID = @calcID";
-            var selectParams = new List<DbParamInfo> { new DbParamInfo("@calcID", calcId) };
+                var calcId = models[0].Calc_ID;
+                var selectColumns = GetSelectColumnsForCalcType(calcType);
+                var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE Calc_ID = @calcID";
 
-            using var dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si);
-            var currentTable = BRApi.Database.ExecuteSql(dbConn, currentSql, selectParams, false);
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(this.si);
 
-            var paramList = new List<DbParamInfo>
-            {
-                new DbParamInfo("@TableName", this.TableName),
-                new DbParamInfo("@PrimaryKeyColumn", "Cell_ID"),
-                new DbParamInfo("@UserName", this.si?.UserName ?? string.Empty),
-                new DbParamInfo("@CurrentTable", currentTable),
-                new DbParamInfo("@MergeTable", mergeTable)
-            };
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    connection.Open();
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(this.si, connection);
+                    var sqa = new SqlDataAdapter();
+                    var currentTable = new DataTable();
 
-            var sql = new Workspace.__WsNamespacePrefix.GBL_UI_Assembly.SQL_GBL_GenericMerge().Sql;
-            BRApi.Database.ExecuteActionQuery(dbConn, sql, paramList, false, true);
+                    var sqlparams = new[]
+                    {
+                        new SqlParameter("@calcID", SqlDbType.Int) { Value = calcId }
+                    };
+
+                    cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
+                    
+                    // Set primary key if Cell_ID column exists in the result set
+                    if (currentTable.Columns.Contains("Cell_ID") && currentTable.Columns["Cell_ID"] != null)
+                    {
+                        currentTable.PrimaryKey = new[] { currentTable.Columns["Cell_ID"]! };
+                    }
+
+                    // Merge the new/updated records with existing data
+                    // preserveChanges=false: Overwrite existing rows with new values (upsert behavior)
+                    currentTable.Merge(mergeTable, false, MissingSchemaAction.Add);
+
+                    cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "Cell_ID");
+                }
             }
             catch (Exception ex)
             {
-            throw new XFException(si, ex);
+                throw new XFException(si, ex);
             }
         }
 
         /// <summary>
-        /// Merge a single source cell using the generic SQA merge script
+        /// Merge a single source cell using the generic SQA process
         /// </summary>
         public void Merge(FMM_Src_CellModel model, int calcType)
         {
