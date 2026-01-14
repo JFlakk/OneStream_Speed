@@ -102,7 +102,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     if (dt.Rows.Count < 1) return null;
 
                     DataRow dr = dt.Rows[0];
-                    return MapDataRowToModel(dr);
+                    return MapDataRowToModel(dr, calcType);
                 }
             }
             catch (Exception ex)
@@ -130,7 +130,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     foreach (DataRow dr in dt.Rows)
                     {
-                        result.Add(MapDataRowToModel(dr));
+                        result.Add(MapDataRowToModel(dr, calcType));
                     }
 
                     return result;
@@ -173,10 +173,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         /// <summary>
         /// Maps a DataRow to FMM_Src_CellModel, safely handling null values
+        /// Overload without calcType - uses default parameterless constructor
         /// </summary>
         private FMM_Src_CellModel MapDataRowToModel(DataRow dr)
         {
-            return new FMM_Src_CellModel
+            return MapDataRowToModel(dr, 0); // 0 = CalcType.None, will use empty enabled properties list
+        }
+
+        /// <summary>
+        /// Maps a DataRow to FMM_Src_CellModel, safely handling null values
+        /// </summary>
+        private FMM_Src_CellModel MapDataRowToModel(DataRow dr, int calcType)
+        {
+            // Get enabled properties from configuration
+            var helpers = new FMM_Config_Helpers();
+            var enabledProperties = helpers.GetEnabledSrcProperties(calcType);
+
+            var model = new FMM_Src_CellModel(enabledProperties)
             {
                 Cell_ID = dr.Field<int>("Cell_ID"),
                 Cube_ID = dr.Field<int>("Cube_ID"),
@@ -190,53 +203,90 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 Math_Operator = dr.Field<string>("Math_Operator") ?? string.Empty,
                 Close_Parens = dr.Field<string>("Close_Parens") ?? string.Empty,
 
-                // Dimension fields - only present if column exists
-                Entity = dr.Table.Columns.Contains("Entity") ? dr.Field<string>("Entity") : null,
-                Cons = dr.Table.Columns.Contains("Cons") ? dr.Field<string>("Cons") : null,
-                Scenario = dr.Table.Columns.Contains("Scenario") ? dr.Field<string>("Scenario") : null,
-                Time = dr.Table.Columns.Contains("Time") ? dr.Field<string>("Time") : null,
-                View = dr.Table.Columns.Contains("View") ? dr.Field<string>("View") : null,
-                Acct = dr.Table.Columns.Contains("Acct") ? dr.Field<string>("Acct") : null,
-                IC = dr.Table.Columns.Contains("IC") ? dr.Field<string>("IC") : null,
-                Origin = dr.Table.Columns.Contains("Origin") ? dr.Field<string>("Origin") : null,
-                Flow = dr.Table.Columns.Contains("Flow") ? dr.Field<string>("Flow") : null,
-                UD1 = dr.Table.Columns.Contains("UD1") ? dr.Field<string>("UD1") : null,
-                UD2 = dr.Table.Columns.Contains("UD2") ? dr.Field<string>("UD2") : null,
-                UD3 = dr.Table.Columns.Contains("UD3") ? dr.Field<string>("UD3") : null,
-                UD4 = dr.Table.Columns.Contains("UD4") ? dr.Field<string>("UD4") : null,
-                UD5 = dr.Table.Columns.Contains("UD5") ? dr.Field<string>("UD5") : null,
-                UD6 = dr.Table.Columns.Contains("UD6") ? dr.Field<string>("UD6") : null,
-                UD7 = dr.Table.Columns.Contains("UD7") ? dr.Field<string>("UD7") : null,
-                UD8 = dr.Table.Columns.Contains("UD8") ? dr.Field<string>("UD8") : null,
-
-                // Additional fields
-                DB_Name = dr.Table.Columns.Contains("DB_Name") ? dr.Field<string>("DB_Name") : null,
-                Dyn_Calc_Script = dr.Table.Columns.Contains("Dyn_Calc_Script") ? dr.Field<string>("Dyn_Calc_Script") : null,
-                Unbal_Src_Cell_Buffer = dr.Table.Columns.Contains("Unbal_Src_Cell_Buffer") ? dr.Field<string>("Unbal_Src_Cell_Buffer") : null,
-                Unbal_Src_Cell_Buffer_Filter = dr.Table.Columns.Contains("Unbal_Src_Cell_Buffer_Filter") ? dr.Field<string>("Unbal_Src_Cell_Buffer_Filter") : null,
-                Unbal_Buffer_Filter = dr.Table.Columns.Contains("Unbal_Buffer_Filter") ? dr.Field<string>("Unbal_Buffer_Filter") : null,
-                Override_Value = dr.Table.Columns.Contains("Override_Value") ? dr.Field<string>("Override_Value") : null,
-
-                // Unbalanced dimension overrides
-                Unbal_Acct_Override = dr.Table.Columns.Contains("Unbal_Acct_Override") ? dr.Field<string>("Unbal_Acct_Override") : null,
-                Unbal_Origin_Override = dr.Table.Columns.Contains("Unbal_Origin_Override") ? dr.Field<string>("Unbal_Origin_Override") : null,
-                Unbal_Flow_Override = dr.Table.Columns.Contains("Unbal_Flow_Override") ? dr.Field<string>("Unbal_Flow_Override") : null,
-                Unbal_IC_Override = dr.Table.Columns.Contains("Unbal_IC_Override") ? dr.Field<string>("Unbal_IC_Override") : null,
-                Unbal_UD1_Override = dr.Table.Columns.Contains("Unbal_UD1_Override") ? dr.Field<string>("Unbal_UD1_Override") : null,
-                Unbal_UD2_Override = dr.Table.Columns.Contains("Unbal_UD2_Override") ? dr.Field<string>("Unbal_UD2_Override") : null,
-                Unbal_UD3_Override = dr.Table.Columns.Contains("Unbal_UD3_Override") ? dr.Field<string>("Unbal_UD3_Override") : null,
-                Unbal_UD4_Override = dr.Table.Columns.Contains("Unbal_UD4_Override") ? dr.Field<string>("Unbal_UD4_Override") : null,
-                Unbal_UD5_Override = dr.Table.Columns.Contains("Unbal_UD5_Override") ? dr.Field<string>("Unbal_UD5_Override") : null,
-                Unbal_UD6_Override = dr.Table.Columns.Contains("Unbal_UD6_Override") ? dr.Field<string>("Unbal_UD6_Override") : null,
-                Unbal_UD7_Override = dr.Table.Columns.Contains("Unbal_UD7_Override") ? dr.Field<string>("Unbal_UD7_Override") : null,
-                Unbal_UD8_Override = dr.Table.Columns.Contains("Unbal_UD8_Override") ? dr.Field<string>("Unbal_UD8_Override") : null,
-
                 // Audit fields
                 Create_Date = dr.Field<DateTime?>("Create_Date"),
                 Create_User = dr.Field<string>("Create_User"),
                 Update_Date = dr.Field<DateTime?>("Update_Date"),
                 Update_User = dr.Field<string>("Update_User")
             };
+
+            // Set dimension fields only if they exist in the column set and are enabled
+            if (enabledProperties.Contains("Entity") && dr.Table.Columns.Contains("Entity"))
+                model.Entity = dr.Field<string>("Entity");
+            if (enabledProperties.Contains("Cons") && dr.Table.Columns.Contains("Cons"))
+                model.Cons = dr.Field<string>("Cons");
+            if (enabledProperties.Contains("Scenario") && dr.Table.Columns.Contains("Scenario"))
+                model.Scenario = dr.Field<string>("Scenario");
+            if (enabledProperties.Contains("Time") && dr.Table.Columns.Contains("Time"))
+                model.Time = dr.Field<string>("Time");
+            if (enabledProperties.Contains("View") && dr.Table.Columns.Contains("View"))
+                model.View = dr.Field<string>("View");
+            if (enabledProperties.Contains("Acct") && dr.Table.Columns.Contains("Acct"))
+                model.Acct = dr.Field<string>("Acct");
+            if (enabledProperties.Contains("IC") && dr.Table.Columns.Contains("IC"))
+                model.IC = dr.Field<string>("IC");
+            if (enabledProperties.Contains("Origin") && dr.Table.Columns.Contains("Origin"))
+                model.Origin = dr.Field<string>("Origin");
+            if (enabledProperties.Contains("Flow") && dr.Table.Columns.Contains("Flow"))
+                model.Flow = dr.Field<string>("Flow");
+            if (enabledProperties.Contains("UD1") && dr.Table.Columns.Contains("UD1"))
+                model.UD1 = dr.Field<string>("UD1");
+            if (enabledProperties.Contains("UD2") && dr.Table.Columns.Contains("UD2"))
+                model.UD2 = dr.Field<string>("UD2");
+            if (enabledProperties.Contains("UD3") && dr.Table.Columns.Contains("UD3"))
+                model.UD3 = dr.Field<string>("UD3");
+            if (enabledProperties.Contains("UD4") && dr.Table.Columns.Contains("UD4"))
+                model.UD4 = dr.Field<string>("UD4");
+            if (enabledProperties.Contains("UD5") && dr.Table.Columns.Contains("UD5"))
+                model.UD5 = dr.Field<string>("UD5");
+            if (enabledProperties.Contains("UD6") && dr.Table.Columns.Contains("UD6"))
+                model.UD6 = dr.Field<string>("UD6");
+            if (enabledProperties.Contains("UD7") && dr.Table.Columns.Contains("UD7"))
+                model.UD7 = dr.Field<string>("UD7");
+            if (enabledProperties.Contains("UD8") && dr.Table.Columns.Contains("UD8"))
+                model.UD8 = dr.Field<string>("UD8");
+
+            // Additional fields - only set if enabled
+            if (enabledProperties.Contains("DB_Name") && dr.Table.Columns.Contains("DB_Name"))
+                model.DB_Name = dr.Field<string>("DB_Name");
+            if (enabledProperties.Contains("Dyn_Calc_Script") && dr.Table.Columns.Contains("Dyn_Calc_Script"))
+                model.Dyn_Calc_Script = dr.Field<string>("Dyn_Calc_Script");
+            if (enabledProperties.Contains("Unbal_Src_Cell_Buffer") && dr.Table.Columns.Contains("Unbal_Src_Cell_Buffer"))
+                model.Unbal_Src_Cell_Buffer = dr.Field<string>("Unbal_Src_Cell_Buffer");
+            if (enabledProperties.Contains("Unbal_Src_Cell_Buffer_Filter") && dr.Table.Columns.Contains("Unbal_Src_Cell_Buffer_Filter"))
+                model.Unbal_Src_Cell_Buffer_Filter = dr.Field<string>("Unbal_Src_Cell_Buffer_Filter");
+            if (enabledProperties.Contains("Unbal_Buffer_Filter") && dr.Table.Columns.Contains("Unbal_Buffer_Filter"))
+                model.Unbal_Buffer_Filter = dr.Field<string>("Unbal_Buffer_Filter");
+            if (enabledProperties.Contains("Override_Value") && dr.Table.Columns.Contains("Override_Value"))
+                model.Override_Value = dr.Field<string>("Override_Value");
+
+            // Unbalanced dimension overrides - only set if enabled
+            if (enabledProperties.Contains("Unbal_Acct_Override") && dr.Table.Columns.Contains("Unbal_Acct_Override"))
+                model.Unbal_Acct_Override = dr.Field<string>("Unbal_Acct_Override");
+            if (enabledProperties.Contains("Unbal_Origin_Override") && dr.Table.Columns.Contains("Unbal_Origin_Override"))
+                model.Unbal_Origin_Override = dr.Field<string>("Unbal_Origin_Override");
+            if (enabledProperties.Contains("Unbal_Flow_Override") && dr.Table.Columns.Contains("Unbal_Flow_Override"))
+                model.Unbal_Flow_Override = dr.Field<string>("Unbal_Flow_Override");
+            if (enabledProperties.Contains("Unbal_IC_Override") && dr.Table.Columns.Contains("Unbal_IC_Override"))
+                model.Unbal_IC_Override = dr.Field<string>("Unbal_IC_Override");
+            if (enabledProperties.Contains("Unbal_UD1_Override") && dr.Table.Columns.Contains("Unbal_UD1_Override"))
+                model.Unbal_UD1_Override = dr.Field<string>("Unbal_UD1_Override");
+            if (enabledProperties.Contains("Unbal_UD2_Override") && dr.Table.Columns.Contains("Unbal_UD2_Override"))
+                model.Unbal_UD2_Override = dr.Field<string>("Unbal_UD2_Override");
+            if (enabledProperties.Contains("Unbal_UD3_Override") && dr.Table.Columns.Contains("Unbal_UD3_Override"))
+                model.Unbal_UD3_Override = dr.Field<string>("Unbal_UD3_Override");
+            if (enabledProperties.Contains("Unbal_UD4_Override") && dr.Table.Columns.Contains("Unbal_UD4_Override"))
+                model.Unbal_UD4_Override = dr.Field<string>("Unbal_UD4_Override");
+            if (enabledProperties.Contains("Unbal_UD5_Override") && dr.Table.Columns.Contains("Unbal_UD5_Override"))
+                model.Unbal_UD5_Override = dr.Field<string>("Unbal_UD5_Override");
+            if (enabledProperties.Contains("Unbal_UD6_Override") && dr.Table.Columns.Contains("Unbal_UD6_Override"))
+                model.Unbal_UD6_Override = dr.Field<string>("Unbal_UD6_Override");
+            if (enabledProperties.Contains("Unbal_UD7_Override") && dr.Table.Columns.Contains("Unbal_UD7_Override"))
+                model.Unbal_UD7_Override = dr.Field<string>("Unbal_UD7_Override");
+            if (enabledProperties.Contains("Unbal_UD8_Override") && dr.Table.Columns.Contains("Unbal_UD8_Override"))
+                model.Unbal_UD8_Override = dr.Field<string>("Unbal_UD8_Override");
+
+            return model;
         }
 
         /// <summary>

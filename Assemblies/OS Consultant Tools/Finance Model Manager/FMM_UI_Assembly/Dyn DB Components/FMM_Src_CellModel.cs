@@ -23,6 +23,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     {
         private readonly Dictionary<string, string> _dimensionValues;
 
+        public FMM_Src_CellModel() : this(null)
+        {
+        }
+
         public FMM_Src_CellModel(IEnumerable<string> enabledDimensions)
         {
             Src_Type = Src_Item = Open_Parens = Math_Operator = Close_Parens = string.Empty;
