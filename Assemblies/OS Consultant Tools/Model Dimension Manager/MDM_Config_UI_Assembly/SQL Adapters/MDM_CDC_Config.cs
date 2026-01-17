@@ -71,6 +71,92 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 }
             }
         }
+
+        public DataTable Get_CDC_Config_By_ID(SessionInfo si, int cdcConfigID)
+        {
+            try
+            {
+                var dt = new DataTable("CDC_Config");
+                var sql = @"SELECT 
+                                CDC_Config_ID,
+                                DimTypeID,
+                                DimID,
+                                SourceType,
+                                SourceConfig,
+                                Map_Name,
+                                Map_Description,
+                                Map_Text1,
+                                Map_Text2,
+                                Map_Text3,
+                                Map_Text4,
+                                Map_Text5,
+                                Map_Text6,
+                                Map_Text7,
+                                Map_Text8,
+                                Create_Date,
+                                Create_User,
+                                Modify_Date,
+                                Modify_User
+                            FROM MDM_CDC_Config
+                            WHERE CDC_Config_ID = @CDC_Config_ID";
+                
+                var sqlparams = new SqlParameter[]
+                {
+                    new SqlParameter("@CDC_Config_ID", SqlDbType.Int) { Value = cdcConfigID }
+                };
+
+                var sqa = new SqlDataAdapter();
+                Fill_MDM_CDC_Config_DT(si, sqa, dt, sql, sqlparams);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw new XFException(si, ex);
+            }
+        }
+
+        public DataTable Get_CDC_Config_By_Dimension(SessionInfo si, int dimTypeID, int dimID)
+        {
+            try
+            {
+                var dt = new DataTable("CDC_Config");
+                var sql = @"SELECT 
+                                CDC_Config_ID,
+                                DimTypeID,
+                                DimID,
+                                SourceType,
+                                SourceConfig,
+                                Map_Name,
+                                Map_Description,
+                                Map_Text1,
+                                Map_Text2,
+                                Map_Text3,
+                                Map_Text4,
+                                Map_Text5,
+                                Map_Text6,
+                                Map_Text7,
+                                Map_Text8,
+                                Create_Date,
+                                Create_User,
+                                Modify_Date,
+                                Modify_User
+                            FROM MDM_CDC_Config
+                            WHERE DimTypeID = @DimTypeID AND DimID = @DimID";
+                
+                var sqlparams = new SqlParameter[]
+                {
+                    new SqlParameter("@DimTypeID", SqlDbType.Int) { Value = dimTypeID },
+                    new SqlParameter("@DimID", SqlDbType.Int) { Value = dimID }
+                };
+
+                var sqa = new SqlDataAdapter();
+                Fill_MDM_CDC_Config_DT(si, sqa, dt, sql, sqlparams);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw new XFException(si, ex);
+            }
         }
     }
 }
