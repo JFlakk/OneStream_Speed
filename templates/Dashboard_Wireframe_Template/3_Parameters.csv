@@ -1,0 +1,5 @@
+Parameter_Name,Parameter_Type,Description,User_Prompt,Default_Value,Display_Items,Value_Items
+# Example parameters - delete these rows and add your own,,,,,,
+DL_Test_Options,DelimitedList,Test options list,Select an option,,"Option A,Option B,Option C","optA,optB,optC"
+IV_User_Input,InputValue,User text input,Enter value,,,
+LV_Static_Value,LiteralValue,Static display value,,Welcome Message,,

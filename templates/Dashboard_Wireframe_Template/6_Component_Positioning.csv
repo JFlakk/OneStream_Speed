@@ -1,0 +1,5 @@
+Dashboard_Name,Component_Name,Row,Column,Dock_Position,Width,Height
+# Example positioning - delete these rows and add your own,,,,,,
+Test_Main_Dashboard,cbx_Test_Selection,0,0,Left,,
+Test_Main_Dashboard,Embedded_Content,1,0,Left,,
+Test_Content_Dashboard,txt_User_Input,0,0,Left,,

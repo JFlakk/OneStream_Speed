@@ -4,6 +4,27 @@ This directory contains utilities for generating OneStream Dashboard XML files.
 
 ## Available Scripts
 
+### NEW: Excel Template Approach (Recommended for Complex Dashboards)
+
+For designing dashboards with a spreadsheet-based wireframe approach:
+
+1. **create_dashboard_template.py** - Generates an Excel/CSV template
+2. **convert_excel_to_dashboard.py** - Converts filled template to XML
+
+See [Excel Template Guide](../Documentation/Excel_Template_Guide.md) for detailed instructions.
+
+**Quick Start:**
+```bash
+# Generate template
+python scripts/create_dashboard_template.py
+
+# Edit the CSV files in templates/Dashboard_Wireframe_Template/
+# (Open in Excel or any spreadsheet application)
+
+# Convert to XML
+python scripts/convert_excel_to_dashboard.py templates/Dashboard_Wireframe_Template/
+```
+
 ### generate_simple_dashboard.py
 
 A Python script that generates a basic Dashboard XML structure through an interactive prompt.

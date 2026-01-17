@@ -1,0 +1,8 @@
+Setting,Value
+Workspace_Name,00 GBL
+Namespace_Prefix,GBL
+Maintenance_Unit_Name,Test Dashboard
+Dashboard_Group_Name,Test Group
+Access_Group,Everyone
+Maintenance_Group,Everyone
+UI_Platform_Type,WpfOrSilverlight
