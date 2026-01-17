@@ -36,28 +36,32 @@ Dashboard_Group_Name: Your_Group
 
 ### B. Parameters (3_Parameters.csv)
 Delete example rows (marked with #), add yours:
+```csv
+DL_MyOptions,DelimitedList,Description,Prompt,,Opt1,Opt2,val1,val2
 ```
-DL_MyOptions | DelimitedList | Description | Prompt | | Opt1,Opt2 | val1,val2
-```
+(Use commas to separate values in CSV format)
 
 ### C. Components (4_Components.csv)
 Delete examples, add your components:
+```csv
+cbx_Selector,ComboBox,Description,Label:,Tooltip,DL_MyOptions,...
 ```
-cbx_Selector | ComboBox | Description | Label: | Tooltip | DL_MyOptions | ...
-```
+(CSV format with comma-separated values)
 
 ### D. Dashboard Layout (5_Dashboard_Layout.csv)
 Define your dashboard:
+```csv
+MyDash,TopLevel,Grid,Description,Yes,NoTask,,1:Component:*,2:Component:Auto;Component:*
 ```
-MyDash | TopLevel | Grid | Description | Yes | NoTask | | 1:Component:* | 2:Component:Auto;Component:*
-```
+(CSV format - note the grid definition in the last column)
 
 ### E. Component Positioning (6_Component_Positioning.csv)
 Place components:
+```csv
+MyDash,cbx_Selector,0,0,Left,,
+MyDash,Content_Area,1,0,Left,,
 ```
-MyDash | cbx_Selector | 0 | 0 | Left | |
-MyDash | Content_Area | 1 | 0 | Left | |
-```
+(CSV format showing row, column, and dock position)
 
 ## Step 4: Convert to XML (30 seconds)
 

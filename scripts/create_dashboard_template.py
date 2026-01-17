@@ -38,7 +38,6 @@ def main():
     print("=== OneStream Dashboard Excel Template Generator ===\n")
     
     template_name = "Dashboard_Wireframe_Template"
-    timestamp = datetime.now().strftime("%Y%m%d")
     
     # Define all sheets and their structure
     sheets_data = [

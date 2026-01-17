@@ -59,9 +59,22 @@ def read_settings_csv(filepath):
 def parse_grid_definition(grid_def):
     """Parse grid definition string.
     
-    Format: "count:Type:Size;Type:Size;..."
-    Example: "3:Component:*;Component:Auto;Component:100"
-    or "1:Component:*"
+    Supports two formats:
+    1. With count prefix: "count:Type:Size;Type:Size;..."
+       Example: "3:Component:Auto;Component:*;Component:100"
+       - First element indicates total count (3 rows/columns)
+       - Following elements define Type and Size for each
+    
+    2. Simple format: "Type:Size;Type:Size;..."
+       Example: "Component:*;Component:Auto"
+       - Each element directly defines Type and Size
+    
+    Size values:
+    - "*" = Fill remaining space (proportional)
+    - "Auto" = Size to content
+    - "100" = Fixed pixel size
+    
+    Returns: List of dicts with 'type' and 'size' keys
     """
     if not grid_def or str(grid_def).strip() == "":
         return []
@@ -294,9 +307,18 @@ def convert_template_to_xml(template_path):
         components_file = os.path.join(base_dir, "4_Components.csv")
         dashboards_file = os.path.join(base_dir, "5_Dashboard_Layout.csv")
         positioning_file = os.path.join(base_dir, "6_Component_Positioning.csv")
+    elif template_path.endswith('.xlsx') or template_path.endswith('.xls'):
+        # Excel file - future enhancement
+        print("Error: Excel file format (.xlsx/.xls) is not yet supported.")
+        print("Please use the CSV template directory approach:")
+        print("  1. Run: python scripts/create_dashboard_template.py")
+        print("  2. Edit the CSV files in templates/Dashboard_Wireframe_Template/")
+        print("  3. Run: python scripts/convert_excel_to_dashboard.py templates/Dashboard_Wireframe_Template/")
+        print("\nAlternatively, export your Excel sheets to CSV files in a directory.")
+        return None
     else:
-        print("Error: Excel file format not yet supported. Please use CSV template directory.")
-        print("To create a CSV template, run: python scripts/create_dashboard_template.py")
+        print(f"Error: Unrecognized template format: {template_path}")
+        print("Expected: directory containing CSV files or .xlsx file (future support)")
         return None
     
     # Read basic info
@@ -421,8 +443,15 @@ def convert_template_to_xml(template_path):
     xml_string = prettify_xml(root)
     
     # Save to file
-    output_file = f"GeneratedXML/{workspace_name}_{maint_unit_name}.xml"
-    output_file = output_file.replace(" ", "_")
+    # Sanitize workspace and maintenance unit names for filename
+    safe_workspace = workspace_name.replace(" ", "_").replace("/", "_").replace("\\", "_")
+    safe_maint_unit = maint_unit_name.replace(" ", "_").replace("/", "_").replace("\\", "_")
+    # Remove other problematic characters
+    import re
+    safe_workspace = re.sub(r'[<>:"|?*]', '_', safe_workspace)
+    safe_maint_unit = re.sub(r'[<>:"|?*]', '_', safe_maint_unit)
+    
+    output_file = f"GeneratedXML/{safe_workspace}_{safe_maint_unit}.xml"
     
     os.makedirs("GeneratedXML", exist_ok=True)
     
