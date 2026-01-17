@@ -51,8 +51,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 "Create_Date", "Create_User", "Update_Date", "Update_User"
             });
 
-            var helpers = new FMM_Config_Helpers();
-            var srcConfig = helpers.Get_SrcConfigType(calcType);
+            var srcConfig = FMM_Config_Helpers.Get_SrcConfigType(calcType);
 
             if (srcConfig != null && srcConfig.ParameterMappings != null)
             {
@@ -172,7 +171,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     };
 
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
-                    
+
                     // Set primary key if Cell_ID column exists in the result set
                     if (currentTable.Columns.Contains("Cell_ID") && currentTable.Columns["Cell_ID"] != null)
                     {
@@ -207,68 +206,68 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             foreach (var col in columns)
             {
-            dt.Columns.Add(col, typeof(object));
+                dt.Columns.Add(col, typeof(object));
             }
 
             foreach (var model in models)
             {
-            DataRow row = dt.NewRow();
+                DataRow row = dt.NewRow();
 
-            SetColumnValue(row, "Cell_ID", model.Cell_ID);
-            SetColumnValue(row, "Cube_ID", model.Cube_ID);
-            SetColumnValue(row, "Act_ID", model.Act_ID);
-            SetColumnValue(row, "Model_ID", model.Model_ID);
-            SetColumnValue(row, "Calc_ID", model.Calc_ID);
-            SetColumnValue(row, "Src_Order", model.Src_Order);
-            SetColumnValue(row, "Src_Type", model.Src_Type);
-            SetColumnValue(row, "Src_Item", model.Src_Item);
-            SetColumnValue(row, "Open_Parens", model.Open_Parens);
-            SetColumnValue(row, "Math_Operator", model.Math_Operator);
-            SetColumnValue(row, "Close_Parens", model.Close_Parens);
-            SetColumnValue(row, "Create_Date", model.Create_Date ?? DateTime.Now);
-            SetColumnValue(row, "Create_User", model.Create_User ?? this.si?.UserName);
-            SetColumnValue(row, "Update_Date", model.Update_Date ?? DateTime.Now);
-            SetColumnValue(row, "Update_User", model.Update_User ?? this.si?.UserName);
+                SetColumnValue(row, "Cell_ID", model.Cell_ID);
+                SetColumnValue(row, "Cube_ID", model.Cube_ID);
+                SetColumnValue(row, "Act_ID", model.Act_ID);
+                SetColumnValue(row, "Model_ID", model.Model_ID);
+                SetColumnValue(row, "Calc_ID", model.Calc_ID);
+                SetColumnValue(row, "Src_Order", model.Src_Order);
+                SetColumnValue(row, "Src_Type", model.Src_Type);
+                SetColumnValue(row, "Src_Item", model.Src_Item);
+                SetColumnValue(row, "Open_Parens", model.Open_Parens);
+                SetColumnValue(row, "Math_Operator", model.Math_Operator);
+                SetColumnValue(row, "Close_Parens", model.Close_Parens);
+                SetColumnValue(row, "Create_Date", model.Create_Date ?? DateTime.Now);
+                SetColumnValue(row, "Create_User", model.Create_User ?? this.si?.UserName);
+                SetColumnValue(row, "Update_Date", model.Update_Date ?? DateTime.Now);
+                SetColumnValue(row, "Update_User", model.Update_User ?? this.si?.UserName);
 
-            SetColumnValue(row, "Entity", model.Entity);
-            SetColumnValue(row, "Cons", model.Cons);
-            SetColumnValue(row, "Scenario", model.Scenario);
-            SetColumnValue(row, "Time", model.Time);
-            SetColumnValue(row, "View", model.View);
-            SetColumnValue(row, "Acct", model.Acct);
-            SetColumnValue(row, "IC", model.IC);
-            SetColumnValue(row, "Origin", model.Origin);
-            SetColumnValue(row, "Flow", model.Flow);
-            SetColumnValue(row, "UD1", model.UD1);
-            SetColumnValue(row, "UD2", model.UD2);
-            SetColumnValue(row, "UD3", model.UD3);
-            SetColumnValue(row, "UD4", model.UD4);
-            SetColumnValue(row, "UD5", model.UD5);
-            SetColumnValue(row, "UD6", model.UD6);
-            SetColumnValue(row, "UD7", model.UD7);
-            SetColumnValue(row, "UD8", model.UD8);
+                SetColumnValue(row, "Entity", model.Entity);
+                SetColumnValue(row, "Cons", model.Cons);
+                SetColumnValue(row, "Scenario", model.Scenario);
+                SetColumnValue(row, "Time", model.Time);
+                SetColumnValue(row, "View", model.View);
+                SetColumnValue(row, "Acct", model.Acct);
+                SetColumnValue(row, "IC", model.IC);
+                SetColumnValue(row, "Origin", model.Origin);
+                SetColumnValue(row, "Flow", model.Flow);
+                SetColumnValue(row, "UD1", model.UD1);
+                SetColumnValue(row, "UD2", model.UD2);
+                SetColumnValue(row, "UD3", model.UD3);
+                SetColumnValue(row, "UD4", model.UD4);
+                SetColumnValue(row, "UD5", model.UD5);
+                SetColumnValue(row, "UD6", model.UD6);
+                SetColumnValue(row, "UD7", model.UD7);
+                SetColumnValue(row, "UD8", model.UD8);
 
-            SetColumnValue(row, "DB_Name", model.DB_Name);
-            SetColumnValue(row, "Dyn_Calc_Script", model.Dyn_Calc_Script);
-            SetColumnValue(row, "Unbal_Src_Cell_Buffer", model.Unbal_Src_Cell_Buffer);
-            SetColumnValue(row, "Unbal_Src_Cell_Buffer_Filter", model.Unbal_Src_Cell_Buffer_Filter);
-            SetColumnValue(row, "Unbal_Buffer_Filter", model.Unbal_Buffer_Filter);
-            SetColumnValue(row, "Override_Value", model.Override_Value);
+                SetColumnValue(row, "DB_Name", model.DB_Name);
+                SetColumnValue(row, "Dyn_Calc_Script", model.Dyn_Calc_Script);
+                SetColumnValue(row, "Unbal_Src_Cell_Buffer", model.Unbal_Src_Cell_Buffer);
+                SetColumnValue(row, "Unbal_Src_Cell_Buffer_Filter", model.Unbal_Src_Cell_Buffer_Filter);
+                SetColumnValue(row, "Unbal_Buffer_Filter", model.Unbal_Buffer_Filter);
+                SetColumnValue(row, "Override_Value", model.Override_Value);
 
-            SetColumnValue(row, "Unbal_Acct_Override", model.Unbal_Acct_Override);
-            SetColumnValue(row, "Unbal_Origin_Override", model.Unbal_Origin_Override);
-            SetColumnValue(row, "Unbal_Flow_Override", model.Unbal_Flow_Override);
-            SetColumnValue(row, "Unbal_IC_Override", model.Unbal_IC_Override);
-            SetColumnValue(row, "Unbal_UD1_Override", model.Unbal_UD1_Override);
-            SetColumnValue(row, "Unbal_UD2_Override", model.Unbal_UD2_Override);
-            SetColumnValue(row, "Unbal_UD3_Override", model.Unbal_UD3_Override);
-            SetColumnValue(row, "Unbal_UD4_Override", model.Unbal_UD4_Override);
-            SetColumnValue(row, "Unbal_UD5_Override", model.Unbal_UD5_Override);
-            SetColumnValue(row, "Unbal_UD6_Override", model.Unbal_UD6_Override);
-            SetColumnValue(row, "Unbal_UD7_Override", model.Unbal_UD7_Override);
-            SetColumnValue(row, "Unbal_UD8_Override", model.Unbal_UD8_Override);
+                SetColumnValue(row, "Unbal_Acct_Override", model.Unbal_Acct_Override);
+                SetColumnValue(row, "Unbal_Origin_Override", model.Unbal_Origin_Override);
+                SetColumnValue(row, "Unbal_Flow_Override", model.Unbal_Flow_Override);
+                SetColumnValue(row, "Unbal_IC_Override", model.Unbal_IC_Override);
+                SetColumnValue(row, "Unbal_UD1_Override", model.Unbal_UD1_Override);
+                SetColumnValue(row, "Unbal_UD2_Override", model.Unbal_UD2_Override);
+                SetColumnValue(row, "Unbal_UD3_Override", model.Unbal_UD3_Override);
+                SetColumnValue(row, "Unbal_UD4_Override", model.Unbal_UD4_Override);
+                SetColumnValue(row, "Unbal_UD5_Override", model.Unbal_UD5_Override);
+                SetColumnValue(row, "Unbal_UD6_Override", model.Unbal_UD6_Override);
+                SetColumnValue(row, "Unbal_UD7_Override", model.Unbal_UD7_Override);
+                SetColumnValue(row, "Unbal_UD8_Override", model.Unbal_UD8_Override);
 
-            dt.Rows.Add(row);
+                dt.Rows.Add(row);
             }
 
             return dt;

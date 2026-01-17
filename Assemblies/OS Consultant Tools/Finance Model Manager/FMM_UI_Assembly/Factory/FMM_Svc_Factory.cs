@@ -19,8 +19,8 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-	public class FMM_Svc_Factory : IWsAssemblyServiceFactory
-	{
+    public class FMM_Svc_Factory : IWsAssemblyServiceFactory
+    {
         public IWsAssemblyServiceBase CreateWsAssemblyServiceInstance(SessionInfo si, BRGlobals brGlobals,
             DashboardWorkspace workspace, WsAssemblyServiceType wsAssemblyServiceType, string itemName)
         {
@@ -29,7 +29,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 return wsAssemblyServiceType switch
                 {
                     WsAssemblyServiceType.DynamicDashboards => new FMM_DynDB_Svc(),
-                    WsAssemblyServiceType.Dashboard => new FMM_DB_Svc(),
+                    WsAssemblyServiceType.Component => new FMM_Comp_Svc(),
 
                     _ => throw new NotImplementedException()
                 };
@@ -39,5 +39,5 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 throw new XFException(si, ex);
             }
         }
-	}
+    }
 }
