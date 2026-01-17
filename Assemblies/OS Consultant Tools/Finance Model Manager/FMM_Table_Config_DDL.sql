@@ -86,7 +86,7 @@ CREATE TABLE dbo.FMM_Table_Column_Config (
         'BINARY', 'VARBINARY', 'IMAGE',
         'XML'
     )),
-    CONSTRAINT CHK_Identity_Seed CHECK (Is_Identity = 0 OR (Identity_Seed IS NOT NULL AND Identity_Increment IS NOT NULL))
+    CONSTRAINT CHK_Identity_Seed CHECK (Is_Identity = 0 OR (Identity_Seed IS NOT NULL AND Identity_Increment IS NOT NULL AND Identity_Seed > 0 AND Identity_Increment > 0))
 );
 GO
 

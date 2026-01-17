@@ -7,8 +7,11 @@
 -- the new custom table configuration system.
 -- =============================================
 
-USE [YourDatabase]; -- Replace with your database name
-GO
+-- =============================================
+-- IMPORTANT: Update the database name below before executing
+-- =============================================
+-- USE [YourDatabase]; -- Uncomment and replace with your database name
+-- GO
 
 -- =============================================
 -- STEP 1: Create Master Table Configuration (Register_Plan)

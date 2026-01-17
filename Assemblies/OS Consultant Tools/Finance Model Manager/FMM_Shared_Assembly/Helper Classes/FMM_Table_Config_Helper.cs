@@ -72,6 +72,45 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
+        /// Retrieves a single table configuration by ID.
+        /// </summary>
+        public DataRow GetTableConfiguration(int tableConfigId)
+        {
+            try
+            {
+                var sql = @"
+                    SELECT 
+                        Table_Config_ID,
+                        Process_Type,
+                        Table_Name,
+                        Table_Type,
+                        Parent_Table_Config_ID,
+                        Description,
+                        Is_Active,
+                        Enable_Audit,
+                        Audit_Table_Config_ID
+                    FROM FMM_Table_Config
+                    WHERE Table_Config_ID = @TableConfigId
+                    AND Is_Active = 1";
+
+                var parameters = new SqlParameter[]
+                {
+                    new SqlParameter("@TableConfigId", SqlDbType.Int) { Value = tableConfigId }
+                };
+
+                using (var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
+                {
+                    var dt = BRApi.Database.ExecuteSql(dbConnApp, sql, parameters, false);
+                    return dt.Rows.Count > 0 ? dt.Rows[0] : null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new XFException(si, ex);
+            }
+        }
+
+        /// <summary>
         /// Retrieves column configuration for a specific table.
         /// </summary>
         public DataTable GetTableColumns(int tableConfigId)
@@ -222,8 +261,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
-                var tableConfig = GetTableConfigurations(string.Empty).AsEnumerable()
-                    .FirstOrDefault(r => r.Field<int>("Table_Config_ID") == tableConfigId);
+                var tableConfig = GetTableConfiguration(tableConfigId);
 
                 if (tableConfig == null)
                 {
@@ -272,7 +310,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             ddl.Append($"    [{columnName}] {dataType}");
 
             // Add size/precision for appropriate types
-            if (dataType.XFEqualsIgnoreCase("NVARCHAR") || dataType.XFEqualsIgnoreCase("VARCHAR"))
+            // Skip size for TEXT/NTEXT as they don't support size specification
+            if ((dataType.XFEqualsIgnoreCase("NVARCHAR") || dataType.XFEqualsIgnoreCase("VARCHAR") || 
+                 dataType.XFEqualsIgnoreCase("CHAR") || dataType.XFEqualsIgnoreCase("NCHAR")) &&
+                !dataType.XFEqualsIgnoreCase("TEXT") && !dataType.XFEqualsIgnoreCase("NTEXT"))
             {
                 var maxLength = columnConfig.Field<int?>("Max_Length");
                 ddl.Append($"({(maxLength.HasValue ? maxLength.Value.ToString() : "MAX")})");
@@ -311,8 +352,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
-                var tableConfig = GetTableConfigurations(string.Empty).AsEnumerable()
-                    .FirstOrDefault(r => r.Field<int>("Table_Config_ID") == tableConfigId);
+                var tableConfig = GetTableConfiguration(tableConfigId);
 
                 if (tableConfig == null)
                 {
@@ -401,8 +441,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
-                var tableConfig = GetTableConfigurations(string.Empty).AsEnumerable()
-                    .FirstOrDefault(r => r.Field<int>("Table_Config_ID") == tableConfigId);
+                var tableConfig = GetTableConfiguration(tableConfigId);
 
                 if (tableConfig == null)
                 {
@@ -560,9 +599,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             try
             {
-                // Get table configuration
-                var tableConfig = GetTableConfigurations(string.Empty).AsEnumerable()
-                    .FirstOrDefault(r => r.Field<int>("Table_Config_ID") == tableConfigId);
+                // Get table configuration using efficient lookup
+                var tableConfig = GetTableConfiguration(tableConfigId);
 
                 if (tableConfig == null)
                 {
@@ -610,13 +648,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     errors.Add($"Table {tableName} has multiple clustered indexes defined (only one allowed)");
                 }
 
-                // Validate foreign key references exist
+                // Validate foreign key references exist - using efficient single lookups
                 var foreignKeys = GetTableForeignKeys(tableConfigId);
                 foreach (var fkGroup in foreignKeys.AsEnumerable().GroupBy(r => r.Field<int>("FK_Config_ID")))
                 {
                     var targetTableId = fkGroup.First().Field<int>("Target_Table_Config_ID");
-                    var targetTable = GetTableConfigurations(string.Empty).AsEnumerable()
-                        .FirstOrDefault(r => r.Field<int>("Table_Config_ID") == targetTableId);
+                    var targetTable = GetTableConfiguration(targetTableId);
 
                     if (targetTable == null)
                     {
