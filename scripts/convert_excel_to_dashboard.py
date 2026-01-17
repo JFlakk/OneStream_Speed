@@ -14,9 +14,27 @@ generates the corresponding OneStream Dashboard XML file.
 
 import csv
 import os
+import re
 import sys
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
+
+def sanitize_filename_component(name):
+    """Sanitize a string to be safe for use in filenames.
+    
+    Replaces spaces and path separators with underscores,
+    and removes characters that are problematic in filenames.
+    
+    Args:
+        name: String to sanitize
+        
+    Returns:
+        Sanitized string safe for filenames
+    """
+    safe_name = name.replace(" ", "_").replace("/", "_").replace("\\", "_")
+    # Remove other problematic characters: < > : " | ? *
+    safe_name = re.sub(r'[<>:"|?*]', '_', safe_name)
+    return safe_name
 
 def prettify_xml(elem):
     """Return a pretty-printed XML string for the Element."""
@@ -89,9 +107,10 @@ def parse_grid_definition(grid_def):
         for part in parts:
             type_size = part.split(':')
             if len(type_size) >= 2:
+                # Use last two elements as type and size
                 result.append({
-                    'type': type_size[-2] if len(type_size) > 1 else 'Component',
-                    'size': type_size[-1] if len(type_size) > 0 else '*'
+                    'type': type_size[-2],
+                    'size': type_size[-1]
                 })
     else:
         # Simple format, each entry is Type:Size
@@ -444,12 +463,8 @@ def convert_template_to_xml(template_path):
     
     # Save to file
     # Sanitize workspace and maintenance unit names for filename
-    safe_workspace = workspace_name.replace(" ", "_").replace("/", "_").replace("\\", "_")
-    safe_maint_unit = maint_unit_name.replace(" ", "_").replace("/", "_").replace("\\", "_")
-    # Remove other problematic characters
-    import re
-    safe_workspace = re.sub(r'[<>:"|?*]', '_', safe_workspace)
-    safe_maint_unit = re.sub(r'[<>:"|?*]', '_', safe_maint_unit)
+    safe_workspace = sanitize_filename_component(workspace_name)
+    safe_maint_unit = sanitize_filename_component(maint_unit_name)
     
     output_file = f"GeneratedXML/{safe_workspace}_{safe_maint_unit}.xml"
     

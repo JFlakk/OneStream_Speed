@@ -16,7 +16,18 @@ import os
 from datetime import datetime
 
 def create_csv_template(base_name, sheets_data):
-    """Create CSV files for each sheet in the template."""
+    """Create CSV files for each sheet in the template.
+    
+    Args:
+        base_name: Base name for the template directory
+        sheets_data: List of tuples, each containing:
+            - sheet_name (str): Name of the CSV file (without .csv extension)
+            - headers (list): List of column header names
+            - sample_data (list of lists): Sample rows of data
+            
+    Returns:
+        str: Path to the created template directory
+    """
     output_dir = "templates"
     os.makedirs(output_dir, exist_ok=True)
     
