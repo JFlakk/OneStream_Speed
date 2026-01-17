@@ -310,7 +310,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 		}
 
-		public CalcConfig Get_CalcConfigType(int calctypeintValue)
+		public static CalcConfig Get_CalcConfigType(int calctypeintValue)
 		{
 			var calcType = (CalcType)calctypeintValue;
 
@@ -321,7 +321,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			return null;
 		}
 
-		public DestConfig Get_DestConfigType(int calctypeintValue)
+		public static DestConfig Get_DestConfigType(int calctypeintValue)
 		{
 			var calcType = (CalcType)calctypeintValue;
 
@@ -332,7 +332,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			return null;
 		}
 
-		public SrcConfig Get_SrcConfigType(int calctypeintValue)
+		public static SrcConfig Get_SrcConfigType(int calctypeintValue)
 		{
 			var calcType = (CalcType)calctypeintValue;
 
@@ -346,7 +346,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		/// <summary>
 		/// Gets the list of database column names (property names) that are enabled for a given CalcType in SrcRegistry
 		/// </summary>
-		public List<string> GetEnabledSrcProperties(int calctypeintValue)
+		public static List<string> GetEnabledSrcProperties(int calctypeintValue)
 		{
 			var properties = new List<string>();
 			var srcConfig = Get_SrcConfigType(calctypeintValue);
@@ -371,7 +371,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		/// <summary>
 		/// Gets the list of database column names (property names) that are enabled for a given CalcType in DestRegistry
 		/// </summary>
-		public List<string> GetEnabledDestProperties(int calctypeintValue)
+		public static List<string> GetEnabledDestProperties(int calctypeintValue)
 		{
 			var properties = new List<string>();
 			var destConfig = Get_DestConfigType(calctypeintValue);

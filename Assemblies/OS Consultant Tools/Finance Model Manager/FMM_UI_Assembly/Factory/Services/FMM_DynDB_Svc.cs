@@ -38,8 +38,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var repeatArgs = new List<WsDynamicComponentRepeatArgs>();
 
                         // Get configuration to determine which properties to use
-                        var configHelper = new FMM_Config_Helpers();
-                        var enabledProperties = configHelper.GetEnabledSrcProperties(1); // calcType = 1 (Table)
+                        var enabledProperties = FMM_Config_Helpers.GetEnabledSrcProperties(1); // calcType = 1 (Table)
 
                         // loop through our items, populating dictionaries that will contain Parameter values for each "row"
                         foreach (FMM_Src_CellModel cellModel in src_Cells)
