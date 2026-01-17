@@ -133,10 +133,58 @@ ErrorHandler.LogWrite(si, new XFException(si, ex))
 
 ## Security Considerations
 
-- Store sensitive connection information (passwords, API keys) securely
-- Use encrypted configuration values where appropriate
-- Validate user permissions before allowing CDC configuration changes
-- Audit all configuration changes via Create_User/Modify_User fields
+### Protecting Sensitive Data in SourceConfig
+
+The `SourceConfig` field stores connection strings, API keys, and other sensitive information. To protect this data:
+
+1. **Encryption at Rest**: 
+   - Consider using SQL Server's Transparent Data Encryption (TDE) for the entire database
+   - Alternatively, implement column-level encryption using SQL Server's Always Encrypted feature
+   - Example using Always Encrypted:
+   ```sql
+   ALTER TABLE MDM_CDC_Config
+   ALTER COLUMN SourceConfig ADD ENCRYPTED WITH (
+       COLUMN_ENCRYPTION_KEY = MyCEK,
+       ENCRYPTION_TYPE = DETERMINISTIC,
+       ALGORITHM = 'AEAD_AES_256_CBC_HMAC_SHA_256'
+   );
+   ```
+
+2. **Application-Level Encryption**:
+   - Encrypt sensitive values before storing in SourceConfig
+   - Use OneStream's built-in encryption APIs if available
+   - Store encryption keys in a secure key vault (Azure Key Vault, AWS KMS, etc.)
+   - Example pattern:
+   ```csharp
+   // Before saving
+   string encryptedConfig = EncryptionHelper.Encrypt(sourceConfig, encryptionKey);
+   
+   // When retrieving
+   string decryptedConfig = EncryptionHelper.Decrypt(encryptedConfig, encryptionKey);
+   ```
+
+3. **Secure Configuration Storage**:
+   - For SQL sources: Store connection strings in OneStream database connections, reference by name
+   - For APIs: Use token-based authentication with short-lived tokens when possible
+   - For file paths: Use network shares with proper NTFS permissions
+
+4. **Access Control**:
+   - Restrict direct database access to MDM_CDC_Config table
+   - Implement row-level security if multiple tenants/applications share the table
+   - Use stored procedures for all CDC configuration operations
+   - Validate user permissions before allowing CDC configuration changes
+
+5. **Audit Trail**:
+   - All configuration changes are tracked via Create_User/Modify_User fields
+   - Consider implementing additional audit logging for sensitive operations
+   - Log access to SourceConfig field separately for security monitoring
+
+6. **Best Practices**:
+   - Never log or display SourceConfig values in plain text
+   - Use masked values in UI displays (show only last 4 characters, etc.)
+   - Implement separate read/write permissions for sensitive fields
+   - Regularly rotate API keys and credentials stored in SourceConfig
+   - Use service accounts with minimum required permissions for CDC operations
 
 ## Future Enhancements
 

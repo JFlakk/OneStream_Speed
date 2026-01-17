@@ -111,7 +111,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
             catch (Exception ex)
             {
-                throw new XFException(si, ex);
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
 
@@ -155,7 +155,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
             catch (Exception ex)
             {
-                throw new XFException(si, ex);
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
     }

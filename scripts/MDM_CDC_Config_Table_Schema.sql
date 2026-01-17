@@ -2,6 +2,12 @@
 -- Table: MDM_CDC_Config
 -- Description: Configuration table for Change Data Capture (CDC) in Model Dimension Manager
 -- This table stores the configuration for importing dimension members from various sources
+-- 
+-- Dependencies: This table requires the following OneStream core tables to exist:
+--   - DimType: Standard OneStream dimension type table
+--   - Dim: Standard OneStream dimension table
+-- These tables are part of the OneStream core database schema and should exist in all environments.
+-- If the foreign key constraints fail, verify these tables exist before creating this table.
 -- =============================================
 
 CREATE TABLE MDM_CDC_Config (
@@ -36,6 +42,7 @@ CREATE TABLE MDM_CDC_Config (
     Modify_User NVARCHAR(255) NULL,
     
     -- Constraints
+    -- Note: If these foreign keys fail, verify DimType and Dim tables exist in your environment
     CONSTRAINT FK_MDM_CDC_Config_DimType FOREIGN KEY (DimTypeID) REFERENCES DimType(DimTypeID),
     CONSTRAINT FK_MDM_CDC_Config_Dim FOREIGN KEY (DimID) REFERENCES Dim(DimID),
     CONSTRAINT UQ_MDM_CDC_Config_Dim UNIQUE (DimTypeID, DimID)
