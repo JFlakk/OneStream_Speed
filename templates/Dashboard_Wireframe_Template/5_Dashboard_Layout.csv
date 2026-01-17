@@ -1,0 +1,4 @@
+Dashboard_Name,Dashboard_Type,Layout_Type,Description,Is_Initially_Visible,Load_Task_Type,Load_Task_Args,Grid_Columns,Grid_Rows
+# Example dashboard - delete this row and add your own,,,,,,,,
+Test_Main_Dashboard,TopLevel,Grid,Main test dashboard,Yes,NoTask,,1:Component:*,2:Component:Auto;Component:*
+Test_Content_Dashboard,Embedded,Grid,Content dashboard,Yes,NoTask,,1:Component:*,1:Component:*

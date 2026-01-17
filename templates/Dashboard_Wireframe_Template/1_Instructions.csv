@@ -1,0 +1,19 @@
+Section,Content
+Overview,This template allows you to design OneStream dashboards in Excel and convert them to XML format.
+,
+How to Use,1. Fill out the Basic_Info sheet with workspace and maintenance unit details
+,2. Define parameters in the Parameters sheet (if needed)
+,3. Define components in the Components sheet
+,4. Design your dashboard layout in the Dashboard_Layout sheet
+,5. Map components to positions in the Component_Positioning sheet
+,6. Save the file and run: python scripts/convert_excel_to_dashboard.py your_file.xlsx
+,
+Tips,- Start simple with a basic layout
+,- Use the sample data as a reference
+,- You can have multiple dashboards in one template
+,- Delete sample rows before adding your own data
+,
+Component Types,"Button, ComboBox, TextBox, Logo, CubeView, EmbeddedDashboard, SuppliedParameter, SqlTableEditor"
+Parameter Types,"InputValue, DelimitedList, LiteralValue"
+Dashboard Types,"TopLevel, EmbeddedTopLevelWithoutParameterPrompts, Embedded, Unknown"
+Layout Types,"Grid, Uniform, HorizontalStackPanel, VerticalStackPanel"

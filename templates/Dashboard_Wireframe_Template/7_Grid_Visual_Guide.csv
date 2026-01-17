@@ -1,0 +1,12 @@
+Info,Col_0,Col_1,Col_2,Col_3
+This sheet is for visual reference only - sketch your layout here,,,,
+,,,,
+Row_0,Component Name,,,
+Row_1,Component Name,Component Name,,
+Row_2,Component Name,,,
+,,,,
+Instructions:,,,,
+1. Use this grid to visualize your dashboard layout,,,,
+2. Write component names in cells where they should appear,,,,
+3. Merge cells visually to show component span,,,,
+4. Use this as reference when filling Component_Positioning sheet,,,,

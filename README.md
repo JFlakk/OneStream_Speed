@@ -52,9 +52,34 @@ This repository follows the OneStream rule type organization used in XML exports
 
 This repository includes tools and documentation for generating Dashboard objects in XML format.
 
-### Quick Start
+### Quick Start Options
 
-Generate a basic dashboard using the Python script:
+#### Option 1: Excel Template Approach (Recommended for Complex Dashboards)
+
+Design your dashboard in a spreadsheet format and convert to XML:
+
+```bash
+# 1. Generate the Excel/CSV template
+python scripts/create_dashboard_template.py
+
+# 2. Edit the template files in: templates/Dashboard_Wireframe_Template/
+#    (Open CSV files in Excel or import them as sheets in a workbook)
+
+# 3. Convert to XML
+python scripts/convert_excel_to_dashboard.py templates/Dashboard_Wireframe_Template/
+```
+
+The template provides a structured way to:
+- Design dashboard layouts visually
+- Define parameters and components in a table format
+- Map component positioning with clear row/column indices
+- See your dashboard structure at a glance
+
+See **[Excel Template Quick Start](Documentation/Excel_Template_Quick_Start.md)** (5 minutes) or **[Excel Template Guide](Documentation/Excel_Template_Guide.md)** for detailed instructions.
+
+#### Option 2: Interactive Script (Quick and Simple)
+
+Generate a basic dashboard using the interactive Python script:
 
 ```bash
 python scripts/generate_simple_dashboard.py
@@ -62,6 +87,9 @@ python scripts/generate_simple_dashboard.py
 
 ### Documentation
 
+- **[Excel Template Quick Start](Documentation/Excel_Template_Quick_Start.md)** - NEW! Get started in 5 minutes
+- **[Excel Template Guide](Documentation/Excel_Template_Guide.md)** - NEW! Complete guide for the spreadsheet-based wireframe approach
+- **[Excel Template Examples](Documentation/Excel_Template_Examples.md)** - NEW! Visual examples and filled-out templates
 - **[Dashboard XML Generation Guide](Documentation/Dashboard_XML_Generation_Guide.md)** - Complete guide on Dashboard XML structure and generation
 - **[Dashboard Generation Request Template](Documentation/Dashboard_Generation_Request_Template.md)** - Template for specifying dashboard requirements
 
