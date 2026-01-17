@@ -4,71 +4,77 @@
 -- This table stores the configuration for importing dimension members from various sources
 -- 
 -- Dependencies: This table requires the following OneStream core tables to exist:
---   - DimType: Standard OneStream dimension type table
 --   - Dim: Standard OneStream dimension table
 -- These tables are part of the OneStream core database schema and should exist in all environments.
 -- If the foreign key constraints fail, verify these tables exist before creating this table.
 -- =============================================
 
-CREATE TABLE MDM_CDC_Config (
-    -- Primary Key
-    CDC_Config_ID INT IDENTITY(1,1) PRIMARY KEY,
-    
-    -- Dimension Configuration
-    DimTypeID INT NOT NULL,
-    DimID INT NOT NULL,
-    
-    -- Source Configuration
-    SourceType NVARCHAR(50) NOT NULL,  -- Values: 'SQL', 'API', 'Flat File'
-    SourceConfig NVARCHAR(MAX) NULL,    -- JSON or XML configuration for the source (connection string, API endpoint, file path, etc.)
-                                        -- SECURITY NOTE: This field may contain sensitive data (passwords, API keys).
-                                        -- Consider implementing column-level encryption using Always Encrypted or application-level encryption.
-                                        -- See README_CDC_Config.md for detailed security guidance.
-    
-    -- Column Mapping Configuration
-    -- Maps source data columns to dimension member properties
-    Map_Name NVARCHAR(255) NULL,        -- Source column name for Member Name
-    Map_Description NVARCHAR(255) NULL, -- Source column name for Member Description
-    Map_Text1 NVARCHAR(255) NULL,       -- Source column name for Text1 property
-    Map_Text2 NVARCHAR(255) NULL,       -- Source column name for Text2 property
-    Map_Text3 NVARCHAR(255) NULL,       -- Source column name for Text3 property
-    Map_Text4 NVARCHAR(255) NULL,       -- Source column name for Text4 property
-    Map_Text5 NVARCHAR(255) NULL,       -- Source column name for Text5 property
-    Map_Text6 NVARCHAR(255) NULL,       -- Source column name for Text6 property
-    Map_Text7 NVARCHAR(255) NULL,       -- Source column name for Text7 property
-    Map_Text8 NVARCHAR(255) NULL,       -- Source column name for Text8 property
-    
-    -- Audit Fields
-    Create_Date DATETIME NOT NULL DEFAULT GETDATE(),
-    Create_User NVARCHAR(255) NOT NULL,
-    Modify_Date DATETIME NULL,
-    Modify_User NVARCHAR(255) NULL,
-    
-    -- Constraints
-    -- Note: If these foreign keys fail, verify DimType and Dim tables exist in your environment
-    CONSTRAINT FK_MDM_CDC_Config_DimType FOREIGN KEY (DimTypeID) REFERENCES DimType(DimTypeID),
-    CONSTRAINT FK_MDM_CDC_Config_Dim FOREIGN KEY (DimID) REFERENCES Dim(DimID),
-    CONSTRAINT UQ_MDM_CDC_Config_Dim UNIQUE (DimTypeID, DimID)
-);
+CREATE TABLE [dbo].[MDM_CDC_Config](
+	[CDC_Config_ID] [int] NOT NULL,
+	[Name] [nvarchar](100) NULL,
+	[Dim_Type] [nvarchar](50) NOT NULL,
+	[Dim_ID] [int] NOT NULL,
+	[Src_Connection] [nvarchar](200) NULL,
+	[Src_SQL_String] [nvarchar](max) NULL,
+	[Dim_Mgmt_Process] [nvarchar](max) NULL,
+	[Trx_Rule] [nvarchar](max) NULL,
+	[Appr_ID] [int] NULL,
+	[Mbr_PrefSuff] [nvarchar](20) NULL,
+	[Mbr_PrefSuff_Txt] [nvarchar](max) NULL,
+	[Create_Date] [datetime] NOT NULL,
+	[Create_User] [nvarchar](50) NOT NULL,
+	[Update_Date] [datetime] NOT NULL,
+	[Update_User] [nvarchar](50) NOT NULL,
+    CONSTRAINT PK_MDM_CDC_Config PRIMARY KEY CLUSTERED ([CDC_Config_ID] ASC)
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
 
 -- Index for faster lookups
-CREATE NONCLUSTERED INDEX IX_MDM_CDC_Config_DimType 
-ON MDM_CDC_Config (DimTypeID);
+CREATE NONCLUSTERED INDEX IX_MDM_CDC_Config_Dim_Type 
+ON MDM_CDC_Config (Dim_Type);
+GO
 
-CREATE NONCLUSTERED INDEX IX_MDM_CDC_Config_Dim 
-ON MDM_CDC_Config (DimID);
+CREATE NONCLUSTERED INDEX IX_MDM_CDC_Config_Dim_ID 
+ON MDM_CDC_Config (Dim_ID);
+GO
+
+-- =============================================
+-- Table: MDM_CDC_Config_Detail
+-- Description: Detail table for CDC column mappings
+-- Stores mapping between source columns and OneStream member properties
+-- Supports varying by scenario and time
+-- =============================================
+
+CREATE TABLE [dbo].[MDM_CDC_Config_Detail](
+	[CDC_Config_ID] [int] NOT NULL,
+	[CDC_Config_Detail_ID] [int] NOT NULL,
+	[OS_Mbr_Column] [nvarchar](100) NULL,
+	[OS_Mbr_Vary_Scen_Column] [nvarchar](100) NULL,
+	[OS_Mbr_Vary_Time_Column] [nvarchar](100) NULL,
+	[Src_Mbr_Column] [nvarchar](100) NULL,
+	[Src_Vary_Scen_Column] [nvarchar](100) NULL,
+	[Src_Vary_Time_Column] [nvarchar](100) NULL,
+	[Create_Date] [datetime] NOT NULL,
+	[Create_User] [nvarchar](50) NOT NULL,
+	[Update_Date] [datetime] NOT NULL,
+	[Update_User] [nvarchar](50) NOT NULL,
+    CONSTRAINT PK_MDM_CDC_Config_Detail PRIMARY KEY CLUSTERED ([CDC_Config_ID] ASC, [CDC_Config_Detail_ID] ASC),
+    CONSTRAINT FK_MDM_CDC_Config_Detail_Config FOREIGN KEY ([CDC_Config_ID]) REFERENCES [dbo].[MDM_CDC_Config]([CDC_Config_ID])
+) ON [PRIMARY]
+GO
+
+-- Index for faster lookups on detail table
+CREATE NONCLUSTERED INDEX IX_MDM_CDC_Config_Detail_Config_ID 
+ON MDM_CDC_Config_Detail (CDC_Config_ID);
+GO
 
 -- =============================================
 -- Example Usage:
 -- =============================================
--- Insert a SQL-based CDC configuration
--- INSERT INTO MDM_CDC_Config (DimTypeID, DimID, SourceType, SourceConfig, Map_Name, Map_Description, Map_Text1, Create_User)
--- VALUES (1, 1, 'SQL', 'SELECT Code, Name, Description, Category FROM SourceTable', 'Code', 'Description', 'Category', 'admin');
+-- Insert a CDC configuration
+-- INSERT INTO MDM_CDC_Config (CDC_Config_ID, Name, Dim_Type, Dim_ID, Src_Connection, Src_SQL_String, Dim_Mgmt_Process, Trx_Rule, Appr_ID, Create_Date, Create_User, Update_Date, Update_User)
+-- VALUES (1, 'Account CDC Config', 'Account', 1, 'MyConnectionName', 'SELECT * FROM Source_Accounts', NULL, NULL, NULL, GETDATE(), 'admin', GETDATE(), 'admin');
 
--- Insert an API-based CDC configuration
--- INSERT INTO MDM_CDC_Config (DimTypeID, DimID, SourceType, SourceConfig, Map_Name, Map_Description, Create_User)
--- VALUES (2, 2, 'API', '{"endpoint": "https://api.example.com/dimensions", "method": "GET"}', 'id', 'name', 'admin');
-
--- Insert a Flat File-based CDC configuration
--- INSERT INTO MDM_CDC_Config (DimTypeID, DimID, SourceType, SourceConfig, Map_Name, Map_Description, Map_Text1, Map_Text2, Create_User)
--- VALUES (3, 3, 'Flat File', '{"filePath": "/data/dimensions.csv", "delimiter": ","}', 'MemberCode', 'MemberName', 'Category', 'Type', 'admin');
+-- Insert detail mapping
+-- INSERT INTO MDM_CDC_Config_Detail (CDC_Config_ID, CDC_Config_Detail_ID, OS_Mbr_Column, Src_Mbr_Column, Create_Date, Create_User, Update_Date, Update_User)
+-- VALUES (1, 1, 'Name', 'Account_Name', GETDATE(), 'admin', GETDATE(), 'admin');
