@@ -2,6 +2,8 @@
 
 This guide explains how to use the Excel template approach to design OneStream dashboards and convert them to XML format.
 
+> **📊 See [Excel Template Examples](Excel_Template_Examples.md) for visual examples and filled-out templates!**
+
 ## Overview
 
 The Excel/CSV template approach allows you to design dashboard wireframes in a spreadsheet format, which is then converted to the OneStream Dashboard XML format. This provides a more visual and structured way to plan your dashboards before importing them into OneStream.
@@ -383,9 +385,18 @@ python scripts/convert_excel_to_dashboard.py <template_path>
 
 For issues or questions:
 1. Check this documentation
-2. Review example CSV files in the template
-3. Compare generated XML with existing dashboard XML files in `obj/` directory
-4. Refer to OneStream documentation for component and parameter types
+2. Review **[Excel Template Examples](Excel_Template_Examples.md)** for visual references
+3. Review example CSV files in the template
+4. Compare generated XML with existing dashboard XML files in `obj/` directory
+5. Refer to OneStream documentation for component and parameter types
+
+## Visual Examples
+
+See **[Excel Template Examples](Excel_Template_Examples.md)** for:
+- Complete filled-out examples
+- Visual grid layout patterns
+- Common dashboard configurations
+- Tips for Excel formatting
 
 ## Future Enhancements
 

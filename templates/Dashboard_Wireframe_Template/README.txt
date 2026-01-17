@@ -18,4 +18,4 @@ To use:
 3. Save the workbook as .xlsx
 4. Run: python scripts/convert_excel_to_dashboard.py your_file.xlsx
 
-Created: 2026-01-17 08:12:33
+Created: 2026-01-17 08:17:21

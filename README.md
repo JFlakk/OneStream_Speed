@@ -75,7 +75,7 @@ The template provides a structured way to:
 - Map component positioning with clear row/column indices
 - See your dashboard structure at a glance
 
-See **[Excel Template Guide](Documentation/Excel_Template_Guide.md)** for detailed instructions.
+See **[Excel Template Quick Start](Documentation/Excel_Template_Quick_Start.md)** (5 minutes) or **[Excel Template Guide](Documentation/Excel_Template_Guide.md)** for detailed instructions.
 
 #### Option 2: Interactive Script (Quick and Simple)
 
@@ -87,7 +87,9 @@ python scripts/generate_simple_dashboard.py
 
 ### Documentation
 
+- **[Excel Template Quick Start](Documentation/Excel_Template_Quick_Start.md)** - NEW! Get started in 5 minutes
 - **[Excel Template Guide](Documentation/Excel_Template_Guide.md)** - NEW! Complete guide for the spreadsheet-based wireframe approach
+- **[Excel Template Examples](Documentation/Excel_Template_Examples.md)** - NEW! Visual examples and filled-out templates
 - **[Dashboard XML Generation Guide](Documentation/Dashboard_XML_Generation_Guide.md)** - Complete guide on Dashboard XML structure and generation
 - **[Dashboard Generation Request Template](Documentation/Dashboard_Generation_Request_Template.md)** - Template for specifying dashboard requirements
 
