@@ -74,20 +74,55 @@ Located in: `MDM_Config_UI_Assembly/SQL Adapters/`
 ## Usage Examples
 
 ### SQL Source Configuration
+
+**Recommended - Use Named Connection:**
 ```json
 {
-  "connectionString": "Server=myserver;Database=mydb;",
+  "connectionName": "MySecureConnection",
   "query": "SELECT Code, Name, Description, Category FROM SourceTable"
 }
 ```
 
+**Alternative - Encrypted Connection String:**
+```json
+{
+  "connectionString": "{ENCRYPTED:AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA=}",
+  "query": "SELECT Code, Name, Description, Category FROM SourceTable"
+}
+```
+
+**Not Recommended - Plain Text (Development Only):**
+```json
+{
+  "connectionString": "Server=myserver;Database=mydb;Integrated Security=true;",
+  "query": "SELECT Code, Name, Description, Category FROM SourceTable",
+  "note": "Never store credentials in plain text in production environments"
+}
+```
+
 ### API Source Configuration
+
+**Recommended - Token-Based Authentication:**
 ```json
 {
   "endpoint": "https://api.example.com/dimensions",
   "method": "GET",
+  "authType": "Bearer",
+  "tokenReference": "MyAPITokenName",
   "headers": {
-    "Authorization": "Bearer token123"
+    "Content-Type": "application/json"
+  }
+}
+```
+
+**Alternative - Encrypted API Key:**
+```json
+{
+  "endpoint": "https://api.example.com/dimensions",
+  "method": "GET",
+  "apiKey": "{ENCRYPTED:AQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHyA=}",
+  "headers": {
+    "Content-Type": "application/json"
   }
 }
 ```
@@ -95,9 +130,10 @@ Located in: `MDM_Config_UI_Assembly/SQL Adapters/`
 ### Flat File Source Configuration
 ```json
 {
-  "filePath": "/data/dimensions.csv",
+  "filePath": "\\\\secure-server\\data\\dimensions.csv",
   "delimiter": ",",
-  "hasHeader": true
+  "hasHeader": true,
+  "encoding": "UTF-8"
 }
 ```
 

@@ -17,6 +17,7 @@ using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
 using OneStreamWorkspacesApi;
 using OneStreamWorkspacesApi.V800;
+using Workspace.OSConsTools.GBL_UI_Assembly;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {

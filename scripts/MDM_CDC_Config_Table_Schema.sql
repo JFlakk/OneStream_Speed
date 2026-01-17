@@ -21,6 +21,9 @@ CREATE TABLE MDM_CDC_Config (
     -- Source Configuration
     SourceType NVARCHAR(50) NOT NULL,  -- Values: 'SQL', 'API', 'Flat File'
     SourceConfig NVARCHAR(MAX) NULL,    -- JSON or XML configuration for the source (connection string, API endpoint, file path, etc.)
+                                        -- SECURITY NOTE: This field may contain sensitive data (passwords, API keys).
+                                        -- Consider implementing column-level encryption using Always Encrypted or application-level encryption.
+                                        -- See README_CDC_Config.md for detailed security guidance.
     
     -- Column Mapping Configuration
     -- Maps source data columns to dimension member properties
