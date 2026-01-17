@@ -47,6 +47,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
+        public void Fill_MDM_CDC_Config_Detail_DT(SessionInfo si, SqlDataAdapter sqa, DataTable dt, string selectQuery, params SqlParameter[] sqlparams)
+        {
+            using (SqlCommand command = new SqlCommand(selectQuery, _connection))
+            {
+                command.CommandType = CommandType.Text;
+                if (sqlparams != null)
+                {
+                    command.Parameters.AddRange(sqlparams);
+                }
+
+                sqa.SelectCommand = command;
+                sqa.Fill(dt);
+                command.Parameters.Clear();
+                sqa.SelectCommand = null;
+            }
+        }
+
+        /// <summary>
+        /// Updates CDC configuration records in the database.
+        /// Note: Caller must populate Update_Date and Update_User in the DataTable before calling this method.
+        /// </summary>
         public void Update_MDM_CDC_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
@@ -73,6 +94,36 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
+        /// <summary>
+        /// Updates CDC configuration detail records in the database.
+        /// Note: Caller must populate Update_Date and Update_User in the DataTable before calling this method.
+        /// </summary>
+        public void Update_MDM_CDC_Config_Detail(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
+        {
+            using (SqlTransaction transaction = _connection.BeginTransaction())
+            {
+                try
+                {
+                    // Use GBL_SQL_Command_Builder to dynamically generate commands
+                    var builder = new GBL_SQL_Command_Builder(_connection, "MDM_CDC_Config_Detail", dt);
+                    builder.SetPrimaryKey("CDC_Config_ID", "CDC_Config_Detail_ID");
+                    builder.ExcludeFromUpdate("CDC_Config_ID", "CDC_Config_Detail_ID", "Create_Date", "Create_User");
+                    builder.ConfigureAdapter(sqa, transaction);
+
+                    sqa.Update(dt);
+                    transaction.Commit();
+                    sqa.InsertCommand = null;
+                    sqa.UpdateCommand = null;
+                    sqa.DeleteCommand = null;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
         public DataTable Get_CDC_Config_By_ID(SessionInfo si, int cdcConfigID)
         {
             try
@@ -80,24 +131,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var dt = new DataTable("CDC_Config");
                 var sql = @"SELECT 
                                 CDC_Config_ID,
-                                DimTypeID,
-                                DimID,
-                                SourceType,
-                                SourceConfig,
-                                Map_Name,
-                                Map_Description,
-                                Map_Text1,
-                                Map_Text2,
-                                Map_Text3,
-                                Map_Text4,
-                                Map_Text5,
-                                Map_Text6,
-                                Map_Text7,
-                                Map_Text8,
+                                Name,
+                                Dim_Type,
+                                Dim_ID,
+                                Src_Connection,
+                                Src_SQL_String,
+                                Dim_Mgmt_Process,
+                                Trx_Rule,
+                                Appr_ID,
+                                Mbr_PrefSuff,
+                                Mbr_PrefSuff_Txt,
                                 Create_Date,
                                 Create_User,
-                                Modify_Date,
-                                Modify_User
+                                Update_Date,
+                                Update_User
                             FROM MDM_CDC_Config
                             WHERE CDC_Config_ID = @CDC_Config_ID";
                 
@@ -116,42 +163,75 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        public DataTable Get_CDC_Config_By_Dimension(SessionInfo si, int dimTypeID, int dimID)
+        public DataTable Get_CDC_Config_By_Dimension(SessionInfo si, string dimType, int dimID)
         {
             try
             {
                 var dt = new DataTable("CDC_Config");
                 var sql = @"SELECT 
                                 CDC_Config_ID,
-                                DimTypeID,
-                                DimID,
-                                SourceType,
-                                SourceConfig,
-                                Map_Name,
-                                Map_Description,
-                                Map_Text1,
-                                Map_Text2,
-                                Map_Text3,
-                                Map_Text4,
-                                Map_Text5,
-                                Map_Text6,
-                                Map_Text7,
-                                Map_Text8,
+                                Name,
+                                Dim_Type,
+                                Dim_ID,
+                                Src_Connection,
+                                Src_SQL_String,
+                                Dim_Mgmt_Process,
+                                Trx_Rule,
+                                Appr_ID,
+                                Mbr_PrefSuff,
+                                Mbr_PrefSuff_Txt,
                                 Create_Date,
                                 Create_User,
-                                Modify_Date,
-                                Modify_User
+                                Update_Date,
+                                Update_User
                             FROM MDM_CDC_Config
-                            WHERE DimTypeID = @DimTypeID AND DimID = @DimID";
+                            WHERE Dim_Type = @Dim_Type AND Dim_ID = @Dim_ID";
                 
                 var sqlparams = new SqlParameter[]
                 {
-                    new SqlParameter("@DimTypeID", SqlDbType.Int) { Value = dimTypeID },
-                    new SqlParameter("@DimID", SqlDbType.Int) { Value = dimID }
+                    new SqlParameter("@Dim_Type", SqlDbType.NVarChar, 50) { Value = dimType },
+                    new SqlParameter("@Dim_ID", SqlDbType.Int) { Value = dimID }
                 };
 
                 var sqa = new SqlDataAdapter();
                 Fill_MDM_CDC_Config_DT(si, sqa, dt, sql, sqlparams);
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        public DataTable Get_CDC_Config_Detail_By_Config_ID(SessionInfo si, int cdcConfigID)
+        {
+            try
+            {
+                var dt = new DataTable("CDC_Config_Detail");
+                var sql = @"SELECT 
+                                CDC_Config_ID,
+                                CDC_Config_Detail_ID,
+                                OS_Mbr_Column,
+                                OS_Mbr_Vary_Scen_Column,
+                                OS_Mbr_Vary_Time_Column,
+                                Src_Mbr_Column,
+                                Src_Vary_Scen_Column,
+                                Src_Vary_Time_Column,
+                                Create_Date,
+                                Create_User,
+                                Update_Date,
+                                Update_User
+                            FROM MDM_CDC_Config_Detail
+                            WHERE CDC_Config_ID = @CDC_Config_ID
+                            ORDER BY CDC_Config_Detail_ID";
+                
+                var sqlparams = new SqlParameter[]
+                {
+                    new SqlParameter("@CDC_Config_ID", SqlDbType.Int) { Value = cdcConfigID }
+                };
+
+                var sqa = new SqlDataAdapter();
+                Fill_MDM_CDC_Config_Detail_DT(si, sqa, dt, sql, sqlparams);
                 return dt;
             }
             catch (Exception ex)

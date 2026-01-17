@@ -53,13 +53,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 							{
 								return Get_DimTypeList();
 							}
-							case "Get_CDC_Source_Types":
-							{
-								return Get_CDC_Source_Types();
-							}
 							case "Get_CDC_Config":
 							{
 								return Get_CDC_Config();
+							}
+							case "Get_CDC_Config_Detail":
+							{
+								return Get_CDC_Config_Detail();
 							}
 							case "Get_Member_Properties":
 							{
@@ -134,26 +134,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_CDC_Source_Types()
-        {
-            try
-            {
-                var dt = new DataTable("CDC_Source_Types");
-                dt.Columns.Add("SourceTypeID", typeof(int));
-                dt.Columns.Add("SourceTypeName", typeof(string));
-                
-                dt.Rows.Add(1, "SQL");
-                dt.Rows.Add(2, "API");
-                dt.Rows.Add(3, "Flat File");
-                
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-            }
-        }
-
         private DataTable Get_CDC_Config()
         {
             try
@@ -166,27 +146,74 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqa = new SqlDataAdapter();
                     var sql = @"SELECT 
                                     CDC_Config_ID,
-                                    DimTypeID,
-                                    DimID,
-                                    SourceType,
-                                    SourceConfig,
-                                    Map_Name,
-                                    Map_Description,
-                                    Map_Text1,
-                                    Map_Text2,
-                                    Map_Text3,
-                                    Map_Text4,
-                                    Map_Text5,
-                                    Map_Text6,
-                                    Map_Text7,
-                                    Map_Text8,
+                                    Name,
+                                    Dim_Type,
+                                    Dim_ID,
+                                    Src_Connection,
+                                    Src_SQL_String,
+                                    Dim_Mgmt_Process,
+                                    Trx_Rule,
+                                    Appr_ID,
+                                    Mbr_PrefSuff,
+                                    Mbr_PrefSuff_Txt,
                                     Create_Date,
                                     Create_User,
-                                    Modify_Date,
-                                    Modify_User
+                                    Update_Date,
+                                    Update_User
                                 FROM MDM_CDC_Config
-                                ORDER BY DimTypeID, DimID";
+                                ORDER BY Dim_Type, Dim_ID";
                     var sqlparams = new SqlParameter[] { };
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        private DataTable Get_CDC_Config_Detail()
+        {
+            try
+            {
+                var cdcConfigID = args.NameValuePairs.XFGetValue("cdcConfigID", "NA");
+                var dt = new DataTable("CDC_Config_Detail");
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+                    var sql = @"SELECT 
+                                    CDC_Config_ID,
+                                    CDC_Config_Detail_ID,
+                                    OS_Mbr_Column,
+                                    OS_Mbr_Vary_Scen_Column,
+                                    OS_Mbr_Vary_Time_Column,
+                                    Src_Mbr_Column,
+                                    Src_Vary_Scen_Column,
+                                    Src_Vary_Time_Column,
+                                    Create_Date,
+                                    Create_User,
+                                    Update_Date,
+                                    Update_User
+                                FROM MDM_CDC_Config_Detail";
+                    
+                    SqlParameter[] sqlparams;
+                    if (cdcConfigID != "NA")
+                    {
+                        sql += " WHERE CDC_Config_ID = @CDC_Config_ID";
+                        sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@CDC_Config_ID", SqlDbType.Int) { Value = cdcConfigID.XFConvertToInt() }
+                        };
+                    }
+                    else
+                    {
+                        sqlparams = new SqlParameter[] { };
+                    }
+                    
+                    sql += " ORDER BY CDC_Config_ID, CDC_Config_Detail_ID";
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
                 return dt;
@@ -205,6 +232,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 dt.Columns.Add("PropertyName", typeof(string));
                 dt.Columns.Add("PropertyDisplayName", typeof(string));
                 
+                // Standard member properties that can be mapped
                 dt.Rows.Add("Name", "Name");
                 dt.Rows.Add("Description", "Description");
                 dt.Rows.Add("Text1", "Text1");
