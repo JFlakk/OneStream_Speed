@@ -123,9 +123,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
 
-        public Guid getIdFromComponentName(string componentName)
+        public string getIdFromComponentName(string componentName)
         {
-            return new Guid(this.getDynamicSuffix(componentName));
+            return this.getDynamicSuffix(componentName);
         }
     }
 }

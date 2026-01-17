@@ -322,8 +322,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         private FMM_Src_CellModel MapDataRowToModel(DataRow dr, int calcType)
         {
             // Get enabled properties from configuration
-            var helpers = new FMM_Config_Helpers();
-            var enabledProperties = helpers.GetEnabledSrcProperties(calcType);
+            var enabledProperties = FMM_Config_Helpers.GetEnabledSrcProperties(calcType);
 
             var model = new FMM_Src_CellModel(enabledProperties)
             {
@@ -447,11 +446,36 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
+        /// Delete a source cell record by Cell_ID (string representation)
+        /// </summary>
+        public void Delete(string cellIdStr)
+        {
+            if (int.TryParse(cellIdStr, out int cellId))
+            {
+                this.Delete(cellId);
+            }
+            else
+            {
+                throw new XFException(si, new ArgumentException($"Invalid Cell_ID format: {cellIdStr}"));
+            }
+        }
+
+        /// <summary>
         /// Delete a source cell record by model instance
         /// </summary>
         public void Delete(FMM_Src_CellModel model)
         {
             this.Delete(model.Cell_ID);
+        }
+
+        /// <summary>
+        /// Create a default configuration for a workspace
+        /// </summary>
+        public void CreateDefaultConfig(Guid workspaceId)
+        {
+            // TODO: Implement default configuration creation logic
+            // This method is called when creating a new configuration
+            // For now, this is a placeholder that can be implemented based on business requirements
         }
     }
 }
