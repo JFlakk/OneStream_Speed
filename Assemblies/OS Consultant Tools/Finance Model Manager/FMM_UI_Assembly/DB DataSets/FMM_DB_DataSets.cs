@@ -170,6 +170,35 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_WFProfiles("All");
                         }
+                        // Validation Framework Datasets
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Validation_Config"))
+                        {
+                            return get_FMM_Validation_Config();
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Validation_Contexts"))
+                        {
+                            return get_FMM_Validation_Contexts();
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Table_Validation_Types"))
+                        {
+                            return get_FMM_Validation_Types("TABLE");
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Validation_Types"))
+                        {
+                            return get_FMM_Validation_Types("CUBE");
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Validation_Severities"))
+                        {
+                            return get_FMM_Validation_Severities();
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Validation_Results"))
+                        {
+                            return get_FMM_Validation_Results();
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Validation_Runs"))
+                        {
+                            return get_FMM_Validation_Runs();
+                        }
 
                         break;
                 }
@@ -1235,7 +1264,283 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
         
-#endregion
+        #region "Validation Framework Helper Queries"
+        
+        /// <summary>
+        /// Get all validation configurations
+        /// </summary>
+        private DataTable get_FMM_Validation_Config()
+        {
+            try
+            {
+                var dt = new DataTable("ValidationConfig");
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+                    
+                    var sql = @"
+                        SELECT 
+                            Validation_Config_ID,
+                            Name,
+                            Description,
+                            Validation_Context,
+                            Validation_Type,
+                            Target_Object,
+                            Process_Type,
+                            Is_Active,
+                            Severity,
+                            Config_JSON,
+                            Create_Date,
+                            Create_User,
+                            Update_Date,
+                            Update_User
+                        FROM FMM_Validation_Config
+                        ORDER BY Validation_Context, Process_Type, Name";
+                    
+                    var sqlparams = new SqlParameter[] {};
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+                
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        
+        /// <summary>
+        /// Get validation contexts (TABLE, CUBE)
+        /// </summary>
+        private DataTable get_FMM_Validation_Contexts()
+        {
+            try
+            {
+                var dt = new DataTable("ValidationContexts");
+                dt.Columns.Add("ContextName", typeof(string));
+                dt.Columns.Add("ContextDescription", typeof(string));
+                
+                dt.Rows.Add("TABLE", "Table Validations - Column values, constraints, referential integrity");
+                dt.Rows.Add("CUBE", "Cube Validations - Scenario comparisons, dimensional analysis");
+                
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        
+        /// <summary>
+        /// Get validation types by context
+        /// </summary>
+        private DataTable get_FMM_Validation_Types(string context)
+        {
+            try
+            {
+                var dt = new DataTable("ValidationTypes");
+                dt.Columns.Add("TypeName", typeof(string));
+                dt.Columns.Add("TypeDisplayName", typeof(string));
+                dt.Columns.Add("TypeDescription", typeof(string));
+                
+                if (context == "TABLE")
+                {
+                    dt.Rows.Add("ColumnValueList", "Column Value List", "Check column values against a predefined list");
+                    dt.Rows.Add("ColumnValueRange", "Column Value Range", "Check numeric column values within a range");
+                    dt.Rows.Add("ColumnValuePattern", "Column Value Pattern", "Check column values match a regex pattern");
+                    dt.Rows.Add("RequiredColumns", "Required Columns", "Ensure required columns are populated (not NULL/empty)");
+                    dt.Rows.Add("UniqueConstraint", "Unique Constraint", "Check for duplicate values in specified columns");
+                    dt.Rows.Add("ReferentialIntegrity", "Referential Integrity", "Validate foreign key relationships");
+                    dt.Rows.Add("CustomTableSQL", "Custom Table SQL", "Execute custom SQL query against table data");
+                }
+                else if (context == "CUBE")
+                {
+                    dt.Rows.Add("ScenarioComparison", "Scenario Comparison", "Compare values between two scenarios");
+                    dt.Rows.Add("DimensionalBalance", "Dimensional Balance", "Check balances across dimensional slices");
+                    dt.Rows.Add("CrossDimensionalRule", "Cross-Dimensional Rule", "Validate business rules across multiple dimensions");
+                    dt.Rows.Add("TemporalConsistency", "Temporal Consistency", "Check data consistency across time periods");
+                    dt.Rows.Add("AllocationValidation", "Allocation Validation", "Validate allocation totals and distributions");
+                    dt.Rows.Add("VarianceThreshold", "Variance Threshold", "Check variances against thresholds");
+                    dt.Rows.Add("CustomCubeSQL", "Custom Cube SQL", "Execute custom SQL against cube view data");
+                }
+                
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        
+        /// <summary>
+        /// Get validation severities
+        /// </summary>
+        private DataTable get_FMM_Validation_Severities()
+        {
+            try
+            {
+                var dt = new DataTable("ValidationSeverities");
+                dt.Columns.Add("SeverityName", typeof(string));
+                dt.Columns.Add("SeverityDescription", typeof(string));
+                
+                dt.Rows.Add("Error", "Critical validation failure - must be corrected");
+                dt.Rows.Add("Warning", "Potential issue - should be reviewed");
+                dt.Rows.Add("Info", "Informational - for awareness only");
+                
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        
+        /// <summary>
+        /// Get validation results with configuration details
+        /// </summary>
+        private DataTable get_FMM_Validation_Results()
+        {
+            try
+            {
+                var runID = args.NameValuePairs.XFGetValue("RunID", string.Empty);
+                var validationConfigID = args.NameValuePairs.XFGetValue("ValidationConfigID", string.Empty);
+                
+                var dt = new DataTable("ValidationResults");
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+                    
+                    var sql = @"
+                        SELECT 
+                            vr.Validation_Result_ID,
+                            vr.Run_ID,
+                            vr.Run_Date,
+                            vr.Run_User,
+                            vr.Validation_Context,
+                            vc.Name AS Validation_Name,
+                            vc.Validation_Type,
+                            vc.Target_Object,
+                            vc.Process_Type,
+                            vc.Severity,
+                            vr.Table_Name,
+                            vr.Primary_Key_Value,
+                            vr.Column_Name,
+                            vr.Column_Value,
+                            vr.Cube_POV,
+                            vr.Dimension_Values,
+                            vr.Cell_Value,
+                            vr.Comparison_Value,
+                            vr.Validation_Status,
+                            vr.Error_Message,
+                            vr.Error_Details,
+                            vr.Create_Date
+                        FROM FMM_Validation_Result vr
+                        INNER JOIN FMM_Validation_Config vc ON vr.Validation_Config_ID = vc.Validation_Config_ID
+                        WHERE 1=1";
+                    
+                    var paramList = new List<SqlParameter>();
+                    
+                    if (!string.IsNullOrEmpty(runID))
+                    {
+                        sql += " AND vr.Run_ID = @RunID";
+                        paramList.Add(new SqlParameter("@RunID", int.Parse(runID)));
+                    }
+                    
+                    if (!string.IsNullOrEmpty(validationConfigID))
+                    {
+                        sql += " AND vr.Validation_Config_ID = @ValidationConfigID";
+                        paramList.Add(new SqlParameter("@ValidationConfigID", int.Parse(validationConfigID)));
+                    }
+                    
+                    sql += " ORDER BY vr.Validation_Status DESC, vr.Run_Date DESC";
+                    
+                    var sqlparams = paramList.ToArray();
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+                
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        
+        /// <summary>
+        /// Get validation run history
+        /// </summary>
+        private DataTable get_FMM_Validation_Runs()
+        {
+            try
+            {
+                var validationContext = args.NameValuePairs.XFGetValue("ValidationContext", string.Empty);
+                var processType = args.NameValuePairs.XFGetValue("ProcessType", string.Empty);
+                var topN = args.NameValuePairs.XFGetValue("TopN", "50");
+                
+                var dt = new DataTable("ValidationRuns");
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+                    
+                    var sql = $@"
+                        SELECT TOP {topN}
+                            Run_ID,
+                            Run_Date,
+                            Run_User,
+                            Validation_Context,
+                            Process_Type,
+                            Target_Object,
+                            Total_Validations,
+                            Total_Records_Checked,
+                            Total_Failures,
+                            Total_Warnings,
+                            Total_Info,
+                            Execution_Time_Ms,
+                            Status,
+                            Error_Message,
+                            Notes,
+                            Create_Date
+                        FROM FMM_Validation_Run
+                        WHERE 1=1";
+                    
+                    var paramList = new List<SqlParameter>();
+                    
+                    if (!string.IsNullOrEmpty(validationContext))
+                    {
+                        sql += " AND Validation_Context = @ValidationContext";
+                        paramList.Add(new SqlParameter("@ValidationContext", validationContext));
+                    }
+                    
+                    if (!string.IsNullOrEmpty(processType))
+                    {
+                        sql += " AND Process_Type = @ProcessType";
+                        paramList.Add(new SqlParameter("@ProcessType", processType));
+                    }
+                    
+                    sql += " ORDER BY Run_Date DESC";
+                    
+                    var sqlparams = paramList.ToArray();
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+                
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        
+        #endregion
 
     }
 }
