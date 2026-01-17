@@ -41,6 +41,10 @@ Stores column mapping details for each CDC configuration, supporting varying by 
 
 See `/scripts/MDM_CDC_Config_Table_Schema.sql` for the complete schema definition.
 
+**Important Notes:**
+- **CDC_Config_ID Management**: The CDC_Config_ID field is NOT an IDENTITY column. IDs must be manually assigned or managed through application logic. This allows for controlled ID assignment and potential synchronization across environments.
+- **Audit Fields**: When inserting or updating records, the application must set Create_Date, Create_User, Update_Date, and Update_User fields appropriately. The Update_MDM_CDC_Config and Update_MDM_CDC_Config_Detail methods expect these fields to be populated in the DataTable before calling the update.
+
 ## Features
 
 ### Master Configuration

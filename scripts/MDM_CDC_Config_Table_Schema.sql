@@ -3,6 +3,10 @@
 -- Description: Configuration table for Change Data Capture (CDC) in Model Dimension Manager
 -- This table stores the configuration for importing dimension members from various sources
 -- 
+-- NOTE: CDC_Config_ID is NOT an IDENTITY column - IDs must be manually assigned or managed
+--       through application logic. This allows for controlled ID assignment and potential
+--       synchronization across environments.
+-- 
 -- Dependencies: This table requires the following OneStream core tables to exist:
 --   - Dim: Standard OneStream dimension table
 -- These tables are part of the OneStream core database schema and should exist in all environments.

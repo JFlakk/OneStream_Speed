@@ -64,6 +64,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
+        /// <summary>
+        /// Updates CDC configuration records in the database.
+        /// Note: Caller must populate Update_Date and Update_User in the DataTable before calling this method.
+        /// </summary>
         public void Update_MDM_CDC_Config(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
@@ -90,6 +94,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
+        /// <summary>
+        /// Updates CDC configuration detail records in the database.
+        /// Note: Caller must populate Update_Date and Update_User in the DataTable before calling this method.
+        /// </summary>
         public void Update_MDM_CDC_Config_Detail(SessionInfo si, DataTable dt, SqlDataAdapter sqa)
         {
             using (SqlTransaction transaction = _connection.BeginTransaction())
