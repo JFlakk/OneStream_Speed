@@ -134,26 +134,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable Get_CDC_Source_Types()
-        {
-            try
-            {
-                var dt = new DataTable("CDC_Source_Types");
-                dt.Columns.Add("SourceTypeID", typeof(int));
-                dt.Columns.Add("SourceTypeName", typeof(string));
-                
-                dt.Rows.Add(1, "SQL");
-                dt.Rows.Add(2, "API");
-                dt.Rows.Add(3, "Flat File");
-                
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-            }
-        }
-
         private DataTable Get_CDC_Config()
         {
             try

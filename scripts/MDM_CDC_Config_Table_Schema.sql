@@ -29,7 +29,8 @@ CREATE TABLE [dbo].[MDM_CDC_Config](
 	[Create_User] [nvarchar](50) NOT NULL,
 	[Update_Date] [datetime] NOT NULL,
 	[Update_User] [nvarchar](50) NOT NULL,
-    CONSTRAINT PK_MDM_CDC_Config PRIMARY KEY CLUSTERED ([CDC_Config_ID] ASC)
+    CONSTRAINT PK_MDM_CDC_Config PRIMARY KEY CLUSTERED ([CDC_Config_ID] ASC),
+    CONSTRAINT FK_MDM_CDC_Config_Dim FOREIGN KEY ([Dim_ID]) REFERENCES [dbo].[Dim]([DimID])
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
