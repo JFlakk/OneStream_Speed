@@ -34,6 +34,7 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						
 						Case Is = DashboardExtenderFunctionType.ComponentSelectionChanged
 							
+							
 						If args.FunctionName.XFEqualsIgnoreCase("ExportSpendPlanReport")
 							Return Me.ExportSpendPlanReport()
 						End If
@@ -43,20 +44,21 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						End If
 						
 						If args.FunctionName.XFEqualsIgnoreCase("ReturnSPLN")
-							Return Me.ReturnSPLN(si, globals, api, args)
+							Return Me.ReturnSPLN()
 						End If
 						
 						If args.FunctionName.XFEqualsIgnoreCase("VerifyandSubmitOMA")
-							Return Me.VerifyandSubmitOMA(si, globals, api, args)
+							Return Me.VerifyandSubmit("OMA")
 						End If
 						
 						If args.FunctionName.XFEqualsIgnoreCase("VerifyandSubmitOPA")
-							Return Me.VerifyandSubmitOPA(si, globals, api, args)
+							Return Me.VerifyandSubmit("OPA")
 							
 						End If
 						
 						If args.FunctionName.XFEqualsIgnoreCase("VerifyandSubmitRDTE")
-							Return Me.VerifyandSubmitRDTE(si, globals, api, args)
+		
+							Return Me.VerifyandSubmit("RDTE")
 							
 						End If
 						
@@ -85,12 +87,6 @@ Namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
 			End Try
 		End Function
-		
-'--------------------Methods----------------------------
-#Region "Constants"
-'	Private BR_BFRM_SolutionHelper As New OneStream.BusinessRule.DashboardExtender.BFRM_SolutionHelper.MainClass
-'	Private SPLN_Member_Lists As New OneStream.BusinessRule.Finance.SPLN_Member_Lists.MainClass
-#End Region
 		
 #Region "UpdateCustomSubstVar"
 		Private Sub UpdateCustomSubstVar(ByRef Result As XFLoadDashboardTaskResult,ByVal key As String,ByVal value As String)
@@ -193,48 +189,6 @@ End Function
 #Region "Property"
 	Private Property sFilePath As String = ""
 #End Region
-
-#Region "Validate Target"	
-	Public Function Validate_HQ_SPLN() As XFSelectionChangedTaskResult
-		Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
-		Dim Entity As String = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("BL_CMD_TGT_FundsCenter","NA")	
-		Dim cvName = "CMD_TGT_FDX_ValidateDist_CV"
-		Dim dt As New DataTable 
-		dt = GetFDXvalidateTGTData(cvName,Entity)
-		
-		
-		Dim filteredRows = dt.AsEnumerable().Where(Function(row) row.Field(Of Decimal)("Time1") <> 0)
-		If filteredRows.Any() Then
-			selectionChangedTaskResult.IsOK = False
-			selectionChangedTaskResult.ShowMessageBox = True
-			selectionChangedTaskResult.Message = $"{Entity} did not Validate Successfully, please update your Distributions."
-		Else
-			selectionChangedTaskResult.IsOK = True
-			selectionChangedTaskResult.ShowMessageBox = True
-			selectionChangedTaskResult.Message = $"{Entity} Validated Successfully."
-		End If
-		Return selectionChangedTaskResult
-	End Function
-		#End Region
-		
-		Private Function GetFDXvalidateTGTData(ByVal cvName As String,ByVal entFilter As String) As DataTable
-			Dim dt As New DataTable()
-			Dim wsName As String = "60 HQ SPLN"
-			Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si,False,wsName)
-			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
-
-			Dim entDim = $"E_{wfInfoDetails("CMDName")}"
-			Dim scenDim = "S_RMW"
-			Dim scenFilter = $"S#{wfInfoDetails("ScenarioName")}"
-			Dim timeFilter = String.Empty '$"T#{wfInfoDetails("TimeName")}"
-			Dim NameValuePairs = New Dictionary(Of String,String)
-
-			Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty,NameValuePairs,False)
-
-			dt = BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, $"E#{entFilter}", scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 8, False)
-
-			Return dt
-		End Function
 
 #Region "Export  OMA Report"
 
@@ -1438,9 +1392,10 @@ End Function
 #End Region
 
 #Region "Return Spend Plan"
-Public Function ReturnSPLN(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs)
+Public Function ReturnSPLN()
 	Try
 		'========== workflow vars ============================================================================================================ 
+			Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
 			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
 			Dim wfCube = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName	
 			Dim wfScenarioName As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
@@ -1533,682 +1488,138 @@ End Function
 
 #End Region
 
-#Region "Verify And Submit OMA"
-Public Function VerifyandSubmitOMA(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
-	Try
-			
-			'========== workflow vars ============================================================================================================ 
-			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-			Dim wfCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
-			Dim wfScenarioName As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim wfTimeName As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-			Dim wfTimeMonth As String = wfTimeName & "M12"
-			Dim return_message As String = ""
-			Dim return_message_warning As String = ""
-			Dim dashAction As String ="Refresh"
-			Dim sEntity As String = BRapi.Finance.Entity.Text(si, BRapi.Finance.Members.GetMemberId(si,dimtype.Entity.Id, wfCube), 1, 0, 0).Trim
-			'Dim sEntityGeneral As String = sEntity & "_General"
-			Dim sACOM As String =  sEntity & "_General"
-			' Check if workflow is completed/locked
-			If (BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Completed") And _
-				Not BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Load Completed")) Or _
-				(BRApi.Workflow.Status.GetWorkflowStatus(si, si.WorkflowClusterPk, True).Locked)
-				return_message = "Notice: No updates are allowed. Workflow was marked ""Complete"""
-				Throw New XFUserMsgException(si, New Exception(return_message))
-			End If
-		
-			' Check if Spend Plan is completed/locked
-			Dim sDataBufferValidationFlag As String =  "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeMonth & ":C#Local:V#Annotation:E#" & sACOM & ":A#SPL_Validation_Ind:I#None:F#None:O#Forms:U1#OMA:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			Dim sSPLockedval As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, sDataBufferValidationFlag).DataCellEx.DataCellAnnotation
-			If sSPLockedval = "Yes" Then
-				return_message = "Notice: No updates are allowed. OMA Spend Plan has been validated and submitted already."
-				Throw New XFUserMsgException(si, New Exception(return_message))
-			
-			End If 
-			
-			'========== get rows that have data ============================================================================================================ 
-			Dim sDataBufferScript  As String = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName & ":E#" & sACOM & ":C#Local:V#Periodic:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-			
-			Dim lsFilteredDataRowList As List( Of MemberInfo) = Brapi.Finance.Metadata.GetMembersUsingFilter(si,"U3_SAG", "U3#Root.CustomMemberList(BRName=SPLN_Member_Lists, MemberListName=GetSPLAdjustments,CacheName=,Mode=Summary,DimDef=U1#U3#, DataBufferPOVScript=" & sDataBufferScript & ",U3=OMA.Base,U3Level=SAG)",False)
-			
-			'========== loop thru rows and validate ============================================================================================================ 
-		Dim lsU1List As New List(Of String)
-		Dim lsU3List As New List(Of String)
-				
-			For Each sMbrScript As Memberinfo In lsFilteredDataRowList
-				'BRApi.ErrorLog.LogMessage(si, "MemberList " & sMbrScript.Member.Name)	
-				Dim sU1 As String = BRApi.Finance.Metadata.GetMember(si, dimType.UD1.Id, sMbrScript.RowOrColDataCellPkAndCalcScript.DataCellPk.UD1Id).Member.Name
-				Dim sU3 As String = BRApi.Finance.Metadata.GetMember(si, dimType.UD3.Id, sMbrScript.RowOrColDataCellPkAndCalcScript.DataCellPk.UD3Id).Member.Name
-					
-					
-				If Not lsU1List.Contains(sU1) Then lsU1List.Add(sU1)
-				If Not lsU3List.Contains(sU3) Then lsU3List.Add(sU3)
-			
-				'Get values needed for the validation
-				
-				'SP Values
-				Dim oblScript As String ="Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName & ":U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				Dim oblAmt As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,oblScript).DataCellEx.DataCell.CellAmount
-				Dim cmtScript As String = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName  & ":U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Commitments:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				Dim cmtAmt As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,cmtScript).DataCellEx.DataCell.CellAmount
-				
-				'BUD Values
-				Dim BUDoblScript As String = "Cb#" & wfCube & ":S#BUD_C" & wfTimeName & ":T#" & wfTimeName & ":U1#" & sU1 & ":U3#" & sU3 & ":E#" & wfCube & ":A#Obligations:C#Aggregated:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				Dim BUDoblAmt As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,BUDoblScript).DataCellEx.DataCell.CellAmount
-				Dim BUDcmtScript As String = "Cb#" & wfCube & ":S#BUD_C" & wfTimeName & ":T#" & wfTimeName & ":U1#" & sU1 & ":U3#" & sU3 & ":E#" & wfCube & ":A#Commitments:C#Aggregated:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				Dim BUDcmtAmt As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,BUDcmtScript).DataCellEx.DataCell.CellAmount
-				
-				'DOD Plan Rate Validation Values
-				Dim dod_jul_script, obl_mar_script, obl_jul_script As String
-				Dim dod_mar_amt, dod_jul_amt, obl_mar_amt, obl_jul_amt As Int64    	          
-				
-				obl_mar_script = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName  & "M6:U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				obl_mar_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,obl_mar_script).DataCellEx.DataCell.CellAmount
-				
-				obl_jul_script = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName  & "M10:U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				obl_jul_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,obl_jul_script).DataCellEx.DataCell.CellAmount
-					
-				'Always 50% in March
-				dod_mar_amt = 50
-				
-				dod_jul_script = "Cb#" & wfCube & ":S#BUD_C" & wfTimeName & ":T#" & wfTimeName  & "M10:E#" & sACOM & ":A#DOD_Rate_Calc:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-				dod_jul_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,dod_jul_script).DataCellEx.DataCell.CellAmount
-				
-				'brapi.ErrorLog.LogMessage(si, "July rate" &  dod_jul_amt)
-'BRAPI.ErrorLog.LogMessage(si, sU1 & " and " & sU3 & " submit check: obl_mar_amt: " & obl_mar_amt & "     |     " & "oblAmt: " & oblAmt)
-			
-				If  oblAmt <> cmtAmt Then
-						If Not String.IsNullOrWhiteSpace(return_message) Then
-									return_message += vbCrLf
-					End If
-					return_message += vbCrLf & "Error: Spend Plan Obligation amount does not equal Splend Plan Commitment amount for the following funding line:"& vbCrLf  & vbCrLf & "FundCode: " & sU1 & "	SAG: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				
-				End If
-				If oblAmt <> BUDoblAmt Then
-					If Not String.IsNullOrWhiteSpace(return_message) Then
-									return_message += vbCrLf
-					End If
-					return_message += vbCrLf & "Error: Spend Plan Obligation amount does not equal Budget Obligation amount for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	SAG: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				
-				End If
-				If cmtAmt <> BUDcmtAmt
-					If Not String.IsNullOrWhiteSpace(return_message) Then
-									return_message += vbCrLf
-					End If
-					return_message += vbCrLf & "Error: Spend Plan Commitment amount does not equal Budget Commitment amount for the following funding line:"& vbCrLf  & vbCrLf & "FundCode: " & sU1 & "	SAG: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				
-				End If
-				If Int(100 * (obl_mar_amt / oblAmt)) < dod_mar_amt Then
-					If Not String.IsNullOrWhiteSpace(return_message_warning) Then
-									return_message_warning += vbCrLf
-					End If
-					return_message_warning += vbCrLf & "WARNING: March DOD spending rate of 50% has not been met for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	SAG: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				
-				End If
-				If Int(100 * (obl_jul_amt / oblAmt)) < dod_jul_amt Then
-					If Not String.IsNullOrWhiteSpace(return_message) Then
-									return_message += vbCrLf
-					End If
-					return_message += vbCrLf & "Error: July DOD spending rate of " & dod_jul_amt & "% has not been met for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	SAG: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				
-				Else
-				Continue For
-				End If
-				
-			Next
-			If Not String.IsNullOrWhiteSpace(return_message) Then
-				Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
-				
-				Dim objXFSelectionChangedUIActionType As XFSelectionChangedUIActionType = [Enum].Parse(GetType(XFSelectionChangedUIActionType),dashAction) 
-				Dim objXFSelectionChangedUIActionInfo As New XFSelectionChangedUIActionInfo()
-				
-					selectionChangedTaskResult.WorkflowWasChangedByBusinessRule = False
-					selectionChangedTaskResult.IsOK = True		
-					'Added/Updated by Eburke to show message box and refresh dashboard 
-					selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
-					selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = objXFSelectionChangedUIActionInfo
-					selectionChangedTaskResult.ShowMessageBox = True	
-					selectionChangedTaskResult.Message = return_message & vbCrLf & return_message_warning
-		 
-				
-				Return selectionChangedTaskResult
-			End If	
-				
-		'Email users 
-		
-'		Try
-'			SPLN_SolutionHelper.EmailSubmitandVerifySpendPlan(si,globals,api,args)		
-'				Catch ex As Exception
-'				End Try
-			
-			
-		'Set Completion flag	
-				
-					Dim objListofScriptsvalidation As New List(Of MemberScriptandValue)
-					Dim objScriptValvalidation As New MemberScriptAndValue
-					objScriptValvalidation.CubeName = wfCube
-					objScriptValvalidation.Script = sDataBufferValidationFlag
-					objScriptValvalidation.TextValue = "Yes"
-					objScriptValvalidation.IsNoData = False
-					objListofScriptsvalidation.Add(objScriptValvalidation)
-					
-					
-					Brapi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsvalidation)
-	' Reset return cmt if not blank						
-			Dim sMemberScriptReturncmt As String = "Cb#" & wfCube & ":E#" & sACOM & ":C#Local:S#" & wfScenarioName & ":T#" & wfTimeMonth & ":V#Annotation:A#SPL_HQDA_Return_Cmt:F#None:O#BeforeAdj:I#None:U1#OMA:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			Dim SPLNAnnotationCell As DataCellInfoUsingMemberScript = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, sMemberScriptReturncmt)
-			Dim SPLNReturnCmt As String = SPLNAnnotationCell.DataCellEx.DataCellAnnotation	
-			Dim resetvalue As String = ""
-			
-			If Not String.IsNullOrWhiteSpace(SPLNReturnCmt) Then 
-				Dim objListofScriptresetcmt As New List(Of MemberScriptandValue)
-					Dim objScriptresetcmt As New MemberScriptAndValue
-					objScriptresetcmt.CubeName = wfCube
-					objScriptresetcmt.Script = sMemberScriptReturncmt
-					objScriptresetcmt.TextValue = resetvalue
-					objScriptresetcmt.IsNoData = False
-					objListofScriptresetcmt.Add(objScriptresetcmt)	
-					
-					
-				Brapi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptresetcmt)
-				
-			End If 
+#Region "Verify And Submit"
+		Public Function VerifyandSubmit(spendPlanType As String) As Object
+			Try
+				Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+								Dim dashAction As String = "Refresh"
+								'Dim entityName As String = BRapi.Finance.Entity.Text(si, BRapi.Finance.Members.GetMemberId(si, dimtype.Entity.Id, wfInfoDetails("CMDName")), 1, 0, 0).Trim
+								Dim sACOM As String = BRapi.Finance.Entity.Text(si, BRapi.Finance.Members.GetMemberId(si, dimtype.Entity.Id, wfInfoDetails("CMDName")), 1, 0, 0).Trim
 
-			Dim dataMgmtSeq As String = "Consolidate_SpendPlan"     
-			Dim params As New Dictionary(Of String, String) 
-											
-			BRApi.Utilities.ExecuteDataMgmtSequence(si, dataMgmtSeq, params)
-			
-				Dim CompleteselectionChangedTaskResult As New XFSelectionChangedTaskResult()
-				
-				Dim curProfile As WorkflowProfileInfo = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey)
-				Dim Currprofilename As String = curProfile.Name
-				Dim wfClusterPK As New WorkflowUnitClusterPk()
-				
-				'Dim wfClusterDesc As String = BRApi.Workflow.General.GetWorkflowUnitClusterPkDescription(si, si.WorkflowClusterPk)
-				'Added by EBurke 3-19 Get Primary Dashboard for refresh
-				Dim currDashboard As Dashboard = args.PrimaryDashboard
-				
-				Dim CompleteobjXFSelectionChangedUIActionType As XFSelectionChangedUIActionType = [Enum].Parse(GetType(XFSelectionChangedUIActionType),dashAction) 
-				Dim CompleteobjXFSelectionChangedUIActionInfo As New XFSelectionChangedUIActionInfo()
-				CompleteobjXFSelectionChangedUIActionInfo.DashboardsToRedraw = currDashboard.Name
-				CompleteobjXFSelectionChangedUIActionInfo.SelectionChangedUIActionType = CompleteobjXFSelectionChangedUIActionType
-				
-				'BRApi.ErrorLog.LogMessage(si, "Profile" & Currprofilename)
-					
-					'Lock WF
-					wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, Currprofilename, wfScenarioName,wfTimeName )
-					Dim wfClusterDesc As String = BRApi.Workflow.General.GetWorkflowUnitClusterPkDescription(si, wfClusterPK)
-					BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.Completed, StringHelper.FormatMessage("", wfClusterDesc), "", "", Guid.Empty)				
-					
-										
-					
-					CompleteselectionChangedTaskResult.WorkflowWasChangedByBusinessRule = True
-					CompleteselectionChangedTaskResult.IsOK = True		
-					'Added/Updated by Eburke to show message box and refresh dashboard 
-					CompleteselectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
-					CompleteselectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = CompleteobjXFSelectionChangedUIActionInfo
-					CompleteselectionChangedTaskResult.ShowMessageBox = True	
-					CompleteselectionChangedTaskResult.Message = "Spend Plan has been validated and submitted."	& vbCrLf & return_message_warning						
-		 
-				
-				Return CompleteselectionChangedTaskResult
-			
-			
-			
-Catch ex As Exception
-			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-	End Try
-	
-End Function
+								Dim overallStatus As String = BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False)
+								If (overallStatus.Contains("Completed") AndAlso Not overallStatus.Contains("Load Completed")) OrElse BRApi.Workflow.Status.GetWorkflowStatus(si, si.WorkflowClusterPk, True).Locked Then
+									Throw New XFUserMsgException(si, New Exception("Notice: No updates are allowed. Workflow was marked ""Complete"""))
+								End If
 
+								Dim validationFlagScript As String = $"Cb#{wfInfoDetails("CMDName")}:S#{wfInfoDetails("ScenarioName")}:T#{wfInfoDetails("TimeName")}M12:C#Local:V#Annotation:E#{sACOM}:A#Funded_Obligations:I#None:F#None:O#Forms:U1#{spendPlanType}:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+								Dim validationFlag As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), validationFlagScript).DataCellEx.DataCellAnnotation
+								If validationFlag.XFEqualsIgnoreCase("Yes") Then
+									Throw New XFUserMsgException(si, New Exception($"Notice: No updates are allowed. {spendPlanType} Spend Plan has been validated and submitted already."))
+								End If
+								Dim cmdSPLN_TotOBL,hqSPLN_TotOBL,cmdSPLN_MarOBL,hqSPLN_MarOBL,cmdSPLN_JulOBL,hqSPLN_JulOBL,cmdSPLN_TotCMT,hqSPLN_TotCMT As Decimal
+								Dim dod_MarRate,dod_JulRate As Integer
+								Dim dt As DataTable = GetFDXVerifySubmitData(spendPlanType, wfInfoDetails("CMDName"), sACOM, wfInfoDetails("ScenarioName"))
+								Dim errors As New List(Of String)
+								Dim obligationTotals As New Dictionary(Of String, Decimal)(StringComparer.OrdinalIgnoreCase)
+								Dim commitmentTotals As New Dictionary(Of String, Decimal)(StringComparer.OrdinalIgnoreCase)
+								For Each row As DataRow In dt.Rows
+									Dim key As String = $"{row("UD1")}|{row("UD3")}"
+									If row("Account").Equals("Funded_Obligations")
+										cmdSPLN_TotOBL = If(row.IsNull("Time7"), 0.0, Convert.ToDecimal(row("Time7")))
+										hqSPLN_TotOBL = If(row.IsNull("Time8"), 0.0, Convert.ToDecimal(row("Time8")))
+										obligationTotals(key) = hqSPLN_TotOBL
+
+										If cmdSPLN_TotOBL <> hqSPLN_TotOBL Then
+											errors.Add($"Error: Spend Plan Obligation amount does not equal Budget Obligation amount for the following funding line:{vbCrLf} {vbCrLf} FundCode: {row("UD1")} SSN: {row("UD3")}")
+										End If
+										hqSPLN_MarOBL = If(row.IsNull("Time2"), 0.0, Convert.ToDecimal(row("Time2")))
+										If hqSPLN_TotOBL <> 0 AndAlso Int(100 * (hqSPLN_MarOBL / hqSPLN_TotOBL)) < dod_MarRate Then
+											errors.Add($"WARNING: March DOD spending rate of {dod_MarRate}% has not been met for the following funding line:{vbCrLf} {vbCrLf} FundCode: {row("UD1")} SSN: {row("UD3")}")
+										End If
+										hqSPLN_JulOBL = If(row.IsNull("Time5"), 0.0, Convert.ToDecimal(row("Time5")))
+										If hqSPLN_TotOBL <> 0 AndAlso Int(100 * (hqSPLN_JulOBL / hqSPLN_TotOBL)) < dod_JulRate Then
+											errors.Add($"WARNING: March DOD spending rate of {dod_MarRate}% has not been met for the following funding line:{vbCrLf} {vbCrLf} FundCode: {row("UD1")} SSN: {row("UD3")}")
+										End If
+									ElseIf row("Account").Equals("Funded_Commitments")
+										cmdSPLN_TotCMT = If(row.IsNull("Time7"), 0.0, Convert.ToDecimal(row("Time7")))
+										hqSPLN_TotCMT = If(row.IsNull("Time8"), 0.0, Convert.ToDecimal(row("Time8")))
+										commitmentTotals(key) = hqSPLN_TotCMT
+										If cmdSPLN_TotCMT <> hqSPLN_TotCMT Then
+											errors.Add($"Error: Spend Plan Commitment amount does not equal Budget Commitment amount for the following funding line:{vbCrLf} {vbCrLf} FundCode: {row("UD1")} SSN: {row("UD3")}")
+										End If
+									End If
+								Next
+								For Each kvp As KeyValuePair(Of String, Decimal) In commitmentTotals
+									If obligationTotals.ContainsKey(kvp.Key) AndAlso kvp.Value <> obligationTotals(kvp.Key) Then
+										Dim parts() As String = kvp.Key.Split("|"c)
+										errors.Add($"Error: Commitments cannot exceed Obligations for the following funding line:{vbCrLf} {vbCrLf} FundCode: {parts(0)} SSN: {parts(1)}")
+									End If
+								Next
+BRApi.ErrorLog.LogMessage(si,"Hit this2")
+								If errors.Any() Then
+									Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
+									selectionChangedTaskResult.WorkflowWasChangedByBusinessRule = False
+									selectionChangedTaskResult.IsOK = True
+									selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
+									selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = New XFSelectionChangedUIActionInfo()
+									selectionChangedTaskResult.ShowMessageBox = True
+									selectionChangedTaskResult.Message = String.Join(vbCrLf, errors)
+									Return selectionChangedTaskResult
+								End If
+
+								Dim validationList As New List(Of MemberScriptAndValue)
+								Dim validationValue As New MemberScriptAndValue
+								validationValue.CubeName = wfInfoDetails("CMDName")
+								validationValue.Script = validationFlagScript
+								validationValue.TextValue = "Yes"
+								validationValue.IsNoData = False
+								validationList.Add(validationValue)
+								'Brapi.Finance.Data.SetDataCellsUsingMemberScript(si, validationList)
+
+								Dim resetReturnCmtScript As String = $"Cb#{wfInfoDetails("CMDName")}:E#{sACOM}:C#Local:S#{wfInfoDetails("ScenarioName")}:T#{wfInfoDetails("TimeName")}M12:V#Annotation:A#SPL_HQDA_Return_Cmt:F#None:O#BeforeAdj:I#None:U1#{spendPlanType}:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
+								Dim returnCmtCell As DataCellInfoUsingMemberScript = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfInfoDetails("CMDName"), resetReturnCmtScript)
+								If Not String.IsNullOrWhiteSpace(returnCmtCell.DataCellEx.DataCellAnnotation) Then
+									Dim resetList As New List(Of MemberScriptAndValue)
+									Dim resetValue As New MemberScriptAndValue
+									resetValue.CubeName = wfInfoDetails("CMDName")
+									resetValue.Script = resetReturnCmtScript
+									resetValue.TextValue = String.Empty
+									resetValue.IsNoData = False
+									resetList.Add(resetValue)
+									Brapi.Finance.Data.SetDataCellsUsingMemberScript(si, resetList)
+								End If
+
+								'BRApi.Utilities.ExecuteDataMgmtSequence(si, "Consolidate_SpendPlan", New Dictionary(Of String, String))
+
+								Dim result As New XFSelectionChangedTaskResult()
+								Dim currDashboard As Dashboard = args.PrimaryDashboard
+								Dim uiActionInfo As New XFSelectionChangedUIActionInfo()
+								uiActionInfo.DashboardsToRedraw = currDashboard.Name
+								uiActionInfo.SelectionChangedUIActionType = [Enum].Parse(GetType(XFSelectionChangedUIActionType), dashAction)
+
+								Dim wfClusterPK As WorkflowUnitClusterPk = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, wfInfoDetails("ProfileName"), wfInfoDetails("ScenarioName"), wfInfoDetails("TimeName"))
+								Dim wfClusterDesc As String = BRApi.Workflow.General.GetWorkflowUnitClusterPkDescription(si, wfClusterPK)
+								BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.Completed, StringHelper.FormatMessage(String.Empty, wfClusterDesc), String.Empty, String.Empty, Guid.Empty)
+
+								result.WorkflowWasChangedByBusinessRule = True
+								result.IsOK = True
+								result.ChangeSelectionChangedUIActionInDashboard = True
+								result.ModifiedSelectionChangedUIActionInfo = uiActionInfo
+								result.ShowMessageBox = True
+								result.Message = "Spend Plan has been validated and submitted."
+								Return result
+							Catch ex As Exception
+								Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
+							End Try
+						End Function
+
+						Private Function GetFDXVerifySubmitData(spendPlanType As String, cubeName As String, entityName As String, scenarioName As String) As DataTable
+							Dim cvName As String = "HQ_SPLN_FDX_Validation_CV"
+							Dim wsName As String = "60 HQ SPLN"
+							Dim wsID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, wsName)
+							Dim wfInfoDetails = Workspace.GBL.GBL_Assembly.GBL_Helpers.GetWFInfoDetails(si)
+							Dim entDim As String = $"E_{wfInfoDetails("CMDName")}"
+							Dim entFilter As String = $"E#{entityName}"
+							Dim scenDim As String = "S_RMW"
+							Dim scenFilter As String = $"S#{scenarioName}"
+							Dim timeFilter As String = String.Empty
+							Dim NameValuePairs = New Dictionary(Of String,String)
+							NameValuePairs.Add("HQ_SPLN_Type",spendPlanType)
+							Dim nvbParams As NameValueFormatBuilder = New NameValueFormatBuilder(String.Empty, NameValuePairs, False)
+							Return BRApi.Import.Data.FdxExecuteCubeViewTimePivot(si, wsID, cvName, entDim, entFilter, scenDim, scenFilter, timeFilter, nvbParams, False, True, True, String.Empty, 8, False)
+						End Function
 #End Region
 
-#Region "Verify and Submit OPA"
-Public Function VerifyandSubmitOPA(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
-	Try
-			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-			Dim wfCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
-			Dim wfScenarioName As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim wfTimeName As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-			Dim wfTimeMonth As String = wfTimeName & "M12"
-			Dim return_message As String = ""
-			Dim return_message_warning As String = ""
-			Dim dashAction As String ="Refresh"
-			Dim sEntity As String = BRapi.Finance.Entity.Text(si, BRapi.Finance.Members.GetMemberId(si,dimtype.Entity.Id, wfCube), 1, 0, 0).Trim
-			'Dim sEntityGeneral As String = sEntity & "_General"
-			Dim sACOM As String =  sEntity & "_General"
-			
-			 'Check If workflow Is completed/locked
-			If (BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Completed") And _
-				Not BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Load Completed")) Or _
-				(BRApi.Workflow.Status.GetWorkflowStatus(si, si.WorkflowClusterPk, True).Locked)
-				return_message = "Notice: No updates are allowed. Workflow was marked ""Complete"""
-				Throw New XFUserMsgException(si, New Exception(return_message))
-			End If
-		
-			' Check if Spend Plan is completed/locked
-			Dim sDataBufferValidationFlag As String =  "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeMonth & ":C#Local:V#Annotation:E#" & sACOM & ":A#SPL_Validation_Ind:I#None:F#None:O#Forms:U1#OPA:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			Dim sSPLockedval As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, sDataBufferValidationFlag).DataCellEx.DataCellAnnotation
-			If sSPLockedval = "Yes" Then
-				return_message = vbCrLf & "Notice: No updates are allowed. OPA Spend Plan has been validated and submitted already."
-				Throw New XFUserMsgException(si, New Exception(return_message))
-			
-			End If 
-		
-			
-			'========== get rows that have data ============================================================================================================ 
-			Dim sDataBufferScript  As String = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName & ":E#" & sACOM & ":C#Local:V#Periodic:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-			
-			Dim lsFilteredDataRowList As List( Of MemberInfo) = Brapi.Finance.Metadata.GetMembersUsingFilter(si,"U3_APE", "U3#Root.CustomMemberList(BRName=SPLN_Member_Lists, MemberListName=GetSPLAdjustments,CacheName=,Mode=Summary,DimDef=U1#U3#, Account=Obligations,DataBufferPOVScript=" & sDataBufferScript & ",U1=OPA.Base,U3=OPA.Base,U3Level=APE)",False)
-			
-			
-			'========== loop thru rows and validate ============================================================================================================ 
-		Dim lsU1List As New List(Of String)
-		Dim lsU3List As New List(Of String)
-				
-			For Each sMbrScript As Memberinfo In lsFilteredDataRowList
-				'BRApi.ErrorLog.LogMessage(si, "MemberList " & sMbrScript.Member.Name)	
-				Dim sU1 As String = BRApi.Finance.Metadata.GetMember(si, dimType.UD1.Id, sMbrScript.RowOrColDataCellPkAndCalcScript.DataCellPk.UD1Id).Member.Name
-				Dim sU3 As String = BRApi.Finance.Metadata.GetMember(si, dimType.UD3.Id, sMbrScript.RowOrColDataCellPkAndCalcScript.DataCellPk.UD3Id).Member.Name
-					
-					
-				If Not lsU1List.Contains(sU1) Then lsU1List.Add(sU1)
-				If Not lsU3List.Contains(sU3) Then lsU3List.Add(sU3)
-			
-				'Get values needed for the validation
-				
-				'SP Values
-				Dim oblScript As String ="Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName & ":U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				Dim oblAmt As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,oblScript).DataCellEx.DataCell.CellAmount
-				
-				
-				'BUD Values
-				Dim BUDoblScript As String = "Cb#" & wfCube & ":S#BUD_C" & wfTimeName & ":T#" & wfTimeName & ":U1#" & sU1 & ":U3#" & sU3 & ":E#" & wfCube & ":A#Obligations:C#Aggregated:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				Dim BUDoblAmt As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,BUDoblScript).DataCellEx.DataCell.CellAmount
-			
-				'DOD Plan Rate Validation Values
-				Dim dod_jul_script, obl_mar_script, obl_jul_script As String
-				Dim dod_mar_amt, dod_jul_amt, obl_mar_amt, obl_jul_amt As Int64    	          
-				
-				obl_mar_script = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName  & "M6:U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				obl_mar_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,obl_mar_script).DataCellEx.DataCell.CellAmount
-				
-				obl_jul_script = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName  & "M10:U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				obl_jul_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,obl_jul_script).DataCellEx.DataCell.CellAmount
-					
-				'Always 50% in March
-				dod_mar_amt = 50
-				
-				dod_jul_script = "Cb#" & wfCube & ":S#BUD_C" & wfTimeName & ":T#" & wfTimeName  & "M10:E#" & sACOM & ":A#DOD_Rate_Calc:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-				dod_jul_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,dod_jul_script).DataCellEx.DataCell.CellAmount
-				
-				'brapi.ErrorLog.LogMessage(si, "July rate" &  dod_jul_amt)		
-				
-				If oblAmt <> BUDoblAmt Then
-					If Not String.IsNullOrWhiteSpace(return_message) Then
-									return_message += vbCrLf
-					End If
-					return_message += vbCrLf & "Error: Spend Plan Obligation amount does not equal Budget Obligation amount for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	SSN: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				End If
-
-				 If Int(100 * (obl_mar_amt / oblAmt)) < dod_mar_amt Then
-					If Not String.IsNullOrWhiteSpace(return_message_warning) Then
-									return_message_warning += vbCrLf
-					End If
-					return_message_warning += vbCrLf & "WARNING: March DOD spending rate of 50% has not been met for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	SSN: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				End If
-			If Int(100 * (obl_jul_amt / oblAmt)) < dod_jul_amt Then
-					If Not String.IsNullOrWhiteSpace(return_message) Then
-									return_message += vbCrLf
-					End If
-					return_message += vbCrLf & "Error: July DOD spending rate of " & dod_jul_amt & "% has not been met for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	SSN: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				
-				
-				End If
-				
-			Next
-		If Not String.IsNullOrWhiteSpace(return_message) Then
-				Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
-				
-				Dim objXFSelectionChangedUIActionType As XFSelectionChangedUIActionType = [Enum].Parse(GetType(XFSelectionChangedUIActionType),dashAction) 
-				Dim objXFSelectionChangedUIActionInfo As New XFSelectionChangedUIActionInfo()
-				
-					selectionChangedTaskResult.WorkflowWasChangedByBusinessRule = False
-					selectionChangedTaskResult.IsOK = True		
-					'Added/Updated by Eburke to show message box and refresh dashboard 
-					selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
-					selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = objXFSelectionChangedUIActionInfo
-					selectionChangedTaskResult.ShowMessageBox = True	
-					selectionChangedTaskResult.Message = return_message & vbCrLf & return_message_warning					
-		 
-				
-				Return selectionChangedTaskResult
-			End If	
-				
-			
-		'Email users 
-		
-'		Try
-'			SPLN_SolutionHelper.EmailSubmitandVerifySpendPlan(si,globals,api,args)		
-'				Catch ex As Exception
-'				End Try
-		
-
-
-	
-		'Set Completion flag	
-				
-					Dim objListofScriptsvalidation As New List(Of MemberScriptandValue)
-					Dim objScriptValvalidation As New MemberScriptAndValue
-					objScriptValvalidation.CubeName = wfCube
-					objScriptValvalidation.Script = sDataBufferValidationFlag
-					objScriptValvalidation.TextValue = "Yes"
-					objScriptValvalidation.IsNoData = False
-					objListofScriptsvalidation.Add(objScriptValvalidation)
-					
-					
-					Brapi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsvalidation)
-			
-		' Reset return cmt if not blank						
-			Dim sMemberScriptReturncmt As String = "Cb#" & wfCube & ":E#" & sACOM & ":C#Local:S#" & wfScenarioName & ":T#" & wfTimeMonth & ":V#Annotation:A#SPL_HQDA_Return_Cmt:F#None:O#BeforeAdj:I#None:U1#OPA:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			Dim SPLNAnnotationCell As DataCellInfoUsingMemberScript = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, sMemberScriptReturncmt)
-			Dim SPLNReturnCmt As String = SPLNAnnotationCell.DataCellEx.DataCellAnnotation	
-			Dim resetvalue As String = ""
-			
-			If Not String.IsNullOrWhiteSpace(SPLNReturnCmt) Then 
-				Dim objListofScriptresetcmt As New List(Of MemberScriptandValue)
-					Dim objScriptresetcmt As New MemberScriptAndValue
-					objScriptresetcmt.CubeName = wfCube
-					objScriptresetcmt.Script = sMemberScriptReturncmt
-					objScriptresetcmt.TextValue = resetvalue
-					objScriptresetcmt.IsNoData = False
-					objListofScriptresetcmt.Add(objScriptresetcmt)	
-					
-					
-				Brapi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptresetcmt)
-				
-			End If 
-					
-							
-		Dim dataMgmtSeq As String = "Consolidate_SpendPlan"     
-			Dim params As New Dictionary(Of String, String) 
-											
-			BRApi.Utilities.ExecuteDataMgmtSequence(si, dataMgmtSeq, params)
-			
-			
-			Dim CompleteselectionChangedTaskResult As New XFSelectionChangedTaskResult()
-				
-				Dim curProfile As WorkflowProfileInfo = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey)
-				Dim Currprofilename As String = curProfile.Name
-				Dim wfClusterPK As New WorkflowUnitClusterPk()
-				
-				'Dim wfClusterDesc As String = BRApi.Workflow.General.GetWorkflowUnitClusterPkDescription(si, si.WorkflowClusterPk)
-				'Added by EBurke 3-19 Get Primary Dashboard for refresh
-				Dim currDashboard As Dashboard = args.PrimaryDashboard
-				
-				Dim CompleteobjXFSelectionChangedUIActionType As XFSelectionChangedUIActionType = [Enum].Parse(GetType(XFSelectionChangedUIActionType),dashAction) 
-				Dim CompleteobjXFSelectionChangedUIActionInfo As New XFSelectionChangedUIActionInfo()
-				CompleteobjXFSelectionChangedUIActionInfo.DashboardsToRedraw = currDashboard.Name
-				CompleteobjXFSelectionChangedUIActionInfo.SelectionChangedUIActionType = CompleteobjXFSelectionChangedUIActionType
-				
-				'BRApi.ErrorLog.LogMessage(si, "Profile" & Currprofilename)
-					
-					'Lock WF
-					wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, Currprofilename, wfScenarioName,wfTimeName )
-					Dim wfClusterDesc As String = BRApi.Workflow.General.GetWorkflowUnitClusterPkDescription(si, wfClusterPK)
-					BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.Completed, StringHelper.FormatMessage("", wfClusterDesc), "", "", Guid.Empty)				
-					
-										
-					
-					CompleteselectionChangedTaskResult.WorkflowWasChangedByBusinessRule = True
-					CompleteselectionChangedTaskResult.IsOK = True		
-					'Added/Updated by Eburke to show message box and refresh dashboard 
-					CompleteselectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
-					CompleteselectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = CompleteobjXFSelectionChangedUIActionInfo
-					CompleteselectionChangedTaskResult.ShowMessageBox = True	
-					CompleteselectionChangedTaskResult.Message = "Spend Plan has been validated and submitted." & vbCrLf & return_message_warning							
-		 
-				
-				Return CompleteselectionChangedTaskResult
-	
-				
-		Catch ex As Exception
-			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-		End Try
-	End Function
-	
-#End Region	
-
-#Region "Verify and Submit RDTE"
-Public Function VerifyandSubmitRDTE(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs) As Object
-	Try
-			'========== workflow vars ============================================================================================================ 
-			Dim wfProfileName As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).Name
-			Dim wfCube As String = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey).CubeName
-			Dim wfScenarioName As String = ScenarioDimHelper.GetNameFromId(si, si.WorkflowClusterPk.ScenarioKey)
-			Dim wfTimeName As String = BRApi.Finance.Time.GetNameFromId(si,si.WorkflowClusterPk.TimeKey)
-			Dim wfTimeMonth As String = wfTimeName & "M12"
-			Dim return_message As String = ""
-			Dim return_message_warning As String = ""
-			Dim dashAction As String ="Refresh"
-			Dim sEntity As String = BRapi.Finance.Entity.Text(si, BRapi.Finance.Members.GetMemberId(si,dimtype.Entity.Id, wfCube), 1, 0, 0).Trim
-			'Dim sEntityGeneral As String = sEntity & "_General"
-			Dim sACOM As String =  sEntity & "_General"
-			
-			' Check if workflow is completed/locked
-			If (BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Completed") And _
-				Not BRApi.Workflow.General.GetUserWorkflowInitInfo(si).GetSelectedWorkflowInfo.GetOverallStatusText(False).Contains("Load Completed")) Or _
-				(BRApi.Workflow.Status.GetWorkflowStatus(si, si.WorkflowClusterPk, True).Locked)
-				return_message = "Notice: No updates are allowed. Workflow was marked ""Complete"""
-				Throw New XFUserMsgException(si, New Exception(return_message))
-			End If
-		
-			' Check if Spend Plan is completed/locked
-			Dim sDataBufferValidationFlag As String =  "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeMonth & ":C#Local:V#Annotation:E#" & sACOM & ":A#SPL_Validation_Ind:I#None:F#None:O#Forms:U1#RDTE:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			Dim sSPLockedval As String = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, sDataBufferValidationFlag).DataCellEx.DataCellAnnotation
-			If sSPLockedval = "Yes" Then
-				return_message = vbCrLf & "Notice: No updates are allowed. RDTE Spend Plan has been validated and submitted already."
-				Throw New XFUserMsgException(si, New Exception(return_message))
-			
-			End If 
-		
-			
-				'========== get rows that have data ============================================================================================================ 
-			Dim sDataBufferScript  As String = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName & ":E#" & sACOM & ":C#Local:V#Periodic:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-			
-			Dim lsFilteredDataRowList As List( Of MemberInfo) = Brapi.Finance.Metadata.GetMembersUsingFilter(si,"U3_APE_PT", "U3#Root.CustomMemberList(BRName=SPLN_Member_Lists, MemberListName=GetSPLAdjustments,CacheName=,Mode=Summary,DimDef=U1#U3#, Account=Obligations,DataBufferPOVScript=" & sDataBufferScript & ",U1=RDTE.Base,U3=RDTE.Base,U3Level=APEPT)",False)
-			
-			'========== loop thru rows and validate ============================================================================================================ 
-		Dim lsU1List As New List(Of String)
-		Dim lsU3List As New List(Of String)
-				
-			For Each sMbrScript As Memberinfo In lsFilteredDataRowList
-				'BRApi.ErrorLog.LogMessage(si, "MemberList " & sMbrScript.Member.Name)	
-				Dim sU1 As String = BRApi.Finance.Metadata.GetMember(si, dimType.UD1.Id, sMbrScript.RowOrColDataCellPkAndCalcScript.DataCellPk.UD1Id).Member.Name
-				Dim sU3 As String = BRApi.Finance.Metadata.GetMember(si, dimType.UD3.Id, sMbrScript.RowOrColDataCellPkAndCalcScript.DataCellPk.UD3Id).Member.Name
-					
-					
-				If Not lsU1List.Contains(sU1) Then lsU1List.Add(sU1)
-				If Not lsU3List.Contains(sU3) Then lsU3List.Add(sU3)
-			
-				'Get values needed for the validation
-				
-				'SP Values
-				Dim oblScript As String ="Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName & ":U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				Dim oblAmt As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,oblScript).DataCellEx.DataCell.CellAmount
-				
-				'BUD Values
-				Dim BUDoblScript As String = "Cb#" & wfCube & ":S#BUD_C" & wfTimeName & ":T#" & wfTimeName & ":U1#" & sU1 & ":U3#" & sU3 & ":E#" & wfCube & ":A#Obligations:C#Aggregated:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				Dim BUDoblAmt As Decimal = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,BUDoblScript).DataCellEx.DataCell.CellAmount
-				
-				'DOD Plan Rate Validation Values
-				Dim dod_jul_script, obl_mar_script, obl_jul_script As String
-				Dim dod_mar_amt, dod_jul_amt, obl_mar_amt, obl_jul_amt As Int64    	          
-				
-				obl_mar_script = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName  & "M6:U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				obl_mar_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,obl_mar_script).DataCellEx.DataCell.CellAmount
-				
-				obl_jul_script = "Cb#" & wfCube & ":S#" & wfScenarioName & ":T#" & wfTimeName  & "M10:U1#" & sU1 & ":U3#" & sU3 & ":E#" & sACOM & ":A#Obligations:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U2#Top:U4#Top:U5#Top:U6#Top:U7#Top:U8#None"
-				obl_jul_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,obl_jul_script).DataCellEx.DataCell.CellAmount
-					
-				'Always 50% in March
-				dod_mar_amt = 50
-				
-				dod_jul_script = "Cb#" & wfCube & ":S#BUD_C" & wfTimeName & ":T#" & wfTimeName  & "M10:E#" & sACOM & ":A#DOD_Rate_Calc:C#Local:V#YTD:I#Top:F#Top:O#BeforeAdj:U1#None:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-				dod_jul_amt = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube,dod_jul_script).DataCellEx.DataCell.CellAmount
-				
-				'brapi.ErrorLog.LogMessage(si, "July rate" &  dod_jul_amt)
-			
-			
-				 If oblAmt <> BUDoblAmt Then
-					If Not String.IsNullOrWhiteSpace(return_message) Then
-									return_message += vbCrLf
-					End If
-					return_message += vbCrLf & "Error: Spend Plan Obligation amount does not equal Budget Obligation amount for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	APE: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				End If
-			
-				If Int(100 * (obl_mar_amt / oblAmt)) < dod_mar_amt Then
-					If Not String.IsNullOrWhiteSpace(return_message_warning) Then
-									return_message_warning += vbCrLf
-					End If
-					return_message_warning += vbCrLf & "WARNING: March DOD spending rate of 50% has not been met for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	APE: " & sU3
-					
-				End If
-				 If Int(100 * (obl_jul_amt / oblAmt)) < dod_jul_amt Then
-					If Not String.IsNullOrWhiteSpace(return_message) Then
-									return_message += vbCrLf
-					End If
-					return_message += vbCrLf & "Error: July DOD spending rate of " & dod_jul_amt & "% has not been met for the following funding line:" & vbCrLf & vbCrLf & "FundCode: " & sU1 & "	APE: " & sU3
-					'Throw New XFUserMsgException(si, New Exception(return_message))
-				
-				
-				End If
-				
-			Next
-			
-			If Not String.IsNullOrWhiteSpace(return_message) Then
-				
-				Dim selectionChangedTaskResult As New XFSelectionChangedTaskResult()
-				
-				Dim objXFSelectionChangedUIActionType As XFSelectionChangedUIActionType = [Enum].Parse(GetType(XFSelectionChangedUIActionType),dashAction) 
-				Dim objXFSelectionChangedUIActionInfo As New XFSelectionChangedUIActionInfo()
-				
-					selectionChangedTaskResult.WorkflowWasChangedByBusinessRule = False
-					selectionChangedTaskResult.IsOK = True		
-					'Added/Updated by Eburke to show message box and refresh dashboard 
-					selectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
-					selectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = objXFSelectionChangedUIActionInfo
-					selectionChangedTaskResult.ShowMessageBox = True	
-					selectionChangedTaskResult.Message = return_message	& vbCrLf & return_message_warning				
-		 
-				
-				Return selectionChangedTaskResult
-			End If	
-		'Email users 
-		
-'		Try
-'			SPLN_SolutionHelper.EmailSubmitandVerifySpendPlan(si,globals,api,args)		
-'				Catch ex As Exception
-'				End Try
-		
-
-
-	
-		'Set Completion flag	
-				
-					Dim objListofScriptsvalidation As New List(Of MemberScriptandValue)
-					Dim objScriptValvalidation As New MemberScriptAndValue
-					objScriptValvalidation.CubeName = wfCube
-					objScriptValvalidation.Script = sDataBufferValidationFlag
-					objScriptValvalidation.TextValue = "Yes"
-					objScriptValvalidation.IsNoData = False
-					objListofScriptsvalidation.Add(objScriptValvalidation)
-					
-					
-					Brapi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptsvalidation)
-					
-					
-		' Reset return cmt if not blank						
-			Dim sMemberScriptReturncmt As String = "Cb#" & wfCube & ":E#" & sACOM & ":C#Local:S#" & wfScenarioName & ":T#" & wfTimeMonth & ":V#Annotation:A#SPL_HQDA_Return_Cmt:F#None:O#BeforeAdj:I#None:U1#RDTE:U2#None:U3#None:U4#None:U5#None:U6#None:U7#None:U8#None"
-			Dim SPLNAnnotationCell As DataCellInfoUsingMemberScript = BRApi.Finance.Data.GetDataCellUsingMemberScript(si, wfCube, sMemberScriptReturncmt)
-			Dim SPLNReturnCmt As String = SPLNAnnotationCell.DataCellEx.DataCellAnnotation	
-			Dim resetvalue As String = ""
-			
-			If Not String.IsNullOrWhiteSpace(SPLNReturnCmt) Then 
-				Dim objListofScriptresetcmt As New List(Of MemberScriptandValue)
-					Dim objScriptresetcmt As New MemberScriptAndValue
-					objScriptresetcmt.CubeName = wfCube
-					objScriptresetcmt.Script = sMemberScriptReturncmt
-					objScriptresetcmt.TextValue = resetvalue
-					objScriptresetcmt.IsNoData = False
-					objListofScriptresetcmt.Add(objScriptresetcmt)	
-					
-					
-				Brapi.Finance.Data.SetDataCellsUsingMemberScript(si, objListofScriptresetcmt)
-				
-			End If 
-		
-					
-		Dim dataMgmtSeq As String = "Consolidate_SpendPlan"     
-			Dim params As New Dictionary(Of String, String) 
-											
-			BRApi.Utilities.ExecuteDataMgmtSequence(si, dataMgmtSeq, params)
-			
-			
-			
-			
-		Dim CompleteselectionChangedTaskResult As New XFSelectionChangedTaskResult()
-				
-				Dim curProfile As WorkflowProfileInfo = BRApi.Workflow.Metadata.GetProfile(si, si.WorkflowClusterPk.ProfileKey)
-				Dim Currprofilename As String = curProfile.Name
-				Dim wfClusterPK As New WorkflowUnitClusterPk()
-				
-				'Dim wfClusterDesc As String = BRApi.Workflow.General.GetWorkflowUnitClusterPkDescription(si, si.WorkflowClusterPk)
-				'Added by EBurke 3-19 Get Primary Dashboard for refresh
-				Dim currDashboard As Dashboard = args.PrimaryDashboard
-				
-				Dim CompleteobjXFSelectionChangedUIActionType As XFSelectionChangedUIActionType = [Enum].Parse(GetType(XFSelectionChangedUIActionType),dashAction) 
-				Dim CompleteobjXFSelectionChangedUIActionInfo As New XFSelectionChangedUIActionInfo()
-				CompleteobjXFSelectionChangedUIActionInfo.DashboardsToRedraw = currDashboard.Name
-				CompleteobjXFSelectionChangedUIActionInfo.SelectionChangedUIActionType = CompleteobjXFSelectionChangedUIActionType
-				
-				'BRApi.ErrorLog.LogMessage(si, "Profile" & Currprofilename)
-					
-					'Lock WF
-					wfClusterPK = BRApi.Workflow.General.GetWorkflowUnitClusterPk(si, Currprofilename, wfScenarioName,wfTimeName )
-					Dim wfClusterDesc As String = BRApi.Workflow.General.GetWorkflowUnitClusterPkDescription(si, wfClusterPK)
-					BRApi.Workflow.Status.SetWorkflowStatus(si, wfClusterPK, StepClassificationTypes.Workspace, WorkflowStatusTypes.Completed, StringHelper.FormatMessage("", wfClusterDesc), "", "", Guid.Empty)				
-					
-										
-					
-					CompleteselectionChangedTaskResult.WorkflowWasChangedByBusinessRule = True
-					CompleteselectionChangedTaskResult.IsOK = True		
-					'Added/Updated by Eburke to show message box and refresh dashboard 
-					CompleteselectionChangedTaskResult.ChangeSelectionChangedUIActionInDashboard = True
-					CompleteselectionChangedTaskResult.ModifiedSelectionChangedUIActionInfo = CompleteobjXFSelectionChangedUIActionInfo
-					CompleteselectionChangedTaskResult.ShowMessageBox = True	
-					CompleteselectionChangedTaskResult.Message = "Spend Plan has been validated and submitted."	& vbCrLf & return_message_warning						
-		 
-				
-				Return CompleteselectionChangedTaskResult
-		
-				
-		Catch ex As Exception
-			Throw ErrorHandler.LogWrite(si, New XFException(si, ex))
-		End Try
-	End Function
-	
-#End Region
 
 #Region "Spend Rate Obligation Warning"
 Public Function SpendObligWarning(ByVal si As SessionInfo, ByVal globals As BRGlobals, ByVal api As Object, ByVal args As DashboardExtenderArgs)
@@ -2349,4 +1760,4 @@ End Function
 
 
 	End Class
-End Namespace
+End Namespac

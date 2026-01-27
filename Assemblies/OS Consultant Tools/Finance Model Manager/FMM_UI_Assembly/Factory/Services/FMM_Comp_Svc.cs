@@ -65,13 +65,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     }
                     else if (args.FunctionName.XFEqualsIgnoreCase("NewConfig"))
                     {
-                        src_CellDb.CreateDefaultConfig(args.EmbeddedDashboard.WorkspaceID);
-                        // tell the dashboard if we need to do anything
-                        XFSelectionChangedTaskResult selectionChangedTaskResult = new XFSelectionChangedTaskResult();
-                        selectionChangedTaskResult.ChangeCustomSubstVarsInDashboard = true;
-                        selectionChangedTaskResult.IsOK = true;
-                        selectionChangedTaskResult.ShowMessageBox = false;
-                        return selectionChangedTaskResult;
+                        var customSubstVars = args.SelectionChangedTaskInfo?.CustomSubstVarsWithUserSelectedValues ?? new Dictionary<string, string>();
+                        src_CellDb.CreateDefaultConfig(args.EmbeddedDashboard.WorkspaceID, customSubstVars);
+                        return new XFSelectionChangedTaskResult
+                        {
+                            ChangeCustomSubstVarsInDashboard = true,
+                            IsOK = true,
+                            ShowMessageBox = false
+                        };
                     }
                 }
 

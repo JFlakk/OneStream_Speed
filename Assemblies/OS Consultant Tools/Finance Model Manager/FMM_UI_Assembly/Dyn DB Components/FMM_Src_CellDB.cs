@@ -23,7 +23,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     public class FMM_Src_CellDB
     {
         // Database table that will contain our objects
-        public string TableName { get; } = "FMM_Src_Cell";
+        public string TableName { get; } = "FMM_SrcCell";
 
         // SessionInfo instance
         public SessionInfo si { get; }
@@ -46,9 +46,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             // Always include core identification and common fields
             columns.AddRange(new[] {
-                "Cell_ID", "Cube_ID", "Act_ID", "Model_ID", "Calc_ID", "Src_Order",
-                "Src_Type", "Src_Item", "Open_Parens", "Math_Operator", "Close_Parens",
-                "Create_Date", "Create_User", "Update_Date", "Update_User"
+                "CellID", "CubeID", "ActID", "ModelID", "CalcID", "Order",
+                "Type", "Item", "OpenParens", "MathOperator", "CloseParens",
+                "CreateDate", "CreateUser", "UpdateDate", "UpdateUser"
             });
 
             var srcConfig = FMM_Config_Helpers.Get_SrcConfigType(calcType);
@@ -112,14 +112,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
-        /// Retrieve all FMM_Src_CellModel objects for a given Calc_ID
+        /// Retrieve all FMM_Src_CellModel objects for a given CalcID
         /// </summary>
         public List<FMM_Src_CellModel> GetSrcCellsByCalcId(int calcId, int calcType)
         {
             try
             {
                 var columns = GetSelectColumnsForCalcType(calcType);
-                string sql = $"SELECT {columns} FROM {this.TableName} WHERE Calc_ID = @calcID ORDER BY Src_Order";
+                string sql = $"SELECT {columns} FROM {this.TableName} WHERE CalcID = @calcID ORDER BY Src_Order";
 
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@calcID", calcId) };
 
@@ -152,9 +152,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 var mergeTable = BuildMergeTable(models, calcType);
 
-                var calcId = models[0].Calc_ID;
+                var calcId = models[0].CalcID;
                 var selectColumns = GetSelectColumnsForCalcType(calcType);
-                var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE Calc_ID = @calcID";
+                var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE CalcID = @calcID";
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(this.si);
 
@@ -213,59 +213,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 DataRow row = dt.NewRow();
 
-                SetColumnValue(row, "Cell_ID", model.Cell_ID);
-                SetColumnValue(row, "Cube_ID", model.Cube_ID);
-                SetColumnValue(row, "Act_ID", model.Act_ID);
-                SetColumnValue(row, "Model_ID", model.Model_ID);
-                SetColumnValue(row, "Calc_ID", model.Calc_ID);
-                SetColumnValue(row, "Src_Order", model.Src_Order);
-                SetColumnValue(row, "Src_Type", model.Src_Type);
-                SetColumnValue(row, "Src_Item", model.Src_Item);
-                SetColumnValue(row, "Open_Parens", model.Open_Parens);
-                SetColumnValue(row, "Math_Operator", model.Math_Operator);
-                SetColumnValue(row, "Close_Parens", model.Close_Parens);
-                SetColumnValue(row, "Create_Date", model.Create_Date ?? DateTime.Now);
-                SetColumnValue(row, "Create_User", model.Create_User ?? this.si?.UserName);
-                SetColumnValue(row, "Update_Date", model.Update_Date ?? DateTime.Now);
-                SetColumnValue(row, "Update_User", model.Update_User ?? this.si?.UserName);
+                foreach (var columnName in columns)
+                {
+                    var prop =
+                        model.GetType().GetProperty(columnName,
+                            System.Reflection.BindingFlags.Instance |
+                            System.Reflection.BindingFlags.Public |
+                            System.Reflection.BindingFlags.IgnoreCase)
+                        ?? model.GetType().GetProperty(columnName.Replace("_", string.Empty),
+                            System.Reflection.BindingFlags.Instance |
+                            System.Reflection.BindingFlags.Public |
+                            System.Reflection.BindingFlags.IgnoreCase);
 
-                SetColumnValue(row, "Entity", model.Entity);
-                SetColumnValue(row, "Cons", model.Cons);
-                SetColumnValue(row, "Scenario", model.Scenario);
-                SetColumnValue(row, "Time", model.Time);
-                SetColumnValue(row, "View", model.View);
-                SetColumnValue(row, "Acct", model.Acct);
-                SetColumnValue(row, "IC", model.IC);
-                SetColumnValue(row, "Origin", model.Origin);
-                SetColumnValue(row, "Flow", model.Flow);
-                SetColumnValue(row, "UD1", model.UD1);
-                SetColumnValue(row, "UD2", model.UD2);
-                SetColumnValue(row, "UD3", model.UD3);
-                SetColumnValue(row, "UD4", model.UD4);
-                SetColumnValue(row, "UD5", model.UD5);
-                SetColumnValue(row, "UD6", model.UD6);
-                SetColumnValue(row, "UD7", model.UD7);
-                SetColumnValue(row, "UD8", model.UD8);
+                    if (prop == null) continue;
 
-                SetColumnValue(row, "DB_Name", model.DB_Name);
-                SetColumnValue(row, "Dyn_Calc_Script", model.Dyn_Calc_Script);
-                SetColumnValue(row, "Unbal_Src_Cell_Buffer", model.Unbal_Src_Cell_Buffer);
-                SetColumnValue(row, "Unbal_Src_Cell_Buffer_Filter", model.Unbal_Src_Cell_Buffer_Filter);
-                SetColumnValue(row, "Unbal_Buffer_Filter", model.Unbal_Buffer_Filter);
-                SetColumnValue(row, "Override_Value", model.Override_Value);
-
-                SetColumnValue(row, "Unbal_Acct_Override", model.Unbal_Acct_Override);
-                SetColumnValue(row, "Unbal_Origin_Override", model.Unbal_Origin_Override);
-                SetColumnValue(row, "Unbal_Flow_Override", model.Unbal_Flow_Override);
-                SetColumnValue(row, "Unbal_IC_Override", model.Unbal_IC_Override);
-                SetColumnValue(row, "Unbal_UD1_Override", model.Unbal_UD1_Override);
-                SetColumnValue(row, "Unbal_UD2_Override", model.Unbal_UD2_Override);
-                SetColumnValue(row, "Unbal_UD3_Override", model.Unbal_UD3_Override);
-                SetColumnValue(row, "Unbal_UD4_Override", model.Unbal_UD4_Override);
-                SetColumnValue(row, "Unbal_UD5_Override", model.Unbal_UD5_Override);
-                SetColumnValue(row, "Unbal_UD6_Override", model.Unbal_UD6_Override);
-                SetColumnValue(row, "Unbal_UD7_Override", model.Unbal_UD7_Override);
-                SetColumnValue(row, "Unbal_UD8_Override", model.Unbal_UD8_Override);
+                    var value = prop.GetValue(model);
+                    SetColumnValue(row, columnName, value);
+                }
 
                 dt.Rows.Add(row);
             }
@@ -286,7 +250,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
-                string sql = $"SELECT * FROM {this.TableName} ORDER BY Calc_ID, Src_Order";
+                string sql = $"SELECT * FROM {this.TableName} ORDER BY CalcID, Src_Order";
 
                 using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
@@ -326,17 +290,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             var model = new FMM_Src_CellModel(enabledProperties)
             {
-                Cell_ID = dr.Field<int>("Cell_ID"),
-                Cube_ID = dr.Field<int>("Cube_ID"),
-                Act_ID = dr.Field<int>("Act_ID"),
-                Model_ID = dr.Field<int>("Model_ID"),
-                Calc_ID = dr.Field<int>("Calc_ID"),
+                CubeID = dr.Field<int>("CubeID"),
+                ActID = dr.Field<int>("ActID"),
+                ModelID = dr.Field<int>("ModelID"),
+                CalcID = dr.Field<int>("CalcID"),
+                CellID = dr.Field<int>("CellID"),
                 Src_Order = dr.Field<int?>("Src_Order") ?? 0,
                 Src_Type = dr.Field<string>("Src_Type") ?? string.Empty,
                 Src_Item = dr.Field<string>("Src_Item") ?? string.Empty,
-                Open_Parens = dr.Field<string>("Open_Parens") ?? string.Empty,
-                Math_Operator = dr.Field<string>("Math_Operator") ?? string.Empty,
-                Close_Parens = dr.Field<string>("Close_Parens") ?? string.Empty,
 
                 // Audit fields
                 Create_Date = dr.Field<DateTime?>("Create_Date"),
@@ -381,45 +342,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             if (enabledProperties.Contains("UD8") && dr.Table.Columns.Contains("UD8"))
                 model.UD8 = dr.Field<string>("UD8");
 
-            // Additional fields - only set if enabled
-            if (enabledProperties.Contains("DB_Name") && dr.Table.Columns.Contains("DB_Name"))
-                model.DB_Name = dr.Field<string>("DB_Name");
-            if (enabledProperties.Contains("Dyn_Calc_Script") && dr.Table.Columns.Contains("Dyn_Calc_Script"))
-                model.Dyn_Calc_Script = dr.Field<string>("Dyn_Calc_Script");
-            if (enabledProperties.Contains("Unbal_Src_Cell_Buffer") && dr.Table.Columns.Contains("Unbal_Src_Cell_Buffer"))
-                model.Unbal_Src_Cell_Buffer = dr.Field<string>("Unbal_Src_Cell_Buffer");
-            if (enabledProperties.Contains("Unbal_Src_Cell_Buffer_Filter") && dr.Table.Columns.Contains("Unbal_Src_Cell_Buffer_Filter"))
-                model.Unbal_Src_Cell_Buffer_Filter = dr.Field<string>("Unbal_Src_Cell_Buffer_Filter");
-            if (enabledProperties.Contains("Unbal_Buffer_Filter") && dr.Table.Columns.Contains("Unbal_Buffer_Filter"))
-                model.Unbal_Buffer_Filter = dr.Field<string>("Unbal_Buffer_Filter");
-            if (enabledProperties.Contains("Override_Value") && dr.Table.Columns.Contains("Override_Value"))
-                model.Override_Value = dr.Field<string>("Override_Value");
-
-            // Unbalanced dimension overrides - only set if enabled
-            if (enabledProperties.Contains("Unbal_Acct_Override") && dr.Table.Columns.Contains("Unbal_Acct_Override"))
-                model.Unbal_Acct_Override = dr.Field<string>("Unbal_Acct_Override");
-            if (enabledProperties.Contains("Unbal_Origin_Override") && dr.Table.Columns.Contains("Unbal_Origin_Override"))
-                model.Unbal_Origin_Override = dr.Field<string>("Unbal_Origin_Override");
-            if (enabledProperties.Contains("Unbal_Flow_Override") && dr.Table.Columns.Contains("Unbal_Flow_Override"))
-                model.Unbal_Flow_Override = dr.Field<string>("Unbal_Flow_Override");
-            if (enabledProperties.Contains("Unbal_IC_Override") && dr.Table.Columns.Contains("Unbal_IC_Override"))
-                model.Unbal_IC_Override = dr.Field<string>("Unbal_IC_Override");
-            if (enabledProperties.Contains("Unbal_UD1_Override") && dr.Table.Columns.Contains("Unbal_UD1_Override"))
-                model.Unbal_UD1_Override = dr.Field<string>("Unbal_UD1_Override");
-            if (enabledProperties.Contains("Unbal_UD2_Override") && dr.Table.Columns.Contains("Unbal_UD2_Override"))
-                model.Unbal_UD2_Override = dr.Field<string>("Unbal_UD2_Override");
-            if (enabledProperties.Contains("Unbal_UD3_Override") && dr.Table.Columns.Contains("Unbal_UD3_Override"))
-                model.Unbal_UD3_Override = dr.Field<string>("Unbal_UD3_Override");
-            if (enabledProperties.Contains("Unbal_UD4_Override") && dr.Table.Columns.Contains("Unbal_UD4_Override"))
-                model.Unbal_UD4_Override = dr.Field<string>("Unbal_UD4_Override");
-            if (enabledProperties.Contains("Unbal_UD5_Override") && dr.Table.Columns.Contains("Unbal_UD5_Override"))
-                model.Unbal_UD5_Override = dr.Field<string>("Unbal_UD5_Override");
-            if (enabledProperties.Contains("Unbal_UD6_Override") && dr.Table.Columns.Contains("Unbal_UD6_Override"))
-                model.Unbal_UD6_Override = dr.Field<string>("Unbal_UD6_Override");
-            if (enabledProperties.Contains("Unbal_UD7_Override") && dr.Table.Columns.Contains("Unbal_UD7_Override"))
-                model.Unbal_UD7_Override = dr.Field<string>("Unbal_UD7_Override");
-            if (enabledProperties.Contains("Unbal_UD8_Override") && dr.Table.Columns.Contains("Unbal_UD8_Override"))
-                model.Unbal_UD8_Override = dr.Field<string>("Unbal_UD8_Override");
 
             return model;
         }
@@ -465,17 +387,82 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// </summary>
         public void Delete(FMM_Src_CellModel model)
         {
-            this.Delete(model.Cell_ID);
+            this.Delete(model.Src_Cell_ID);
         }
 
         /// <summary>
         /// Create a default configuration for a workspace
         /// </summary>
-        public void CreateDefaultConfig(Guid workspaceId)
+        public void CreateDefaultConfig(Guid workspaceId, Dictionary<string, string> customSubstVars)
         {
-            // TODO: Implement default configuration creation logic
-            // This method is called when creating a new configuration
-            // For now, this is a placeholder that can be implemented based on business requirements
+            // Build a minimal starter row into a DataTable and push it through the GBL SQA helpers.
+            // CalcType 1 = Table; adjust if other defaults are required.
+            try
+            {
+                _ = workspaceId; // reserved for future workspace-specific defaults
+                var CubeID = customSubstVars.XFGetValue("IV_FMM_CubeID", "0");
+                var ActID = customSubstVars.XFGetValue("IV_FMM_ActID", "0");
+                var ModelID = customSubstVars.XFGetValue("IV_FMM_ModelID", "0");
+                var CalcID = customSubstVars.XFGetValue("BL_FMM_CalcList", "0");
+
+                const int defaultCalcType = 1;
+
+                using (var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(this.si))
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    connection.Open();
+
+                    // Compute next key
+                    var maxIdHelper = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(this.si, connection);
+                    var nextCellId = maxIdHelper.Get_Max_ID(this.si, this.TableName, "Src_Cell_ID");
+
+                    // Pull current set (schema) using SQA builder
+                    var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(this.si, connection);
+                    var sqa = new SqlDataAdapter();
+                    var currentTable = new DataTable();
+
+                    var selectColumns = GetSelectColumnsForCalcType(defaultCalcType);
+                    if (!selectColumns.Split(',').Select(c => c.Trim()).Contains("Src_Cell_ID", StringComparer.OrdinalIgnoreCase))
+                    {
+                        selectColumns = $"Src_Cell_ID, {selectColumns}";
+                    }
+
+                    var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE CalcID = @calcID";
+                    var sqlparams = new[] { new SqlParameter("@calcID", SqlDbType.Int) { Value = CalcID } };
+                    cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
+
+                    if (currentTable.Columns.Contains("Src_Cell_ID"))
+                    {
+                        currentTable.PrimaryKey = new[] { currentTable.Columns["Src_Cell_ID"]! };
+                    }
+
+                    var now = DateTime.Now;
+                    var user = this.si?.UserName ?? string.Empty;
+
+                    // Create the starter row with minimal required fields
+                    var row = currentTable.NewRow();
+                    SetColumnValue(row, "Src_Cell_ID", nextCellId);
+                    SetColumnValue(row, "CubeID", CubeID);
+                    SetColumnValue(row, "ActID", ActID);
+                    SetColumnValue(row, "ModelID", ModelID);
+                    SetColumnValue(row, "CalcID", CalcID);
+                    SetColumnValue(row, "Src_Order", 1);
+                    SetColumnValue(row, "Src_Type", string.Empty);
+                    SetColumnValue(row, "Src_Item", string.Empty);
+                    SetColumnValue(row, "Create_Date", now);
+                    SetColumnValue(row, "Create_User", user);
+                    SetColumnValue(row, "Update_Date", now);
+                    SetColumnValue(row, "Update_User", user);
+
+                    currentTable.Rows.Add(row);
+
+                    cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "Src_Cell_ID");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new XFException(si, ex);
+            }
         }
     }
 }

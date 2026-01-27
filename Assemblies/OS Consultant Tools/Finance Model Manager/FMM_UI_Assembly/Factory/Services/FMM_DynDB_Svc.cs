@@ -28,17 +28,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    if (storedDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R1C1R2R3R2"))
+                    if (storedDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
                     {
                         // retrieve our items
                         var src_CellDB = new FMM_Src_CellDB(si);
-                        var src_Cells = src_CellDB.GetSrcCellsByCalcId(1, 1);
+                        var src_Cells = src_CellDB.GetSrcCellsByCalcId(4, 2);
 
                         // prepare a list of repeated components			
                         var repeatArgs = new List<WsDynamicComponentRepeatArgs>();
 
                         // Get configuration to determine which properties to use
-                        var enabledProperties = FMM_Config_Helpers.GetEnabledSrcProperties(1); // calcType = 1 (Table)
+                        var enabledProperties = FMM_Config_Helpers.GetEnabledSrcProperties(2); // calcType = 1 (Table)
 
                         // loop through our items, populating dictionaries that will contain Parameter values for each "row"
                         foreach (FMM_Src_CellModel cellModel in src_Cells)
@@ -46,9 +46,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                             Dictionary<string, string> nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>();
 
                             // Always add Cell_ID as the primary identifier
-                            nextLevelTemplateSubstVarsToAdd["Cell_ID"] = cellModel.Cell_ID.ToString();
-                            nextLevelTemplateSubstVarsToAdd["Calc_ID"] = cellModel.Calc_ID.ToString();
-                            nextLevelTemplateSubstVarsToAdd["Src_Order"] = cellModel.Src_Order.ToString();
+                            nextLevelTemplateSubstVarsToAdd["CellID"] = cellModel.CellID.ToString();
+                            nextLevelTemplateSubstVarsToAdd["CalcID"] = cellModel.CalcID.ToString();
+                            nextLevelTemplateSubstVarsToAdd["Order"] = cellModel.Order.ToString();
 
                             // Add enabled properties from configuration
                             foreach (var propName in enabledProperties)
@@ -56,14 +56,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                 string propValue = string.Empty;
                                 switch (propName)
                                 {
-                                    case "Sequence":
-                                    case "Name":
-                                    case "Explanation":
-                                    case "Condition":
-                                    case "MultiDim_Alloc":
-                                        // These are mapped properties from the config but may not directly map to model properties
-                                        // For now, we'll skip them or handle them specially
-                                        break;
                                     case "Entity":
                                         propValue = cellModel.Entity ?? string.Empty;
                                         nextLevelTemplateSubstVarsToAdd[propName] = propValue;
@@ -132,15 +124,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                         propValue = cellModel.UD8 ?? string.Empty;
                                         nextLevelTemplateSubstVarsToAdd[propName] = propValue;
                                         break;
-                                    case "DB_Name":
-                                        propValue = cellModel.DB_Name ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
                                 }
                             }
 
                             repeatArgs.Add(new WsDynamicComponentRepeatArgs(
-                                cellModel.Cell_ID.ToString(),
+                                cellModel.Src_Cell_ID.ToString(),
                                 nextLevelTemplateSubstVarsToAdd));
                         }
 
@@ -152,7 +140,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         contentDashboard.DynamicDashboard.Tag = repeatArgs;
 
                         // save the state and return the dashboard
-                        api.SaveDynamicDashboardState(si, parentDynamicComponentEx.DynamicComponent, contentDashboard, WsDynamicItemStateType.NotUsed);
+                        api.SaveDynamicDashboardState(si, parentDynamicComponentEx.DynamicComponent, contentDashboard, WsDynamicItemStateType.EntireObject);
                         if (contentDashboard.DynamicDashboard.Dashboard != null)
                             return contentDashboard;
                         return null;
@@ -178,6 +166,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
+                    if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
+                    {
+                        var repeatArgsList = dynamicDashboardEx.DynamicDashboard.Tag as List<WsDynamicComponentRepeatArgs>;
+                        return api.GetDynamicComponentsRepeatedForDynamicDashboard(si, workspace, dynamicDashboardEx,
+                            repeatArgsList, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
+                    }
                     return api.GetDynamicComponentsForDynamicDashboard(si, workspace, dynamicDashboardEx, string.Empty, null, TriStateBool.Unknown, WsDynamicItemStateType.Unknown);
                 }
 

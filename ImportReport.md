@@ -628,3 +628,21 @@
   - `SQA_FMM_Unit_Config.cs` (Unknown)
   - `FMM_Config_UI.cs` (Unknown)
 
+
+## Workspace Assemblies
+
+**Total Assemblies:** 1
+**Total Assembly Files:** 6
+
+### 60 HQ SPLN/HQ SPLN GBL/HQ_SPLN_Assembly
+
+- **Compiler Language:** VisualBasic
+- **Dependencies:** GBL_Assembly, Global_Buffers, Global_Functions
+- **Files:**
+  - `HQ_SPLN_DataSet.vb` (DashboardDataSet)
+  - `HQ_SPLN_SolutionHelper.vb` (DashboardExtender)
+  - `HQ_SPLN_FinCustCalc.vb` (Unknown)
+  - `HQ_SPLN_Svc_Factory.vb` (Unknown)
+  - `HQ_SPLN_DataBuffers.vb` (DashboardStringFunction)
+  - `HQ_SPLN_String_Helper.vb` (DashboardStringFunction)
+
