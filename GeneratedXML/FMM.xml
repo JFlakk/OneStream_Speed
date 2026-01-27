@@ -5744,16 +5744,16 @@
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = Name, Description = [Account Name]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Map_Req, Description = [Account Map Required?]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = MapReq, Description = [Account Map Required?]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Map_Type, Description = [Account Map Type], ParameterName = DL_FMM_Acct_Map_Type</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = MapType, Description = [Account Map Type], ParameterName = DL_FMM_Acct_Map_Type</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Map_Loc, Description = [Account Map Location]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = MapLoc, Description = [Account Map Location]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
-                                                <ColumnFormat>AllowUpdates = True, ColumnName = Map_Logic, Description = [Account Map Logic]</ColumnFormat>
+                                                <ColumnFormat>AllowUpdates = True, ColumnName = MapLogic, Description = [Account Map Logic]</ColumnFormat>
                                             </ColumnDefinition>
                                             <ColumnDefinition>
                                                 <ColumnFormat>AllowUpdates = True, ColumnName = Status, Description = [Status]</ColumnFormat>
@@ -18788,10 +18788,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new_DataRow["UnitID"] = (int)xfRow.ModifiedDataRow["UnitID"];
                             new_DataRow["AcctID"] = AcctID;
                             new_DataRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                            new_DataRow["Map_Req"] = (bool)xfRow.ModifiedDataRow.Items["Map_Req"];
-                            new_DataRow["Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Map_Type"];
-                            new_DataRow["Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Map_Loc"];
-                            new_DataRow["Map_Logic"] = (string)xfRow.ModifiedDataRow.Items["Map_Logic"];
+                            new_DataRow["MapReq"] = (bool)xfRow.ModifiedDataRow.Items["MapReq"];
+                            new_DataRow["MapType"] = (string)xfRow.ModifiedDataRow.Items["MapType"];
+                            new_DataRow["MapLoc"] = (string)xfRow.ModifiedDataRow.Items["MapLoc"];
+                            new_DataRow["MapLogic"] = (string)xfRow.ModifiedDataRow.Items["MapLogic"];
                             new_DataRow["Status"] = "Build";
                             new_DataRow["Create_Date"] = DateTime.Now;
                             new_DataRow["Create_User"] = si.UserName;
@@ -18811,10 +18811,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 var rowToUpdate = rowsToUpdate[0];
                                 rowToUpdate["Name"] = (string)xfRow.ModifiedDataRow["Name"];
-                                rowToUpdate["Map_Req"] = (bool)xfRow.ModifiedDataRow["Map_Req"];
-                                rowToUpdate["Map_Type"] = (string)xfRow.ModifiedDataRow.Items["Map_Type"];
-                                rowToUpdate["Map_Loc"] = (string)xfRow.ModifiedDataRow.Items["Map_Loc"];
-                                rowToUpdate["Map_Logic"] = (string)xfRow.ModifiedDataRow["Map_Logic"];
+                                rowToUpdate["MapReq"] = (bool)xfRow.ModifiedDataRow["MapReq"];
+                                rowToUpdate["MapType"] = (string)xfRow.ModifiedDataRow.Items["MapType"];
+                                rowToUpdate["MapLoc"] = (string)xfRow.ModifiedDataRow.Items["MapLoc"];
+                                rowToUpdate["MapLogic"] = (string)xfRow.ModifiedDataRow["MapLogic"];
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["Update_Date"] = DateTime.Now;
                                 rowToUpdate["Update_User"] = si.UserName;
@@ -23283,7 +23283,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 new_DestDataRow["UnitID"] = gbl_Curr_UnitID;
                 new_DestDataRow["AcctID"] = gbl_AcctID;
                 new_DestDataRow["Name"] = src_FMM_Acct_Config_Row.Field<string>("Acct_Name") ?? string.Empty; // Handle nulls
-                new_DestDataRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? string.Empty; // Handle nulls
+                new_DestDataRow["MapLogic"] = src_FMM_Acct_Config_Row.Field<string>("MapLogic") ?? string.Empty; // Handle nulls
                 new_DestDataRow["Create_Date"] = DateTime.Now;
                 new_DestDataRow["Create_User"] = si.UserName; // or appropriate user context
                 new_DestDataRow["Update_Date"] = DateTime.Now;
@@ -23304,7 +23304,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     gbl_Curr_AcctID = existing_DataRow.Field<int>("AcctID");
 
                     // Update fields, handle nulls using Field<T>
-                    existing_DataRow["Map_Logic"] = src_FMM_Acct_Config_Row.Field<string>("Map_Logic") ?? existing_DataRow.Field<string>("Map_Logic");
+                    existing_DataRow["MapLogic"] = src_FMM_Acct_Config_Row.Field<string>("MapLogic") ?? existing_DataRow.Field<string>("MapLogic");
                     existing_DataRow["Update_Date"] = DateTime.Now;
                     existing_DataRow["Update_User"] = si.UserName; // or appropriate user context
                 }
@@ -23825,9 +23825,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 new_DestDataRow["Table_Calc_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Calc_Expression") ?? string.Empty;
                 new_DestDataRow["Table_Join_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Join_Expression") ?? string.Empty;
                 new_DestDataRow["Table_Filter_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Filter_Expression") ?? string.Empty;
-                new_DestDataRow["Map_Type"] = src_Src_Cell_Config_Row.Field<string>("Map_Type") ?? string.Empty;
+                new_DestDataRow["MapType"] = src_Src_Cell_Config_Row.Field<string>("MapType") ?? string.Empty;
                 new_DestDataRow["Map_Source"] = src_Src_Cell_Config_Row.Field<string>("Map_Source") ?? string.Empty;
-                new_DestDataRow["Map_Logic"] = src_Src_Cell_Config_Row.Field<string>("Map_Logic") ?? string.Empty;
+                new_DestDataRow["MapLogic"] = src_Src_Cell_Config_Row.Field<string>("MapLogic") ?? string.Empty;
                 new_DestDataRow["Src_SQL_Stmt"] = src_Src_Cell_Config_Row.Field<string>("Src_SQL_Stmt") ?? string.Empty;
                 new_DestDataRow["Use_Temp_Table"] = src_Src_Cell_Config_Row.Field<bool>("Use_Temp_Table");
                 new_DestDataRow["Temp_Table_Name"] = src_Src_Cell_Config_Row.Field<string>("Temp_Table_Name") ?? string.Empty;
@@ -23894,9 +23894,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     existing_DataRow["Table_Calc_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Calc_Expression") ?? string.Empty;
                     existing_DataRow["Table_Join_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Join_Expression") ?? string.Empty;
                     existing_DataRow["Table_Filter_Expression"] = src_Src_Cell_Config_Row.Field<string>("Table_Filter_Expression") ?? string.Empty;
-                    existing_DataRow["Map_Type"] = src_Src_Cell_Config_Row.Field<string>("Map_Type") ?? string.Empty;
+                    existing_DataRow["MapType"] = src_Src_Cell_Config_Row.Field<string>("MapType") ?? string.Empty;
                     existing_DataRow["Map_Source"] = src_Src_Cell_Config_Row.Field<string>("Map_Source") ?? string.Empty;
-                    existing_DataRow["Map_Logic"] = src_Src_Cell_Config_Row.Field<string>("Map_Logic") ?? string.Empty;
+                    existing_DataRow["MapLogic"] = src_Src_Cell_Config_Row.Field<string>("MapLogic") ?? string.Empty;
                     existing_DataRow["Src_SQL_Stmt"] = src_Src_Cell_Config_Row.Field<string>("Src_SQL_Stmt") ?? string.Empty;
                     existing_DataRow["Use_Temp_Table"] = src_Src_Cell_Config_Row.Field<bool>("Use_Temp_Table");
                     existing_DataRow["Temp_Table_Name"] = src_Src_Cell_Config_Row.Field<string>("Temp_Table_Name") ?? string.Empty;
@@ -26743,9 +26743,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "Close_Parens", Description = ")", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Table_Join_Expression", Description = "[Join Expression]", Width = "200", IsVisible = true },
                         new ColumnConfig { ColumnName = "Table_Filter_Expression", Description = "[Filter Expression]", Width = "200", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Map_Type", Description = "[Map Type]", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MapType", Description = "[Map Type]", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Map_Source", Description = "[Map Source]", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Map_Logic", Description = "[Map Logic]", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MapLogic", Description = "[Map Logic]", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }
                 },
