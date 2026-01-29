@@ -4,7 +4,6 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using OneStream.Finance.Database;
 using OneStream.Finance.Engine;
 using OneStream.Shared.Common;
@@ -101,7 +100,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
         /// - SortOrder: "Ascending" or "Descending" (default: Descending)
         /// - DefaultOutput: Default output when no results (default: "U5#One")
         /// - OutputFormat: "MemberScript" (default) or "Custom"
-        /// - CustomOutputFormat: Custom format string (e.g., "U1#{UD1}:U3#{UD3}")
+        /// - CustomOutputFormat: Custom format string (e.g., "U1#{UD1}:U3#{UD3}") - Not yet implemented
+        /// 
+        /// Note: All placeholders in SortBy are case-insensitive (e.g., {entity} or {Entity} both work).
         /// 
         /// Returns: Comma-separated list of member scripts or custom formatted output
         /// </summary>
@@ -178,29 +179,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 }
 
                 // Build output
-                StringBuilder output = new StringBuilder();
+                List<string> outputList = new List<string>();
                 string outputFormat = args.NameValuePairs.XFGetValue("OutputFormat", "MemberScript");
 
                 foreach (KeyValuePair<string, string> item in sorted)
                 {
                     if (outputFormat.XFEqualsIgnoreCase("MemberScript"))
                     {
-                        output.Append(item.Key).Append(",");
+                        outputList.Add(item.Key);
                     }
                     else
                     {
                         // Custom format - will be implemented based on needs
-                        output.Append(item.Key).Append(",");
+                        outputList.Add(item.Key);
                     }
                 }
 
                 // Return results or default
-                if (output.Length == 0)
+                if (outputList.Count == 0)
                 {
                     return args.NameValuePairs.XFGetValue("DefaultOutput", "U5#One");
                 }
 
-                return output.ToString();
+                return string.Join(",", outputList);
             }
             catch (Exception ex)
             {
@@ -226,8 +227,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             string baseFilter = args.NameValuePairs.XFGetValue("BaseFilter", "");
 
             List<string> filterList = new List<string>();
-            List<string> lEntity = StringHelper.SplitString(entities, ",");
-            List<string> lTime = StringHelper.SplitString(times, ",");
+            List<string> lEntity = StringHelper.SplitString(entities, ",").Where(e => !string.IsNullOrWhiteSpace(e)).ToList();
+            List<string> lTime = StringHelper.SplitString(times, ",").Where(t => !string.IsNullOrWhiteSpace(t)).ToList();
+
+            // Validate that we have at least one entity and one time
+            if (lEntity.Count == 0 || lTime.Count == 0)
+            {
+                throw new XFException(si, "BUILD mode requires at least one Entity and one Time parameter");
+            }
 
             // Build filter for each entity/time combination
             foreach (string e in lEntity)
@@ -464,22 +471,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 return $"E#{msb.Entity},U1#{msb.UD1},U2#{msb.UD2},U3#{msb.UD3}";
             }
 
-            // Replace placeholders in sort expression
+            // Replace placeholders in sort expression (case-insensitive)
             string sortKey = sortBy;
-            sortKey = sortKey.Replace("{entity}", msb.Entity);
-            sortKey = sortKey.Replace("{scenario}", msb.Scenario);
-            sortKey = sortKey.Replace("{account}", msb.Account);
-            sortKey = sortKey.Replace("{flow}", msb.Flow);
-            sortKey = sortKey.Replace("{origin}", msb.Origin);
-            sortKey = sortKey.Replace("{ic}", msb.IC);
-            sortKey = sortKey.Replace("{UD1}", msb.UD1);
-            sortKey = sortKey.Replace("{UD2}", msb.UD2);
-            sortKey = sortKey.Replace("{UD3}", msb.UD3);
-            sortKey = sortKey.Replace("{UD4}", msb.UD4);
-            sortKey = sortKey.Replace("{UD5}", msb.UD5);
-            sortKey = sortKey.Replace("{UD6}", msb.UD6);
-            sortKey = sortKey.Replace("{UD7}", msb.UD7);
-            sortKey = sortKey.Replace("{UD8}", msb.UD8);
+            sortKey = StringHelper.ReplaceString(sortKey, "{entity}", msb.Entity, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{scenario}", msb.Scenario, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{account}", msb.Account, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{flow}", msb.Flow, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{origin}", msb.Origin, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{ic}", msb.IC, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{UD1}", msb.UD1, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{UD2}", msb.UD2, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{UD3}", msb.UD3, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{UD4}", msb.UD4, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{UD5}", msb.UD5, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{UD6}", msb.UD6, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{UD7}", msb.UD7, true);
+            sortKey = StringHelper.ReplaceString(sortKey, "{UD8}", msb.UD8, true);
 
             return sortKey;
         }
@@ -494,6 +501,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
         public void GetDataBuffer(SessionInfo si, BRGlobals globals, object api, DashboardStringFunctionArgs args)
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
+            // Note: The Global_Buffers business rule accesses the filter and results via the globals object
+            // which is passed implicitly through the business rule execution context
             BRApi.Finance.Calculate.ExecuteCustomCalculateBusinessRule(si, "Global_Buffers", "GetCVDataBuffer", dictionary, CustomCalculateTimeType.CurrentPeriod);
         }
 

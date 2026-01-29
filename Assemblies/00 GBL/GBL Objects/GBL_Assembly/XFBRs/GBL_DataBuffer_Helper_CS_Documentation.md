@@ -120,10 +120,12 @@ Set dimensions to specific values:
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `SortBy` | Sort expression with placeholders like {entity}, {UD1}, etc. | "E#{entity},U1#{UD1},U2#{UD2},U3#{UD3}" |
+| `SortBy` | Sort expression with placeholders like {entity}, {UD1}, etc. All placeholders are case-insensitive. | "E#{entity},U1#{UD1},U2#{UD2},U3#{UD3}" |
 | `SortOrder` | "Ascending" or "Descending" | "Descending" |
 | `DefaultOutput` | Output when no results found | "U5#One" |
-| `OutputFormat` | "MemberScript" or "Custom" | "MemberScript" |
+| `OutputFormat` | Currently only "MemberScript" is supported | "MemberScript" |
+
+**Note on SortBy Placeholders**: All placeholders in SortBy are case-insensitive, so you can use `{Entity}` or `{entity}`, `{UD1}` or `{ud1}`, etc.
 
 ## C# Code Examples
 
@@ -235,7 +237,7 @@ public string GetComplexDataBuffer()
         
         // Transform UD1 to APPN ancestor
         { "TransformUD1", "U1_APPN" },
-        { "TransformUD1Filter", ".Ancestors.Where(MemberDim = 'U1_APPN')" },
+        { "TransformUD1Filter", ".Ancestors.Where(MemberDim = U1_APPN)" },
         
         // Transform UD3 using custom filter (Text1 property)
         { "TransformUD3", "U3_All_APE" },
