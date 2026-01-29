@@ -118,6 +118,96 @@ Located in: `MDM_Config_UI_Assembly/SQL Adapters/`
 - **Update_MDM_CDC_Config_Detail** - Saves changes to CDC detail mappings
 - **Get_CDC_Config_Detail_By_Config_ID** - Retrieves all detail rows for a specific config
 
+### 3. Dashboard Extender Save Methods (`MDM_Config_Data.cs`)
+
+Located in: `MDM_Svc_Factory_Assembly/DB Extenders/`
+
+The Dashboard Extender provides save/update functionality for CDC configurations through the OneStream Dashboard UI. These methods handle insert, update, and delete operations with automatic ID generation and audit field management.
+
+#### Available Methods:
+
+**Save_CDC_Config**
+- **Function Type**: `SqlTableEditorSaveData`
+- **Function Name**: `Save_CDC_Config`
+- **Purpose**: Saves CDC configuration master records to the MDM_CDC_Config table
+- **Operations Supported**:
+  - **Insert**: Creates new CDC configuration with auto-generated CDC_Config_ID
+  - **Update**: Updates existing CDC configuration with audit trail
+  - **Delete**: Removes CDC configuration (cascade deletes detail records)
+- **Features**:
+  - Automatic ID generation using `SQL_GBL_Get_Max_ID` for new records
+  - Audit field population (Create_Date, Create_User, Update_Date, Update_User)
+  - Transaction-based updates for data integrity
+  - Returns XFSqlTableEditorSaveDataTaskResult with CancelDefaultSave = true
+
+**Save_CDC_Config_Detail**
+- **Function Type**: `SqlTableEditorSaveData`
+- **Function Name**: `Save_CDC_Config_Detail`
+- **Purpose**: Saves CDC configuration detail records to the MDM_CDC_Config_Detail table
+- **Operations Supported**:
+  - **Insert**: Creates new detail mapping with auto-generated CDC_Config_Detail_ID
+  - **Update**: Updates existing detail mapping with audit trail
+  - **Delete**: Removes detail mapping
+- **Parameters**:
+  - Requires `IV_MDM_CDC_Config_ID` custom substitution variable (parent config ID)
+- **Features**:
+  - Automatic detail ID generation for new records
+  - Composite primary key support (CDC_Config_ID, CDC_Config_Detail_ID)
+  - Parent-child relationship enforcement
+  - Audit field population
+  - Transaction-based updates for data integrity
+
+#### Usage in Dashboard Configuration:
+
+To use these save methods in a OneStream Dashboard:
+
+1. **Master Configuration Table Editor:**
+   ```
+   SQL Table Editor Component:
+   - Function Name: Save_CDC_Config
+   - Table: MDM_CDC_Config
+   - Columns: Name, Dim_Type, Dim_ID, Src_Connection, Src_SQL_String, 
+             Dim_Mgmt_Process, Trx_Rule, Appr_ID, Mbr_PrefSuff, Mbr_PrefSuff_Txt
+   ```
+
+2. **Detail Configuration Table Editor:**
+   ```
+   SQL Table Editor Component:
+   - Function Name: Save_CDC_Config_Detail
+   - Table: MDM_CDC_Config_Detail
+   - Custom Substitution Variables: IV_MDM_CDC_Config_ID (parent config ID)
+   - Columns: OS_Mbr_Column, OS_Mbr_Vary_Scen_Column, OS_Mbr_Vary_Time_Column,
+             Src_Mbr_Column, Src_Vary_Scen_Column, Src_Vary_Time_Column
+   ```
+
+#### Example Workflow:
+
+1. User opens CDC Configuration Dashboard
+2. User enters data in the master configuration table editor
+3. User clicks Save button
+4. `Save_CDC_Config` method is invoked:
+   - For new records: Generates new CDC_Config_ID
+   - Populates all fields from the table editor
+   - Sets audit fields (Create/Update Date/User)
+   - Saves to MDM_CDC_Config table
+5. User selects a CDC configuration to add detail mappings
+6. User enters column mapping data in the detail table editor
+7. User clicks Save button
+8. `Save_CDC_Config_Detail` method is invoked:
+   - Retrieves parent CDC_Config_ID from substitution variable
+   - For new records: Generates new CDC_Config_Detail_ID
+   - Populates all mapping fields
+   - Sets audit fields
+   - Saves to MDM_CDC_Config_Detail table
+
+#### Error Handling:
+
+Both save methods include comprehensive error handling:
+- Try-catch blocks wrap all operations
+- Errors are logged using `ErrorHandler.LogWrite(si, new XFException(si, ex))`
+- Transaction rollback on failure (within UpdateTableSimple)
+- User-friendly error messages returned in XFSqlTableEditorSaveDataTaskResult
+
 ## Usage Examples
 
 ### Master Configuration Example
