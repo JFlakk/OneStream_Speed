@@ -34,26 +34,26 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 var sql = @"
                     SELECT 
-                        Table_Config_ID,
-                        Process_Type,
-                        Table_Name,
-                        Table_Type,
-                        Parent_Table_Config_ID,
+                        TableConfigID,
+                        ProcessType,
+                        TableName,
+                        TableType,
+                        ParentTableConfigID,
                         Description,
-                        Is_Active,
-                        Enable_Audit,
-                        Audit_Table_Config_ID
+                        IsActive,
+                        EnableAudit,
+                        AuditTableConfigID
                     FROM FMM_Table_Config
-                    WHERE Process_Type = @ProcessType
-                    AND Is_Active = 1
+                    WHERE ProcessType = @ProcessType
+                    AND IsActive = 1
                     ORDER BY 
-                        CASE Table_Type
+                        CASE TableType
                             WHEN 'Master' THEN 1
                             WHEN 'Detail' THEN 2
                             WHEN 'Extension' THEN 3
                             WHEN 'Audit' THEN 4
                         END,
-                        Table_Name";
+                        TableName";
 
                 var parameters = new SqlParameter[]
                 {
@@ -80,18 +80,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 var sql = @"
                     SELECT 
-                        Table_Config_ID,
-                        Process_Type,
-                        Table_Name,
-                        Table_Type,
-                        Parent_Table_Config_ID,
+                        TableConfigID,
+                        ProcessType,
+                        TableName,
+                        TableType,
+                        ParentTableConfigID,
                         Description,
-                        Is_Active,
-                        Enable_Audit,
-                        Audit_Table_Config_ID
+                        IsActive,
+                        EnableAudit,
+                        AuditTableConfigID
                     FROM FMM_Table_Config
-                    WHERE Table_Config_ID = @TableConfigId
-                    AND Is_Active = 1";
+                    WHERE TableConfigID = @TableConfigId
+                    AND IsActive = 1";
 
                 var parameters = new SqlParameter[]
                 {
@@ -120,24 +120,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var sql = @"
                     SELECT 
                         Column_Config_ID,
-                        Table_Config_ID,
-                        Column_Name,
-                        Data_Type,
-                        Max_Length,
+                        TableConfigID,
+                        ColumnName,
+                        DataType,
+                        MaxLength,
                         Precision,
                         Scale,
-                        Is_Nullable,
-                        Default_Value,
-                        Is_Identity,
-                        Identity_Seed,
-                        Identity_Increment,
-                        Column_Order,
+                        IsNullable,
+                        DefaultValue,
+                        IsIdentity,
+                        IdentitySeed,
+                        IdentityIncrement,
+                        ColumnOrder,
                         Description,
-                        Is_Active
+                        IsActive
                     FROM FMM_Table_Column_Config
-                    WHERE Table_Config_ID = @TableConfigId
-                    AND Is_Active = 1
-                    ORDER BY Column_Order";
+                    WHERE TableConfigID = @TableConfigId
+                    AND IsActive = 1
+                    ORDER BY ColumnOrder";
 
                 var parameters = new SqlParameter[]
                 {
@@ -165,25 +165,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var sql = @"
                     SELECT 
                         ic.Index_Config_ID,
-                        ic.Table_Config_ID,
-                        ic.Index_Name,
-                        ic.Index_Type,
-                        ic.Is_Clustered,
-                        ic.Is_Unique,
-                        ic.Fill_Factor,
+                        ic.TableConfigID,
+                        ic.IndexName,
+                        ic.IndexType,
+                        ic.IsClustered,
+                        ic.IsUnique,
+                        ic.FillFactor,
                         ic.Description,
                         icc.Index_Column_Config_ID,
                         icc.Column_Config_ID,
-                        cc.Column_Name,
-                        icc.Key_Ordinal,
-                        icc.Sort_Direction,
+                        cc.ColumnName,
+                        icc.KeyOrdinal,
+                        icc.SortDirection,
                         icc.Is_Included_Column
                     FROM FMM_Table_Index_Config ic
                     INNER JOIN FMM_Table_Index_Column_Config icc ON ic.Index_Config_ID = icc.Index_Config_ID
                     INNER JOIN FMM_Table_Column_Config cc ON icc.Column_Config_ID = cc.Column_Config_ID
-                    WHERE ic.Table_Config_ID = @TableConfigId
-                    AND ic.Is_Active = 1
-                    ORDER BY ic.Index_Config_ID, icc.Key_Ordinal";
+                    WHERE ic.TableConfigID = @TableConfigId
+                    AND ic.IsActive = 1
+                    ORDER BY ic.Index_Config_ID, icc.KeyOrdinal";
 
                 var parameters = new SqlParameter[]
                 {
@@ -213,26 +213,26 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         fk.FK_Config_ID,
                         fk.FK_Name,
                         fk.Source_Table_Config_ID,
-                        st.Table_Name AS Source_Table,
+                        st.TableName AS SourceTable,
                         fk.Target_Table_Config_ID,
-                        tt.Table_Name AS Target_Table,
+                        tt.TableName AS TargetTable,
                         fk.On_Delete_Action,
                         fk.On_Update_Action,
                         fkc.FK_Column_Config_ID,
                         fkc.Source_Column_Config_ID,
-                        sc.Column_Name AS Source_Column,
+                        sc.ColumnName AS SourceColumn,
                         fkc.Target_Column_Config_ID,
-                        tc.Column_Name AS Target_Column,
-                        fkc.Column_Ordinal
+                        tc.ColumnName AS TargetColumn,
+                        fkc.ColumnOrdinal
                     FROM FMM_Table_FK_Config fk
-                    INNER JOIN FMM_Table_Config st ON fk.Source_Table_Config_ID = st.Table_Config_ID
-                    INNER JOIN FMM_Table_Config tt ON fk.Target_Table_Config_ID = tt.Table_Config_ID
+                    INNER JOIN FMM_Table_Config st ON fk.Source_Table_Config_ID = st.TableConfigID
+                    INNER JOIN FMM_Table_Config tt ON fk.Target_Table_Config_ID = tt.TableConfigID
                     INNER JOIN FMM_Table_FK_Column_Config fkc ON fk.FK_Config_ID = fkc.FK_Config_ID
                     INNER JOIN FMM_Table_Column_Config sc ON fkc.Source_Column_Config_ID = sc.Column_Config_ID
                     INNER JOIN FMM_Table_Column_Config tc ON fkc.Target_Column_Config_ID = tc.Column_Config_ID
                     WHERE fk.Source_Table_Config_ID = @TableConfigId
-                    AND fk.Is_Active = 1
-                    ORDER BY fk.FK_Config_ID, fkc.Column_Ordinal";
+                    AND fk.IsActive = 1
+                    ORDER BY fk.FK_Config_ID, fkc.ColumnOrdinal";
 
                 var parameters = new SqlParameter[]
                 {
@@ -268,7 +268,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     throw new XFException(si, $"Table configuration not found: {tableConfigId}");
                 }
 
-                string tableName = tableConfig.Field<string>("Table_Name");
+                string tableName = tableConfig.Field<string>("TableName");
                 var columns = GetTableColumns(tableConfigId);
                 var indexes = GetTableIndexes(tableConfigId);
 
@@ -300,11 +300,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// </summary>
         private string GenerateColumnDDL(DataRow columnConfig)
         {
-            var columnName = columnConfig.Field<string>("Column_Name");
-            var dataType = columnConfig.Field<string>("Data_Type");
-            var isNullable = columnConfig.Field<bool>("Is_Nullable");
-            var isIdentity = columnConfig.Field<bool>("Is_Identity");
-            var defaultValue = columnConfig.Field<string>("Default_Value");
+            var columnName = columnConfig.Field<string>("ColumnName");
+            var dataType = columnConfig.Field<string>("DataType");
+            var isNullable = columnConfig.Field<bool>("IsNullable");
+            var isIdentity = columnConfig.Field<bool>("IsIdentity");
+            var defaultValue = columnConfig.Field<string>("DefaultValue");
 
             var ddl = new StringBuilder();
             ddl.Append($"    [{columnName}] {dataType}");
@@ -315,7 +315,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                  dataType.XFEqualsIgnoreCase("CHAR") || dataType.XFEqualsIgnoreCase("NCHAR")) &&
                 !dataType.XFEqualsIgnoreCase("TEXT") && !dataType.XFEqualsIgnoreCase("NTEXT"))
             {
-                var maxLength = columnConfig.Field<int?>("Max_Length");
+                var maxLength = columnConfig.Field<int?>("MaxLength");
                 ddl.Append($"({(maxLength.HasValue ? maxLength.Value.ToString() : "MAX")})");
             }
             else if (dataType.XFEqualsIgnoreCase("DECIMAL") || dataType.XFEqualsIgnoreCase("NUMERIC"))
@@ -328,8 +328,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             // Identity specification
             if (isIdentity)
             {
-                var seed = columnConfig.Field<int?>("Identity_Seed") ?? 1;
-                var increment = columnConfig.Field<int?>("Identity_Increment") ?? 1;
+                var seed = columnConfig.Field<int?>("IdentitySeed") ?? 1;
+                var increment = columnConfig.Field<int?>("IdentityIncrement") ?? 1;
                 ddl.Append($" IDENTITY({seed}, {increment})");
             }
 
@@ -359,7 +359,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     throw new XFException(si, $"Table configuration not found: {tableConfigId}");
                 }
 
-                string tableName = tableConfig.Field<string>("Table_Name");
+                string tableName = tableConfig.Field<string>("TableName");
                 var indexes = GetTableIndexes(tableConfigId);
 
                 if (indexes.Rows.Count == 0)
@@ -377,21 +377,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 foreach (var indexGroup in indexGroups)
                 {
                     var firstRow = indexGroup.First();
-                    var indexName = firstRow.Field<string>("Index_Name");
-                    var indexType = firstRow.Field<string>("Index_Type");
-                    var isClustered = firstRow.Field<bool>("Is_Clustered");
-                    var isUnique = firstRow.Field<bool>("Is_Unique");
-                    var fillFactor = firstRow.Field<int?>("Fill_Factor");
+                    var indexName = firstRow.Field<string>("IndexName");
+                    var indexType = firstRow.Field<string>("IndexType");
+                    var isClustered = firstRow.Field<bool>("IsClustered");
+                    var isUnique = firstRow.Field<bool>("IsUnique");
+                    var fillFactor = firstRow.Field<int?>("FillFactor");
 
                     // Build column list
                     var keyColumns = indexGroup
                         .Where(r => !r.Field<bool>("Is_Included_Column"))
-                        .OrderBy(r => r.Field<int>("Key_Ordinal"))
-                        .Select(r => $"[{r.Field<string>("Column_Name")}] {r.Field<string>("Sort_Direction")}");
+                        .OrderBy(r => r.Field<int>("KeyOrdinal"))
+                        .Select(r => $"[{r.Field<string>("ColumnName")}] {r.Field<string>("SortDirection")}");
 
                     var includedColumns = indexGroup
                         .Where(r => r.Field<bool>("Is_Included_Column"))
-                        .Select(r => $"[{r.Field<string>("Column_Name")}]");
+                        .Select(r => $"[{r.Field<string>("ColumnName")}]");
 
                     if (indexType.XFEqualsIgnoreCase("PRIMARY_KEY"))
                     {
@@ -448,7 +448,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     throw new XFException(si, $"Table configuration not found: {tableConfigId}");
                 }
 
-                string tableName = tableConfig.Field<string>("Table_Name");
+                string tableName = tableConfig.Field<string>("TableName");
                 var foreignKeys = GetTableForeignKeys(tableConfigId);
 
                 if (foreignKeys.Rows.Count == 0)
@@ -467,18 +467,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     var firstRow = fkGroup.First();
                     var fkName = firstRow.Field<string>("FK_Name");
-                    var sourceTable = firstRow.Field<string>("Source_Table");
-                    var targetTable = firstRow.Field<string>("Target_Table");
+                    var sourceTable = firstRow.Field<string>("SourceTable");
+                    var targetTable = firstRow.Field<string>("TargetTable");
                     var onDeleteAction = firstRow.Field<string>("On_Delete_Action");
                     var onUpdateAction = firstRow.Field<string>("On_Update_Action");
 
                     var sourceColumns = fkGroup
-                        .OrderBy(r => r.Field<int>("Column_Ordinal"))
-                        .Select(r => $"[{r.Field<string>("Source_Column")}]");
+                        .OrderBy(r => r.Field<int>("ColumnOrdinal"))
+                        .Select(r => $"[{r.Field<string>("SourceColumn")}]");
 
                     var targetColumns = fkGroup
-                        .OrderBy(r => r.Field<int>("Column_Ordinal"))
-                        .Select(r => $"[{r.Field<string>("Target_Column")}]");
+                        .OrderBy(r => r.Field<int>("ColumnOrdinal"))
+                        .Select(r => $"[{r.Field<string>("TargetColumn")}]");
 
                     ddl.AppendLine($"ALTER TABLE dbo.[{sourceTable}]");
                     ddl.AppendLine($"    ADD CONSTRAINT [{fkName}]");
@@ -527,8 +527,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Generate CREATE TABLE statements
                 foreach (DataRow table in tables.Rows)
                 {
-                    int tableConfigId = table.Field<int>("Table_Config_ID");
-                    string tableType = table.Field<string>("Table_Type");
+                    int tableConfigId = table.Field<int>("TableConfigID");
+                    string tableType = table.Field<string>("TableType");
                     
                     // Skip audit tables for now
                     if (tableType.XFEqualsIgnoreCase("Audit"))
@@ -543,8 +543,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Generate indexes
                 foreach (DataRow table in tables.Rows)
                 {
-                    int tableConfigId = table.Field<int>("Table_Config_ID");
-                    string tableType = table.Field<string>("Table_Type");
+                    int tableConfigId = table.Field<int>("TableConfigID");
+                    string tableType = table.Field<string>("TableType");
                     
                     if (tableType.XFEqualsIgnoreCase("Audit"))
                     {
@@ -562,8 +562,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Generate foreign keys
                 foreach (DataRow table in tables.Rows)
                 {
-                    int tableConfigId = table.Field<int>("Table_Config_ID");
-                    string tableType = table.Field<string>("Table_Type");
+                    int tableConfigId = table.Field<int>("TableConfigID");
+                    string tableType = table.Field<string>("TableType");
                     
                     if (tableType.XFEqualsIgnoreCase("Audit"))
                     {
@@ -608,7 +608,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     return errors;
                 }
 
-                string tableName = tableConfig.Field<string>("Table_Name");
+                string tableName = tableConfig.Field<string>("TableName");
 
                 // Validate columns exist
                 var columns = GetTableColumns(tableConfigId);
@@ -620,10 +620,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Validate at least one primary key or clustered index
                 var indexes = GetTableIndexes(tableConfigId);
                 var hasPK = indexes.AsEnumerable()
-                    .Any(r => r.Field<string>("Index_Type").XFEqualsIgnoreCase("PRIMARY_KEY"));
+                    .Any(r => r.Field<string>("IndexType").XFEqualsIgnoreCase("PRIMARY_KEY"));
                 
                 var hasClustered = indexes.AsEnumerable()
-                    .Any(r => r.Field<bool>("Is_Clustered"));
+                    .Any(r => r.Field<bool>("IsClustered"));
 
                 if (!hasPK)
                 {
@@ -641,7 +641,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     .Distinct()
                     .Count(indexId => indexes.AsEnumerable()
                         .Where(r => r.Field<int>("Index_Config_ID") == indexId)
-                        .First().Field<bool>("Is_Clustered"));
+                        .First().Field<bool>("IsClustered"));
 
                 if (clusteredCount > 1)
                 {

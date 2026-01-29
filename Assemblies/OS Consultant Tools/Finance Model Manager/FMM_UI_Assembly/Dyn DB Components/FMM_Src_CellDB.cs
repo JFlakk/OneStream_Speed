@@ -84,14 +84,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 
         /// <summary>
-        /// Retrieve a single FMM_Src_CellModel by Cell_ID
+        /// Retrieve a single FMM_Src_CellModel by CellID
         /// </summary>
         public FMM_Src_CellModel GetSrcCell(int cellId, int calcType)
         {
             try
             {
                 var columns = GetSelectColumnsForCalcType(calcType);
-                string sql = $"SELECT {columns} FROM {this.TableName} WHERE Cell_ID = @cellID";
+                string sql = $"SELECT {columns} FROM {this.TableName} WHERE CellID = @cellID";
 
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@cellID", cellId) };
 
@@ -173,7 +173,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
 
-                    // Set primary key if Cell_ID column exists in the result set
+                    // Set primary key if CellID column exists in the result set
                     if (currentTable.Columns.Contains("CellID") && currentTable.Columns["CellID"] != null)
                     {
                         currentTable.PrimaryKey = new[] { currentTable.Columns["CellID"]! };
@@ -251,7 +251,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
-                string sql = $"SELECT * FROM {this.TableName} ORDER BY CalcID, Src_Order";
+                string sql = $"SELECT * FROM {this.TableName} ORDER BY CalcID, SrcOrder";
 
                 using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
@@ -342,13 +342,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
-        /// Delete a source cell record by Cell_ID
+        /// Delete a source cell record by CellID
         /// </summary>
         public void Delete(int cellId)
         {
             try
             {
-                string sql = $"DELETE FROM {this.TableName} WHERE Cell_ID = @cellID";
+                string sql = $"DELETE FROM {this.TableName} WHERE CellID = @cellID";
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@cellID", cellId) };
 
                 using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
@@ -363,7 +363,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
-        /// Delete a source cell record by Cell_ID (string representation)
+        /// Delete a source cell record by CellID (string representation)
         /// </summary>
         public void Delete(string cellIdStr)
         {
@@ -373,7 +373,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
             else
             {
-                throw new XFException(si, new ArgumentException($"Invalid Cell_ID format: {cellIdStr}"));
+                throw new XFException(si, new ArgumentException($"Invalid CellID format: {cellIdStr}"));
             }
         }
 

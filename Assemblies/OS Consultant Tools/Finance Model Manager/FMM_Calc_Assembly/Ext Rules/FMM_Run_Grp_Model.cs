@@ -44,41 +44,41 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 
                 // SQL query to fetch the required data based on the parameters passed
                 var calc_Model_SQL = @"
-		            SELECT Calc_Unit_Mod_Grp.Sequence Mod_Grp_Seq, Mod_Grps.Name Mod_Grp_Name, WF_DU.Entity_MFB Entity,
-		                   WF_DU.WFChannel, Mod_Grp_Assgn.Sequence Mod_Seq, Modl.Name, Act.Calc_Type, Calc_Unit_Mod_Grp.CubeID, Modl.ModelID, CubeCon.Cube CubeName
+		            SELECT Calc_Unit_Mod_Grp.Sequence Mod_Grp_Seq, ModGrps.Name Mod_Grp_Name, WF_DU.Entity_MFB Entity,
+		                   WF_DU.WFChannel, Mod_Grp_Assgn.Sequence ModSeq, Modl.Name, Act.CalcType, Calc_Unit_Mod_Grp.CubeID, Modl.ModelID, CubeCon.Cube CubeName
 		            FROM FMM_Model_Grp_Seqs Mod_Grp_Seqs
 		            JOIN FMM_Calc_Unit_Assign_Model_Group Calc_Unit_Mod_Grp
 		            ON Mod_Grp_Seqs.Model_Grp_Seq_ID = Calc_Unit_Mod_Grp.Model_Grp_Seq_ID
 		            AND Mod_Grp_Seqs.CubeID = Calc_Unit_Mod_Grp.CubeID
-		            JOIN FMM_Model_Groups Mod_Grps
-		            ON Calc_Unit_Mod_Grp.CubeID = Mod_Grps.CubeID
-		            AND Calc_Unit_Mod_Grp.Model_Grp_ID = Mod_Grps.Model_Grp_ID
+		            JOIN FMM_Model_Groups ModGrps
+		            ON Calc_Unit_Mod_Grp.CubeID = ModGrps.CubeID
+		            AND Calc_Unit_Mod_Grp.Model_Grp_ID = ModGrps.Model_Grp_ID
 		            JOIN FMM_CalcUnitConfig WF_DU
 		            ON Calc_Unit_Mod_Grp.CubeID = WF_DU.CubeID
 		            AND Calc_Unit_Mod_Grp.CalcUnitID = WF_DU.CalcUnitID
 		            JOIN FMM_Model_Grp_Assign_Model Mod_Grp_Assgn
-		            ON Mod_Grps.CubeID = Mod_Grp_Assgn.CubeID
-		            AND Mod_Grps.Model_Grp_ID = Mod_Grp_Assgn.Model_Grp_ID
+		            ON ModGrps.CubeID = Mod_Grp_Assgn.CubeID
+		            AND ModGrps.Model_Grp_ID = Mod_Grp_Assgn.Model_Grp_ID
 		            JOIN FMM_Models Modl
 		            ON Modl.CubeID = Mod_Grp_Assgn.CubeID
 		            AND Modl.ModelID = Mod_Grp_Assgn.ModelID
 		            JOIN FMM_Activity_Config Act
 		            ON Modl.CubeID = Act.CubeID
-		            AND Modl.Activity_ID = Act.Activity_ID
+		            AND Modl.ActivityID = Act.ActivityID
 					JOIN FMM_Cube_Config CubeCon
 					ON Modl.CubeID = CubeCon.CubeID
 		            WHERE Mod_Grp_Seqs.Name = @Mod_Grp_Seqs
 		            AND Mod_Grp_Seqs.Status <> 'Archived'
 		            AND Calc_Unit_Mod_Grp.Status <> 'Archived'
 		            AND WF_DU.Status <> 'Archived'
-					AND Mod_Grps.Status <> 'Archived'
+					AND ModGrps.Status <> 'Archived'
 				    AND Modl.Status <> 'Archived'
 					AND Act.Status <> 'Archived'
 					AND Mod_Grp_Assgn.Status <> 'Archived'";
                 if (!string.IsNullOrEmpty(entityValue) && entityValue != "All")
                 {
                     calc_Model_SQL += @" AND WF_DU.Entity_MFB = @entityValue
-											 OR Act.Calc_Type = 'Consolidate'";
+											 OR Act.CalcType = 'Consolidate'";
                 }
                 calc_Model_SQL += " ORDER BY Calc_Unit_Mod_Grp.Sequence, Mod_Grp_Assgn.Sequence";
 
@@ -115,7 +115,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 
                         foreach (DataRow row in dataTable.Rows)
                         {
-                            var rowCalcType = row["Calc_Type"].ToString();
+                            var rowCalcType = row["CalcType"].ToString();
                             var rowModelId = int.Parse(row["ModelID"].ToString());
 
                             if (ExecutionFlow.ContainsKey(executionLevel))

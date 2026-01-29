@@ -85,7 +85,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
                 // Fill DataTable for Approval_Step_Activity_Config
                 string selectQuery = @"
-                    SELECT Description, Reg_Config_ID
+                    SELECT Description, RegConfigID
                     FROM FMM_Approval_Step_Activity_Config
                     WHERE ApprID = @ApprID
 					AND Appr_Step_ID = @Appr_Step_ID";

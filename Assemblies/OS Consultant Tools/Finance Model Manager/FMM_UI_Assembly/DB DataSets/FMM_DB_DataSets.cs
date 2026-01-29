@@ -81,7 +81,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_By_Cube"))
                         {
-                            return get_FMM_Acts("By_Cube");
+                            return get_FMM_Acts("ByCube");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_Table"))
                         {
@@ -102,7 +102,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Models_by_Act"))
                         {
-                            return get_FMM_Models("By_Act");
+                            return get_FMM_Models("ByAct");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Models"))
                         {
@@ -114,11 +114,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Calcs"))
                         {
-                            return get_FMM_Calcs("By_Model");
+                            return get_FMM_Calcs("ByModel");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_CalcList"))
                         {
-                            return get_FMM_CalcList("By_Model");
+                            return get_FMM_CalcList("ByModel");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_ModelGrps"))
                         {
@@ -126,11 +126,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ModelGrps"))
                         {
-                            return get_FMM_ModelGrps("By_Cube");
+                            return get_FMM_ModelGrps("ByCube");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Model_Grp_Seqs_By_Cube"))
                         {
-                            return get_FMM_Model_Grp_Seqs("By_Cube");
+                            return get_FMM_Model_Grp_Seqs("ByCube");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_WFChannels"))
                         {
@@ -138,7 +138,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Calc_Units"))
                         {
-                            return get_FMM_Calc_Units("By_Cube");
+                            return get_FMM_Calc_Units("ByCube");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Calc_Units"))
                         {
@@ -146,7 +146,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Reg_Configs_By_Act"))
                         {
-                            return get_FMM_Reg_Configs("By_Act");
+                            return get_FMM_Reg_Configs("ByAct");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Src_Reg_Configs"))
                         {
@@ -163,7 +163,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Appr_Config"))
                         {
-                            return get_FMM_Apprs("By_Act");
+                            return get_FMM_Apprs("ByAct");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Security_Grps"))
                         {
@@ -282,7 +282,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             WHERE NOT EXISTS (
                                 SELECT 1
                                 FROM FMM_CubeConfig Cube
-                                WHERE Cube.Scen_Type = Scen.ScenType
+                                WHERE Cube.ScenType = Scen.ScenType
                                 AND Cube.Cube = @Cube)";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
@@ -306,7 +306,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
                 var sql = @"SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS Cube,Cube.CubeID
                             FROM FMM_CubeConfig Cube";
-                var dt = new DataTable("Cube_Config");
+                var dt = new DataTable("CubeConfig");
                 if (cubeType.XFEqualsIgnoreCase("Source"))
                 {
                     dt.TableName = "Src_Cube_Config";
@@ -384,13 +384,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 FROM FMM_CubeConfig Con
                                 JOIN FMM_ActConfig Act ON Con.CubeID = Act.CubeID
                                 WHERE Con.CubeID = @CubeID
-                                ORDER BY Cube,Scen_Type,Name";
+                                ORDER BY Cube,ScenType,Name";
                         sqlparams = new SqlParameter[]
                         {
                             new SqlParameter("@CubeID", SqlDbType.Int) { Value = CubeID.XFConvertToInt() }
                         };
                     }
-                    else if (actType.XFEqualsIgnoreCase("By_Cube"))
+                    else if (actType.XFEqualsIgnoreCase("ByCube"))
                     {
                         dt.TableName = "Acts_By_Cube";
                         sql = @"SELECT CONCAT(Name, ' - ',CalcType) AS Act,ActID
@@ -557,7 +557,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             AND ActID = @ActID
                             ORDER BY Name";
                 }
-                else if (modelType.XFEqualsIgnoreCase("By_Act"))
+                else if (modelType.XFEqualsIgnoreCase("ByAct"))
                 {
                     dt.TableName = "Models_By_Act";
                     sql = @"SELECT Name,ModelID
@@ -602,7 +602,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 				CubeID = string.IsNullOrWhiteSpace(CubeID) ? "0" : CubeID;
 				ActID = string.IsNullOrWhiteSpace(ActID) ? "0" : ActID;
 				ModelID = string.IsNullOrWhiteSpace(ModelID) ? "0" : ModelID;
-                var dt = new DataTable("Calc_List");
+                var dt = new DataTable("CalcList");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -756,12 +756,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             var sql = string.Empty;
             var sqlparams = new SqlParameter[] { };
 
-            if (registerType.XFEqualsIgnoreCase("By_Act"))
+            if (registerType.XFEqualsIgnoreCase("ByAct"))
             {
                 var CubeID = args.NameValuePairs.XFGetValue("CubeID", "-1");
                 var ActID = args.NameValuePairs.XFGetValue("ActID", "-1");
                 dt.TableName = "Reg_Configs_By_Act";
-                sql = @"SELECT Name as Name, Reg_Config_ID as Reg_Config_ID
+                sql = @"SELECT Name as Name, RegConfigID as RegConfigID
                     FROM FMM_Reg_Config
                     WHERE CubeID = @CubeID
                     AND ActID = @ActID
@@ -776,7 +776,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
                 var CubeID = args.NameValuePairs.XFGetValue("CubeID", "-1");
                 dt.TableName = "Reg_Configs_Source";
-                sql = @"SELECT Name as Name, Reg_Config_ID as Reg_Config_ID
+                sql = @"SELECT Name as Name, RegConfigID as RegConfigID
                     FROM FMM_Reg_Config
                     WHERE CubeID = @CubeID
                     ORDER BY Name";
@@ -789,7 +789,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
                 var CubeID = args.NameValuePairs.XFGetValue("CubeID", "-1");
                 dt.TableName = "Reg_Configs_Target";
-                sql = @"SELECT Name as Name, Reg_Config_ID as Reg_Config_ID
+                sql = @"SELECT Name as Name, RegConfigID as RegConfigID
                     FROM FMM_Reg_Config
                     WHERE CubeID = @CubeID
                     ORDER BY Name";
@@ -801,7 +801,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             else // Default: All
             {
                 dt.TableName = "Reg_Configs";
-                sql = @"SELECT Name as Name, Reg_Config_ID as Reg_Config_ID
+                sql = @"SELECT Name as Name, RegConfigID as RegConfigID
                     FROM FMM_Reg_Config
                     ORDER BY Name";
                 sqlparams = new SqlParameter[] { };
@@ -872,7 +872,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sql = string.Empty;
                     SqlParameter[] sqlparams;
 
-                    if (calcUnitType.XFEqualsIgnoreCase("By_Cube"))
+                    if (calcUnitType.XFEqualsIgnoreCase("ByCube"))
                     {
                         var CubeID = args.NameValuePairs.XFGetValue("CubeID", "-1");
                         dt.TableName = "Calc_Units_By_Cube";
@@ -1039,7 +1039,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             try
             {
                 var CubeID = args.NameValuePairs.XFGetValue("CubeID", "-1");
-                var dt = new DataTable("Approval_Config");
+                var dt = new DataTable("ApprovalConfig");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1074,7 +1074,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
             try
             {
-                var Reg_Config_DT = new DataTable("Register_Profiles");
+                var Reg_Config_DT = new DataTable("RegisterProfiles");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -1084,7 +1084,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     // Define the select query and sqlparams
                     // get all the register configs that don't already have an entry for this activity
                     var sql = @"
-			        	SELECT Name,RegCon.Reg_Config_ID FROM FMM_Reg_Config RegCon";
+			        	SELECT Name,RegCon.RegConfigID FROM FMM_Reg_Config RegCon";
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
@@ -1110,7 +1110,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var AddUpdateDBName = args.NameValuePairs.XFGetValue("AddUpdateDBName");
                 var runType = AddUpdateDBName == "0b3b2a2_FMM_Approval_Steps_Activities_Row2b_Header" ? "Update" : "Add";
                 BRApi.ErrorLog.LogMessage(si, "get reg config actID: " + ActID + " runType: " + runType);
-                var dt = new DataTable("Register_Profiles");
+                var dt = new DataTable("RegisterProfiles");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 if (ActID != "-1" && runType == "Add")
                 {
@@ -1122,10 +1122,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // Define the select query and sqlparams
                         // get all the register configs that don't already have an entry for this activity
                         var sql = @"
-				        	SELECT Name,RegCon.Reg_Config_ID FROM FMM_Reg_Config RegCon
+				        	SELECT Name,RegCon.RegConfigID FROM FMM_Reg_Config RegCon
 							FULL JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.ActID = ASAC.ActID AND RegCon.Reg_Config_ID = ASAC.Reg_Config_ID
-							WHERE RegCon.ActID = @ActID AND ASAC.Reg_Config_ID is NULL";
+							ON RegCon.ActID = ASAC.ActID AND RegCon.RegConfigID = ASAC.RegConfigID
+							WHERE RegCon.ActID = @ActID AND ASAC.RegConfigID is NULL";
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
                         {
@@ -1145,23 +1145,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         // Define the select query and sqlparams
                         // get the current register config, and all of those that don't have associated entries (update)
                         var sql = @"
-				        	Declare @initialResults Table (Name nvarchar(100), Reg_Config_ID int, ActID int)
+				        	Declare @initialResults Table (Name nvarchar(100), RegConfigID int, ActID int)
 							Declare @trueActID int;
 							
 							Insert into @initialResults 
-							Select Name,RegCon.Reg_Config_ID,RegCon.ActID FROM FMM_Reg_Config RegCon
+							Select Name,RegCon.RegConfigID,RegCon.ActID FROM FMM_Reg_Config RegCon
 							Full JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.ActID = ASAC.ActID AND RegCon.Reg_Config_ID = ASAC.Reg_Config_ID
+							ON RegCon.ActID = ASAC.ActID AND RegCon.RegConfigID = ASAC.RegConfigID
 							WHERE ASAC.Approval_Step_ActID = @ActID
 
 							SELECT @trueActID = ActID from @initialResults;
 							
-							Select CONCAT('*',Name) As Name, Reg_Config_ID from @initialResults
+							Select CONCAT('*',Name) As Name, RegConfigID from @initialResults
 							Union
-							SELECT Name,RegCon.Reg_Config_ID FROM FMM_Reg_Config RegCon
+							SELECT Name,RegCon.RegConfigID FROM FMM_Reg_Config RegCon
 							FULL JOIN FMM_Approval_Step_Activity_Config ASAC
-							ON RegCon.ActID = ASAC.ActID AND RegCon.Reg_Config_ID = ASAC.Reg_Config_ID
-							WHERE RegCon.ActID = @trueActID AND ASAC.Reg_Config_ID is NULL";
+							ON RegCon.ActID = ASAC.ActID AND RegCon.RegConfigID = ASAC.RegConfigID
+							WHERE RegCon.ActID = @trueActID AND ASAC.RegConfigID is NULL";
                         // Create an array of SqlParameter objects
                         var sqlparams = new SqlParameter[]
                         {

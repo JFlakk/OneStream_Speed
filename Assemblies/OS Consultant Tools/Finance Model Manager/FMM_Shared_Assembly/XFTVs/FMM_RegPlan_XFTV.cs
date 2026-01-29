@@ -205,17 +205,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             string endTime = "";
             if (registerConfig_dt.Rows.Count > 0)
             {
-                startTime = registerConfig_dt.Rows[0]["Start_Dt_Src"].ToString();
-                endTime = registerConfig_dt.Rows[0]["End_Dt_Src"].ToString();
-                g_activityID = Convert.ToInt32(registerConfig_dt.Rows[0]["Activity_ID"]);
-                reg_TimePhasing = registerConfig_dt.Rows[0]["Time_Phasing"].ToString();
+                startTime = registerConfig_dt.Rows[0]["StartDtSrc"].ToString();
+                endTime = registerConfig_dt.Rows[0]["EndDtSrc"].ToString();
+                g_activityID = Convert.ToInt32(registerConfig_dt.Rows[0]["ActivityID"]);
+                reg_TimePhasing = registerConfig_dt.Rows[0]["TimePhasing"].ToString();
             }
 
             var profileName = wfUnitInfo.ProfileName;
             var scenarioName = wfUnitInfo.ScenarioName;
             var timeName = wfUnitInfo.TimeName;
             var modelID = g_modelID != -1 ? g_modelID : Convert.ToInt32(substVars.XFGetValue("ModelID", "-1"));
-            var activityID = g_activityID != -1 ? g_activityID : Convert.ToInt32(substVars.XFGetValue("Activity_ID", "-1"));
+            var activityID = g_activityID != -1 ? g_activityID : Convert.ToInt32(substVars.XFGetValue("ActivityID", "-1"));
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             var connection = new SqlConnection(dbConnApp.ConnectionString);
@@ -233,18 +233,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 var regPlanHelpers = new SQL_Adapter_Register_Plan(si, connection);
                 var regPlan_Sql = @"
 				    SELECT *
-				    FROM Register_Plan
-				    WHERE WF_Scenario_Name = @WFScenarioName
-				    AND WF_Profile_Name = @WFProfileName
-				    AND WF_Time_Name = @WFTimeName
-				    AND Activity_ID = @ActivityID"; // Added condition for Activity_ID
+				    FROM RegisterPlan
+				    WHERE WFScenarioName = @WFScenarioName
+				    AND WFProfileName = @WFProfileName
+				    AND WFTimeName = @WFTimeName
+				    AND ActivityID = @ActivityID"; // Added condition for ActivityID
 
                 var regPlan_parameters = new SqlParameter[]
                 {
                     new SqlParameter("@WFScenarioName", SqlDbType.VarChar) { Value = scenarioName },
                     new SqlParameter("@WFProfileName", SqlDbType.VarChar) { Value = profileName },
                     new SqlParameter("@WFTimeName", SqlDbType.VarChar) { Value = timeName },
-                    new SqlParameter("@ActivityID", SqlDbType.Int) { Value = activityID } // Added parameter for Activity_ID
+                    new SqlParameter("@ActivityID", SqlDbType.Int) { Value = activityID } // Added parameter for ActivityID
 				};
 
                 var sqlParam_Index = 4;
@@ -266,9 +266,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 var regPlanDetails_Sql = @"
 								SELECT *
 								FROM Register_Plan_Details
-								WHERE WF_Scenario_Name = @WFScenarioName
-								AND WF_Profile_Name = @WFProfileName
-								AND WF_Time_Name = @WFTimeName";
+								WHERE WFScenarioName = @WFScenarioName
+								AND WFProfileName = @WFProfileName
+								AND WFTimeName = @WFTimeName";
                 var regPlanDetails_parameters = new SqlParameter[]
                 {
                     new SqlParameter("@WFScenarioName", SqlDbType.VarChar) { Value = scenarioName },
@@ -290,7 +290,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                     //int numRequiredColsFilled = numReqColsFilled(requiredColumns.ToArray(), tvr);
 
 
-                    var selectedRegisterPlanUpdateRows = Register_Plan_DT.Select($"Register_Plan_ID = '{tvr["Register_Plan_ID"].Value.ToString()}'");
+                    var selectedRegisterPlanUpdateRows = Register_Plan_DT.Select($"RegisterPlanID = '{tvr["RegisterPlanID"].Value.ToString()}'");
 
                     if (selectedRegisterPlanUpdateRows.Length > 0)
                     {
@@ -300,39 +300,39 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                         existing_Register_Plan_Row["Invalid"] = isRowInvalid(requiredColumns.ToArray(), tvr);
                         for (int i = 1; i <= 20; i++)
                         {
-                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"Attribute_{i}");
+                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"Attribute{i}");
                         }
 
                         for (int i = 1; i <= 12; i++)
                         {
-                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"Attribute_Value_{i}");
+                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"AttributeValue{i}");
                         }
 
                         for (int i = 1; i <= 5; i++)
                         {
-                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"Date_Value_{i}");
+                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"DateValue{i}");
                         }
 
-                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "Register_ID");
-                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "Register_ID_1");
-                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "Register_ID_2");
+                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "RegisterID");
+                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "RegisterID1");
+                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "RegisterID2");
 
-                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "Spread_Amount");
-                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "Spread_Curve");
+                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "SpreadAmount");
+                        checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "SpreadCurve");
                         checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "Status");
 
-                        existing_Register_Plan_Row["Update_Date"] = DateTime.Now;
-                        existing_Register_Plan_Row["Update_User"] = si.UserName;
+                        existing_Register_Plan_Row["UpdateDate"] = DateTime.Now;
+                        existing_Register_Plan_Row["UpdateUser"] = si.UserName;
                     }
                     else
                     {
                         //						BRApi.ErrorLog.LogMessage(si,"Hit Reg Else");
                         var new_Register_Plan_Row = Register_Plan_DT.NewRow();
-                        new_Register_Plan_Row["Register_Plan_ID"] = Guid.NewGuid();
-                        new_Register_Plan_Row["WF_Scenario_Name"] = scenarioName;
-                        new_Register_Plan_Row["WF_Profile_Name"] = profileName;
-                        new_Register_Plan_Row["WF_Time_Name"] = timeName;
-                        new_Register_Plan_Row["Activity_ID"] = activityID;
+                        new_Register_Plan_Row["RegisterPlanID"] = Guid.NewGuid();
+                        new_Register_Plan_Row["WFScenarioName"] = scenarioName;
+                        new_Register_Plan_Row["WFProfileName"] = profileName;
+                        new_Register_Plan_Row["WFTimeName"] = timeName;
+                        new_Register_Plan_Row["ActivityID"] = activityID;
 
                         bool invalid = isRowInvalid(requiredColumns.ToArray(), tvr);
                         new_Register_Plan_Row["Invalid"] = invalid;
@@ -343,20 +343,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                             continue;
                         }
 
-                        //						new_Register_Plan_Row["Approval_Level_ID"] = approvLevelID;
-                        //new_Register_Plan_Row["Approval_Level_ID"] = tvr.Items["Approval_Level_ID"].Value.ToString() != string.Empty ? tvr.Items["Approval_Level_ID"].Value.ToString() : approvLevelID;
-                        // Check if "Approval_Level_ID" key exists in filterParams
-                        if (filterParams.ContainsKey("Approval_Level_ID"))
+                        //						new_Register_Plan_Row["ApprovalLevelID"] = approvLevelID;
+                        //new_Register_Plan_Row["ApprovalLevelID"] = tvr.Items["ApprovalLevelID"].Value.ToString() != string.Empty ? tvr.Items["ApprovalLevelID"].Value.ToString() : approvLevelID;
+                        // Check if "ApprovalLevelID" key exists in filterParams
+                        if (filterParams.ContainsKey("ApprovalLevelID"))
                         {
                             // Set the value from the dictionary
-                            new_Register_Plan_Row["Approval_Level_ID"] = filterParams["Approval_Level_ID"];
+                            new_Register_Plan_Row["ApprovalLevelID"] = filterParams["ApprovalLevelID"];
                         }
                         else
                         {
                             // Set the value based on tvr.Items
-                            new_Register_Plan_Row["Approval_Level_ID"] =
-                                !string.IsNullOrEmpty(tvr.Items["Approval_Level_ID"].Value.ToString())
-                                ? tvr.Items["Approval_Level_ID"].Value.ToString()
+                            new_Register_Plan_Row["ApprovalLevelID"] =
+                                !string.IsNullOrEmpty(tvr.Items["ApprovalLevelID"].Value.ToString())
+                                ? tvr.Items["ApprovalLevelID"].Value.ToString()
                                 : string.Empty; // Optionally parse to GUID if necessary
                         }
                         if (filterParams.ContainsKey("Entity"))
@@ -375,32 +375,32 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
                         for (int i = 1; i <= 20; i++)
                         {
-                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"Attribute_{i}");
+                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"Attribute{i}");
                         }
 
                         for (int i = 1; i <= 12; i++)
                         {
-                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"Attribute_Value_{i}");
+                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"AttributeValue{i}");
                         }
 
                         for (int i = 1; i <= 5; i++)
                         {
-                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"Date_Value_{i}");
+                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"DateValue{i}");
                         }
 
 
-                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "Register_ID");
-                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "Register_ID_1");
-                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "Register_ID_2");
+                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "RegisterID");
+                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "RegisterID1");
+                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "RegisterID2");
 
-                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "Spread_Amount");
-                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "Spread_Curve");
+                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "SpreadAmount");
+                        checkAndSetColumn(ref new_Register_Plan_Row, tvr, "SpreadCurve");
                         checkAndSetColumn(ref new_Register_Plan_Row, tvr, "Status");
 
-                        new_Register_Plan_Row["Create_Date"] = DateTime.Now;
-                        new_Register_Plan_Row["Create_User"] = si.UserName;
-                        new_Register_Plan_Row["Update_Date"] = DateTime.Now;
-                        new_Register_Plan_Row["Update_User"] = si.UserName;
+                        new_Register_Plan_Row["CreateDate"] = DateTime.Now;
+                        new_Register_Plan_Row["CreateUser"] = si.UserName;
+                        new_Register_Plan_Row["UpdateDate"] = DateTime.Now;
+                        new_Register_Plan_Row["UpdateUser"] = si.UserName;
 
                         //Add row to DataTable
                         Register_Plan_DT.Rows.Add(new_Register_Plan_Row);
@@ -417,8 +417,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                         foreach (var yearConfig in yearConfigs)
                         {
                             BRApi.ErrorLog.LogMessage(si, $"Hit Reg 4 {yearConfig}");
-                            var selectedRegisterPlanDetailsUpdateRows = Register_Plan_Details_DT.Select($"Register_Plan_ID = '{tvr["Register_Plan_ID"].Value.ToString()}' AND " +
-                            $"Plan_Units = '{planUnits}' AND Year = '{yearConfig}'");
+                            var selectedRegisterPlanDetailsUpdateRows = Register_Plan_Details_DT.Select($"RegisterPlanID = '{tvr["RegisterPlanID"].Value.ToString()}' AND " +
+                            $"PlanUnits = '{planUnits}' AND Year = '{yearConfig}'");
 
                             if (selectedRegisterPlanDetailsUpdateRows.Length > 0)
                             #region "existing Reg_Plan_Detail"
@@ -427,7 +427,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                                 {
                                     // Update entity
                                     existing_Register_Plan_Details_Row["Entity"] = tvr.Items["Entity"]?.Value.ToString() ?? string.Empty;
-                                    existing_Register_Plan_Details_Row["Plan_Units"] = planUnits; //planUnits;
+                                    existing_Register_Plan_Details_Row["PlanUnits"] = planUnits; //planUnits;
                                                                                                   //									existing_Register_Plan_Details_Row["Account"] = tvr.Items["Account"]?.ToString() ?? string.Empty; //planUnits;
                                                                                                   //		                            existing_Register_Plan_Details_Row["Flow"] = tvr.Items["Flow"]?.Value.ToString() ?? string.Empty;
                                                                                                   //									existing_Register_Plan_Details_Row["UD1"] = tvr.Items["UD1"]?.Value.ToString() ?? string.Empty;
@@ -508,8 +508,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                                     #endregion
 
                                     // Update metadata
-                                    existing_Register_Plan_Details_Row["Update_Date"] = DateTime.Now;
-                                    existing_Register_Plan_Details_Row["Update_User"] = Environment.UserName;
+                                    existing_Register_Plan_Details_Row["UpdateDate"] = DateTime.Now;
+                                    existing_Register_Plan_Details_Row["UpdateUser"] = Environment.UserName;
                                 }
                             }
                             #endregion
@@ -521,16 +521,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                                     BRApi.ErrorLog.LogMessage(si, $"Hit: {item.Key} - {item.Value}");
                                 }
                                 var new_Register_Plan_Details_Row = Register_Plan_Details_DT.NewRow();
-                                new_Register_Plan_Details_Row["Register_Plan_ID"] = Guid.NewGuid();
-                                new_Register_Plan_Details_Row["WF_Scenario_Name"] = scenarioName;
-                                new_Register_Plan_Details_Row["WF_Profile_Name"] = profileName;
-                                new_Register_Plan_Details_Row["WF_Time_Name"] = timeName;
-                                new_Register_Plan_Details_Row["Activity_ID"] = activityID;
+                                new_Register_Plan_Details_Row["RegisterPlanID"] = Guid.NewGuid();
+                                new_Register_Plan_Details_Row["WFScenarioName"] = scenarioName;
+                                new_Register_Plan_Details_Row["WFProfileName"] = profileName;
+                                new_Register_Plan_Details_Row["WFTimeName"] = timeName;
+                                new_Register_Plan_Details_Row["ActivityID"] = activityID;
                                 new_Register_Plan_Details_Row["ModelID"] = modelID;
                                 new_Register_Plan_Details_Row["Entity"] = tvr.Items["Entity"]?.Value.ToString() ?? string.Empty;
-                                //new_Register_Plan_Details_Row["Approval_Level_ID"] = tvr.Items["Approval_Level_ID"].Value.ToString() != string.Empty ? tvr.Items["Approval_Level_ID"].Value.ToString() : approvLevelID; // might need to do Guid.Parse()
-                                new_Register_Plan_Details_Row["Approval_Level_ID"] = tvr.Items["Approval_Level_ID"].Value.ToString() != string.Empty ? tvr.Items["Approval_Level_ID"].Value.ToString() : string.Empty; // might need to do Guid.Parse()
-                                new_Register_Plan_Details_Row["Plan_Units"] = planUnits;
+                                //new_Register_Plan_Details_Row["ApprovalLevelID"] = tvr.Items["ApprovalLevelID"].Value.ToString() != string.Empty ? tvr.Items["ApprovalLevelID"].Value.ToString() : approvLevelID; // might need to do Guid.Parse()
+                                new_Register_Plan_Details_Row["ApprovalLevelID"] = tvr.Items["ApprovalLevelID"].Value.ToString() != string.Empty ? tvr.Items["ApprovalLevelID"].Value.ToString() : string.Empty; // might need to do Guid.Parse()
+                                new_Register_Plan_Details_Row["PlanUnits"] = planUnits;
                                 //								new_Register_Plan_Details_Row["Account"] = tvr.Items["Account"]?.Value.ToString() ?? string.Empty; //planUnits;
                                 //	                            new_Register_Plan_Details_Row["Flow"] = tvr.Items["Flow"]?.Value.ToString() ?? string.Empty;
                                 //								new_Register_Plan_Details_Row["UD1"] = tvr.Items["UD1"]?.Value.ToString() ?? string.Empty;
@@ -637,16 +637,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         {
             var regDt = new DataTable();
 
-            // Retrieve Time_Phasing and start/end times from RegisterConfig
-            string timePhasing = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["Time_Phasing"]?.ToString() : string.Empty;
-            string startTime = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["Start_Dt_Src"]?.ToString() : string.Empty;
-            string endTime = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["End_Dt_Src"]?.ToString() : string.Empty;
-            g_activityID = Convert.ToInt32(registerConfig.Rows[0]["Activity_ID"]);
+            // Retrieve TimePhasing and start/end times from RegisterConfig
+            string timePhasing = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["TimePhasing"]?.ToString() : string.Empty;
+            string startTime = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["StartDtSrc"]?.ToString() : string.Empty;
+            string endTime = registerConfig.Rows.Count > 0 ? registerConfig.Rows[0]["EndDtSrc"]?.ToString() : string.Empty;
+            g_activityID = Convert.ToInt32(registerConfig.Rows[0]["ActivityID"]);
 
             // Fetch Workflow Information
             var wfInfoDetails = getWFInfoDetails();
 
-            // Fetch YearTimePhasingConfigs if Time_Phasing is 'Input'
+            // Fetch YearTimePhasingConfigs if TimePhasing is 'Input'
 
             if (timePhasing == "Input")
             {
@@ -658,9 +658,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
             foreach (var kvp in substVars)
             {
-                // Search the registerColumns DataTable for rows where Filter_Param equals kvp.Key
+                // Search the registerColumns DataTable for rows where FilterParam equals kvp.Key
                 var matchingRow = registerColumns.AsEnumerable()
-                                                 .FirstOrDefault(row => row.Field<string>("Filter_Param") == kvp.Key);
+                                                 .FirstOrDefault(row => row.Field<string>("FilterParam") == kvp.Key);
 
                 if (matchingRow != null)
                 {
@@ -675,7 +675,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             // Build the SELECT clause
             string selectedColumns = string.Join(", ", registerColumns.Rows.Cast<DataRow>().Select(row => $"rp.{row["Name"]}"));
             selectedColumns += ", rp.Invalid";
-            // Add additional columns based on yearConfigs if Time_Phasing is "Input"
+            // Add additional columns based on yearConfigs if TimePhasing is "Input"
             if (timePhasing == "Input" && yearConfigs != null)
             {
                 var json = JsonSerializer.Serialize(yearConfigs);
@@ -693,13 +693,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 // Append time-phased columns to the SELECT clause
                 selectedColumns += ", " + string.Join(", ", timePhasingColumns);
             }
-            string baseSelect = $"SELECT rp.Register_Plan_ID, rp.WF_Scenario_Name, rp.WF_Profile_Name, rp.WF_Time_Name, " +
-                                $"rp.Activity_ID, {selectedColumns}";
+            string baseSelect = $"SELECT rp.RegisterPlanID, rp.WFScenarioName, rp.WFProfileName, rp.WFTimeName, " +
+                                $"rp.ActivityID, {selectedColumns}";
 
-            var Plan_Units = string.Empty;
-            Plan_Units = "'Test'";
+            var PlanUnits = string.Empty;
+            PlanUnits = "'Test'";
             // Build the FROM and optional JOIN clause
-            string fromClause = "FROM Register_Plan rp ";
+            string fromClause = "FROM RegisterPlan rp ";
             if (timePhasing == "Input" && yearConfigs != null)
             {
                 var joinClauses = new List<string>();
@@ -707,23 +707,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 {
                     string alias = $"rpd_{config.Year}";
                     joinClauses.Add($"LEFT JOIN Register_Plan_Details {alias} " +
-                                    $"ON rp.Register_Plan_ID = {alias}.Register_Plan_ID " +
-                                    $"AND rp.Activity_ID = {alias}.Activity_ID " +
-                                    $"AND rp.WF_Scenario_Name = {alias}.WF_Scenario_Name " +
+                                    $"ON rp.RegisterPlanID = {alias}.RegisterPlanID " +
+                                    $"AND rp.ActivityID = {alias}.ActivityID " +
+                                    $"AND rp.WFScenarioName = {alias}.WFScenarioName " +
                                     $"AND rp.Entity = {alias}.Entity " +
-                                    $"AND rp.Approval_Level_ID = {alias}.Approval_Level_ID " +
+                                    $"AND rp.ApprovalLevelID = {alias}.ApprovalLevelID " +
                                     $"AND {alias}.Year = '{config.Year}' " +
-                                    $"AND {alias}.Plan_Units In ({Plan_Units}) ");
+                                    $"AND {alias}.PlanUnits In ({PlanUnits}) ");
                 }
 
                 fromClause += " " + string.Join(" ", joinClauses);
             }
 
             // Build the WHERE clause
-            string whereClause = $"WHERE rp.WF_Scenario_Name = '{wfInfoDetails[scenarioDictKey]}' " +
-                                 $"AND rp.WF_Profile_Name = '{wfInfoDetails[profileDictKey]}' " +
-                                 $"AND rp.WF_Time_Name = {wfInfoDetails[timeDictKey]} " +
-                                 $"AND rp.Activity_ID = {g_activityID} ";
+            string whereClause = $"WHERE rp.WFScenarioName = '{wfInfoDetails[scenarioDictKey]}' " +
+                                 $"AND rp.WFProfileName = '{wfInfoDetails[profileDictKey]}' " +
+                                 $"AND rp.WFTimeName = {wfInfoDetails[timeDictKey]} " +
+                                 $"AND rp.ActivityID = {g_activityID} ";
 
             var whereConditions = new List<string>();
             // Append filter parameter conditions dynamically
@@ -746,7 +746,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 regDt = BRApi.Database.ExecuteSql(dbConnApp, sql, false);
             }
 
-            //		    // Process the data if Time_Phasing is 'Input'
+            //		    // Process the data if TimePhasing is 'Input'
             //		    if (timePhasing == "Input" && yearConfigs != null)
             //		    {
             //		        foreach (var config in yearConfigs)
@@ -832,13 +832,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
             var sqlcolumns = string.Empty;
             sqlcolumns = @"
-							SELECT [Order],Name,Alias,[Default],Param,Required,Filter_Param
+							SELECT [Order],Name,Alias,[Default],Param,Required,FilterParam
 							  FROM FMM_Col_Config
-							  WHERE Reg_Config_ID = @Reg_Config_ID
+							  WHERE RegConfigID = @RegConfigID
 							  AND InUse = 1
 							  ORDER BY [Order]";
 
-            sqlcolumns = sqlcolumns.Replace("@Reg_Config_ID", registerConfigID);
+            sqlcolumns = sqlcolumns.Replace("@RegConfigID", registerConfigID);
 
             using (var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
             {
@@ -853,11 +853,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             {
                 foreach (DataRow row in dt.Rows)
                 {
-                    // Check if the Filter_Param column has a value
-                    if (row["Filter_Param"] != DBNull.Value && !string.IsNullOrWhiteSpace(row["Filter_Param"].ToString()))
+                    // Check if the FilterParam column has a value
+                    if (row["FilterParam"] != DBNull.Value && !string.IsNullOrWhiteSpace(row["FilterParam"].ToString()))
                     {
                         var columnName = row["Name"].ToString(); // Get the column name
-                        var filterParam = row["Filter_Param"].ToString(); // Get the Filter_Param value
+                        var filterParam = row["FilterParam"].ToString(); // Get the FilterParam value
                         var paramValue = substVars.XFGetValue(filterParam, string.Empty);
 
                         // Check if the param exists in the provided dictionary
@@ -877,12 +877,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         {
             var dt = new DataTable();
 
-            var sqlcolumns = @"SELECT Name, Time_Phase, Time_Phase_Driver, Manual_Input_Plan_Units, Start_End_Dt_Src_Obj,Appr_Config,
-						       Start_Dt_Src, End_Dt_Src, Activity_ID
+            var sqlcolumns = @"SELECT Name, TimePhase, TimePhaseDriver, ManualInputPlanUnits, StartEndDtSrcObj,ApprConfig,
+						       StartDtSrc, EndDtSrc, ActivityID
 							   FROM FMM_Reg_Config
-							   WHERE Reg_Config_ID = @Reg_Config_ID";
+							   WHERE RegConfigID = @RegConfigID";
 
-            sqlcolumns = sqlcolumns.Replace("@Reg_Config_ID", registerConfigID);
+            sqlcolumns = sqlcolumns.Replace("@RegConfigID", registerConfigID);
 
             using (var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
             {
@@ -1265,7 +1265,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
             public colTypeConfig(string colName)
             {
-                if (colName.Contains("Attribue_Value") || colName == "Spread_Amount")
+                if (colName.Contains("Attribue_Value") || colName == "SpreadAmount")
                 {
                     colType = colTypeEnum.Decimal;
                     isColNullable = true;

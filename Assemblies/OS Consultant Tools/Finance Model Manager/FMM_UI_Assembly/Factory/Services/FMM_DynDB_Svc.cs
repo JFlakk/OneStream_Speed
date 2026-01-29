@@ -45,7 +45,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         {
                             Dictionary<string, string> nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>();
 
-                            // Always add Cell_ID as the primary identifier
+                            // Always add CellID as the primary identifier
                             nextLevelTemplateSubstVarsToAdd["CellID"] = cellModel.CellID.ToString();
                             nextLevelTemplateSubstVarsToAdd["CalcID"] = cellModel.CalcID.ToString();
                             //nextLevelTemplateSubstVarsToAdd["Order"] = cellModel.Order.ToString();
