@@ -529,7 +529,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private XFSqlTableEditorSaveDataTaskResult Save_Act_Config()
+        private XFSqlTableEditorSaveDataTaskResult Save_ActConfig()
         {
             try
             {
@@ -3309,7 +3309,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         #region "Col Helpers"
 
-        public void Insert_Col_Default_Rows(int cube_ID, int act_ID, int Reg_Config_ID)
+        public void Insert_Col_Default_Rows(int CubeID, int ActID, int RegConfigID)
         {
             BRApi.ErrorLog.LogMessage(si, "Hit Defaults: " + "|" + si.AuthToken.AuthSessionID.ToString());
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
