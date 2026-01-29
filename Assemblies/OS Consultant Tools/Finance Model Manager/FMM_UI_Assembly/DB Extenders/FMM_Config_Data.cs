@@ -3401,7 +3401,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     DefaultColumns.Add(new ColumnConfig
                     {
-                        ColName = $"Attribute_{i}",
+                        ColName = $"Attribute{i}",
                         ColAlias = $"Attribute {i}",
                         ColOrder = i + 5 // Starting from 6
                     });
@@ -3410,7 +3410,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     DefaultColumns.Add(new ColumnConfig
                     {
-                        ColName = $"Attribute_Value_{i}",
+                        ColName = $"AttributeValue{i}",
                         ColAlias = $"Attribute Value {i}",
                         ColOrder = i + 25 // Starting from 26
                     });
@@ -3419,7 +3419,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     DefaultColumns.Add(new ColumnConfig
                     {
-                        ColName = $"Date_Value_{i}",
+                        ColName = $"DateValue{i}",
                         ColAlias = $"Date Value {i}",
                         ColOrder = i + 37 // Starting from 38
                     });

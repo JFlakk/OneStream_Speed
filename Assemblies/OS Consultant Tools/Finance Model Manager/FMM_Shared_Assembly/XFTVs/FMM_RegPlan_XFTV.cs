@@ -300,17 +300,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                         existing_Register_Plan_Row["Invalid"] = isRowInvalid(requiredColumns.ToArray(), tvr);
                         for (int i = 1; i <= 20; i++)
                         {
-                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"Attribute_{i}");
+                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"Attribute{i}");
                         }
 
                         for (int i = 1; i <= 12; i++)
                         {
-                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"Attribute_Value_{i}");
+                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"AttributeValue{i}");
                         }
 
                         for (int i = 1; i <= 5; i++)
                         {
-                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"Date_Value_{i}");
+                            checkAndSetColumn(ref existing_Register_Plan_Row, tvr, $"DateValue{i}");
                         }
 
                         checkAndSetColumn(ref existing_Register_Plan_Row, tvr, "RegisterID");
@@ -375,17 +375,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
                         for (int i = 1; i <= 20; i++)
                         {
-                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"Attribute_{i}");
+                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"Attribute{i}");
                         }
 
                         for (int i = 1; i <= 12; i++)
                         {
-                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"Attribute_Value_{i}");
+                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"AttributeValue{i}");
                         }
 
                         for (int i = 1; i <= 5; i++)
                         {
-                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"Date_Value_{i}");
+                            checkAndSetColumn(ref new_Register_Plan_Row, tvr, $"DateValue{i}");
                         }
 
 
