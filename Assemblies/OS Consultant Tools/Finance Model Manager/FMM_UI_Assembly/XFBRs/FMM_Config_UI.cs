@@ -137,13 +137,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "MultiDim_Alloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
                         new ColumnConfig { ColumnName = "BR_Calc", Description = "[BR Calc]", IsVisible = true },
                         new ColumnConfig { ColumnName = "BR_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Time_Phasing", Description = "[Time Phasing]", IsVisible = true, ParameterName = "DL_FMM_Calc_Time_Phasing" },
-                        new ColumnConfig { ColumnName = "Input_Frequency", Description = "[Input Freq]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimePhasing", Description = "[Time Phasing]", IsVisible = true, ParameterName = "DL_FMM_Calc_Time_Phasing" },
+                        new ColumnConfig { ColumnName = "InputFrequency", Description = "[Input Freq]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Create_Date", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
-                        new ColumnConfig { ColumnName = "Create_User", Description = "[Create User]", IsVisible = true, AllowUpdates = false },
-                        new ColumnConfig { ColumnName = "Update_Date", Description = "[Update Date]", IsVisible = true, AllowUpdates = false },
-                        new ColumnConfig { ColumnName = "Update_User", Description = "[Update User]", IsVisible = true, AllowUpdates = false }
+                        new ColumnConfig { ColumnName = "CreateDate", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "CreateUser", Description = "[Create User]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "UpdateDate", Description = "[Update Date]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "UpdateUser", Description = "[Update User]", IsVisible = true, AllowUpdates = false }
                     }
                 },
                 { "Cube", new ColumnConfig[]
@@ -176,10 +176,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "BR_Calc", Description = "[BR Calc?]", IsVisible = true },
                         new ColumnConfig { ColumnName = "BR_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Create_Date", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
-                        new ColumnConfig { ColumnName = "Create_User", Description = "[Create User]", IsVisible = true, AllowUpdates = false },
-                        new ColumnConfig { ColumnName = "Update_Date", Description = "[Update Date]", IsVisible = true, AllowUpdates = false },
-                        new ColumnConfig { ColumnName = "Update_User", Description = "[Update User]", IsVisible = true, AllowUpdates = false }
+                        new ColumnConfig { ColumnName = "CreateDate", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "CreateUser", Description = "[Create User]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "UpdateDate", Description = "[Update Date]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "UpdateUser", Description = "[Update User]", IsVisible = true, AllowUpdates = false }
                     }
                 }
             };
@@ -204,8 +204,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Time_Filter", Description = "Time Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Conditional_Filter", Description = "Conditional Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimeFilter", Description = "Time Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ConditionalFilter", Description = "Conditional Filter", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }
                 },
@@ -226,10 +226,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Time_Filter", Description = "Time Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Acct_Filter", Description = "Account Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Origin_Filter", Description = "Origin Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Flow_Filter", Description = "Flow Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimeFilter", Description = "Time Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "AcctFilter", Description = "Account Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "OriginFilter", Description = "Origin Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "FlowFilter", Description = "Flow Filter", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD1_Filter", Description = "UD1 Filter", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD2_Filter", Description = "UD2 Filter", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD3_Filter", Description = "UD3 Filter", Width = "Auto", IsVisible = true },
@@ -251,31 +251,31 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "ActID", IsVisible = false, DefaultValue = "|!IV_FMM_ActID!|" },
                         new ColumnConfig { ColumnName = "ModelID", IsVisible = false, DefaultValue = "|!IV_FMM_ModelID!|" },
                         new ColumnConfig { ColumnName = "CalcID", IsVisible = false, DefaultValue = "|!IV_FMM_CalcID!|" },
-                        new ColumnConfig { ColumnName = "Src_Order", Description = "Order", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Src_Type", Description = "[Source/Calc Type]", ParameterName = "DL_FMM_Table_Calc_Src", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Src_Item", Description = "[Source/Calc Item]", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Open_Parens", Description = "(", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Math_Operator", Description = "Op", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "SrcOrder", Description = "Order", IsVisible = true },
+                        new ColumnConfig { ColumnName = "SrcType", Description = "[Source/Calc Type]", ParameterName = "DL_FMM_Table_Calc_Src", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "SrcItem", Description = "[Source/Calc Item]", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "OpenParens", Description = "(", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MathOperator", Description = "Op", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Table_Calc_Expression", Description = "[Calc Expression]", Width = "200", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Close_Parens", Description = ")", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "CloseParens", Description = ")", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Table_Join_Expression", Description = "[Join Expression]", Width = "200", IsVisible = true },
                         new ColumnConfig { ColumnName = "Table_Filter_Expression", Description = "[Filter Expression]", Width = "200", IsVisible = true },
                         new ColumnConfig { ColumnName = "MapType", Description = "[Map Type]", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Map_Source", Description = "[Map Source]", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MapSource", Description = "[Map Source]", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "MapLogic", Description = "[Map Logic]", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }
                 },
                 { "Cube", new ColumnConfig[]
                     {
-                        new ColumnConfig { ColumnName = "Cell_ID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "CellID", IsVisible = false },
                         new ColumnConfig { ColumnName = "CubeID", IsVisible = false, DefaultValue = "|!IV_FMM_CubeID!|" },
                         new ColumnConfig { ColumnName = "ActID", IsVisible = false, DefaultValue = "|!IV_FMM_ActID!|" },
                         new ColumnConfig { ColumnName = "ModelID", IsVisible = false, DefaultValue = "|!IV_FMM_ModelID!|" },
                         new ColumnConfig { ColumnName = "CalcID", IsVisible = false, DefaultValue = "|!IV_FMM_CalcID!|" },
-                        new ColumnConfig { ColumnName = "Src_Order", Description = "Order", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Open_Parens", Description = "(", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Math_Operator", Description = "Op", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "SrcOrder", Description = "Order", IsVisible = true },
+                        new ColumnConfig { ColumnName = "OpenParens", Description = "(", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MathOperator", Description = "Op", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Entity", Description = "Entity", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Cons", Description = "Cons", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Scenario", Description = "Scenario", Width = "Auto", IsVisible = true },
@@ -293,8 +293,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Close_Parens", Description = ")", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Src_Type", Description = "[Source Type]", ParameterName = "DL_FMM_Cube_Calc_Source", DefaultValue = "[Stored Cell]", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "CloseParens", Description = ")", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "SrcType", Description = "[Source Type]", ParameterName = "DL_FMM_Cube_Calc_Source", DefaultValue = "[Stored Cell]", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }
                 }

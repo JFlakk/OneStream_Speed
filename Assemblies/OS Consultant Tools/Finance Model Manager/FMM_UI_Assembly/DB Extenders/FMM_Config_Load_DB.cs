@@ -166,7 +166,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         // Implement Load Dashboard logic here.
                         if (args.FunctionName.XFEqualsIgnoreCase("Load_FMM_Dashboard"))
                         {
-                            var load_Dashboard_Task_Result = Load_Dashboard("", ref args);
+                            var load_Dashboard_Task_Result = LoadDashboard("", ref args);
 	                        return load_Dashboard_Task_Result;
                         }
                         break;
@@ -181,7 +181,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         #region "Class Helper Functions"	
         #region "Load Dashboard"
-        private XFLoadDashboardTaskResult Load_Dashboard(string RunType, ref DashboardExtenderArgs args)
+        private XFLoadDashboardTaskResult LoadDashboard(string RunType, ref DashboardExtenderArgs args)
         {
             var Load_Dashboard_Task_Result = new XFLoadDashboardTaskResult();
             Load_Dashboard_Task_Result.ChangeCustomSubstVarsInDashboard = true;
@@ -236,13 +236,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             if (cube_Settings_DT.Rows.Count > 0)
             {
                 XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube", cube_Settings_DT.Rows[0]["Cube"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Scen_Type", cube_Settings_DT.Rows[0]["Scen_Type"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Scen_Type", cube_Settings_DT.Rows[0]["ScenType"].ToString());
                 XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Entity_MFB", cube_Settings_DT.Rows[0]["Entity_MFB"].ToString());
                 XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube_Descr", cube_Settings_DT.Rows[0]["Descr"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Create_Date", cube_Settings_DT.Rows[0]["Create_Date"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Create_User", cube_Settings_DT.Rows[0]["Create_User"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Update_Date", cube_Settings_DT.Rows[0]["Update_Date"].ToString());
-                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Update_User", cube_Settings_DT.Rows[0]["Update_User"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Create_Date", cube_Settings_DT.Rows[0]["CreateDate"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Create_User", cube_Settings_DT.Rows[0]["CreateUser"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Update_Date", cube_Settings_DT.Rows[0]["UpdateDate"].ToString());
+                XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Update_User", cube_Settings_DT.Rows[0]["UpdateUser"].ToString());
             }
             else
             {
@@ -264,7 +264,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var XF_Load_Dashboard_Task_Result = new XFLoadDashboardTaskResult();
             XF_Load_Dashboard_Task_Result = Load_Dashboard_Task_Result;
 
-            var calc_Type_DT = new DataTable("Calc_Type");
+            var calc_Type_DT = new DataTable("CalcType");
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
 
@@ -279,7 +279,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqa = new SqlDataAdapter();
                     // Define the select query and parameters
                     var sql = @"
-								        	SELECT Calc_Type
+								        	SELECT CalcType
 								       		FROM FMM_Cube_Config Con
 											JOIN FMM_Act_Config Act
 											ON Con.CubeID = Act.CubeID
@@ -303,7 +303,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             if (calc_Type_DT.Rows.Count > 0)
             {
-                UpdateCustomSubstVar(ref XF_Load_Dashboard_Task_Result, "DL_FMM_Calc_Type", calc_Type_DT.Rows[0]["Calc_Type"].ToString());
+                UpdateCustomSubstVar(ref XF_Load_Dashboard_Task_Result, "DL_FMM_Calc_Type", calc_Type_DT.Rows[0]["CalcType"].ToString());
             }
             else
             {

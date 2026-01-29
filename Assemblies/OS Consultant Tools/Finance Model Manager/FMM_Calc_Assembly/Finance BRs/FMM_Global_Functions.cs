@@ -222,20 +222,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        private int UpdateDimension(int Member_Id, string dimensionValue, Dim dimension, FinanceRulesApi api)
+        private int UpdateDimension(int MemberID, string dimensionValue, Dim dimension, FinanceRulesApi api)
         {
             if (!string.IsNullOrEmpty(dimensionValue) && dimensionValue != "NoPassedValue")
             {
                 if (string.Equals(dimensionValue, "Common", StringComparison.OrdinalIgnoreCase))
                 {
-                    Member_Id = GetMember(ref dimension, "XFCommon", ref api).MemberId;
+                    MemberID = GetMember(ref dimension, "XFCommon", ref api).MemberId;
                 }
                 else
                 {
-                    Member_Id = GetMember(ref dimension, dimensionValue, ref api).MemberId;
+                    MemberID = GetMember(ref dimension, dimensionValue, ref api).MemberId;
                 }
             }
-            return Member_Id;
+            return MemberID;
         }
         #endregion
 
@@ -346,7 +346,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string bal_buffer_cell_SQL = @"
 												Select Acct, View,Origin,IC,Flow,UD1,
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
-													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
+													OS_Curr_Cube_Buffer_Filter,BufferFilter
 													FROM MCM_Cell
 													WHERE CalcID = @CalcID";
 
@@ -374,7 +374,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var ud8 = reader["UD8"] != DBNull.Value ? reader["UD8"].ToString() : null;
 
                         var os_Curr_Cube_Buffer = reader["OS_Curr_Cube_Buffer_Filter"].ToString();
-                        var Buffer = reader["Buffer_Filter"].ToString();
+                        var Buffer = reader["BufferFilter"].ToString();
                         //Test RemoveNoData and RemoveZeroes
                         var currCubeBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers({view},{os_Curr_Cube_Buffer})");
                         var destBuffer = new DataBuffer(currCubeBuffer.CommonDataBufferCellPk);
@@ -419,23 +419,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public void Calc_UnbalBuffer(
             int CalcID,
             string bal_buffer_calc,
-            string Unbal_Calc
+            string UnbalCalc
             )
         {
 
             string UnbalBuffer_cell_SQL = @"
 												Select Acct, View,Origin,IC,Flow,UD1,
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
-													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
+													OS_Curr_Cube_Buffer_Filter,BufferFilter
 													FROM MCM_Cell
 													WHERE CalcID = @CalcID";
             string src_cell_SQL = @"
-						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
+						        SELECT Calc_Src_ID_Order, OpenParens, MathOperator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
 						            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 									Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
-									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
+									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,OverrideValue,
 									Calc_Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE CalcID = @CalcID
@@ -494,7 +494,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Unbal_UD8_Override"] = unbal_srcreader["Unbal_UD8_Override"];
                         row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                         row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
-                        row["Override_Value"] = unbal_srcreader["Override_Value"];
+                        row["OverrideValue"] = unbal_srcreader["OverrideValue"];
                         row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
                         srcCellTable.Rows.Add(row);
 
@@ -505,7 +505,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         {
 
                             string unbal_srcBuffer = unbal_srcreader["Unbal_Src_Cell_Buffer"].ToString();
-                            string unbal_srcBufferFilter = unbal_srcreader["Buffer_Filter"].ToString();
+                            string unbal_srcBufferFilter = unbal_srcreader["BufferFilter"].ToString();
                             string bufferName = $"SrcBuffer{index}";
 
                             // Dynamically create and store the data buffer
@@ -536,7 +536,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var ud8 = reader["UD8"] != DBNull.Value ? reader["UD8"].ToString() : null;
 
                         var os_Curr_Cube_Buffer = reader["OS_Curr_Cube_Buffer_Filter"].ToString();
-                        var Buffer = reader["Buffer_Filter"].ToString();
+                        var Buffer = reader["BufferFilter"].ToString();
                         //Test RemoveNoData and RemoveZeroes
                         var currCubeBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers({view},{os_Curr_Cube_Buffer})");
                         var destBuffer = new DataBuffer(currCubeBuffer.CommonDataBufferCellPk);
@@ -554,7 +554,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                             //Call new function, pass in balBuffer_Cell and first unbal src row...  Build up calc string.  Run math  
                             var table = new DataTable();
-                            var expression = Unbal_Calc.Replace("BalancedBuffer", balBuffer_Cell.CellAmount.XFToString());
+                            var expression = UnbalCalc.Replace("BalancedBuffer", balBuffer_Cell.CellAmount.XFToString());
                             //If this is Dynamic Calc, then call Dyn Calc 
                             for (int i = 2; i <= src_buffers; i++)
                             {
@@ -564,7 +564,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                     if (srcRow["Calc_Src_Type"].ToString() == "Dynamic Calc")
                                     {
                                         var dyn_Calc = getdynamic_calc_value(balBuffer_Cell, srcRow);
-                                        expression = Unbal_Calc.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
+                                        expression = UnbalCalc.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
 
                                     }
                                     else if (srcRow["Calc_Src_Type"].ToString() == "Stored Cell")
@@ -578,7 +578,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                             Console.WriteLine("Buffer found for the name: " + searchName);
                                         }
                                         var src_buffer_Value = get_src_UnbalBuffer_value(balBuffer_Cell, resultBuffer, srcRow);
-                                        expression = Unbal_Calc.Replace($"SrcBuffer{i}", src_buffer_Value.XFToString());
+                                        expression = UnbalCalc.Replace($"SrcBuffer{i}", src_buffer_Value.XFToString());
 
                                     }
                                 }
@@ -614,7 +614,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public void Calc_Unbal_Alloc_Buffer(
             int CalcID,
             string bal_buffer_calc,
-            string Unbal_Calc
+            string UnbalCalc
             )
         {
             var cell_Expressions = new Dictionary<DataBufferCell, string>();
@@ -623,16 +623,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string UnbalBuffer_cell_SQL = @"
 												Select Acct, View,Origin,IC,Flow,UD1,
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
-													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
+													OS_Curr_Cube_Buffer_Filter,BufferFilter
 													FROM MCM_Cell
 													WHERE CalcID = @CalcID";
             string src_cell_SQL = @"
-						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
+						        SELECT Calc_Src_ID_Order, OpenParens, MathOperator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
 						            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
 						            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 									Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
-									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
+									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,OverrideValue,
 									Calc_Src_Type
 						        FROM MCM_Src_Cell
 						        WHERE CalcID = @CalcID
@@ -690,7 +690,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         row["Unbal_UD8_Override"] = unbal_srcreader["Unbal_UD8_Override"];
                         row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                         row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
-                        row["Override_Value"] = unbal_srcreader["Override_Value"];
+                        row["OverrideValue"] = unbal_srcreader["OverrideValue"];
                         row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
                         srcCellTable.Rows.Add(row);
 
@@ -700,7 +700,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         if (calc_srcType != "Dynamic Calc")
                         {
                             string unbal_srcBuffer = unbal_srcreader["Unbal_Src_Cell_Buffer"].ToString();
-                            string unbal_srcBufferFilter = unbal_srcreader["Buffer_Filter"].ToString();
+                            string unbal_srcBufferFilter = unbal_srcreader["BufferFilter"].ToString();
                             string bufferName = $"SrcBuffer{index}";
 
                             // Dynamically create and store the data buffer
@@ -731,7 +731,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var ud8 = reader["UD8"] != DBNull.Value ? reader["UD8"].ToString() : null;
 
                         var os_Curr_Cube_Buffer = reader["OS_Curr_Cube_Buffer_Filter"].ToString();
-                        var Buffer = reader["Buffer_Filter"].ToString();
+                        var Buffer = reader["BufferFilter"].ToString();
                         //Test RemoveNoData and RemoveZeroes
                         var currCubeBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers({view},{os_Curr_Cube_Buffer})");
                         var destBuffer = new DataBuffer(currCubeBuffer.CommonDataBufferCellPk);
@@ -749,7 +749,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                             // Initialize DataTable and expression
                             var table = new DataTable();
-                            var expression = Unbal_Calc.Replace("BalancedBuffer", balBuffer_Cell.CellAmount.XFToString());
+                            var expression = UnbalCalc.Replace("BalancedBuffer", balBuffer_Cell.CellAmount.XFToString());
                             cell_Expressions.Add(destCell, expression);
 
                             // First Loop: Handle Dynamic Calcs and Stored Cells
@@ -800,7 +800,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public void Calc_Ext_Unbal_Alloc_Buffer(
             int CalcID,
             string bal_buffer_calc,
-            string Unbal_Calc,
+            string UnbalCalc,
             string memberList1Dim,
             string memberList1Filter,
             string memberList1DimType,
@@ -823,7 +823,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             // Example usage of the parameters
             BRApi.ErrorLog.LogMessage(si, $"Processing CalcID: {CalcID}");
-            BRApi.ErrorLog.LogMessage(si, $"Balanced Buffer Calc: {bal_buffer_calc}, Unbalanced Calc: {Unbal_Calc}");
+            BRApi.ErrorLog.LogMessage(si, $"Balanced Buffer Calc: {bal_buffer_calc}, Unbalanced Calc: {UnbalCalc}");
 
             // Log MemberList 1 details
             BRApi.ErrorLog.LogMessage(si, $"MemberList 1: Dim: {memberList1Dim}, Filter: {memberList1Filter}, DimType: {memberList1DimType}, DestFilter: {memberList1DestFilter}");
@@ -845,11 +845,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         #endregion
 
-        #region "Ext_Unbalanced"
+        #region "ExtUnbalanced"
         public void Calc_Ext_UnbalBuffer(
             int CalcID,
             string bal_buffer_calc,
-            string Unbal_Calc,
+            string UnbalCalc,
             string memberList1Dim,
             string memberList1Filter,
             string memberList1DimType,
@@ -885,7 +885,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 string UnbalBuffer_cell_SQL = @"
 													Select Acct, View,Origin,IC,Flow,UD1,
 														UD2,UD3,UD4,UD5,UD6,UD7,UD8,
-														OS_Curr_Cube_Buffer_Filter,Buffer_Filter
+														OS_Curr_Cube_Buffer_Filter,BufferFilter
 														FROM FMM_Dest_Cell
 														WHERE CalcID = @CalcID";
 
@@ -970,25 +970,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                                                     foreach (var member4 in mem4List)
                                                     {
-                                                        ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, member3.Member.Name, member4.Member.Name, reader, bal_buffer_calc, Unbal_Calc);
+                                                        ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, member3.Member.Name, member4.Member.Name, reader, bal_buffer_calc, UnbalCalc);
                                                     }
 
                                                 }
                                                 else
                                                 {
-                                                    ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, member3.Member.Name, "", reader, bal_buffer_calc, Unbal_Calc);
+                                                    ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, member3.Member.Name, "", reader, bal_buffer_calc, UnbalCalc);
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, "", "", reader, bal_buffer_calc, Unbal_Calc);
+                                            ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, "", "", reader, bal_buffer_calc, UnbalCalc);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, "", "", "", reader, bal_buffer_calc, Unbal_Calc);
+                                    ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, "", "", "", reader, bal_buffer_calc, UnbalCalc);
                                 }
                             }
                         }
@@ -1018,19 +1018,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         #region "Extensibility Unbal Helpers"
 
         private void ExecuteDataBufferCode(int CalcID, ref DataBuffer currCubeBuffer, ref DataBuffer destBuffer, ref DataBuffer clearCubeBuffer, ExpressionDestinationInfo destInfo, string dim1MemName, string dim2MemName, string dim3MemName, string dim4MemName,
-            SqlDataReader reader, string bal_buffer_calc, string Unbal_Calc)
+            SqlDataReader reader, string bal_buffer_calc, string UnbalCalc)
         {
             unbal_srcdataBuffers.Clear();
             string memFilterStringPrefix = "|!MemberList_";
             string memFilterStringSuffix = "_Filter.Name!|";
 
             string src_cell_SQL = @"
-							        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
+							        SELECT Calc_Src_ID_Order, OpenParens, MathOperator, Entity, Cons, Scenario,
 							            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
 							            UD3, UD4, UD5, UD6, UD7, UD8, Calc_Close_Parens,Unbal_Src_Cell_Buffer,
 							            Unbal_Origin_Override,Unbal_IC_Override,Unbal_Acct_Override,Unbal_Flow_Override,Unbal_UD1_Override,
 										Unbal_UD2_Override,Unbal_UD3_Override,Unbal_UD4_Override,Unbal_UD5_Override,Unbal_UD6_Override,
-										Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
+										Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,OverrideValue,
 										Calc_Src_Type
 							        FROM MCM_Src_Cell
 							        WHERE CalcID = @CalcID
@@ -1151,7 +1151,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //	                    row["Unbal_UD8_Override"] = unbal_srcreader["Unbal_UD8_Override"];
                     //	                    row["Unbal_Src_Cell_Buffer_Filter"] = unbal_srcreader["Unbal_Src_Cell_Buffer_Filter"];
                     //	                    row["OS_Dynamic_Calc_Script"] = unbal_srcreader["OS_Dynamic_Calc_Script"];
-                    //	                    row["Override_Value"] = unbal_srcreader["Override_Value"];
+                    //	                    row["OverrideValue"] = unbal_srcreader["OverrideValue"];
                     //	                    row["Calc_Src_Type"] = unbal_srcreader["Calc_Src_Type"];
 
                     //						srcCellTable.Rows.Add(row);
@@ -1162,7 +1162,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //						if (calc_srcType != "Dynamic Calc")
                     //						{	
                     //							string unbal_srcBuffer = unbal_srcreader["Unbal_Src_Cell_Buffer"].ToString();
-                    //			                string unbal_srcBufferFilter = unbal_srcreader["Buffer_Filter"].ToString();
+                    //			                string unbal_srcBufferFilter = unbal_srcreader["BufferFilter"].ToString();
                     //			                string bufferName = $"SrcBuffer{index}";
 
                     //			                // Dynamically create and store the data buffer
@@ -1238,7 +1238,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 }
 
                 var os_Curr_Cube_Buffer = destrow["OS_Curr_Cube_Buffer_Filter"].ToString();
-                var Buffer = destrow["Buffer_Filter"].ToString();
+                var Buffer = destrow["BufferFilter"].ToString();
 
                 //BRApi.ErrorLog.LogMessage(si, "balBufferCalc: " + bal_buffer_calc + " srcbuff: " + Buffer);
                 //BRApi.ErrorLog.LogMessage(si, "entity: " + api.Pov.Entity.Name + " time: " + api.Pov.Time.Name);
@@ -1270,7 +1270,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     //Call new function, pass in balBuffer_Cell and first unbal src row...  Build up calc string.  Run math  
                     var table = new DataTable();
 
-                    var expression = Unbal_Calc.Replace("BalancedBuffer", balBuffer_Cell.CellAmount.XFToString());
+                    var expression = UnbalCalc.Replace("BalancedBuffer", balBuffer_Cell.CellAmount.XFToString());
                     //If this is Dynamic Calc, then call Dyn Calc
                     for (int i = 2; i <= src_buffers; i++)
                     {
@@ -1280,7 +1280,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                             if (srcRow["Calc_Src_Type"].ToString() == "Dynamic Calc")
                             {
                                 var dyn_Calc = getdynamic_calc_value(balBuffer_Cell, srcRow);
-                                expression = Unbal_Calc.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
+                                expression = UnbalCalc.Replace($"DynamicCalc{i}", dyn_Calc.XFToString());
 
                             }
                             else if (srcRow["Calc_Src_Type"].ToString() == "Stored Cell")
@@ -1603,53 +1603,53 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Process the filtered cells
                 foreach (var unbal_Alloc_Buffer_Cell in filtered_Cells)
                 {
-                    if (srcRow["Override_Value"] != DBNull.Value)
+                    if (srcRow["OverrideValue"] != DBNull.Value)
                     {
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("A#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("A#"))
                         {
                             acct = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetAccountName(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("O#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("O#"))
                         {
                             origin = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetOriginName(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("F#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("F#"))
                         {
                             flow = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetFlowName(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("IC#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("I#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("IC#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("I#"))
                         {
                             ic = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetICName(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("U1#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("UD1#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("U1#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("UD1#"))
                         {
                             ud1 = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetUD1Name(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("U2#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("UD2#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("U2#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("UD2#"))
                         {
                             ud2 = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetUD2Name(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("U3#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("UD3#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("U3#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("UD3#"))
                         {
                             ud3 = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetUD3Name(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("U4#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("UD4#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("U4#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("UD4#"))
                         {
                             ud4 = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetUD4Name(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("U5#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("UD5#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("U5#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("UD5#"))
                         {
                             ud5 = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetUD5Name(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("U6#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("UD6#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("U6#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("UD6#"))
                         {
                             ud6 = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetUD6Name(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("U7#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("UD7#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("U7#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("UD7#"))
                         {
                             ud7 = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetUD7Name(api);
                         }
-                        if (srcRow["Override_Value"].ToString().XFContainsIgnoreCase("U8#") || srcRow["Override_Value"].ToString().XFContainsIgnoreCase("UD8#"))
+                        if (srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("U8#") || srcRow["OverrideValue"].ToString().XFContainsIgnoreCase("UD8#"))
                         {
                             ud8 = unbal_Alloc_Buffer_Cell.DataBufferCellPk.GetUD8Name(api);
                         }
