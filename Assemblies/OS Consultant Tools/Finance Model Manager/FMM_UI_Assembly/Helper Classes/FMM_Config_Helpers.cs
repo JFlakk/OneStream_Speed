@@ -39,157 +39,116 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
 						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
 						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDim_Alloc" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_MbrListCalc", "MbrList_Calc" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList1Calc", "MbrList_1_Calc" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList1DimType", "MbrList_1_DimType" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList1Dim", "MbrList_1_Dim" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList1Filter", "MbrList_1_Filter" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList2Calc", "MbrList_2_Calc" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList2DimType", "MbrList_2_DimType" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList2Dim", "MbrList_2_Dim" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList2Filter", "MbrList_2_Filter" } } },
-						{ 14, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList3Calc", "MbrList_3_Calc" } } },
-						{ 15, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList3DimType", "MbrList_3_DimType" } } },
-						{ 16, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList3Dim", "MbrList_3_Dim" } } },
-						{ 17, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList3Filter", "MbrList_3_Filter" } } },
-						{ 18, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList4Calc", "MbrList_4_Calc" } } },
-						{ 19, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList4DimType", "MbrList_4_DimType" } } },
-						{ 20, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList4Dim", "MbrList_4_Dim" } } },
-						{ 21, new Dictionary<string, string> { { "IV_FMM_Calc_MbrList4Filter", "MbrList_4_Filter" } } }
+						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.Cube] = new CalcConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Cons", "Cons" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_View", "View" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Acct", "Acct" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Flow", "Flow" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_IC", "IC" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Origin", "Origin" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD1", "UD1" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD2", "UD2" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD3", "UD3" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD4", "UD4" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD5", "UD5" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD6", "UD6" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD7", "UD7" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD8", "UD8" } } },
-						{ 14, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Time_Filter", "Time_Filter" } } },
-						{ 15, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Acct_Filter", "Acct_Filter" } } },
-						{ 16, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Flow_Filter", "Flow_Filter" } } },
-						{ 17, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_IC_Filter", "IC_Filter" } } },
-						{ 18, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Origin_Filter", "Origin_Filter" } } },
-						{ 19, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD1_Filter", "UD1_Filter" } } },
-						{ 20, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD2_Filter", "UD2_Filter" } } },
-						{ 21, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD3_Filter", "UD3_Filter" } } },
-						{ 22, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD4_Filter", "UD4_Filter" } } },
-						{ 23, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD5_Filter", "UD5_Filter" } } },
-						{ 24, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD6_Filter", "UD6_Filter" } } },
-						{ 25, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD7_Filter", "UD7_Filter" } } },
-						{ 26, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD8_Filter", "UD8_Filter" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.BRTabletoCube] = new CalcConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "DL_FMM_Calc_Src_CubeType", "DB_Name" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Src_OpenParen", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_MathOperator", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Entity", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Cons", "DB_Name" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Scenario", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Time", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Origin", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_IC", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_View", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Flow", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD1", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD2", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD3", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD4", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD5", "DB_Name" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD6", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD7", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD8", "DB_Name" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.ImportTabletoCube] = new CalcConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "DL_FMM_Calc_Src_CubeType", "DB_Name" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Src_OpenParen", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_MathOperator", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Entity", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Cons", "DB_Name" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Scenario", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Time", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Origin", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_IC", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_View", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Flow", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD1", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD2", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD3", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD4", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD5", "DB_Name" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD6", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD7", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD8", "DB_Name" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.CubetoTable] = new CalcConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "DL_FMM_Calc_Src_CubeType", "DB_Name" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Src_OpenParen", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_MathOperator", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Entity", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Cons", "DB_Name" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Scenario", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Time", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Origin", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_IC", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_View", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Flow", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD1", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD2", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD3", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD4", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD5", "DB_Name" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD6", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD7", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD8", "DB_Name" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.Consolidate] = new CalcConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "DL_FMM_Calc_Src_CubeType", "DB_Name" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Src_OpenParen", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_MathOperator", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Entity", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Cons", "DB_Name" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Scenario", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Time", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Origin", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_IC", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_View", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_Flow", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD1", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD2", "DB_Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD3", "DB_Name" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD4", "DB_Name" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD5", "DB_Name" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD6", "DB_Name" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD7", "DB_Name" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Src_UD8", "DB_Name" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
 					}
 				}
 			};
@@ -209,7 +168,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
+						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Location", "Sequence" } } },
 						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
 						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
 						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
@@ -260,38 +219,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDim_Alloc" } } }
+
 					}
 				},
 				[CalcType.Cube] = new SrcConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Cons", "Cons" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_View", "View" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Acct", "Acct" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Flow", "Flow" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_IC", "IC" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Origin", "Origin" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD1", "UD1" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD2", "UD2" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD3", "UD3" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD4", "UD4" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD5", "UD5" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD6", "UD6" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD7", "UD7" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD8", "UD8" } } }
+
 					}
 				},
 				[CalcType.BRTabletoCube] = new SrcConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_DB_Name", "DB_Name" } } }
+
 					}
 				}
 			};
@@ -393,7 +335,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			return properties;
 		}
 
-		public List<FMM_Src_CellModel> BuildSrcCellModels(
+		public static List<FMM_Src_CellModel> BuildSrcCellModels(
 			IDictionary<string, string> customSubstVarsWithUserSelectedValues,
 			string componentId,
 			string dynamicSuffix,

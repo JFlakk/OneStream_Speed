@@ -46,9 +46,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             // Always include core identification and common fields
             columns.AddRange(new[] {
-                "CellID", "CubeID", "ActID", "ModelID", "CalcID", "Order",
-                "Type", "Item", "OpenParens", "MathOperator", "CloseParens",
-                "CreateDate", "CreateUser", "UpdateDate", "UpdateUser"
+                "CellID", "CubeID", "ActID", "ModelID", "CalcID",
+                "Type"
             });
 
             var srcConfig = FMM_Config_Helpers.Get_SrcConfigType(calcType);
@@ -118,8 +117,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
+                calcId = string.IsNullOrWhiteSpace(calcId.XFToString()) ? 0 : calcId;
                 var columns = GetSelectColumnsForCalcType(calcType);
-                string sql = $"SELECT {columns} FROM {this.TableName} WHERE CalcID = @calcID ORDER BY Src_Order";
+                string sql = $"SELECT {columns} FROM {this.TableName} WHERE CalcID = @calcID";
+                BRApi.ErrorLog.LogMessage(si, $"Hit {sql}");
 
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@calcID", calcId) };
 
@@ -173,16 +174,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
 
                     // Set primary key if Cell_ID column exists in the result set
-                    if (currentTable.Columns.Contains("Cell_ID") && currentTable.Columns["Cell_ID"] != null)
+                    if (currentTable.Columns.Contains("CellID") && currentTable.Columns["CellID"] != null)
                     {
-                        currentTable.PrimaryKey = new[] { currentTable.Columns["Cell_ID"]! };
+                        currentTable.PrimaryKey = new[] { currentTable.Columns["CellID"]! };
                     }
 
                     // Merge the new/updated records with existing data
                     // preserveChanges=false: Overwrite existing rows with new values (upsert behavior)
                     currentTable.Merge(mergeTable, false, MissingSchemaAction.Add);
 
-                    cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "Cell_ID");
+                    cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "CellID");
                 }
             }
             catch (Exception ex)
@@ -295,15 +296,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 ModelID = dr.Field<int>("ModelID"),
                 CalcID = dr.Field<int>("CalcID"),
                 CellID = dr.Field<int>("CellID"),
-                Src_Order = dr.Field<int?>("Src_Order") ?? 0,
-                Src_Type = dr.Field<string>("Src_Type") ?? string.Empty,
-                Src_Item = dr.Field<string>("Src_Item") ?? string.Empty,
-
-                // Audit fields
-                Create_Date = dr.Field<DateTime?>("Create_Date"),
-                Create_User = dr.Field<string>("Create_User"),
-                Update_Date = dr.Field<DateTime?>("Update_Date"),
-                Update_User = dr.Field<string>("Update_User")
+                Order = dr.Field<int?>("Order") ?? 0,
+                Type = dr.Field<string>("Type") ?? string.Empty,
+                ItemType = dr.Field<string>("ItemType") ?? string.Empty
             };
 
             // Set dimension fields only if they exist in the column set and are enabled
@@ -387,7 +382,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// </summary>
         public void Delete(FMM_Src_CellModel model)
         {
-            this.Delete(model.Src_Cell_ID);
+            this.Delete(model.CellID);
         }
 
         /// <summary>
@@ -424,16 +419,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     var selectColumns = GetSelectColumnsForCalcType(defaultCalcType);
                     if (!selectColumns.Split(',').Select(c => c.Trim()).Contains("Src_Cell_ID", StringComparer.OrdinalIgnoreCase))
                     {
-                        selectColumns = $"Src_Cell_ID, {selectColumns}";
+                        selectColumns = $"CellID, {selectColumns}";
                     }
 
                     var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE CalcID = @calcID";
                     var sqlparams = new[] { new SqlParameter("@calcID", SqlDbType.Int) { Value = CalcID } };
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
 
-                    if (currentTable.Columns.Contains("Src_Cell_ID"))
+                    if (currentTable.Columns.Contains("CellID"))
                     {
-                        currentTable.PrimaryKey = new[] { currentTable.Columns["Src_Cell_ID"]! };
+                        currentTable.PrimaryKey = new[] { currentTable.Columns["CellID"]! };
                     }
 
                     var now = DateTime.Now;
@@ -441,22 +436,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     // Create the starter row with minimal required fields
                     var row = currentTable.NewRow();
-                    SetColumnValue(row, "Src_Cell_ID", nextCellId);
+                    SetColumnValue(row, "CellID", nextCellId);
                     SetColumnValue(row, "CubeID", CubeID);
                     SetColumnValue(row, "ActID", ActID);
                     SetColumnValue(row, "ModelID", ModelID);
                     SetColumnValue(row, "CalcID", CalcID);
-                    SetColumnValue(row, "Src_Order", 1);
-                    SetColumnValue(row, "Src_Type", string.Empty);
-                    SetColumnValue(row, "Src_Item", string.Empty);
-                    SetColumnValue(row, "Create_Date", now);
-                    SetColumnValue(row, "Create_User", user);
-                    SetColumnValue(row, "Update_Date", now);
-                    SetColumnValue(row, "Update_User", user);
+                    SetColumnValue(row, "Order", 1);
+                    SetColumnValue(row, "Type", string.Empty);
+                    SetColumnValue(row, "ItemType", string.Empty);
 
                     currentTable.Rows.Add(row);
 
-                    cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "Src_Cell_ID");
+                    cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "CellID");
                 }
             }
             catch (Exception ex)

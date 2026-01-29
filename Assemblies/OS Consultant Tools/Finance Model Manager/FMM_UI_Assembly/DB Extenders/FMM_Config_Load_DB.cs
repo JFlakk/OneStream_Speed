@@ -1,11 +1,12 @@
+
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Linq;
+using System.Text;
 using Microsoft.CSharp;
 using Microsoft.Data.SqlClient;
 using OneStream.Finance.Database;
@@ -25,18 +26,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         private string MainMenuParam = "DL_FMM_Setup_Options";
         private string CubeConfigSubMenuParam = "DL_FMM_Cube_Config_Options";
 
-        private string CubeConfigOpt = "0_FMM_Cube_Settings";
+        private string CubeConfigOpt = "FMM_Cube_Settings";
 
         private Dictionary<string, string> paramMap = new Dictionary<string, string>()
         {
-            {"BL_FMM_Setup_Cube_ID", "IV_FMM_Cube_ID"},
-            {"BL_FMM_Cube_ID", "IV_FMM_Cube_ID"},
-            {"BL_FMM_Table_Cube_ID", "IV_FMM_Cube_ID"},
-            {"BL_FMM_Act_ID", "IV_FMM_Act_ID"},
-            {"BL_FMM_Table_Act_ID", "IV_FMM_Act_ID"},
-            {"BL_FMM_Model_ID", "IV_FMM_Model_ID"},
-            {"BL_FMM_Model_Grp_Seq_ID", "IV_FMM_Model_Grp_Seq_ID"},
-            {"BL_FMM_Model_Grp_ID","IV_FMM_Model_Grp_ID"}
+            {"BL_FMM_Setup_CubeID", "IV_FMM_CubeID"},
+            {"BL_FMM_CubeID", "IV_FMM_CubeID"},
+            {"BL_FMM_Table_CubeID", "IV_FMM_CubeID"},
+            {"BL_FMM_ActID", "IV_FMM_ActID"},
+            {"BL_FMM_Table_ActID", "IV_FMM_ActID"},
+            {"BL_FMM_ModelID", "IV_FMM_ModelID"},
+            {"BL_FMM_ModelGrpSeqID", "IV_FMM_ModelGrpSeqID"},
+            {"BL_FMM_ModelGrpID","IV_FMM_ModelGrpID"}
         };
 
         // key string is dialog name, string array is list of IVs associated to textboxes that should be set to empty strings
@@ -54,76 +55,76 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         // dependency hierarchys per page
         private Dictionary<int, string[]> CubeConfig = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Setup_Cube_ID"}}
+            {0, new string[] {"BL_FMM_Setup_CubeID"}}
         };
 
         private Dictionary<int, string[]> ApprovalConfig = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Cube_ID"}},
-            {1, new string[] {"IV_FMM_Appr_ID"}}
+            {0, new string[] {"BL_FMM_CubeID"}},
+            {1, new string[] {"IV_FMM_ApprID"}}
         };
 
         private Dictionary<int, string[]> UnitAcctConfig = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Table_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Table_Act_ID"}},
-            {2, new string[] {"IV_FMM_Unit_ID"}}
+            {0, new string[] {"BL_FMM_Table_CubeID"}},
+            {1, new string[] {"BL_FMM_Table_ActID"}},
+            {2, new string[] {"IV_FMM_UnitID"}}
         };
 
         private Dictionary<int, string[]> RegisterConfig = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Table_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Table_Act_ID"}}
+            {0, new string[] {"BL_FMM_Table_CubeID"}},
+            {1, new string[] {"BL_FMM_Table_ActID"}}
         };
 
         private Dictionary<int, string[]> BuildModel = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Act_ID"}},
-            {2, new string[] {"BL_FMM_Model_ID"}},
-            {3, new string[] {"IV_FMM_Calc_ID"}}
+            {0, new string[] {"BL_FMM_CubeID"}},
+            {1, new string[] {"BL_FMM_ActID"}},
+            {2, new string[] {"BL_FMM_ModelID"}},
+            {3, new string[] {"BL_FMM_CalcID"}}
         };
 
         private Dictionary<int, string[]> BuildModelGroup = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Model_Grp_ID"}}
+            {0, new string[] {"BL_FMM_CubeID"}},
+            {1, new string[] {"BL_FMM_ModelGrpID"}}
         };
 
         private Dictionary<int, string[]> BuildModelGroupSeq = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Model_Grp_Seq_ID"}}
+            {0, new string[] {"BL_FMM_CubeID"}},
+            {1, new string[] {"BL_FMM_ModelGrpSeqID"}}
         };
 
         private Dictionary<int, string[]> AddCube = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_All_Cube_Names"}},
-            {1, new string[] {"BL_FMM_Scen_Types"}}
+            {1, new string[] {"BL_FMM_ScenTypes"}}
         };
 
         private Dictionary<int, string[]> CopyModel = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Src_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Src_Act_ID"}},
-            {2, new string[] {"BL_FMM_Src_Model_ID"}},
-            {3, new string[] {"BL_FMM_Src_Calc_IDs"}},
-            {4, new string[] {"BL_FMM_Tgt_Cube_ID"}},
-            {5, new string[] {"BL_FMM_Tgt_Act_ID"}},
-            {6, new string[] {"BL_FMM_Tgt_Model_ID"}}
+            {0, new string[] {"BL_FMM_Src_CubeID"}},
+            {1, new string[] {"BL_FMM_Src_ActID"}},
+            {2, new string[] {"BL_FMM_Src_ModelID"}},
+            {3, new string[] {"BL_FMM_Src_CalcIDs"}},
+            {4, new string[] {"BL_FMM_Tgt_CubeID"}},
+            {5, new string[] {"BL_FMM_Tgt_ActID"}},
+            {6, new string[] {"BL_FMM_Tgt_ModelID"}}
         };
 
         private Dictionary<int, string[]> UpdateModel = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Act_ID"}},
-            {2, new string[] {"BL_FMM_Model_ID"}},
+            {0, new string[] {"BL_FMM_CubeID"}},
+            {1, new string[] {"BL_FMM_ActID"}},
+            {2, new string[] {"BL_FMM_ModelID"}},
         };
 
         private Dictionary<int, string[]> UpdateModelGroup = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Cube_ID"}},
-            {1, new string[] {"BL_FMM_Model_ID"}},
+            {0, new string[] {"BL_FMM_CubeID"}},
+            {1, new string[] {"BL_FMM_ModelID"}},
         };
 
         #region "Global Variables"
@@ -136,16 +137,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
             //setup HierarchyDict
-            HierarchyDict.Add("0_FMM_Cube_Config", CubeConfig);
-            HierarchyDict.Add("0_FMM_Unit_and_Acct_Config", UnitAcctConfig);
-            HierarchyDict.Add("0_FMM_Appr_Config", ApprovalConfig);
-            HierarchyDict.Add("0_FMM_Reg_Col_Config", RegisterConfig);
-            HierarchyDict.Add("0_FMM_Model", BuildModel);
-            HierarchyDict.Add("0_FMM_Model_Grp", BuildModelGroup);
-            HierarchyDict.Add("0_FMM_Model_Grp_Seq", BuildModelGroupSeq);
+            HierarchyDict.Add("FMM_Cube_Config", CubeConfig);
+            HierarchyDict.Add("FMM_Unit_and_Acct_Config", UnitAcctConfig);
+            HierarchyDict.Add("FMM_Appr_Config", ApprovalConfig);
+            HierarchyDict.Add("FMM_Reg_Col_Config", RegisterConfig);
+            HierarchyDict.Add("FMM_Model", BuildModel);
+            HierarchyDict.Add("FMM_Model_Grp", BuildModelGroup);
+            HierarchyDict.Add("FMM_ModelGrpSeq", BuildModelGroupSeq);
 
             // setup dialogs for hierarchy dict
-            HierarchyDict.Add("2_FMM_Model_Dialog_Copy", CopyModel);
+            HierarchyDict.Add("FMM_Model_Dialog_Copy", CopyModel);
             HierarchyDict.Add("1_FMM_Cube_Config_Dialog_Add", AddCube);
             HierarchyDict.Add("3_FMM_Model_Dialog_Update", UpdateModel); // Need to make sure all items on the dialog are set to refresh the dashboard AND dialog to make sure information is reloaded appropriately
                                                                          //			HierarchyDict.Add("1_FMM_Register_Col_Config_Copy", CopyRegisterConfig); // TODO: Based on requirements for copy, add a new dictionary above
@@ -167,7 +168,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         if (args.FunctionName.XFEqualsIgnoreCase("Load_FMM_Dashboard"))
                         {
                             var load_Dashboard_Task_Result = Load_Dashboard("", ref args);
-	                        return load_Dashboard_Task_Result;
+                            return load_Dashboard_Task_Result;
                         }
                         break;
                 }
@@ -217,12 +218,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sql = @"
 				       	SELECT *
 				    	FROM FMM_Cube_Config
-						WHERE Cube_ID = @Cube_ID";
+						WHERE CubeID = @CubeID";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
-                        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt32(Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Cube_ID"))}
+                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = Convert.ToInt32(Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_CubeID"))}
                     };
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cube_Settings_DT, sql, sqlparams);
@@ -246,7 +247,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             else
             {
-                BRApi.ErrorLog.LogMessage(si, "No Cube_ID likely");
+                BRApi.ErrorLog.LogMessage(si, "No CubeID likely");
                 XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Cube", string.Empty);
                 XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Scen_Type", string.Empty);
                 XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.Add("IV_FMM_Entity_MFB", string.Empty);
@@ -282,15 +283,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 								        	SELECT Calc_Type
 								       		FROM FMM_Cube_Config Con
 											JOIN FMM_Act_Config Act
-											ON Con.Cube_ID = Act.Cube_ID
-											WHERE Con.Cube_ID = @Cube_ID
-											AND Act.Act_ID = @Act_ID";
+											ON Con.CubeID = Act.CubeID
+											WHERE Con.CubeID = @CubeID
+											AND Act.ActID = @ActID";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
-                        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Cube_ID","0"))},
-                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Act_ID","0"))}
+                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_CubeID","0"))},
+                        new SqlParameter("@ActID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ActID","0"))}
                     };
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, calc_Type_DT, sql, sqlparams);
@@ -325,8 +326,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
 
-            //			DashboardParamDisplayInfo paramInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, taskResult.ModifiedCustomSubstVars, args.PrimaryDashboard.WorkspaceID, "BL_FMM_Model_ID");
-            //			string modelID = taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Model_ID");
+            //			DashboardParamDisplayInfo paramInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, taskResult.ModifiedCustomSubstVars, args.PrimaryDashboard.WorkspaceID, "BL_FMM_ModelID");
+            //			string modelID = taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ModelID");
             //			BRApi.ErrorLog.LogMessage(si, "model ID: " + modelID);
 
             //			if (paramInfo?.ComboBoxItemsForBoundList?.Count > 0) {
@@ -340,9 +341,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             try
             {
-                cubeID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Cube_ID"));
-                activityID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Act_ID"));
-                modelID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_Model_ID"));
+                cubeID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_CubeID"));
+                activityID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ActID"));
+                modelID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ModelID"));
             }
             catch
             {
@@ -362,16 +363,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sql = @"
 				       	SELECT *
 				    	FROM FMM_Models
-						WHERE Cube_ID = @Cube_ID
-						AND Act_ID = @Act_ID
-						AND Model_ID = @Model_ID";
+						WHERE CubeID = @CubeID
+						AND ActID = @ActID
+						AND ModelID = @ModelID";
 
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
-                        new SqlParameter("@Cube_ID", SqlDbType.Int) { Value = cubeID},
-                        new SqlParameter("@Act_ID", SqlDbType.Int) { Value = activityID},
-                        new SqlParameter("@Model_ID", SqlDbType.Int) { Value = modelID},
+                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = cubeID},
+                        new SqlParameter("@ActID", SqlDbType.Int) { Value = activityID},
+                        new SqlParameter("@ModelID", SqlDbType.Int) { Value = modelID},
 
                     };
 
@@ -459,7 +460,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             //TODO: check selectedDashboard based on different higher level menu other than DL_FMM_Cube_Config_Options
             string DialogSelection = args.PrimaryDashboard.Name;
-			BRApi.ErrorLog.LogMessage(si,DialogSelection);
+            BRApi.ErrorLog.LogMessage(si, DialogSelection);
 
             string MainMenuSelection = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) != string.Empty ? args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) : args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue(MainMenuParam);
 
@@ -476,9 +477,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var PRCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun;
 
             //			BRApi.ErrorLog.LogMessage(si, "Key count: " + taskResult.ModifiedCustomSubstVars.Keys.Count);
-            			foreach(string param in taskResult.ModifiedCustomSubstVars.Keys) {
-            				BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
-            			}
+            foreach (string param in taskResult.ModifiedCustomSubstVars.Keys)
+            {
+                BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
+            }
 
 
             if (HierarchyDict.ContainsKey(selectedDashboard))
@@ -489,9 +491,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     foreach (string param in tempDependencyDict[dependencyDepth])
                     {
-                        						BRApi.ErrorLog.LogMessage(si, "searching for: " + param + selectedDashboard);
-                        						BRApi.ErrorLog.LogMessage(si, "AR: " + ARCustomSubst.XFGetValue(param) + " " + (ARCustomSubst.XFGetValue(param) == string.Empty).ToString());
-                        						BRApi.ErrorLog.LogMessage(si, "PR: " + PRCustomSubst.XFGetValue(param) + " " + (PRCustomSubst.XFGetValue(param) == string.Empty).ToString());
+                        BRApi.ErrorLog.LogMessage(si, "searching for: " + param + selectedDashboard);
+                        BRApi.ErrorLog.LogMessage(si, "AR: " + ARCustomSubst.XFGetValue(param) + " " + (ARCustomSubst.XFGetValue(param) == string.Empty).ToString());
+                        BRApi.ErrorLog.LogMessage(si, "PR: " + PRCustomSubst.XFGetValue(param) + " " + (PRCustomSubst.XFGetValue(param) == string.Empty).ToString());
 
                         bool ARContainsKey = ARCustomSubst.ContainsKey(param);
                         bool PRContainsKey = PRCustomSubst.ContainsKey(param);
@@ -566,20 +568,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     UpdateCustomSubstVar(ref taskResult, mappedParam, paramDefault);
 
                                     //set defaults
-                                    if (mappedParam == "IV_FMM_Cube_ID" && selectedDashboard == "0_FMM_Cube_Config")
+                                    if (mappedParam == "IV_FMM_CubeID" && selectedDashboard == "FMM_Cube_Config")
                                     {
                                         Load_Cube_Settings(taskResult);
                                     }
-                                    if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "0_FMM_Model")
+                                    if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "FMM_Model")
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
-                                    if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
+                                    if (mappedParam == "IV_FMM_ActID" && selectedDashboard == "FMM_Appr_Config")
                                     {
                                         Get_Calc_Type(taskResult);
                                     }
 
-                                    if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "3_FMM_Model_Dialog_Update")
+                                    if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "3_FMM_Model_Dialog_Update")
                                     {
                                         setupUpdateModelDialog(ref taskResult);
                                     }
@@ -587,19 +589,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 }
 
                                 //if a prior dependency change was detected as part of this loop, update the corresponding defaults
-                                if (mappedParam == "IV_FMM_Cube_ID" && selectedDashboard == "0_FMM_Cube_Config" && priorDependencyChanged)
+                                if (mappedParam == "IV_FMM_CubeID" && selectedDashboard == "FMM_Cube_Config" && priorDependencyChanged)
                                 {
                                     Load_Cube_Settings(taskResult);
                                 }
-                                if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "0_FMM_Model" && priorDependencyChanged)
+                                if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "FMM_Model" && priorDependencyChanged)
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
-                                if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config" && priorDependencyChanged)
+                                if (mappedParam == "IV_FMM_ActID" && selectedDashboard == "FMM_Appr_Config" && priorDependencyChanged)
                                 {
                                     Get_Calc_Type(taskResult);
                                 }
-                                if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "3_FMM_Model_Dialog_Update" && priorDependencyChanged)
+                                if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "3_FMM_Model_Dialog_Update" && priorDependencyChanged)
                                 {
                                     setupUpdateModelDialog(ref taskResult);
                                 }
@@ -635,19 +637,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             UpdateCustomSubstVar(ref taskResult, mappedParam, paramDefault);
 
                             // if a dependency changed and there's a mapped param, make sure the associated information is updated to defaults
-                            if (mappedParam == "IV_FMM_Cube_ID" && selectedDashboard == "0_FMM_Cube_Config")
+                            if (mappedParam == "IV_FMM_CubeID" && selectedDashboard == "FMM_Cube_Config")
                             {
                                 Load_Cube_Settings(taskResult);
                             }
-                            if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "0_FMM_Model")
+                            if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "FMM_Model")
                             {
                                 Get_Calc_Type(taskResult);
                             }
-                            if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
+                            if (mappedParam == "IV_FMM_ActID" && selectedDashboard == "FMM_Appr_Config")
                             {
                                 Get_Calc_Type(taskResult);
                             }
-                            if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "3_FMM_Model_Dialog_Update")
+                            if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "3_FMM_Model_Dialog_Update")
                             {
                                 setupUpdateModelDialog(ref taskResult);
                             }

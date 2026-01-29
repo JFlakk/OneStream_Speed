@@ -29,7 +29,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public FMM_Src_CellModel(IEnumerable<string> enabledDimensions)
         {
-            Type = Item = OpenParens = MathOperator = CloseParens = string.Empty;
+            Type = OpenParens = MathOperator = CloseParens = string.Empty;
             Entity = Cons = Scenario = Time = View = Acct = IC = Origin = Flow = string.Empty;
             UD1 = UD2 = UD3 = UD4 = UD5 = UD6 = UD7 = UD8 = string.Empty;
 
@@ -46,7 +46,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public int Order { get; set; }
 
         public string Type { get; set; }
-        public string Item { get; set; }
+        public string ItemType { get; set; }
         public string OpenParens { get; set; }
         public string MathOperator { get; set; }
         public string CloseParens { get; set; }

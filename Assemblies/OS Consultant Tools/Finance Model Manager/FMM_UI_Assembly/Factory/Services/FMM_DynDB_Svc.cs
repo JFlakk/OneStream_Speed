@@ -48,7 +48,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                             // Always add Cell_ID as the primary identifier
                             nextLevelTemplateSubstVarsToAdd["CellID"] = cellModel.CellID.ToString();
                             nextLevelTemplateSubstVarsToAdd["CalcID"] = cellModel.CalcID.ToString();
-                            nextLevelTemplateSubstVarsToAdd["Order"] = cellModel.Order.ToString();
+                            //nextLevelTemplateSubstVarsToAdd["Order"] = cellModel.Order.ToString();
 
                             // Add enabled properties from configuration
                             foreach (var propName in enabledProperties)
@@ -128,7 +128,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                             }
 
                             repeatArgs.Add(new WsDynamicComponentRepeatArgs(
-                                cellModel.Src_Cell_ID.ToString(),
+                                cellModel.CellID.ToString(),
                                 nextLevelTemplateSubstVarsToAdd));
                         }
 
