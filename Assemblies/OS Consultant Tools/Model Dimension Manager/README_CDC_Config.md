@@ -133,7 +133,7 @@ The Dashboard Extender provides save/update functionality for CDC configurations
 - **Operations Supported**:
   - **Insert**: Creates new CDC configuration with auto-generated CDC_Config_ID
   - **Update**: Updates existing CDC configuration with audit trail
-  - **Delete**: Removes CDC configuration (cascade deletes detail records)
+  - **Delete**: Removes CDC configuration (detail records are cascade-deleted via database FK constraint)
 - **Features**:
   - Automatic ID generation using `SQL_GBL_Get_Max_ID` for new records
   - Audit field population (Create_Date, Create_User, Update_Date, Update_User)

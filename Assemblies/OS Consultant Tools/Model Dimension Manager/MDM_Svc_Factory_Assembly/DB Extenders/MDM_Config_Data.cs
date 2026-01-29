@@ -133,7 +133,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				using (var connection = new SqlConnection(dbConnApp.ConnectionString))
 				{
 					connection.Open();
-					var cmdBuilder = new SQA_GBL_Command_Builder(si, connection);
+					var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
 					var sqa = new SqlDataAdapter();
 					var MDM_CDC_Config_DT = new DataTable();
 
@@ -149,7 +149,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
 						{
 							// Get the next ID for new records
-							var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
+							var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
 							CDC_Config_ID = sql_gbl_get_max_id.Get_Max_ID(si, "MDM_CDC_Config", "CDC_Config_ID");
 
 							var new_config_Row = MDM_CDC_Config_DT.NewRow();
@@ -236,7 +236,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 				using (var connection = new SqlConnection(dbConnApp.ConnectionString))
 				{
 					connection.Open();
-					var cmdBuilder = new SQA_GBL_Command_Builder(si, connection);
+					var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
 					var sqa = new SqlDataAdapter();
 					var MDM_CDC_Config_Detail_DT = new DataTable();
 
@@ -267,7 +267,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 						if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
 						{
 							// Get the next detail ID for new records
-							var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
+							var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
 							CDC_Config_Detail_ID = sql_gbl_get_max_id.Get_Max_ID(si, "MDM_CDC_Config_Detail", "CDC_Config_Detail_ID");
 
 							var new_detail_Row = MDM_CDC_Config_Detail_DT.NewRow();
@@ -316,7 +316,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					}
 
 					// Update the database
-					cmdBuilder.UpdateTableSimple(si, "MDM_CDC_Config_Detail", MDM_CDC_Config_Detail_DT, sqa, "CDC_Config_ID", "CDC_Config_Detail_ID");
+					cmdBuilder.UpdateTableComposite(si, "MDM_CDC_Config_Detail", MDM_CDC_Config_Detail_DT, sqa, "CDC_Config_ID", "CDC_Config_Detail_ID");
 				}
 
 				save_Result.IsOK = true;
