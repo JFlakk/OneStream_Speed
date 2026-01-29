@@ -50,128 +50,128 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             using (SqlTransaction transaction = _connection.BeginTransaction())
             {
                 var insertQuery = @"INSERT INTO RegPlan (
-                        RegPlan_ID, WFScenario_Name, WFProfile_Name, WFTime_Name, ActID, Entity, Appr_Level_ID, 
-                        Reg_ID_1, Reg_ID_2, Reg_ID, Attr_1, Attr_2, Attr_3, Attr_4, Attr_5, 
-                        Attr_6, Attr_7, Attr_8, Attr_9, Attr_10, Attr_11, Attr_12, Attr_13, Attr_14, 
-                        Attr_15, Attr_16, Attr_17, Attr_18, Attr_19, Attr_20, Attr_Val_1, Attr_Val_2, 
-                        Attr_Val_3, Attr_Val_4, Attr_Val_5, Attr_Val_6, Attr_Val_7, Attr_Val_8, Attr_Val_9, 
-                        Attr_Val_10, Attr_Val_11, Attr_Val_12, Date_Val_1, Date_Val_2, Date_Val_3, Date_Val_4, Date_Val_5, 
-                        Spread_Amount, Spread_Curve, Status, Invalid, Create_Date, Create_User, Update_Date, Update_User
+                        RegPlanID, WFScenarioName, WFProfileName, WFTimeName, ActID, Entity, ApprLevelID, 
+                        RegID1, RegID2, RegID, Attr1, Attr2, Attr3, Attr4, Attr5, 
+                        Attr6, Attr7, Attr8, Attr9, Attr10, Attr11, Attr12, Attr13, Attr14, 
+                        Attr15, Attr16, Attr17, Attr18, Attr19, Attr20, AttrVal1, AttrVal2, 
+                        AttrVal3, AttrVal4, AttrVal5, AttrVal6, AttrVal7, AttrVal8, AttrVal9, 
+                        AttrVal10, AttrVal11, AttrVal12, DateVal1, DateVal2, DateVal3, DateVal4, DateVal5, 
+                        SpreadAmount, SpreadCurve, Status, Invalid, CreateDate, CreateUser, UpdateDate, UpdateUser
                     ) VALUES (
-                        @RegPlan_ID, @WFScenario_Name, @WFProfile_Name, @WFTime_Name, @ActID,@Entity, @Appr_Level_ID, 
-                        @Reg_ID_1, @Reg_ID_2, @Reg_ID, @Attr_1, @Attr_2, @Attr_3, @Attr_4, @Attr_5, 
-                        @Attr_6, @Attr_7, @Attr_8, @Attr_9, @Attr_10, @Attr_11, @Attr_12, @Attr_13, @Attr_14, 
-                        @Attr_15, @Attr_16, @Attr_17, @Attr_18, @Attr_19, @Attr_20, @Attr_Val_1, @Attr_Val_2, 
-                        @Attr_Val_3, @Attr_Val_4, @Attr_Val_5, @Attr_Val_6, @Attr_Val_7, @Attr_Val_8, @Attr_Val_9, 
-                        @Attr_Val_10, @Attr_Val_11, @Attr_Val_12, @Date_Val_1, @Date_Val_2, @Date_Val_3, @Date_Val_4, @Date_Val_5, 
-                        @Spread_Amount, @Spread_Curve, @Status, @Invalid, @Create_Date, @Create_User, @Update_Date, @Update_User)";
+                        @RegPlanID, @WFScenarioName, @WFProfileName, @WFTimeName, @ActID,@Entity, @ApprLevelID, 
+                        @RegID1, @RegID2, @RegID, @Attr1, @Attr2, @Attr3, @Attr4, @Attr5, 
+                        @Attr6, @Attr7, @Attr8, @Attr9, @Attr10, @Attr11, @Attr12, @Attr13, @Attr14, 
+                        @Attr15, @Attr16, @Attr17, @Attr18, @Attr19, @Attr20, @AttrVal1, @AttrVal2, 
+                        @AttrVal3, @AttrVal4, @AttrVal5, @AttrVal6, @AttrVal7, @AttrVal8, @AttrVal9, 
+                        @AttrVal10, @AttrVal11, @AttrVal12, @DateVal1, @DateVal2, @DateVal3, @DateVal4, @DateVal5, 
+                        @SpreadAmount, @SpreadCurve, @Status, @Invalid, @CreateDate, @CreateUser, @UpdateDate, @UpdateUser)";
 
                 sqa.InsertCommand = new SqlCommand(insertQuery, _connection, transaction);
-                sqa.InsertCommand.Parameters.Add("@RegPlan_ID", SqlDbType.UniqueIdentifier).SourceColumn = "RegPlan_ID";
-                sqa.InsertCommand.Parameters.Add("@WFScenario_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFScenario_Name";
-                sqa.InsertCommand.Parameters.Add("@WFProfile_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFProfile_Name";
-                sqa.InsertCommand.Parameters.Add("@WFTime_Name", SqlDbType.NVarChar, 100).SourceColumn = "WFTime_Name";
+                sqa.InsertCommand.Parameters.Add("@RegPlanID", SqlDbType.UniqueIdentifier).SourceColumn = "RegPlanID";
+                sqa.InsertCommand.Parameters.Add("@WFScenarioName", SqlDbType.NVarChar, 100).SourceColumn = "WFScenarioName";
+                sqa.InsertCommand.Parameters.Add("@WFProfileName", SqlDbType.NVarChar, 100).SourceColumn = "WFProfileName";
+                sqa.InsertCommand.Parameters.Add("@WFTimeName", SqlDbType.NVarChar, 100).SourceColumn = "WFTimeName";
                 sqa.InsertCommand.Parameters.Add("@ActID", SqlDbType.Int).SourceColumn = "ActID";
                 sqa.InsertCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
-                sqa.InsertCommand.Parameters.Add("@Appr_Level_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Appr_Level_ID";
-                sqa.InsertCommand.Parameters.Add("@Reg_ID_1", SqlDbType.Int).SourceColumn = "Reg_ID_1";
-                sqa.InsertCommand.Parameters.Add("@Reg_ID_2", SqlDbType.Int).SourceColumn = "Reg_ID_2";
-                sqa.InsertCommand.Parameters.Add("@Reg_ID", SqlDbType.NVarChar, 100).SourceColumn = "Reg_ID";
+                sqa.InsertCommand.Parameters.Add("@ApprLevelID", SqlDbType.UniqueIdentifier).SourceColumn = "ApprLevelID";
+                sqa.InsertCommand.Parameters.Add("@RegID1", SqlDbType.Int).SourceColumn = "RegID1";
+                sqa.InsertCommand.Parameters.Add("@RegID2", SqlDbType.Int).SourceColumn = "RegID2";
+                sqa.InsertCommand.Parameters.Add("@RegID", SqlDbType.NVarChar, 100).SourceColumn = "RegID";
                 // Add parameters for Attributes dynamically
                 for (int i = 1; i <= 20; i++)
                 {
-                    string parameterName = $"@Attr_{i}";
-                    string sourceColumnName = $"Attr_{i}";
+                    string parameterName = $"@Attr{i}";
+                    string sourceColumnName = $"Attr{i}";
                     sqa.InsertCommand.Parameters.Add(parameterName, SqlDbType.NVarChar, 100).SourceColumn = sourceColumnName;
                 }
 
                 // Add parameters for Attributes dynamically
                 for (int i = 1; i <= 12; i++)
                 {
-                    string parameterName = $"@Attr_Val_{i}";
-                    string sourceColumnName = $"Attr_Val_{i}";
+                    string parameterName = $"@AttrVal{i}";
+                    string sourceColumnName = $"AttrVal{i}";
                     sqa.InsertCommand.Parameters.Add(parameterName, SqlDbType.Decimal).SourceColumn = sourceColumnName;
                 }
                 // Add parameters for Attributes dynamically
                 for (int i = 1; i <= 5; i++)
                 {
-                    string parameterName = $"@Date_Val_{i}";
-                    string sourceColumnName = $"Date_Val_{i}";
+                    string parameterName = $"@DateVal{i}";
+                    string sourceColumnName = $"DateVal{i}";
                     sqa.InsertCommand.Parameters.Add(parameterName, SqlDbType.DateTime).SourceColumn = sourceColumnName;
                 }
 
                 // Add parameters for additional columns
-                sqa.InsertCommand.Parameters.Add("@Spread_Amount", SqlDbType.Decimal).SourceColumn = "Spread_Amount";
-                sqa.InsertCommand.Parameters.Add("@Spread_Curve", SqlDbType.NVarChar, 20).SourceColumn = "Spread_Curve";
+                sqa.InsertCommand.Parameters.Add("@SpreadAmount", SqlDbType.Decimal).SourceColumn = "SpreadAmount";
+                sqa.InsertCommand.Parameters.Add("@SpreadCurve", SqlDbType.NVarChar, 20).SourceColumn = "SpreadCurve";
                 sqa.InsertCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 100).SourceColumn = "Status";
 				sqa.InsertCommand.Parameters.Add("@Invalid", SqlDbType.Bit).SourceColumn = "Invalid";
 
-                sqa.InsertCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
-                sqa.InsertCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
-                sqa.InsertCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.InsertCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
+                sqa.InsertCommand.Parameters.Add("@CreateDate", SqlDbType.DateTime).SourceColumn = "CreateDate";
+                sqa.InsertCommand.Parameters.Add("@CreateUser", SqlDbType.NVarChar, 50).SourceColumn = "CreateUser";
+                sqa.InsertCommand.Parameters.Add("@UpdateDate", SqlDbType.DateTime).SourceColumn = "UpdateDate";
+                sqa.InsertCommand.Parameters.Add("@UpdateUser", SqlDbType.NVarChar, 50).SourceColumn = "UpdateUser";
 
                 var updateQuery = @"UPDATE RegPlan SET
-                        Entity = @Entity, Appr_Level_ID = @Appr_Level_ID, 
-                        Reg_ID_1 = @Reg_ID_1, Reg_ID_2 = @Reg_ID_2, Reg_ID = @Reg_ID, Attr_1 = @Attr_1, 
-                        Attr_2 = @Attr_2, Attr_3 = @Attr_3, Attr_4 = @Attr_4, Attr_5 = @Attr_5, 
-						Attr_6 = @Attr_6,Attr_7 = @Attr_7,Attr_8 = @Attr_8,Attr_9 = @Attr_9,
-    					Attr_10 = @Attr_10,Attr_11 = @Attr_11,Attr_12 = @Attr_12,Attr_13 = @Attr_13,
-    					Attr_14 = @Attr_14,Attr_15 = @Attr_15,Attr_16 = @Attr_16,Attr_17 = @Attr_17,
-    					Attr_18 = @Attr_18,Attr_19 = @Attr_19,Attr_20 = @Attr_20,Attr_Val_1 = @Attr_Val_1,
-    					Attr_Val_2 = @Attr_Val_2,Attr_Val_3 = @Attr_Val_3,Attr_Val_4 = @Attr_Val_4,
-                        Attr_Val_5 = @Attr_Val_5,Attr_Val_6 = @Attr_Val_6,Attr_Val_7 = @Attr_Val_7,
-  						Attr_Val_8 = @Attr_Val_8,Attr_Val_9 = @Attr_Val_9,Attr_Val_10 = @Attr_Val_10,
-    					Attr_Val_11 = @Attr_Val_11,Attr_Val_12 = @Attr_Val_12,Date_Val_1 = @Date_Val_1,
-    					Date_Val_2 = @Date_Val_2,Date_Val_3 = @Date_Val_3,Date_Val_4 = @Date_Val_4,Date_Val_5 = @Date_Val_5,
-    					Spread_Amount = @Spread_Amount,Spread_Curve = @Spread_Curve,Status = @Status,Invalid = @Invalid,
-                        Update_Date = @Update_Date, Update_User = @Update_User
-                    WHERE RegPlan_ID = @RegPlan_ID";
+                        Entity = @Entity, ApprLevelID = @ApprLevelID, 
+                        RegID1 = @RegID1, RegID2 = @RegID2, RegID = @RegID, Attr1 = @Attr1, 
+                        Attr2 = @Attr2, Attr3 = @Attr3, Attr4 = @Attr4, Attr5 = @Attr5, 
+						Attr6 = @Attr6,Attr7 = @Attr7,Attr8 = @Attr8,Attr9 = @Attr9,
+    					Attr10 = @Attr10,Attr11 = @Attr11,Attr12 = @Attr12,Attr13 = @Attr13,
+    					Attr14 = @Attr14,Attr15 = @Attr15,Attr16 = @Attr16,Attr17 = @Attr17,
+    					Attr18 = @Attr18,Attr19 = @Attr19,Attr20 = @Attr20,AttrVal1 = @AttrVal1,
+    					AttrVal2 = @AttrVal2,AttrVal3 = @AttrVal3,AttrVal4 = @AttrVal4,
+                        AttrVal5 = @AttrVal5,AttrVal6 = @AttrVal6,AttrVal7 = @AttrVal7,
+  						AttrVal8 = @AttrVal8,AttrVal9 = @AttrVal9,AttrVal10 = @AttrVal10,
+    					AttrVal11 = @AttrVal11,AttrVal12 = @AttrVal12,DateVal1 = @DateVal1,
+    					DateVal2 = @DateVal2,DateVal3 = @DateVal3,DateVal4 = @DateVal4,DateVal5 = @DateVal5,
+    					SpreadAmount = @SpreadAmount,SpreadCurve = @SpreadCurve,Status = @Status,Invalid = @Invalid,
+                        UpdateDate = @UpdateDate, UpdateUser = @UpdateUser
+                    WHERE RegPlanID = @RegPlanID";
 
                 sqa.UpdateCommand = new SqlCommand(updateQuery, _connection, transaction);
-                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@RegPlan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "RegPlan_ID", SourceVersion = DataRowVersion.Original });
+                sqa.UpdateCommand.Parameters.Add(new SqlParameter("@RegPlanID", SqlDbType.UniqueIdentifier) { SourceColumn = "RegPlanID", SourceVersion = DataRowVersion.Original });
                 sqa.UpdateCommand.Parameters.Add("@Entity", SqlDbType.NVarChar, 100).SourceColumn = "Entity";
-                sqa.UpdateCommand.Parameters.Add("@Appr_Level_ID", SqlDbType.UniqueIdentifier).SourceColumn = "Appr_Level_ID";
-                sqa.UpdateCommand.Parameters.Add("@Reg_ID_1", SqlDbType.Int).SourceColumn = "Reg_ID_1";
-                sqa.UpdateCommand.Parameters.Add("@Reg_ID_2", SqlDbType.Int).SourceColumn = "Reg_ID_2";
-                sqa.UpdateCommand.Parameters.Add("@Reg_ID", SqlDbType.NVarChar, 100).SourceColumn = "Reg_ID";
+                sqa.UpdateCommand.Parameters.Add("@ApprLevelID", SqlDbType.UniqueIdentifier).SourceColumn = "ApprLevelID";
+                sqa.UpdateCommand.Parameters.Add("@RegID1", SqlDbType.Int).SourceColumn = "RegID1";
+                sqa.UpdateCommand.Parameters.Add("@RegID2", SqlDbType.Int).SourceColumn = "RegID2";
+                sqa.UpdateCommand.Parameters.Add("@RegID", SqlDbType.NVarChar, 100).SourceColumn = "RegID";
                 // Add parameters for Attributes dynamically
                 for (int i = 1; i <= 20; i++)
                 {
-                    string parameterName = $"@Attr_{i}";
-                    string sourceColumnName = $"Attr_{i}";
+                    string parameterName = $"@Attr{i}";
+                    string sourceColumnName = $"Attr{i}";
                     sqa.UpdateCommand.Parameters.Add(parameterName, SqlDbType.NVarChar, 100).SourceColumn = sourceColumnName;
                 }
 
                 // Add parameters for Attributes dynamically
                 for (int i = 1; i <= 12; i++)
                 {
-                    string parameterName = $"@Attr_Val_{i}";
-                    string sourceColumnName = $"Attr_Val_{i}";
+                    string parameterName = $"@AttrVal{i}";
+                    string sourceColumnName = $"AttrVal{i}";
                     sqa.UpdateCommand.Parameters.Add(parameterName, SqlDbType.Decimal).SourceColumn = sourceColumnName;
                 }
                 // Add parameters for Attributes dynamically
                 for (int i = 1; i <= 5; i++)
                 {
-                    string parameterName = $"@Date_Val_{i}";
-                    string sourceColumnName = $"Date_Val_{i}";
+                    string parameterName = $"@DateVal{i}";
+                    string sourceColumnName = $"DateVal{i}";
                     sqa.UpdateCommand.Parameters.Add(parameterName, SqlDbType.DateTime).SourceColumn = sourceColumnName;
                 }
 
                 // Add parameters for additional columns
-                sqa.UpdateCommand.Parameters.Add("@Spread_Amount", SqlDbType.Decimal).SourceColumn = "Spread_Amount";
-                sqa.UpdateCommand.Parameters.Add("@Spread_Curve", SqlDbType.NVarChar, 20).SourceColumn = "Spread_Curve";
+                sqa.UpdateCommand.Parameters.Add("@SpreadAmount", SqlDbType.Decimal).SourceColumn = "SpreadAmount";
+                sqa.UpdateCommand.Parameters.Add("@SpreadCurve", SqlDbType.NVarChar, 20).SourceColumn = "SpreadCurve";
                 sqa.UpdateCommand.Parameters.Add("@Status", SqlDbType.NVarChar, 100).SourceColumn = "Status";
 
-                sqa.UpdateCommand.Parameters.Add("@Create_Date", SqlDbType.DateTime).SourceColumn = "Create_Date";
-                sqa.UpdateCommand.Parameters.Add("@Create_User", SqlDbType.NVarChar, 50).SourceColumn = "Create_User";
-                sqa.UpdateCommand.Parameters.Add("@Update_Date", SqlDbType.DateTime).SourceColumn = "Update_Date";
-                sqa.UpdateCommand.Parameters.Add("@Update_User", SqlDbType.NVarChar, 50).SourceColumn = "Update_User";
+                sqa.UpdateCommand.Parameters.Add("@CreateDate", SqlDbType.DateTime).SourceColumn = "CreateDate";
+                sqa.UpdateCommand.Parameters.Add("@CreateUser", SqlDbType.NVarChar, 50).SourceColumn = "CreateUser";
+                sqa.UpdateCommand.Parameters.Add("@UpdateDate", SqlDbType.DateTime).SourceColumn = "UpdateDate";
+                sqa.UpdateCommand.Parameters.Add("@UpdateUser", SqlDbType.NVarChar, 50).SourceColumn = "UpdateUser";
                 sqa.UpdateCommand.Parameters.Add("@Invalid", SqlDbType.Bit).SourceColumn = "Invalid";
 
-                string deleteQuery = "DELETE FROM RegPlan WHERE RegPlan_ID = @RegPlan_ID";
+                string deleteQuery = "DELETE FROM RegPlan WHERE RegPlanID = @RegPlanID";
                 sqa.DeleteCommand = new SqlCommand(deleteQuery, _connection, transaction);
-                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@RegPlan_ID", SqlDbType.UniqueIdentifier) { SourceColumn = "RegPlan_ID", SourceVersion = DataRowVersion.Original });
+                sqa.DeleteCommand.Parameters.Add(new SqlParameter("@RegPlanID", SqlDbType.UniqueIdentifier) { SourceColumn = "RegPlanID", SourceVersion = DataRowVersion.Original });
 
                 try
                 {
