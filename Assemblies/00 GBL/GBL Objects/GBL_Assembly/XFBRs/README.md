@@ -6,14 +6,24 @@ A parameterized global XFBR function that consolidates and simplifies databuffer
 
 ## Files in This Folder
 
-- **GBL_DataBuffer_Helper.vb** - Core implementation (424 lines)
-- **GBL_DataBuffer_Examples.vb** - 4 working examples (236 lines)
-- **GBL_DataBuffer_Helper_Documentation.md** - Complete reference guide
+### VB.NET Implementation
+- **GBL_DataBuffer_Helper.vb** - Core VB.NET implementation (424 lines)
+- **GBL_DataBuffer_Examples.vb** - 4 working VB.NET examples (236 lines)
+- **GBL_DataBuffer_Helper_Documentation.md** - Complete VB.NET reference guide
+
+### C# Implementation (New!)
+- **GBL_DataBuffer_Helper.cs** - Core C# implementation (511 lines)
+- **GBL_DataBuffer_Helper_CS_Documentation.md** - Complete C# reference guide
+
+### Other Files
+- **GBL_String_Helper.vb** - String utility functions
 - **README.md** - This file
 
 ## Quick Example
 
-### Before (Old Pattern)
+### VB.NET Example
+
+#### Before (Old Pattern)
 ```vb
 ' 125 lines of code with nested loops, manual filter building, 
 ' dimension manipulation, member transformations, etc.
@@ -22,7 +32,7 @@ Public Function Org_Totals_by_SAG() As Object
 End Function
 ```
 
-### After (New Pattern)
+#### After (New Pattern)
 ```vb
 ' 25 lines of declarative configuration
 Public Function Org_Totals_by_SAG() As Object
@@ -41,6 +51,31 @@ Public Function Org_Totals_by_SAG() As Object
     Return BRApi.Dashboards.StringFunctions.GetValue(si, 
         "GBL_DataBuffer_Helper", "GetDataBufferMembers", paramDict)
 End Function
+```
+
+### C# Example
+
+```csharp
+// Same pattern in C# - 25 lines of declarative configuration
+public string GetOrgTotalsBySAG()
+{
+    var paramDict = new Dictionary<string, string>
+    {
+        { "FilterExpression", "BUILD" },
+        { "Entity", args.NameValuePairs.XFGetValue("Entity", "") },
+        { "Scenario", args.NameValuePairs.XFGetValue("Scenario", "") },
+        { "Time", args.NameValuePairs.XFGetValue("Time", "") },
+        { "Account", "Req_Funding" },
+        { "ClearScenario", "True" },
+        { "ClearAccount", "True" },
+        { "TransformUD3", "U3_All_APE" },
+        { "TransformUD3Filter", ".Ancestors.Where(MemberDim = U3_SAG)" },
+        { "SortBy", "E#{entity},U3#{UD3}" }
+    };
+    
+    return BRApi.Dashboards.StringFunctions.GetValue(
+        si, "GBL_DataBuffer_Helper", "GetDataBufferMembers", paramDict);
+}
 ```
 
 ## Key Benefits
@@ -106,17 +141,38 @@ paramDict.Add("SortOrder", "Ascending")
 
 ## Getting Started
 
-1. **Review Examples**: Start with `GBL_DataBuffer_Examples.vb` for working code
-2. **Check Documentation**: See `GBL_DataBuffer_Helper_Documentation.md` for all parameters
-3. **Migrate Gradually**: Replace function internals while keeping signatures
-4. **Test Thoroughly**: Compare outputs with existing functions
+1. **Choose Your Language**: Use either VB.NET or C# version (both are functionally equivalent)
+2. **Review Examples**: Start with `GBL_DataBuffer_Examples.vb` for working VB.NET code
+3. **Check Documentation**: 
+   - VB.NET: `GBL_DataBuffer_Helper_Documentation.md`
+   - C#: `GBL_DataBuffer_Helper_CS_Documentation.md`
+4. **Migrate Gradually**: Replace function internals while keeping signatures
+5. **Test Thoroughly**: Compare outputs with existing functions
+
+## Language Comparison
+
+Both VB.NET and C# versions provide identical functionality:
+
+| Feature | VB.NET | C# |
+|---------|--------|-----|
+| Lines of Code | 424 | 511 |
+| Functionality | ✅ Complete | ✅ Complete |
+| Documentation | ✅ Yes | ✅ Yes |
+| Examples | ✅ Yes (VB.NET) | ✅ Yes (in docs) |
+| Performance | Same | Same |
+
+**Choose based on**:
+- Team language preference
+- Existing codebase language
+- Developer expertise
 
 ## Documentation
 
 For complete parameter reference, usage patterns, and migration guide:
-- **Full Documentation**: `GBL_DataBuffer_Helper_Documentation.md` (in this folder)
-- **Implementation Summary**: `DATABUFFER_IMPLEMENTATION_SUMMARY.md` (in repo root)
-- **Examples**: `GBL_DataBuffer_Examples.vb` (in this folder)
+- **VB.NET Documentation**: `GBL_DataBuffer_Helper_Documentation.md` (in this folder)
+- **C# Documentation**: `GBL_DataBuffer_Helper_CS_Documentation.md` (in this folder)
+- **Implementation Summary**: `DATABUFFER_CS_IMPLEMENTATION_SUMMARY.md` (in repo root)
+- **VB.NET Examples**: `GBL_DataBuffer_Examples.vb` (in this folder)
 
 ## Support
 
