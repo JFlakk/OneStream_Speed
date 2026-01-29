@@ -214,7 +214,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             var profileName = wfUnitInfo.ProfileName;
             var scenarioName = wfUnitInfo.ScenarioName;
             var timeName = wfUnitInfo.TimeName;
-            var modelID = g_modelID != -1 ? g_modelID : Convert.ToInt32(substVars.XFGetValue("Model_ID", "-1"));
+            var modelID = g_modelID != -1 ? g_modelID : Convert.ToInt32(substVars.XFGetValue("ModelID", "-1"));
             var activityID = g_activityID != -1 ? g_activityID : Convert.ToInt32(substVars.XFGetValue("Activity_ID", "-1"));
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -526,7 +526,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                                 new_Register_Plan_Details_Row["WF_Profile_Name"] = profileName;
                                 new_Register_Plan_Details_Row["WF_Time_Name"] = timeName;
                                 new_Register_Plan_Details_Row["Activity_ID"] = activityID;
-                                new_Register_Plan_Details_Row["Model_ID"] = modelID;
+                                new_Register_Plan_Details_Row["ModelID"] = modelID;
                                 new_Register_Plan_Details_Row["Entity"] = tvr.Items["Entity"]?.Value.ToString() ?? string.Empty;
                                 //new_Register_Plan_Details_Row["Approval_Level_ID"] = tvr.Items["Approval_Level_ID"].Value.ToString() != string.Empty ? tvr.Items["Approval_Level_ID"].Value.ToString() : approvLevelID; // might need to do Guid.Parse()
                                 new_Register_Plan_Details_Row["Approval_Level_ID"] = tvr.Items["Approval_Level_ID"].Value.ToString() != string.Empty ? tvr.Items["Approval_Level_ID"].Value.ToString() : string.Empty; // might need to do Guid.Parse()

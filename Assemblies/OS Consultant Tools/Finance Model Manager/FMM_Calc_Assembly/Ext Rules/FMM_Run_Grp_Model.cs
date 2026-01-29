@@ -45,28 +45,28 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                 // SQL query to fetch the required data based on the parameters passed
                 var calc_Model_SQL = @"
 		            SELECT Calc_Unit_Mod_Grp.Sequence Mod_Grp_Seq, Mod_Grps.Name Mod_Grp_Name, WF_DU.Entity_MFB Entity,
-		                   WF_DU.WFChannel, Mod_Grp_Assgn.Sequence Mod_Seq, Modl.Name, Act.Calc_Type, Calc_Unit_Mod_Grp.Cube_ID, Modl.Model_ID, CubeCon.Cube CubeName
+		                   WF_DU.WFChannel, Mod_Grp_Assgn.Sequence Mod_Seq, Modl.Name, Act.Calc_Type, Calc_Unit_Mod_Grp.CubeID, Modl.ModelID, CubeCon.Cube CubeName
 		            FROM FMM_Model_Grp_Seqs Mod_Grp_Seqs
 		            JOIN FMM_Calc_Unit_Assign_Model_Group Calc_Unit_Mod_Grp
 		            ON Mod_Grp_Seqs.Model_Grp_Seq_ID = Calc_Unit_Mod_Grp.Model_Grp_Seq_ID
-		            AND Mod_Grp_Seqs.Cube_ID = Calc_Unit_Mod_Grp.Cube_ID
+		            AND Mod_Grp_Seqs.CubeID = Calc_Unit_Mod_Grp.CubeID
 		            JOIN FMM_Model_Groups Mod_Grps
-		            ON Calc_Unit_Mod_Grp.Cube_ID = Mod_Grps.Cube_ID
+		            ON Calc_Unit_Mod_Grp.CubeID = Mod_Grps.CubeID
 		            AND Calc_Unit_Mod_Grp.Model_Grp_ID = Mod_Grps.Model_Grp_ID
-		            JOIN FMM_Calc_Unit_Config WF_DU
-		            ON Calc_Unit_Mod_Grp.Cube_ID = WF_DU.Cube_ID
-		            AND Calc_Unit_Mod_Grp.Calc_Unit_ID = WF_DU.Calc_Unit_ID
+		            JOIN FMM_CalcUnitConfig WF_DU
+		            ON Calc_Unit_Mod_Grp.CubeID = WF_DU.CubeID
+		            AND Calc_Unit_Mod_Grp.CalcUnitID = WF_DU.CalcUnitID
 		            JOIN FMM_Model_Grp_Assign_Model Mod_Grp_Assgn
-		            ON Mod_Grps.Cube_ID = Mod_Grp_Assgn.Cube_ID
+		            ON Mod_Grps.CubeID = Mod_Grp_Assgn.CubeID
 		            AND Mod_Grps.Model_Grp_ID = Mod_Grp_Assgn.Model_Grp_ID
 		            JOIN FMM_Models Modl
-		            ON Modl.Cube_ID = Mod_Grp_Assgn.Cube_ID
-		            AND Modl.Model_ID = Mod_Grp_Assgn.Model_ID
+		            ON Modl.CubeID = Mod_Grp_Assgn.CubeID
+		            AND Modl.ModelID = Mod_Grp_Assgn.ModelID
 		            JOIN FMM_Activity_Config Act
-		            ON Modl.Cube_ID = Act.Cube_ID
+		            ON Modl.CubeID = Act.CubeID
 		            AND Modl.Activity_ID = Act.Activity_ID
 					JOIN FMM_Cube_Config CubeCon
-					ON Modl.Cube_ID = CubeCon.Cube_ID
+					ON Modl.CubeID = CubeCon.CubeID
 		            WHERE Mod_Grp_Seqs.Name = @Mod_Grp_Seqs
 		            AND Mod_Grp_Seqs.Status <> 'Archived'
 		            AND Calc_Unit_Mod_Grp.Status <> 'Archived'
@@ -102,7 +102,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                         var adapter = new SqlDataAdapter(command);
                         var dataTable = new DataTable();
                         adapter.Fill(dataTable);
-                        var primKeys = new DataColumn[] { dataTable.Columns["Model_ID"] };
+                        var primKeys = new DataColumn[] { dataTable.Columns["ModelID"] };
 
                         dataTable.PrimaryKey = primKeys;
 
@@ -116,7 +116,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                         foreach (DataRow row in dataTable.Rows)
                         {
                             var rowCalcType = row["Calc_Type"].ToString();
-                            var rowModelId = int.Parse(row["Model_ID"].ToString());
+                            var rowModelId = int.Parse(row["ModelID"].ToString());
 
                             if (ExecutionFlow.ContainsKey(executionLevel))
                             {
@@ -183,7 +183,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                                     { "FMM_Consol", "C#[Aggregated]"},
                                     { "FMM_Scenario", scenarioValue},
                                     { "FMM_Time", "T#Pov"}, // TODO: Figure out time from associated scenario or custom table
-									{ "FMM_Model_IDs" , string.Join(", ", models)}
+									{ "FMM_ModelIDs" , string.Join(", ", models)}
                                 };
 
                                 //BRApi.ErrorLog.LogMessage(si, "cube name: " + row["CubeName"].ToString());
@@ -200,7 +200,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                                     { "FMM_Consol", "C#[Aggregated]"},  //Grab Consol approach from Cube Config
 									{ "FMM_Scenario", "S#[" + scenarioValue + "]"},
                                     { "FMM_Time", "T#Pov"}, // TODO: Figure out time from associated scenario or custom table
-									{ "FMM_Model_IDs" , string.Join(", ", models)}
+									{ "FMM_ModelIDs" , string.Join(", ", models)}
                                 };
                                 var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspace_ID, "Run_FMM_Consolidation", customSubstVars_Dict);
                             }

@@ -32,7 +32,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             Type = OpenParens = MathOperator = CloseParens = string.Empty;
             Entity = Cons = Scenario = Time = View = Acct = IC = Origin = Flow = string.Empty;
             UD1 = UD2 = UD3 = UD4 = UD5 = UD6 = UD7 = UD8 = string.Empty;
-
+            
             _dimensionValues = enabledDimensions?
                 .ToDictionary(d => d, _ => string.Empty, StringComparer.OrdinalIgnoreCase)
                 ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

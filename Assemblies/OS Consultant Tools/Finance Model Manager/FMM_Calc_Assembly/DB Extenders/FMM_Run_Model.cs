@@ -52,7 +52,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         public object Process_TableModel()
         {
-            var new_Model_ID = 0;
+            var new_ModelID = 0;
             var sql_DataSet_DataAdapter = new SqlDataAdapter();
             var FMM_calc_Config_DT = new DataTable();
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -69,19 +69,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					UD8,OS_Time_Filter,OS_Conditional_Filter
                     FROM FMM_Calc_Config calc
                     JOIN FMM_Src_Cell Src
-                    ON calc.Calc_ID = Src.Calc_ID
-					AND calc.Model_ID = Src.Model_ID
+                    ON calc.CalcID = Src.CalcID
+					AND calc.ModelID = Src.ModelID
 					JOIN FMM_Cell Dest
-                    ON calc.Calc_ID = Dest.Calc_ID
-					AND calc.Model_ID = Dest.Model_ID
-                    WHERE Model_ID = @Model_ID
+                    ON calc.CalcID = Dest.CalcID
+					AND calc.ModelID = Dest.ModelID
+                    WHERE ModelID = @ModelID
 					AND Src.Calc_Src_ID_Order = 0
 					AND Src.Calc_Src_Type IN ('Proportional Time','Allocation')
 					ORDER By Sequence";
 
                 var parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@Model_ID", SqlDbType.Int) { Value = new_Model_ID }
+                    new SqlParameter("@ModelID", SqlDbType.Int) { Value = new_ModelID }
                 };
 
                 // Fetch rows into a DataTable
@@ -100,18 +100,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private void Seed_Temp_Tables_for_Calcs()
         {
-            var new_OS_Model_ID = 0;
+            var new_OS_ModelID = 0;
             var Seed_Temp_Table_Sql = @"
                 Select Calc_Src_Type Calc_Src_Type, Calc_Src_Item Calc_Src_Item, Temp_Table_Name 
                 FROM FMM_Calc_Config calc
                 JOIN FMM_Src_Cell Src
-                ON calc.Calc_ID = Src.Calc_ID
-                WHERE OS_Model_ID = @OS_Model_ID
+                ON calc.CalcID = Src.CalcID
+                WHERE OS_ModelID = @OS_ModelID
                 AND Use_Temp_Table = 1";
 
             var parameters = new SqlParameter[]
             {
-                new SqlParameter("@OS_Model_ID", SqlDbType.Int) { Value = new_OS_Model_ID }
+                new SqlParameter("@OS_ModelID", SqlDbType.Int) { Value = new_OS_ModelID }
             };
 
             var objDashboardWorkspace = BRApi.Dashboards.Workspaces.GetWorkspace(si, false, "Gov_PlanCycle");

@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -3444,16 +3443,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var select_Result = new XFSelectionChangedTaskResult();
                 select_Result.ChangeCustomSubstVarsInDashboard = true;
                 var optionintValue = 2;
-                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
+				var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
                 gbl_helpers.UpdateCustomSubstVar(ref select_Result, "BL_DDM_Config_Menu", string.Empty);
                 //DDM_Config_Helpers.Layout_OptionType optionType = (DDM_Config_Helpers.Layout_OptionType)optionintValue;
 
                 // 3. Lookup in your LayoutRegistry class
-                //                if (DDM_Config_Helpers.LayoutRegistry.Configs.TryGetValue(optionType, out var config))
-                //                {
-                //                    // 4. Update the UI Subst Var so the Dashboard flips to the correct UI
-                //                    UpdateCustomSubstVar(ref select_Result, "IV_DDM_Layout_Option_Type", config.DashboardName);
-                //                }
+//                if (DDM_Config_Helpers.LayoutRegistry.Configs.TryGetValue(optionType, out var config))
+//                {
+//                    // 4. Update the UI Subst Var so the Dashboard flips to the correct UI
+//                    UpdateCustomSubstVar(ref select_Result, "IV_DDM_Layout_Option_Type", config.DashboardName);
+//                }
                 return select_Result;
             }
             catch (Exception ex)
@@ -3463,104 +3462,104 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        //        private XFSelectionChangedTaskResult Select_DDM_Config_Menu_Layout()
-        //        {
-        //            try
-        //            {
-        //                var select_Result = new XFSelectionChangedTaskResult();
-        //                select_Result.ChangeCustomSubstVarsInDashboard = true;
-        //                BRApi.ErrorLog.LogMessage(si, $"Hit Select Menu Layout");
-        //                select_Result.ModifiedCustomSubstVars = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
-        //                var existingMenuID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_DDM_Config_Menu", "0").XFConvertToInt();
-        //                var ddm_Config_Menu_Layout_DT = new DataTable();
-        //               	var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
-        //                gbl_helpers.UpdateCustomSubstVar(ref select_Result, "IV_DDM_Config_Menu_UI", "DDM_Config_Content_AddUpdate");
-        //                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
-        //                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
-        //                {
-        //                    var sqa = new SqlDataAdapter();
-        //                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-        //                    connection.Open();
-        //                    var sql = @"SELECT *
-        //	                        FROM DDM_Config_Menu_Layout
-        //							WHERE DDM_Menu_ID = @DDM_Menu_ID";
-        //                    var sqlparams = new SqlParameter[]
-        //                    {
-        //                        new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = existingMenuID }
-        //                    };
-        //                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, ddm_Config_Menu_Layout_DT, sql, sqlparams);
-        //                }
-        //                if (ddm_Config_Menu_Layout_DT.Rows.Count > 0)
-        //                {
-        //                    DataRow row = ddm_Config_Menu_Layout_DT.Rows[0];
+//        private XFSelectionChangedTaskResult Select_DDM_Config_Menu_Layout()
+//        {
+//            try
+//            {
+//                var select_Result = new XFSelectionChangedTaskResult();
+//                select_Result.ChangeCustomSubstVarsInDashboard = true;
+//                BRApi.ErrorLog.LogMessage(si, $"Hit Select Menu Layout");
+//                select_Result.ModifiedCustomSubstVars = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
+//                var existingMenuID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_DDM_Config_Menu", "0").XFConvertToInt();
+//                var ddm_Config_Menu_Layout_DT = new DataTable();
+//               	var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
+//                gbl_helpers.UpdateCustomSubstVar(ref select_Result, "IV_DDM_Config_Menu_UI", "DDM_Config_Content_AddUpdate");
+//                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+//                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+//                {
+//                    var sqa = new SqlDataAdapter();
+//                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+//                    connection.Open();
+//                    var sql = @"SELECT *
+//	                        FROM DDM_Config_Menu_Layout
+//							WHERE DDM_Menu_ID = @DDM_Menu_ID";
+//                    var sqlparams = new SqlParameter[]
+//                    {
+//                        new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = existingMenuID }
+//                    };
+//                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, ddm_Config_Menu_Layout_DT, sql, sqlparams);
+//                }
+//                if (ddm_Config_Menu_Layout_DT.Rows.Count > 0)
+//                {
+//                    DataRow row = ddm_Config_Menu_Layout_DT.Rows[0];
 
-        //                    // 2. Extract Option_Type and Convert to Enum
-        //                    DDM_Config_Helpers.Layout_OptionType optionType = (DDM_Config_Helpers.Layout_OptionType)row["Option_Type"];
-        //                    UpdateCustomSubstVar(ref select_Result, "DL_DDM_Layout_Type", row["Option_Type"].ToString());
-        //                    // 3. Lookup in your LayoutRegistry class
-        //                    if (DDM_Config_Helpers.LayoutRegistry.Configs.TryGetValue(optionType, out var config))
-        //                    {
-        //                        foreach (var step in config.ParameterMappings)
-        //                        {
-        //                            // The 'step.Value' is the inner Dictionary<string, string>
-        //                            // It usually contains just one pair, but we loop to be safe
-        //                            foreach (var map in step.Value)
-        //                            {
-        //                                string tgtParamName = map.Key;   // e.g. "IV_DDM_Layout_Top_Height"
-        //                                string columnName = map.Value;  // e.g. "Top_Height"
-        //                                UpdateCustomSubstVar(ref select_Result, tgtParamName, row[columnName].ToString());
-        //                            }
-        //                        }
-        //                    }
+//                    // 2. Extract Option_Type and Convert to Enum
+//                    DDM_Config_Helpers.Layout_OptionType optionType = (DDM_Config_Helpers.Layout_OptionType)row["Option_Type"];
+//                    UpdateCustomSubstVar(ref select_Result, "DL_DDM_Layout_Type", row["Option_Type"].ToString());
+//                    // 3. Lookup in your LayoutRegistry class
+//                    if (DDM_Config_Helpers.LayoutRegistry.Configs.TryGetValue(optionType, out var config))
+//                    {
+//                        foreach (var step in config.ParameterMappings)
+//                        {
+//                            // The 'step.Value' is the inner Dictionary<string, string>
+//                            // It usually contains just one pair, but we loop to be safe
+//                            foreach (var map in step.Value)
+//                            {
+//                                string tgtParamName = map.Key;   // e.g. "IV_DDM_Layout_Top_Height"
+//                                string columnName = map.Value;  // e.g. "Top_Height"
+//                                UpdateCustomSubstVar(ref select_Result, tgtParamName, row[columnName].ToString());
+//                            }
+//                        }
+//                    }
 
-        //                }
-        //                return select_Result;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // Log and rethrow exceptions for error handling.
-        //                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-        //            }
-        //        }
+//                }
+//                return select_Result;
+//            }
+//            catch (Exception ex)
+//            {
+//                // Log and rethrow exceptions for error handling.
+//                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+//            }
+//        }
 
-        //        private XFSelectionChangedTaskResult Select_DDM_Layout_Option_Type()
-        //        {
-        //            try
-        //            {
-        //                var select_Result = new XFSelectionChangedTaskResult();
-        //                var ddm_Config_Menu_Layout_DT = new DataTable();
+//        private XFSelectionChangedTaskResult Select_DDM_Layout_Option_Type()
+//        {
+//            try
+//            {
+//                var select_Result = new XFSelectionChangedTaskResult();
+//                var ddm_Config_Menu_Layout_DT = new DataTable();
 
-        //                var optionintValue = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_DDM_Layout_Type", "0").XFConvertToInt();
-        //                var histoptionintValue = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_DDM_Layout_Type", "0").XFConvertToInt();
+//                var optionintValue = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_DDM_Layout_Type", "0").XFConvertToInt();
+//                var histoptionintValue = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_DDM_Layout_Type", "0").XFConvertToInt();
 
-        //                //UpdateCustomSubstVar(ref select_Result,"IV_DDM_Config_Menu_UI","0b1b2b2_DDM_Config_Content_NewUpdates");
-        //                BRApi.ErrorLog.LogMessage(si, $"Hit {optionintValue} - {histoptionintValue} - {args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Layout_Option_Type", "NA")} - {args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_DDM_Layout_Option_Type", "NA")}");
-        //                // 2. Extract Option_Type and Convert to Enum
-        //                DDM_Config_Helpers.Layout_OptionType optionType = (DDM_Config_Helpers.Layout_OptionType)optionintValue;
+//                //UpdateCustomSubstVar(ref select_Result,"IV_DDM_Config_Menu_UI","0b1b2b2_DDM_Config_Content_NewUpdates");
+//                BRApi.ErrorLog.LogMessage(si, $"Hit {optionintValue} - {histoptionintValue} - {args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_DDM_Layout_Option_Type", "NA")} - {args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_DDM_Layout_Option_Type", "NA")}");
+//                // 2. Extract Option_Type and Convert to Enum
+//                DDM_Config_Helpers.Layout_OptionType optionType = (DDM_Config_Helpers.Layout_OptionType)optionintValue;
 
-        //                // 3. Lookup in your LayoutRegistry class
-        //                if (DDM_Config_Helpers.LayoutRegistry.Configs.TryGetValue(optionType, out var config))
-        //                {
-        //                    BRApi.ErrorLog.LogMessage(si, $"Hit {config.DashboardName}");
-        //                    // 4. Update the UI Subst Var so the Dashboard flips to the correct UI
-        //                    UpdateCustomSubstVar(ref select_Result, "IV_DDM_Layout_Option_Type", config.DashboardName);
-        //                }
-        //                foreach (KeyValuePair<string, string> kvp in select_Result.ModifiedCustomSubstVars)
-        //                {
-        //                    BRApi.ErrorLog.LogMessage(si, $"Key: {kvp.Key} | Value: {kvp.Value}");
-        //                }
-        //                var uiAction = new XFSelectionChangedUIActionInfo();
-        //                uiAction.SelectionChangedUIActionType = XFSelectionChangedUIActionType.Refresh;
-        //                uiAction.DashboardsToRedraw = "0b1b2b_DDM_Config_Content";
-        //                select_Result.ModifiedSelectionChangedUIActionInfo = uiAction;
-        //                return select_Result;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                // Log and rethrow exceptions for error handling.
-        //                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-        //            }
-        //        }
+//                // 3. Lookup in your LayoutRegistry class
+//                if (DDM_Config_Helpers.LayoutRegistry.Configs.TryGetValue(optionType, out var config))
+//                {
+//                    BRApi.ErrorLog.LogMessage(si, $"Hit {config.DashboardName}");
+//                    // 4. Update the UI Subst Var so the Dashboard flips to the correct UI
+//                    UpdateCustomSubstVar(ref select_Result, "IV_DDM_Layout_Option_Type", config.DashboardName);
+//                }
+//                foreach (KeyValuePair<string, string> kvp in select_Result.ModifiedCustomSubstVars)
+//                {
+//                    BRApi.ErrorLog.LogMessage(si, $"Key: {kvp.Key} | Value: {kvp.Value}");
+//                }
+//                var uiAction = new XFSelectionChangedUIActionInfo();
+//                uiAction.SelectionChangedUIActionType = XFSelectionChangedUIActionType.Refresh;
+//                uiAction.DashboardsToRedraw = "0b1b2b_DDM_Config_Content";
+//                select_Result.ModifiedSelectionChangedUIActionInfo = uiAction;
+//                return select_Result;
+//            }
+//            catch (Exception ex)
+//            {
+//                // Log and rethrow exceptions for error handling.
+//                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+//            }
+//        }
 
 
         // possible future helper to sanitize data rows vs doing them all inline

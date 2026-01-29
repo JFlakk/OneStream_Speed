@@ -166,12 +166,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
-                    {
-                        var repeatArgsList = dynamicDashboardEx.DynamicDashboard.Tag as List<WsDynamicComponentRepeatArgs>;
-                        return api.GetDynamicComponentsRepeatedForDynamicDashboard(si, workspace, dynamicDashboardEx,
-                            repeatArgsList, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
-                    }
+	                if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
+	                {
+	                    var repeatArgsList = dynamicDashboardEx.DynamicDashboard.Tag as List<WsDynamicComponentRepeatArgs>;						
+						return api.GetDynamicComponentsRepeatedForDynamicDashboard(si, workspace, dynamicDashboardEx, 
+							repeatArgsList, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
+	                }
                     return api.GetDynamicComponentsForDynamicDashboard(si, workspace, dynamicDashboardEx, string.Empty, null, TriStateBool.Unknown, WsDynamicItemStateType.Unknown);
                 }
 

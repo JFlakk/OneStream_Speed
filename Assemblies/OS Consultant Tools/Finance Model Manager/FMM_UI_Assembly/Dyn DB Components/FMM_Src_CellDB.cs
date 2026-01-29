@@ -117,10 +117,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
-                calcId = string.IsNullOrWhiteSpace(calcId.XFToString()) ? 0 : calcId;
+				calcId = string.IsNullOrWhiteSpace(calcId.XFToString()) ? 0 : calcId;
                 var columns = GetSelectColumnsForCalcType(calcType);
                 string sql = $"SELECT {columns} FROM {this.TableName} WHERE CalcID = @calcID";
-                BRApi.ErrorLog.LogMessage(si, $"Hit {sql}");
+				BRApi.ErrorLog.LogMessage(si,$"Hit {sql}");
 
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@calcID", calcId) };
 

@@ -1,12 +1,11 @@
-
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
+using System.Linq;
 using Microsoft.CSharp;
 using Microsoft.Data.SqlClient;
 using OneStream.Finance.Database;
@@ -168,7 +167,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         if (args.FunctionName.XFEqualsIgnoreCase("Load_FMM_Dashboard"))
                         {
                             var load_Dashboard_Task_Result = Load_Dashboard("", ref args);
-                            return load_Dashboard_Task_Result;
+	                        return load_Dashboard_Task_Result;
                         }
                         break;
                 }
@@ -460,7 +459,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             //TODO: check selectedDashboard based on different higher level menu other than DL_FMM_Cube_Config_Options
             string DialogSelection = args.PrimaryDashboard.Name;
-            BRApi.ErrorLog.LogMessage(si, DialogSelection);
+			BRApi.ErrorLog.LogMessage(si,DialogSelection);
 
             string MainMenuSelection = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) != string.Empty ? args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) : args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue(MainMenuParam);
 
@@ -477,10 +476,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var PRCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun;
 
             //			BRApi.ErrorLog.LogMessage(si, "Key count: " + taskResult.ModifiedCustomSubstVars.Keys.Count);
-            foreach (string param in taskResult.ModifiedCustomSubstVars.Keys)
-            {
-                BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
-            }
+            			foreach(string param in taskResult.ModifiedCustomSubstVars.Keys) {
+            				BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
+            			}
 
 
             if (HierarchyDict.ContainsKey(selectedDashboard))
@@ -491,9 +489,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     foreach (string param in tempDependencyDict[dependencyDepth])
                     {
-                        BRApi.ErrorLog.LogMessage(si, "searching for: " + param + selectedDashboard);
-                        BRApi.ErrorLog.LogMessage(si, "AR: " + ARCustomSubst.XFGetValue(param) + " " + (ARCustomSubst.XFGetValue(param) == string.Empty).ToString());
-                        BRApi.ErrorLog.LogMessage(si, "PR: " + PRCustomSubst.XFGetValue(param) + " " + (PRCustomSubst.XFGetValue(param) == string.Empty).ToString());
+                        						BRApi.ErrorLog.LogMessage(si, "searching for: " + param + selectedDashboard);
+                        						BRApi.ErrorLog.LogMessage(si, "AR: " + ARCustomSubst.XFGetValue(param) + " " + (ARCustomSubst.XFGetValue(param) == string.Empty).ToString());
+                        						BRApi.ErrorLog.LogMessage(si, "PR: " + PRCustomSubst.XFGetValue(param) + " " + (PRCustomSubst.XFGetValue(param) == string.Empty).ToString());
 
                         bool ARContainsKey = ARCustomSubst.ContainsKey(param);
                         bool PRContainsKey = PRCustomSubst.ContainsKey(param);

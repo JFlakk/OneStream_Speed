@@ -646,3 +646,49 @@
   - `HQ_SPLN_DataBuffers.vb` (DashboardStringFunction)
   - `HQ_SPLN_String_Helper.vb` (DashboardStringFunction)
 
+
+## Workspace Assemblies
+
+**Total Assemblies:** 3
+**Total Assembly Files:** 23
+
+### OS Consultant Tools/Finance Model Manager/FMM_Calc_Assembly
+
+- **Compiler Language:** CSharp
+- **Files:**
+  - `FMM_Run_Model.cs` (Unknown)
+  - `FMM_Run_Grp_Model.cs` (Extender)
+  - `FMM_Global_Buffers.cs` (Unknown)
+  - `FMM_Global_Functions.cs` (Unknown)
+  - `FMM_Run_Calcs.cs` (Unknown)
+
+### OS Consultant Tools/Finance Model Manager/FMM_Shared_Assembly
+
+- **Compiler Language:** CSharp
+- **Dependencies:** FMM_UI_Assembly
+- **Files:**
+  - `FMM_RegPlan_DB_DataSet.cs` (Unknown)
+  - `FMM_RegPlan_DBExt.cs` (Unknown)
+  - `FMM_RegPlan_Helper.cs` (Unknown)
+  - `SQA_RegPlan_Audit.cs` (Unknown)
+  - `SQA_RegPlan_Details.cs` (Unknown)
+  - `SQA_RegPlan.cs` (Unknown)
+  - `FMM_RegPlan_XFTV.cs` (Unknown)
+
+### OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly
+
+- **Compiler Language:** CSharp
+- **Dependencies:** GBL_UI_Assembly
+- **Files:**
+  - `FMM_DB_DataSets.cs` (Unknown)
+  - `FMM_Config_Data.cs` (Unknown)
+  - `FMM_Config_Load_DB.cs` (Unknown)
+  - `FMM_Config_Migration.cs` (DashboardExtender)
+  - `FMM_Src_CellDB.cs` (Unknown)
+  - `FMM_Src_CellModel.cs` (Unknown)
+  - `FMM_Comp_Svc.cs` (Unknown)
+  - `FMM_DynDB_Svc.cs` (Unknown)
+  - `FMM_Svc_Factory.cs` (Unknown)
+  - `FMM_Config_Helpers.cs` (Unknown)
+  - `FMM_Config_UI.cs` (Unknown)
+

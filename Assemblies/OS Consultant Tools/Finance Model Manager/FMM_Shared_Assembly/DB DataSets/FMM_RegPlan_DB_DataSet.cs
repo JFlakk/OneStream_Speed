@@ -50,18 +50,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Approval_Register_Options"))
                         {
-                            var curr_Appr_ID = Convert.ToInt32(args.CustomSubstVars.XFGetValue("IV_FMM_Appr_ID", "-1"));
+                            var curr_ApprID = Convert.ToInt32(args.CustomSubstVars.XFGetValue("IV_FMM_ApprID", "-1"));
                             var curr_Appr_Step_ID = Convert.ToInt32(args.CustomSubstVars.XFGetValue("IV_FMM_Appr_Step_ID", "-1"));
 
 
-                            if (curr_Appr_ID == -1 || curr_Appr_Step_ID == -1)
+                            if (curr_ApprID == -1 || curr_Appr_Step_ID == -1)
                             {
                                 //find approval and step id through matching step config
-                                find_SetApprovalIDs(ref curr_Appr_ID, ref curr_Appr_Step_ID);
+                                find_SetApprovalIDs(ref curr_ApprID, ref curr_Appr_Step_ID);
                             }
 
 
-                            return get_FMM_Approval_Register_Options(curr_Appr_ID, curr_Appr_Step_ID);
+                            return get_FMM_Approval_Register_Options(curr_ApprID, curr_Appr_Step_ID);
                         }
                         break;
                 }
@@ -73,7 +73,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        public DataTable get_FMM_Approval_Register_Options(int Appr_ID, int Appr_Step_ID)
+        public DataTable get_FMM_Approval_Register_Options(int ApprID, int Appr_Step_ID)
         {
             DataTable dt = new DataTable("FMM_Register_Options");
 
@@ -87,12 +87,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 string selectQuery = @"
                     SELECT Description, Reg_Config_ID
                     FROM FMM_Approval_Step_Activity_Config
-                    WHERE Appr_ID = @Appr_ID
+                    WHERE ApprID = @ApprID
 					AND Appr_Step_ID = @Appr_Step_ID";
 
                 var parameters = new SqlParameter[]
                 {
-                    new SqlParameter("@Appr_ID", SqlDbType.Int) { Value = Appr_ID },
+                    new SqlParameter("@ApprID", SqlDbType.Int) { Value = ApprID },
                     new SqlParameter("@Appr_Step_ID", SqlDbType.Int) { Value = Appr_Step_ID },
 
                 };
@@ -140,7 +140,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
         #endregion
 
-        private void find_SetApprovalIDs(ref int Appr_ID, ref int Appr_Step_ID)
+        private void find_SetApprovalIDs(ref int ApprID, ref int Appr_Step_ID)
         {
             var wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si);
             var wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo();
@@ -164,7 +164,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 // Fill DataTable for Approval_Step_Config
                 // Possibly... need to have cube information to determine if we're within the right cube
                 string selectQuery = @"
-	                    SELECT Appr_ID, Appr_Step_ID, WFProfile_Step 
+	                    SELECT ApprID, Appr_Step_ID, WFProfile_Step 
 	                    FROM FMM_Approval_Step_Config
 	                    WHERE WFProfile_Step = @Profile
 						OR @Profile like WFProfile_Step";
@@ -184,14 +184,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     //if no matched rows were found, get the top row of the data table as a fuzzy match
                     if (exactMatches.Length != 0)
                     {
-                        Appr_ID = Convert.ToInt32(exactMatches[0]["Appr_ID"]);
+                        ApprID = Convert.ToInt32(exactMatches[0]["ApprID"]);
                         Appr_Step_ID = Convert.ToInt32(exactMatches[0]["Appr_Step_ID"]);
                     }
                     else
                     {
                         var likeMatch = FMM_Approval_Step_Config_DT.Rows[0];
 
-                        Appr_ID = Convert.ToInt32(likeMatch["Appr_ID"]);
+                        ApprID = Convert.ToInt32(likeMatch["ApprID"]);
                         Appr_Step_ID = Convert.ToInt32(likeMatch["Appr_Step_ID"]);
                     }
                 }
@@ -203,7 +203,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
 
 
-            //				Appr_ID = 2;
+            //				ApprID = 2;
             //				Appr_Step_ID = 0;
         }
 

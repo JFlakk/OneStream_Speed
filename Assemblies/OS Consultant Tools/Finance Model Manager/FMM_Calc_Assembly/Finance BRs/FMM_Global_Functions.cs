@@ -339,7 +339,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         #region "MCM Buffer Calcs"
         #region "Balanced Buffer"
         public void Calc_Balanced_Buffer(
-            int Calc_ID,
+            int CalcID,
             string bal_buffer_calc
             )
         {
@@ -348,7 +348,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
 													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
 													FROM MCM_Cell
-													WHERE Calc_ID = @Calc_ID";
+													WHERE CalcID = @CalcID";
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -416,19 +416,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         #endregion
 
         #region "Unbalanced Buffer"
-        public void Calc_Unbal_Buffer(
-            int Calc_ID,
+        public void Calc_UnbalBuffer(
+            int CalcID,
             string bal_buffer_calc,
             string Unbal_Calc
             )
         {
 
-            string unbal_buffer_cell_SQL = @"
+            string UnbalBuffer_cell_SQL = @"
 												Select Acct, View,Origin,IC,Flow,UD1,
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
 													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
 													FROM MCM_Cell
-													WHERE Calc_ID = @Calc_ID";
+													WHERE CalcID = @CalcID";
             string src_cell_SQL = @"
 						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
@@ -438,7 +438,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
 									Calc_Src_Type
 						        FROM MCM_Src_Cell
-						        WHERE Calc_ID = @Calc_ID
+						        WHERE CalcID = @CalcID
 								AND Calc_Src_ID_Order > 1
 						        ORDER BY Calc_Src_ID_Order";
 
@@ -450,7 +450,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 connection.Open();
                 var unbal_srcCommand = new SqlCommand(src_cell_SQL, connection);
                 var src_buffers = 0;
-                unbal_srcCommand.Parameters.Add(new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = Calc_ID });
+                unbal_srcCommand.Parameters.Add(new SqlParameter("@CalcID", SqlDbType.Int) { Value = CalcID });
 
                 using (var unbal_srcreader = unbal_srcCommand.ExecuteReader())
                 {
@@ -514,8 +514,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         }
                     }
                 }
-                var command = new SqlCommand(unbal_buffer_cell_SQL, connection);
-                command.Parameters.Add(new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = Calc_ID });
+                var command = new SqlCommand(UnbalBuffer_cell_SQL, connection);
+                command.Parameters.Add(new SqlParameter("@CalcID", SqlDbType.Int) { Value = CalcID });
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -577,7 +577,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                             // The key was found, and resultBuffer now holds the corresponding DataBuffer
                                             Console.WriteLine("Buffer found for the name: " + searchName);
                                         }
-                                        var src_buffer_Value = get_src_unbal_buffer_value(balBuffer_Cell, resultBuffer, srcRow);
+                                        var src_buffer_Value = get_src_UnbalBuffer_value(balBuffer_Cell, resultBuffer, srcRow);
                                         expression = Unbal_Calc.Replace($"SrcBuffer{i}", src_buffer_Value.XFToString());
 
                                     }
@@ -612,7 +612,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         #region "UnbalAlloc"
         public void Calc_Unbal_Alloc_Buffer(
-            int Calc_ID,
+            int CalcID,
             string bal_buffer_calc,
             string Unbal_Calc
             )
@@ -620,12 +620,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             var cell_Expressions = new Dictionary<DataBufferCell, string>();
             var src_buffers = 0;
             var unbal_srcdataBuffers = new Dictionary<string, DataBuffer>();
-            string unbal_buffer_cell_SQL = @"
+            string UnbalBuffer_cell_SQL = @"
 												Select Acct, View,Origin,IC,Flow,UD1,
 													UD2,UD3,UD4,UD5,UD6,UD7,U8,
 													OS_Curr_Cube_Buffer_Filter,Buffer_Filter
 													FROM MCM_Cell
-													WHERE Calc_ID = @Calc_ID";
+													WHERE CalcID = @CalcID";
             string src_cell_SQL = @"
 						        SELECT Calc_Src_ID_Order, Open_Parens, Math_Operator, Entity, Cons, Scenario,
 						            Time, Origin, IC, View, Acct, Flow, UD1, UD2,
@@ -635,7 +635,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 									Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
 									Calc_Src_Type
 						        FROM MCM_Src_Cell
-						        WHERE Calc_ID = @Calc_ID
+						        WHERE CalcID = @CalcID
 								AND Calc_Src_ID_Order > 1
 						        ORDER BY Calc_Src_ID_Order";
 
@@ -646,7 +646,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 connection.Open();
                 var unbal_srcCommand = new SqlCommand(src_cell_SQL, connection);
-                unbal_srcCommand.Parameters.Add(new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = Calc_ID });
+                unbal_srcCommand.Parameters.Add(new SqlParameter("@CalcID", SqlDbType.Int) { Value = CalcID });
 
                 using (var unbal_srcreader = unbal_srcCommand.ExecuteReader())
                 {
@@ -709,8 +709,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         }
                     }
                 }
-                var command = new SqlCommand(unbal_buffer_cell_SQL, connection);
-                command.Parameters.Add(new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = Calc_ID });
+                var command = new SqlCommand(UnbalBuffer_cell_SQL, connection);
+                command.Parameters.Add(new SqlParameter("@CalcID", SqlDbType.Int) { Value = CalcID });
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -798,7 +798,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         #region "Ext_UnbalAlloc"
         public void Calc_Ext_Unbal_Alloc_Buffer(
-            int Calc_ID,
+            int CalcID,
             string bal_buffer_calc,
             string Unbal_Calc,
             string memberList1Dim,
@@ -822,7 +822,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             // Process the parameters as needed in your method
 
             // Example usage of the parameters
-            BRApi.ErrorLog.LogMessage(si, $"Processing Calc_ID: {Calc_ID}");
+            BRApi.ErrorLog.LogMessage(si, $"Processing CalcID: {CalcID}");
             BRApi.ErrorLog.LogMessage(si, $"Balanced Buffer Calc: {bal_buffer_calc}, Unbalanced Calc: {Unbal_Calc}");
 
             // Log MemberList 1 details
@@ -846,8 +846,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         #endregion
 
         #region "Ext_Unbalanced"
-        public void Calc_Ext_Unbal_Buffer(
-            int Calc_ID,
+        public void Calc_Ext_UnbalBuffer(
+            int CalcID,
             string bal_buffer_calc,
             string Unbal_Calc,
             string memberList1Dim,
@@ -868,8 +868,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string memberList4DestFilter
         )
         {
-            //BRApi.ErrorLog.LogMessage(si, "Executing Calc_Ext_Unbal_Buffer");
-            //BRApi.ErrorLog.LogMessage(si, "calc id: "  + Calc_ID.ToString());
+            //BRApi.ErrorLog.LogMessage(si, "Executing Calc_Ext_UnbalBuffer");
+            //BRApi.ErrorLog.LogMessage(si, "calc id: "  + CalcID.ToString());
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -882,15 +882,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 //Get all SRC Unbal Buffers
 
                 var unbal_srcdataBuffers = new Dictionary<string, DataBuffer>();
-                string unbal_buffer_cell_SQL = @"
+                string UnbalBuffer_cell_SQL = @"
 													Select Acct, View,Origin,IC,Flow,UD1,
 														UD2,UD3,UD4,UD5,UD6,UD7,UD8,
 														OS_Curr_Cube_Buffer_Filter,Buffer_Filter
 														FROM FMM_Dest_Cell
-														WHERE Calc_ID = @Calc_ID";
+														WHERE CalcID = @CalcID";
 
-                var command = new SqlCommand(unbal_buffer_cell_SQL, connection);
-                command.Parameters.Add(new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = Calc_ID });
+                var command = new SqlCommand(UnbalBuffer_cell_SQL, connection);
+                command.Parameters.Add(new SqlParameter("@CalcID", SqlDbType.Int) { Value = CalcID });
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -970,25 +970,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                                                     foreach (var member4 in mem4List)
                                                     {
-                                                        ExecuteDataBufferCode(Calc_ID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, member3.Member.Name, member4.Member.Name, reader, bal_buffer_calc, Unbal_Calc);
+                                                        ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, member3.Member.Name, member4.Member.Name, reader, bal_buffer_calc, Unbal_Calc);
                                                     }
 
                                                 }
                                                 else
                                                 {
-                                                    ExecuteDataBufferCode(Calc_ID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, member3.Member.Name, "", reader, bal_buffer_calc, Unbal_Calc);
+                                                    ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, member3.Member.Name, "", reader, bal_buffer_calc, Unbal_Calc);
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            ExecuteDataBufferCode(Calc_ID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, "", "", reader, bal_buffer_calc, Unbal_Calc);
+                                            ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, member2.Member.Name, "", "", reader, bal_buffer_calc, Unbal_Calc);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    ExecuteDataBufferCode(Calc_ID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, "", "", "", reader, bal_buffer_calc, Unbal_Calc);
+                                    ExecuteDataBufferCode(CalcID, ref currCubeBuffer, ref destBuffer, ref clearCubeData, destInfo, member1.Member.Name, "", "", "", reader, bal_buffer_calc, Unbal_Calc);
                                 }
                             }
                         }
@@ -1017,7 +1017,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         #region "Extensibility Unbal Helpers"
 
-        private void ExecuteDataBufferCode(int Calc_ID, ref DataBuffer currCubeBuffer, ref DataBuffer destBuffer, ref DataBuffer clearCubeBuffer, ExpressionDestinationInfo destInfo, string dim1MemName, string dim2MemName, string dim3MemName, string dim4MemName,
+        private void ExecuteDataBufferCode(int CalcID, ref DataBuffer currCubeBuffer, ref DataBuffer destBuffer, ref DataBuffer clearCubeBuffer, ExpressionDestinationInfo destInfo, string dim1MemName, string dim2MemName, string dim3MemName, string dim4MemName,
             SqlDataReader reader, string bal_buffer_calc, string Unbal_Calc)
         {
             unbal_srcdataBuffers.Clear();
@@ -1033,7 +1033,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 										Unbal_UD7_Override,Unbal_UD8_Override,Unbal_Src_Cell_Buffer_Filter,OS_Dynamic_Calc_Script,Override_Value,
 										Calc_Src_Type
 							        FROM MCM_Src_Cell
-							        WHERE Calc_ID = @Calc_ID
+							        WHERE CalcID = @CalcID
 									AND Calc_Src_ID_Order > 1
 							        ORDER BY Calc_Src_ID_Order";
             // Prepare and execute the source data query
@@ -1043,7 +1043,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 connection.Open();
 
                 var unbal_srcCommand = new SqlCommand(src_cell_SQL, connection);
-                unbal_srcCommand.Parameters.Add(new SqlParameter("@Calc_ID", SqlDbType.Int) { Value = Calc_ID });
+                unbal_srcCommand.Parameters.Add(new SqlParameter("@CalcID", SqlDbType.Int) { Value = CalcID });
 
 
 
@@ -1297,7 +1297,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                     resultBuffer.LogDataBuffer(api, "result buffer", 500);
                                 }
 
-                                var src_buffer_Value = get_src_unbal_buffer_value(balBuffer_Cell, resultBuffer, srcRow); // this value is currently coming back as 0
+                                var src_buffer_Value = get_src_UnbalBuffer_value(balBuffer_Cell, resultBuffer, srcRow); // this value is currently coming back as 0
                                 expression = expression.Replace($"SrcBufferValue{i}", src_buffer_Value.XFToString());
 
                             }
@@ -1387,7 +1387,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return dyncalc_DataCell.CellAmount;
         }
 
-        private decimal get_src_unbal_buffer_value(DataBufferCell balanced_Src_Cell, DataBuffer Unbal_DataBuffer, DataRow srcRow)
+        private decimal get_src_UnbalBuffer_value(DataBufferCell balanced_Src_Cell, DataBuffer Unbal_DataBuffer, DataRow srcRow)
         {
 
             var DriverDB_Acct = string.Empty;

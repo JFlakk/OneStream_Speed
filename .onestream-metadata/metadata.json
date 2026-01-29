@@ -1,6 +1,6 @@
 {
   "branch": "shared",
-  "lastUpdated": "2026-01-21T04:49:13.712Z",
+  "lastUpdated": "2026-01-29T09:29:23.644Z",
   "rules": [
     {
       "ruleName": "DDM_Config_UI_Assembly.DDM_DB_DataSets.cs",
@@ -1010,7 +1010,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Calc_Assembly",
         "compilerLanguage": "CSharp",
@@ -1072,7 +1072,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Calc_Assembly",
         "compilerLanguage": "CSharp",
@@ -1134,7 +1134,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Calc_Assembly",
         "compilerLanguage": "CSharp",
@@ -1196,7 +1196,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Calc_Assembly",
         "compilerLanguage": "CSharp",
@@ -1258,7 +1258,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Calc_Assembly",
         "compilerLanguage": "CSharp",
@@ -1320,7 +1320,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Shared_Assembly",
         "compilerLanguage": "CSharp",
@@ -1384,7 +1384,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Shared_Assembly",
         "compilerLanguage": "CSharp",
@@ -1448,7 +1448,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Shared_Assembly",
         "compilerLanguage": "CSharp",
@@ -1512,7 +1512,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Shared_Assembly",
         "compilerLanguage": "CSharp",
@@ -1576,7 +1576,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Shared_Assembly",
         "compilerLanguage": "CSharp",
@@ -1640,7 +1640,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Shared_Assembly",
         "compilerLanguage": "CSharp",
@@ -1704,7 +1704,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_Shared_Assembly",
         "compilerLanguage": "CSharp",
@@ -1768,7 +1768,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_UI_Assembly",
         "compilerLanguage": "CSharp",
@@ -2152,7 +2152,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_UI_Assembly",
         "compilerLanguage": "CSharp",
@@ -2216,7 +2216,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_UI_Assembly",
         "compilerLanguage": "CSharp",
@@ -10336,7 +10336,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_UI_Assembly",
         "compilerLanguage": "CSharp",
@@ -10400,7 +10400,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_UI_Assembly",
         "compilerLanguage": "CSharp",
@@ -10464,7 +10464,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_UI_Assembly",
         "compilerLanguage": "CSharp",
@@ -10528,7 +10528,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_UI_Assembly",
         "compilerLanguage": "CSharp",
@@ -10537,7 +10537,7 @@
         ],
         "fileType": "CSharp",
         "businessRuleType": "Unknown",
-        "compilerActionType": "Unknown",
+        "compilerActionType": "Compile",
         "filePath": "Assemblies/OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly/Helper Classes/FMM_Config_Helpers.cs",
         "fileName": "FMM_Config_Helpers.cs",
         "relativePath": "Helper Classes/FMM_Config_Helpers.cs",
@@ -10592,7 +10592,7 @@
           "uiPlatformType": "WpfOrSilverlight",
           "accessGroup": "Everyone",
           "maintenanceGroup": "Everyone",
-          "wsAssemblyService": ""
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
         },
         "assemblyName": "FMM_UI_Assembly",
         "compilerLanguage": "CSharp",
@@ -10605,6 +10605,198 @@
         "filePath": "Assemblies/OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly/XFBRs/FMM_Config_UI.cs",
         "fileName": "FMM_Config_UI.cs",
         "relativePath": "XFBRs/FMM_Config_UI.cs",
+        "isEncrypted": false
+      }
+    },
+    {
+      "ruleName": "FMM_UI_Assembly.FMM_Src_CellDB.cs",
+      "ruleType": "WorkspaceAssembly",
+      "filePath": "Assemblies/OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly/Dyn DB Components/FMM_Src_CellDB.cs",
+      "isGlobal": false,
+      "businessRuleLanguageType": "CSharp",
+      "isEncrypted": false,
+      "referencedAssemblies": [],
+      "assemblyMetadata": {
+        "assemblyType": "WorkspaceAssembly",
+        "workspace": "OS Consultant Tools",
+        "workspaceMetadata": {
+          "name": "OS Consultant Tools",
+          "description": "",
+          "notes": "",
+          "accessGroup": "Everyone",
+          "maintenanceGroup": "Everyone",
+          "isShareableWorkspace": "true",
+          "sharedWorkspaceNames": "PPBE Planning Process",
+          "companyName": "",
+          "versionNum": "",
+          "author": "",
+          "namespacePrefix": "OSConsTools",
+          "importsNamespace1": "",
+          "importsNamespace2": "",
+          "importsNamespace3": "",
+          "importsNamespace4": "",
+          "importsNamespace5": "",
+          "importsNamespace6": "",
+          "importsNamespace7": "",
+          "importsNamespace8": "",
+          "wsAssemblyService": "",
+          "text1": "",
+          "text2": "",
+          "text3": "",
+          "text4": "",
+          "text5": "",
+          "text6": "",
+          "text7": "",
+          "text8": ""
+        },
+        "maintenanceUnit": "Finance Model Manager",
+        "maintenanceUnitMetadata": {
+          "name": "Finance Model Manager",
+          "description": "",
+          "uiPlatformType": "WpfOrSilverlight",
+          "accessGroup": "Everyone",
+          "maintenanceGroup": "Everyone",
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
+        },
+        "assemblyName": "FMM_UI_Assembly",
+        "compilerLanguage": "CSharp",
+        "dependencies": [
+          "GBL_UI_Assembly"
+        ],
+        "fileType": "CSharp",
+        "businessRuleType": "Unknown",
+        "compilerActionType": "Compile",
+        "filePath": "Assemblies/OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly/Dyn DB Components/FMM_Src_CellDB.cs",
+        "fileName": "FMM_Src_CellDB.cs",
+        "relativePath": "Dyn DB Components/FMM_Src_CellDB.cs",
+        "isEncrypted": false
+      }
+    },
+    {
+      "ruleName": "FMM_UI_Assembly.FMM_Src_CellModel.cs",
+      "ruleType": "WorkspaceAssembly",
+      "filePath": "Assemblies/OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly/Dyn DB Components/FMM_Src_CellModel.cs",
+      "isGlobal": false,
+      "businessRuleLanguageType": "CSharp",
+      "isEncrypted": false,
+      "referencedAssemblies": [],
+      "assemblyMetadata": {
+        "assemblyType": "WorkspaceAssembly",
+        "workspace": "OS Consultant Tools",
+        "workspaceMetadata": {
+          "name": "OS Consultant Tools",
+          "description": "",
+          "notes": "",
+          "accessGroup": "Everyone",
+          "maintenanceGroup": "Everyone",
+          "isShareableWorkspace": "true",
+          "sharedWorkspaceNames": "PPBE Planning Process",
+          "companyName": "",
+          "versionNum": "",
+          "author": "",
+          "namespacePrefix": "OSConsTools",
+          "importsNamespace1": "",
+          "importsNamespace2": "",
+          "importsNamespace3": "",
+          "importsNamespace4": "",
+          "importsNamespace5": "",
+          "importsNamespace6": "",
+          "importsNamespace7": "",
+          "importsNamespace8": "",
+          "wsAssemblyService": "",
+          "text1": "",
+          "text2": "",
+          "text3": "",
+          "text4": "",
+          "text5": "",
+          "text6": "",
+          "text7": "",
+          "text8": ""
+        },
+        "maintenanceUnit": "Finance Model Manager",
+        "maintenanceUnitMetadata": {
+          "name": "Finance Model Manager",
+          "description": "",
+          "uiPlatformType": "WpfOrSilverlight",
+          "accessGroup": "Everyone",
+          "maintenanceGroup": "Everyone",
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
+        },
+        "assemblyName": "FMM_UI_Assembly",
+        "compilerLanguage": "CSharp",
+        "dependencies": [
+          "GBL_UI_Assembly"
+        ],
+        "fileType": "CSharp",
+        "businessRuleType": "Unknown",
+        "compilerActionType": "Compile",
+        "filePath": "Assemblies/OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly/Dyn DB Components/FMM_Src_CellModel.cs",
+        "fileName": "FMM_Src_CellModel.cs",
+        "relativePath": "Dyn DB Components/FMM_Src_CellModel.cs",
+        "isEncrypted": false
+      }
+    },
+    {
+      "ruleName": "FMM_UI_Assembly.FMM_Comp_Svc.cs",
+      "ruleType": "WorkspaceAssembly",
+      "filePath": "Assemblies/OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly/Factory/Services/FMM_Comp_Svc.cs",
+      "isGlobal": false,
+      "businessRuleLanguageType": "CSharp",
+      "isEncrypted": false,
+      "referencedAssemblies": [],
+      "assemblyMetadata": {
+        "assemblyType": "WorkspaceAssembly",
+        "workspace": "OS Consultant Tools",
+        "workspaceMetadata": {
+          "name": "OS Consultant Tools",
+          "description": "",
+          "notes": "",
+          "accessGroup": "Everyone",
+          "maintenanceGroup": "Everyone",
+          "isShareableWorkspace": "true",
+          "sharedWorkspaceNames": "PPBE Planning Process",
+          "companyName": "",
+          "versionNum": "",
+          "author": "",
+          "namespacePrefix": "OSConsTools",
+          "importsNamespace1": "",
+          "importsNamespace2": "",
+          "importsNamespace3": "",
+          "importsNamespace4": "",
+          "importsNamespace5": "",
+          "importsNamespace6": "",
+          "importsNamespace7": "",
+          "importsNamespace8": "",
+          "wsAssemblyService": "",
+          "text1": "",
+          "text2": "",
+          "text3": "",
+          "text4": "",
+          "text5": "",
+          "text6": "",
+          "text7": "",
+          "text8": ""
+        },
+        "maintenanceUnit": "Finance Model Manager",
+        "maintenanceUnitMetadata": {
+          "name": "Finance Model Manager",
+          "description": "",
+          "uiPlatformType": "WpfOrSilverlight",
+          "accessGroup": "Everyone",
+          "maintenanceGroup": "Everyone",
+          "wsAssemblyService": "FMM_UI_Assembly.FMM_Svc_Factory"
+        },
+        "assemblyName": "FMM_UI_Assembly",
+        "compilerLanguage": "CSharp",
+        "dependencies": [
+          "GBL_UI_Assembly"
+        ],
+        "fileType": "CSharp",
+        "businessRuleType": "Unknown",
+        "compilerActionType": "Compile",
+        "filePath": "Assemblies/OS Consultant Tools/Finance Model Manager/FMM_UI_Assembly/Factory/Services/FMM_Comp_Svc.cs",
+        "fileName": "FMM_Comp_Svc.cs",
+        "relativePath": "Factory/Services/FMM_Comp_Svc.cs",
         "isEncrypted": false
       }
     }
