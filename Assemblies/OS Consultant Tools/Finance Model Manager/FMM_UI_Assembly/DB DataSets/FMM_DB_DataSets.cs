@@ -45,8 +45,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         break;
                     case DashboardDataSetFunctionType.GetDataSet:
 
-                        BRApi.ErrorLog.LogMessage(si, $"Hit {args.DataSetName}");
-
                         if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Cube_Names"))
                         {
                             return get_FMM_Cube_Names();
@@ -352,7 +350,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             try
             {
                 var CubeID = args.NameValuePairs.XFGetValue("CubeID", "-1");
-                BRApi.ErrorLog.LogMessage(si, $"HIt Here {CubeID}");
                 CubeID = "1";
                 var dt = new DataTable("Act_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -532,7 +529,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             try
             {
                 var CubeID = args.NameValuePairs.XFGetValue("CubeID", "-1");
-                BRApi.ErrorLog.LogMessage(si, $"HIt Here {CubeID}");
                 CubeID = "1";
                 var ActID = args.NameValuePairs.XFGetValue("ActID", "-1");
                 var dt = new DataTable("Models");
@@ -659,7 +655,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 AND ModelID = @ModelID
                                 ORDER BY Name";
 
-                    BRApi.ErrorLog.LogMessage(si, $"HIt: {sql} - {CubeID} - {ActID} - {ModelID}");
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
@@ -1108,7 +1103,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 //var runType = args.CustomSubstVars.XFGetValue("IV_FMM_Display_Add_Update_Approval_Step_Activity") == "0b3b2a3_FMM_Approval_Steps_Activities_Row2b_Header" ? "Update" : "Add";
                 var AddUpdateDBName = args.NameValuePairs.XFGetValue("AddUpdateDBName");
                 var runType = AddUpdateDBName == "0b3b2a2_FMM_Approval_Steps_Activities_Row2b_Header" ? "Update" : "Add";
-                BRApi.ErrorLog.LogMessage(si, "get reg config actID: " + ActID + " runType: " + runType);
                 var dt = new DataTable("Register_Profiles");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 if (ActID != "-1" && runType == "Add")

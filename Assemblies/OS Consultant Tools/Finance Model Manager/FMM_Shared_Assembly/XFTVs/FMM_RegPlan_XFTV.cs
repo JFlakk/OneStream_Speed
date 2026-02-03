@@ -79,7 +79,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
                         //timing end
                         watch.Stop();
-                        BRApi.ErrorLog.LogMessage(si, args.FunctionType.ToString() + " time elapsed: " + watch.ElapsedMilliseconds);
 
                         return customSubstVarsInUse;
 
@@ -99,12 +98,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
                         //timing end
                         watch.Stop();
-                        BRApi.ErrorLog.LogMessage(si, args.FunctionType.ToString() + " time elapsed: " + watch.ElapsedMilliseconds);
 
                         return tableView;
 
                     case SpreadsheetFunctionType.SaveTableView:
-                        BRApi.ErrorLog.LogMessage(si, "Save TableView");
                         var uState = BRApi.State.GetSessionState(si, false, ClientModuleType.Unknown, typeof(Dictionary<string, string>).Name, string.Empty, "SubstVars", si.UserName);
 
                         if (uState != null)
@@ -117,7 +114,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
                         //timing end
                         //                        watch.Stop();
-                        //                        BRApi.ErrorLog.LogMessage(si, args.FunctionType.ToString() + " time elapsed: " + watch.ElapsedMilliseconds);
 
                         return retVal;
 
@@ -184,7 +180,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
         #region Save Data
         private bool Save_registerTV(Dictionary<string, string> substVars, TableView tableView)
         {
-            //			BRApi.ErrorLog.LogMessage(si,"Hit Reg");
             var wfInitInfo = BRApi.Workflow.General.GetUserWorkflowInitInfo(si);
             var wfUnitInfo = wfInitInfo.GetSelectedWorkflowUnitInfo();
 
@@ -326,7 +321,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                     }
                     else
                     {
-                        //						BRApi.ErrorLog.LogMessage(si,"Hit Reg Else");
                         var new_Register_Plan_Row = Register_Plan_DT.NewRow();
                         new_Register_Plan_Row["RegisterPlanID"] = Guid.NewGuid();
                         new_Register_Plan_Row["WFScenarioName"] = scenarioName;
@@ -416,7 +410,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                         // Iterate over years
                         foreach (var yearConfig in yearConfigs)
                         {
-                            BRApi.ErrorLog.LogMessage(si, $"Hit Reg 4 {yearConfig}");
                             var selectedRegisterPlanDetailsUpdateRows = Register_Plan_Details_DT.Select($"RegisterPlanID = '{tvr["RegisterPlanID"].Value.ToString()}' AND " +
                             $"PlanUnits = '{planUnits}' AND Year = '{yearConfig}'");
 
@@ -518,7 +511,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                             {
                                 foreach (var item in tvr.Items)
                                 {
-                                    BRApi.ErrorLog.LogMessage(si, $"Hit: {item.Key} - {item.Value}");
                                 }
                                 var new_Register_Plan_Details_Row = Register_Plan_Details_DT.NewRow();
                                 new_Register_Plan_Details_Row["RegisterPlanID"] = Guid.NewGuid();
@@ -738,7 +730,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             string sql = $"{baseSelect} {fromClause} {whereClause}";
 
             // Log the SQL query
-            BRApi.ErrorLog.LogMessage(si, $"Generated SQL: {sql}");
 
             // Execute the SQL query and fetch results
             using (var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
@@ -751,7 +742,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             //		    {
             //		        foreach (var config in yearConfigs)
             //		        {
-            //		            BRApi.ErrorLog.LogMessage(si, $"Processing year {config.Year} with frequency {config.Frequency} and periods: {string.Join(", ", config.Periods)}");
             //		            // Add additional processing logic if necessary
             //		        }
             //		    }
@@ -774,7 +764,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             int wfStartTime = DetermineYear(startTime, "|WFTime|", "|WFStartTime|", isRangeTrackingFreq, () => BRApi.Finance.Scenario.GetWorkflowTime(si, scenarioKey));
             int wfEndTime = DetermineYear(endTime, "|WFTime|", "|WFEndTime|", isRangeTrackingFreq, () => BRApi.Finance.Scenario.GetWorkflowEndTime(si, scenarioKey));
 
-            BRApi.ErrorLog.LogMessage(si, $"wf start: {wfStartTime}, wf end: {wfEndTime}");
 
             // Populate YearTimePhasingConfig objects
             for (int year = wfStartTime; year <= wfEndTime; year++)
@@ -1013,8 +1002,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 // Check if "Param" column exists and is not null
                 if (colConfig.Table.Columns.Contains("Param") && colConfig["Param"] != DBNull.Value)
                 {
-                    //					BRApi.ErrorLog.LogMessage(si,"Hit: " + paramValue);
-                    //					BRApi.ErrorLog.LogMessage(si,"Hit: " + paramValue + " " + colConfig["Name"].ToString());
                     var paramValue = colConfig["Param"].ToString();
                     var parts = new List<string>();
                     parts = StringHelper.SplitString(paramValue, ".", "");
@@ -1030,7 +1017,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                     }
                     else
                     {
-                        //						BRApi.ErrorLog.LogMessage(si,"Hit Config Helper Else: " + paramValue + " - " + colConfig["Name"].ToString());
                         config.colParam = false;
                         config.WorkspaceName = string.Empty;
                         config.ParameterName = string.Empty;
@@ -1040,7 +1026,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 }
                 else
                 {
-                    //					BRApi.ErrorLog.LogMessage(si,"Hit Config Helper Outer Else:  - " + colConfig["Name"].ToString());
                     // Default values
                     config.colParam = false;
                     config.WorkspaceName = string.Empty;
@@ -1051,7 +1036,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 config.ColumnWidth = colConfig.Table.Columns.Contains("Format") && double.TryParse(colConfig["Format"].ToString(), out var columnWidth) ? columnWidth : 10;
                 config.Required = colConfig.Table.Columns.Contains("Required") && bool.TryParse(colConfig["Required"].ToString(), out var required) ? required : false;
 
-                //				BRApi.ErrorLog.LogMessage(si,"Hit Config Helper:  - " + colConfig["Name"].ToString() + "-" + config.colParam.ToString());
                 return config;
             }
         }
@@ -1094,7 +1078,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
             foreach (DataRow dr in foundReqColRows)
             {
                 reqCols.Add(new DataColumn(dr["Name"].ToString()));
-                //				BRApi.ErrorLog.LogMessage(si, $"Adding {dr["Name"].ToString()} to req col list");
             }
 
         }
@@ -1122,7 +1105,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
                 {
                     if (tvr[colName].Value != string.Empty)
                     {
-                        //						BRApi.ErrorLog.LogMessage(si, $"col {colName} filled with {tvr[colName].Value} val");
                         filledCols++;
                     }
                     else
@@ -1384,7 +1366,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Spreadshee
 
         //			DataColumn[] dataColsToAdd = getTimePhasingColumns(startTime, endTime);
 
-        //			BRApi.ErrorLog.LogMessage(si, "timephasing " + timePhasing);
 
 
         //			switch (timePhasing) {

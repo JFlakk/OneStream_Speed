@@ -232,15 +232,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 Process_Copy_ActConfig(ref changed_Result);
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Process_Model_Copy"):
-                                BRApi.ErrorLog.LogMessage(si, "Hit: " + args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ApprID", "0"));
                                 changed_Result = Process_Bulk_Calc_Unit();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Process_Calc_Copy"):
-                                BRApi.ErrorLog.LogMessage(si, "Hit: " + args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ApprID", "0"));
                                 Process_Calc_Copy(ref changed_Result);
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Copy_Model_Grp_Config"):
-                                BRApi.ErrorLog.LogMessage(si, "Hit: " + args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ApprID", "0"));
                                 changed_Result = Process_Bulk_Calc_Unit();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Select_Add_FMM_CubeID"):
@@ -591,7 +588,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             var rowsToUpdate = FMM_ActConfig_DT.Select($"ActID = {(int)xfRow.ModifiedDataRow["ActID"]}");
                             if (rowsToUpdate.Length > 0)
                             {
-                                BRApi.ErrorLog.LogMessage(si, "Hit");
                                 var rowToUpdate = rowsToUpdate[0];
                                 rowToUpdate["Name"] = (string)xfRow.ModifiedDataRow["Name"];
                                 rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
@@ -712,7 +708,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                             if (rowsToDelete.Length > 0)
                             {
-                                BRApi.ErrorLog.LogMessage(si, $"Hit found Delete {FMM_CalcUnitConfig_DT.Rows.Count}");
                                 foreach (var row in rowsToDelete)
                                 {
                                     Duplicate_CalcUnitConfig(CubeID, "Update Row", ref save_Result, "Delete", xfRow);
@@ -775,7 +770,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var CubeID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
                     var ActID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_ActID", "0").XFConvertToInt();
                     Duplicate_Unit_Config(CubeID, ActID, "Initiate", ref save_Result);
-                    BRApi.ErrorLog.LogMessage(si, "Hit: " + CubeID + " | " + ActID);
 
                     var sql = @"SELECT * 
                                 FROM FMM_Unit_Config
@@ -788,14 +782,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     };
                     cmdBuilder.FillDataTable(si, sqa, FMM_Unit_Config_DT, sql, sqlparams);
 
-                    BRApi.ErrorLog.LogMessage(si, "Hit: " + CubeID + " | " + ActID);
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
                     {
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
                         {
                             var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                             UnitID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Unit_Config", "UnitID");
-                            BRApi.ErrorLog.LogMessage(si, "Hit: " + CubeID + " | " + UnitID);
                             var new_DataRow = FMM_Unit_Config_DT.NewRow();
                             new_DataRow["CubeID"] = (int)xfRow.ModifiedDataRow["CubeID"];
                             new_DataRow["ActID"] = (int)xfRow.ModifiedDataRow["ActID"];
@@ -1029,7 +1021,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     };
                     cmdBuilder.FillDataTable(si, sqa, FMM_Reg_Config_DT, sql, sqlparams);
 
-                    BRApi.ErrorLog.LogMessage(si, "Hit: " + CubeID + " | " + ActID);
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
                     {
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Insert)
@@ -1159,7 +1150,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     };
                     cmdBuilder.FillDataTable(si, sqa, FMM_Col_Config_DT, sql, sqlparams);
 
-                    BRApi.ErrorLog.LogMessage(si, "Hit: " + CubeID + " | " + ActID);
                     foreach (XFEditedDataRow xfRow in save_Task_Info.EditedDataRows)
                     {
                         if (xfRow.InsertUpdateOrDelete == DbInsUpdateDelType.Update)
@@ -1241,7 +1231,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqa = new SqlDataAdapter();
                     var FMM_ApprConfig_DT = new DataTable();
                     var CubeID = save_Task_Info.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
-                    BRApi.ErrorLog.LogMessage(si, "Hit" + CubeID);
                     DuplicateConfig(CubeID, "Initiate", ref save_Result);
 
                     string sql = @"SELECT * 
@@ -1261,7 +1250,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             ApprID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprConfig", "ApprID");
 
                             var new_DataRow = FMM_ApprConfig_DT.NewRow();
-                            BRApi.ErrorLog.LogMessage(si, "Hit" + (int)xfRow.ModifiedDataRow["CubeID"]);
                             new_DataRow["CubeID"] = (int)xfRow.ModifiedDataRow["CubeID"];
                             new_DataRow["ApprID"] = ApprID;
                             new_DataRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
@@ -1668,7 +1656,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     if ((string)FMM_Src_Cell_DT_Row["SrcType"] == "Dynamic Calc")
                     {
-                        BRApi.ErrorLog.LogMessage(si, "Hit Dynamic");
                         gbl_BalCalc = "UnbalAlloc";
                     }
                     gbl_SrcCell_Dict.Add((int)FMM_Src_Cell_DT_Row["CellID"], (string)FMM_Src_Cell_DT_Row["OpenParens"].ToString().Trim() + "|" + (string)FMM_Src_Cell_DT_Row["MathOperator"].ToString().Trim() + " " + src_Cell_Drill_Down + "|" + (string)FMM_Src_Cell_DT_Row["CloseParens"].ToString().Trim());
@@ -1678,7 +1665,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     FMM_Src_Cell_DT_Row["Dyn_Calc_Script"] = src_Cell_Drill_Down;
                     FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer"] = src_Cell_Drill_Down;
                     FMM_Src_Cell_DT_Row["Unbal_Src_Cell_Buffer_Filter"] = unbal_Src_Cell_Buffer_Filter;
-                    BRApi.ErrorLog.LogMessage(si, "dyn calc script: " + src_Cell_Drill_Down);
                 }
 
 
@@ -1697,7 +1683,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             string override_Dest_Val = string.Empty;
             int override_Dest_Cnt = 0;
             int countSrcCells = 0;
-            BRApi.ErrorLog.LogMessage(si, "hit");
 
             string countSql = @"
                 SELECT COUNT(*) as Count 
@@ -1901,21 +1886,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                             src_Buffer_Filter += (src_Buffer_FilterCnt == 0 ? "[" : ",[") + filterValue + "]";
                                             curr_Cube_Buffer_FilterCnt++;
                                             src_Buffer_FilterCnt++;
-                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + curr_Cube_Buffer_Filter);
                                         }
                                         else
                                         {
-                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + curr_Cube_Buffer_Filter);
                                             curr_Cube_Buffer_Filter += (curr_Cube_Buffer_FilterCnt == 0 ? "[" : ",[") + filterValue + "]";
                                             src_Buffer_Filter += (src_Buffer_FilterCnt == 0 ? "[" : ",[") + filterValue + "]";
                                             curr_Cube_Buffer_FilterCnt++;
                                             src_Buffer_FilterCnt++;
-                                            BRApi.ErrorLog.LogMessage(si, "Hit: " + curr_Cube_Buffer_Filter);
                                         }
                                     }
                                 }
                             }
-                            BRApi.ErrorLog.LogMessage(si, "Hit: " + curr_Cube_Buffer_Filter);
                             FMM_Dest_Cell_DT_Row["Curr_Cube_Buffer_Filter"] = curr_Cube_Buffer_Filter;
                             FMM_Dest_Cell_DT_Row["BufferFilter"] = src_Buffer_Filter;
                         }
@@ -2072,7 +2053,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     }
                     else
                     {
-                        BRApi.ErrorLog.LogMessage(si, "No rows found in DataTable");
                     }
                 }
             }
@@ -2088,7 +2068,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var sortedDict = gbl_SrcCell_Dict.OrderBy(entry => entry.Key);
 
-                BRApi.ErrorLog.LogMessage(si, "Hit Globals 1" + gbl_BalCalc);
 
                 int calcIterations = 1;
                 foreach (KeyValuePair<int, string> calcSegment in sortedDict)
@@ -2103,7 +2082,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                         else if (gbl_BalCalc == "Unbalanced" || gbl_BalCalc == "UnbalAlloc")
                         {
-                            BRApi.ErrorLog.LogMessage(si, "Hit Globals Unbal");
                             gbl_Unbal_Calc += StringHelper.ReplaceString(StringHelper.ReplaceString(gbl_Unbal_Calc_Dict[calcSegment.Key], "-Calculation-", "SrcBufferValue" + calcIterations.ToString(), true), "|", "", true);
                         }
                     }
@@ -3127,19 +3105,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         public void Insert_Col_Default_Rows(int CubeID, int ActID, int RegConfigID)
         {
-            BRApi.ErrorLog.LogMessage(si, "Hit Defaults: " + "|" + si.AuthToken.AuthSessionID.ToString());
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
-            BRApi.ErrorLog.LogMessage(si, "Hit Defaults 2");
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
             {
-                BRApi.ErrorLog.LogMessage(si, "Hit Defaults 2");
                 var sqlMaxIdGetter = new SQL_GBL_Get_Max_ID(si, connection);
                 var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                 var sqa = new SqlDataAdapter();
                 var FMM_Col_Config_DT = new DataTable();
                 connection.Open();
                 int os_Col_ID = sqlMaxIdGetter.Get_Max_ID(si, "FMM_Col_Config", "Col_ID");
-                BRApi.ErrorLog.LogMessage(si, "Hit Defaults 2");
                 string selectQuery_colSetup = @"
                     SELECT * 
                     FROM FMM_Col_Config 
@@ -3153,7 +3127,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     new SqlParameter("@ActID", SqlDbType.Int) { Value = ActID },
                     new SqlParameter("@RegConfigID", SqlDbType.Int) { Value = RegConfigID }
                 };
-                BRApi.ErrorLog.LogMessage(si, "Hit Defaults 2");
                 cmdBuilder.FillDataTable(si, sqa, FMM_Col_Config_DT, selectQuery_colSetup, parameters_colSetup);
                 var columnConfigDefaults = new ColumnConfigDefaults();
                 foreach (var columnConfig in columnConfigDefaults.DefaultColumns)
@@ -3180,7 +3153,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     FMM_Col_Config_DT.Rows.Add(new_DataRow);
                 }
-                BRApi.ErrorLog.LogMessage(si, "Hit Defaults 2");
                 cmdBuilder.UpdateTableSimple(si, "FMM_Col_Config", FMM_Col_Config_DT, sqa, "Col_ID");
             }
         }
@@ -3315,7 +3287,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                BRApi.ErrorLog.LogMessage(si, "hit: SaVE");
                 var save_Result = new XFSelectionChangedTaskResult();
                 var Cube = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_All_Cube_Names", args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeConfig_Name", string.Empty));
                 var ScenType = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfig_ScenType", args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeConfig_ScenType", string.Empty));
@@ -3387,9 +3358,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateUser"] = si.UserName;
 
                         FMM_CubeConfig_DT.Rows.Add(new_DataRow);
-                        BRApi.ErrorLog.LogMessage(si, "hit: " + new_CubeID);
                         cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa, "CubeID");
-                        BRApi.ErrorLog.LogMessage(si, "hit: " + new_CubeID);
                         save_Result.IsOK = true;
                         save_Result.Message = "New Cube Config Saved.";
                         save_Result.ShowMessageBox = true;
@@ -3469,7 +3438,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
                         var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
@@ -3491,7 +3459,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                         FROM FMM_Models 
                                         WHERE ModelID = @ModelID";
 
-                        BRApi.ErrorLog.LogMessage(si, "Hit: " + sql + "-" + new_ModelID);
 
                         var sqlparams = new SqlParameter[]
                         {
@@ -3517,7 +3484,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         {
                             if (FMM_Models_DT.Rows.Count > 0)
                             {
-                                BRApi.ErrorLog.LogMessage(si, "Hit this");
                                 var rowToUpdate = FMM_Models_DT.Rows[0];
                                 rowToUpdate["Name"] = new_Model_Name;
                                 rowToUpdate["Status"] = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Status", string.Empty);
@@ -3526,10 +3492,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
 
                         }
-                        BRApi.ErrorLog.LogMessage(si, "Hit 6: ");
 
                         cmdBuilder.UpdateTableSimple(si, "FMM_Models", FMM_Models_DT, sqa, "ModelID");
-                        BRApi.ErrorLog.LogMessage(si, "Hit 7: ");
                     }
                 }
 
@@ -3554,7 +3518,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
                         var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
@@ -3569,7 +3532,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                         FROM FMM_ModelGrps 
                                         WHERE Model_Grp_ID = @Model_Grp_ID";
 
-                        BRApi.ErrorLog.LogMessage(si, "Hit: " + sql);
 
                         var sqlparams = new SqlParameter[]
                         {
@@ -3588,10 +3550,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateDate"] = DateTime.Now;
                         new_DataRow["UpdateUser"] = si.UserName;
                         FMM_ModelGrps_DT.Rows.Add(new_DataRow);
-                        BRApi.ErrorLog.LogMessage(si, "Hit 6: ");
 
                         cmdBuilder.UpdateTableSimple(si, "FMM_ModelGrps", FMM_ModelGrps_DT, sqa, "Model_Grp_ID");
-                        BRApi.ErrorLog.LogMessage(si, "Hit 7: ");
                     }
                 }
 
@@ -3616,7 +3576,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
                         var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
@@ -3631,7 +3590,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                         FROM FMM_Model_Grp_Seqs 
                                         WHERE Model_Grp_Seq_ID = @Model_Grp_Seq_ID";
 
-                        BRApi.ErrorLog.LogMessage(si, "Hit: " + sql);
 
                         var sqlparams = new SqlParameter[]
                         {
@@ -3650,10 +3608,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateDate"] = DateTime.Now;
                         new_DataRow["UpdateUser"] = si.UserName;
                         FMM_Model_Grp_Seqs_DT.Rows.Add(new_DataRow);
-                        BRApi.ErrorLog.LogMessage(si, "Hit 6: ");
 
                         cmdBuilder.UpdateTableSimple(si, "FMM_Model_Grp_Seqs", FMM_Model_Grp_Seqs_DT, sqa, "Model_Grp_Seq_ID");
-                        BRApi.ErrorLog.LogMessage(si, "Hit 7: ");
                     }
                 }
 
@@ -3669,22 +3625,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: ");
                 var save_Result = new XFSelectionChangedTaskResult();
                 var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVars;
                 var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_CubeID", "0"));
-                BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: ");
                 var Model_Grp_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_ID", "0"));
-                BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: ");
                 var ModelID_List = custom_SubstVars.XFGetValue("IV_FMM_ModelID_Selection", "0");
-                BRApi.ErrorLog.LogMessage(si, "Hit Model Assignment: " + custom_SubstVars.XFGetValue("IV_FMM_ModelID_Selection", "0") + " - " + CubeID);
                 int new_OS_Model_Grp_Assign_ID = 0;
                 if (ModelID_List.Length > 0 && new_OS_Model_Grp_Assign_ID == 0)
                 {
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
                         var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
@@ -3733,7 +3684,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
 
                         cmdBuilder.UpdateTableSimple(si, "FMM_ModelGrpAssign", FMM_ModelGrpAssign_DT, sqa, "Model_Grp_Assign_ID");
-                        BRApi.ErrorLog.LogMessage(si, "Model Group Assignments saved.");
                     }
                 }
 
@@ -3755,14 +3705,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var CalcUnitID_List = custom_SubstVars.XFGetValue("IV_FMM_Calc_Unit_Selection", "0");
                 var Model_Grp_ID_List = custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_ID_Selection");
                 var Model_Grp_Seq_ID = custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_Seq_ID");
-                BRApi.ErrorLog.LogMessage(si, "Hit Grup Model Assignment: " + custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_ID_Selection") + " - " + CubeID);
                 int new_Calc_Unit_Assign_ID = 0;
                 if (Model_Grp_ID_List.Length > 0 && new_Calc_Unit_Assign_ID == 0)
                 {
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
                         var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
@@ -3815,7 +3763,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
 
                         cmdBuilder.UpdateTableSimple(si, "FMM_Calc_Unit_Assign", FMM_Calc_Unit_Assign_DT, sqa, "Calc_Unit_Assign_ID");
-                        BRApi.ErrorLog.LogMessage(si, "Model Group Assignments saved.");
                     }
                 }
 
@@ -3837,7 +3784,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var ApprID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_ApprID", "0"));
                 var wfProfile_Step = custom_SubstVars.XFGetValue("IV_FMM_trv_Appr_Step_WFProfile", string.Empty);
 
-                BRApi.ErrorLog.LogMessage(si, "Hit Approval Step: " + CubeID + "|" + ApprID + "|" + wfProfile_Step);
                 var new_ApprStepID = 0;
 
                 if (CubeID > 0 && ApprID > 0 && wfProfile_Step != string.Empty && new_ApprStepID == 0)
@@ -3845,7 +3791,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                     using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                     {
-                        BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
                         var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                         var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                         connection.Open();
@@ -3899,10 +3844,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             ScenarioTypeId id = entry.Key;
                             string suffix = entry.Value;
 
-                            BRApi.ErrorLog.LogMessage(si, $"ID: {id} | Suffix: {suffix}");
                         }
 
-                        BRApi.ErrorLog.LogMessage(si, $"Hit: {rootProfileName}_{wfProfileSuffix} - {cubeScenarioTypeId.ToString()}");
                         sql = @"WITH RecursiveCTE AS (
                                 SELECT 
                                     prof.ProfileKey,
@@ -3949,14 +3892,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_Appr_Step_WFProfile_DT, sql, sqlparams);
 
-                        BRApi.ErrorLog.LogMessage(si, $"Hit: {FMM_Appr_Step_WFProfile_DT.Rows.Count}");
                         var filteredWFProfiles = from profile in FMM_Appr_Step_WFProfile_DT.AsEnumerable()
                                                  where profile["ProfileName"].ToString().Contains(wfProfile_Step)
                                                  select profile;
 
                         foreach (var profile in filteredWFProfiles)
                         {
-                            BRApi.ErrorLog.LogMessage(si, "Hit");
                             var new_DataRow = FMM_Appr_Step_Config_DT.NewRow();
                             new_DataRow["CubeID"] = CubeID;
                             new_DataRow["ApprID"] = ApprID;
@@ -3985,7 +3926,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         cmdBuilder.UpdateTableSimple(si, "FMM_Appr_Step_Config", FMM_Appr_Step_Config_DT, sqa, "ApprStepID");
 
 
-                        BRApi.ErrorLog.LogMessage(si, "Approval Step Assignments and Cube Map saved.");
                     }
                 }
                 return save_Result;
@@ -4001,7 +3941,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             try
             {
 
-                BRApi.ErrorLog.LogMessage(si, "Save approval step activity runtype: " + runType);
                 var save_Result = new XFSelectionChangedTaskResult();
                 var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
                 var ActID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_ActID", "0"));
@@ -4025,11 +3964,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqlparams = new SqlParameter[] { };
 
 
-                    BRApi.ErrorLog.LogMessage(si, "save data: " + ActID + " " + ApprID + " " + ApprStepID + " " + RegConfigID);
 
                     if (runType == "New" && ActID > 0 && ApprID > 0 && ApprStepID >= 0 && RegConfigID > 0) // new row
                     {
-                        BRApi.ErrorLog.LogMessage(si, "Hit: MaxID");
                         var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                         var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                         connection.Open();
@@ -4076,7 +4013,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         cmdBuilder.UpdateTableSimple(si, "FMM_Act_Appr_Step_Config", FMM_Act_Appr_Step_Config_DT, sqa, "Appr_Step_ActID");
 
 
-                        BRApi.ErrorLog.LogMessage(si, "Approval Step Assignments and Cube Map saved.");
                     }
                     else if (runType == "Update" && ActID > 0)
                     { // existing row
@@ -4095,7 +4031,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         cmdBuilder.FillDataTable(si, sqa, FMM_Act_Appr_Step_Config_DT, sql, sqlparams);
 
-                        BRApi.ErrorLog.LogMessage(si, "mcm: " + FMM_Act_Appr_Step_Config_DT.Rows[0]["RegConfigID"]);
                         FMM_Act_Appr_Step_Config_DT.Rows[0]["RegConfigID"] = RegConfigID;
                         FMM_Act_Appr_Step_Config_DT.Rows[0]["UpdateDate"] = DateTime.Now;
                         FMM_Act_Appr_Step_Config_DT.Rows[0]["UpdateUser"] = si.UserName;
@@ -4198,7 +4133,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             var src_CubeID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_CubeID", "0"));
             var tgt_CubeID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_CubeID", "0"));
-            BRApi.ErrorLog.LogMessage(si, "Hit Copy: " + src_CubeID + "-" + tgt_CubeID);
             #region "Define Data Tables"
             var src_FMM_ActConfig_DT = new DataTable();
             var tgt_FMM_ActConfig_DT = new DataTable();
@@ -4352,7 +4286,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 #region "Copy Activity Data"
                 foreach (DataRow activity_ConfigRow in src_FMM_ActConfig_DT.Rows)
                 {
-                    BRApi.ErrorLog.LogMessage(si, "Hti Copy");
                     CopyActivities(activity_ConfigRow, ref tgt_FMM_ActConfig_DT, tgt_CubeID, ref XFCopyTaskResult);
                     var curr_srcActivityID = activity_ConfigRow["ActID"] != DBNull.Value
                                             ? (int)activity_ConfigRow["ActID"]
@@ -4398,7 +4331,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         CopyModels(models_ConfigRow, ref tgt_FMM_Models_DT, tgt_CubeID, ref XFCopyTaskResult);
                         foreach (DataRow calc_ConfigRow in src_FMM_Calc_Config_DT.Select($"ModelID = {curr_srcModelID}"))
                         {
-                            BRApi.ErrorLog.LogMessage(si, "Hit Calc");
                             var curr_srcCalcID = calc_ConfigRow["CalcID"] != DBNull.Value
                             ? (int)calc_ConfigRow["CalcID"]
                             : -1; // Handle null UnitIDs as needed
@@ -4447,7 +4379,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var src_CubeID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_CubeID", "0"));
             var tgt_CubeID = Convert.ToInt32(args.NameValuePairs.XFGetValue("tgt_CubeID", "0"));
             var src_ActID = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_ActID", "0"));
-            BRApi.ErrorLog.LogMessage(si, "Hit Copy: " + src_CubeID + "-" + tgt_CubeID);
             #region "Define Data Tables"
             var src_FMM_ActConfig_DT = new DataTable();
             var tgt_FMM_ActConfig_DT = new DataTable();
@@ -4602,7 +4533,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 #region "Copy Activity Data"
                 foreach (DataRow activity_ConfigRow in src_FMM_ActConfig_DT.Rows)
                 {
-                    BRApi.ErrorLog.LogMessage(si, "Hti Copy");
                     CopyActivities(activity_ConfigRow, ref tgt_FMM_ActConfig_DT, tgt_CubeID, ref XFCopyTaskResult);
                     var curr_srcActivityID = activity_ConfigRow["ActID"] != DBNull.Value
                                             ? (int)activity_ConfigRow["ActID"]
@@ -4648,7 +4578,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         CopyModels(models_ConfigRow, ref tgt_FMM_Models_DT, tgt_CubeID, ref XFCopyTaskResult);
                         foreach (DataRow calc_ConfigRow in src_FMM_Calc_Config_DT.Select($"ModelID = {curr_srcModelID}"))
                         {
-                            BRApi.ErrorLog.LogMessage(si, "Hit Calc");
                             var curr_srcCalcID = calc_ConfigRow["CalcID"] != DBNull.Value
                             ? (int)calc_ConfigRow["CalcID"]
                             : -1; // Handle null UnitIDs as needed
@@ -4730,7 +4659,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var src_CalcIDs = Convert.ToInt32(args.NameValuePairs.XFGetValue("src_CalcIDs", "0"));
             gbl_Curr_ActID = tgt_ActID;
             gbl_Curr_ModelID = tgt_ModelID;
-            BRApi.ErrorLog.LogMessage(si, "Hit Copy Calc: " + src_CubeID + "-" + tgt_CubeID);
             #region "Define Data Tables"
             var src_FMM_Calc_Config_DT = new DataTable();
             var tgt_FMM_Calc_Config_DT = new DataTable();
@@ -4792,7 +4720,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 #region "Copy Calc Data"
                 foreach (DataRow calc_ConfigRow in src_FMM_Calc_Config_DT.Rows)
                 {
-                    BRApi.ErrorLog.LogMessage(si, "Hit Calc");
                     var curr_srcCalcID = calc_ConfigRow["CalcID"] != DBNull.Value
                     ? (int)calc_ConfigRow["CalcID"]
                     : -1; // Handle null UnitIDs as needed
@@ -5250,7 +5177,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         }
         private void CopyApprovals(DataRow src_FMM_ApprConfig_Row, ref DataTable tgt_FMM_ApprConfig_DT, int targetCubeID, ref XFSelectionChangedTaskResult XFCopyTaskResult)
         {
-            BRApi.ErrorLog.LogMessage(si, "Hit Approval");
             var row_Status = "Build";
             bool isDuplicate = tgt_FMM_ApprConfig_DT.AsEnumerable()
                 .Any(row => row["Name"].ToString() == src_FMM_ApprConfig_Row["Name"].ToString() &&
