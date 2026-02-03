@@ -54,7 +54,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             string filterVal = args.NameValuePairs.XFGetValue(NVPFilter, string.Empty);
                             string searchVal = args.NameValuePairs.XFGetValue(NVPSearch, string.Empty);
 
-                            //BRApi.ErrorLog.LogMessage(si, $"DE: filter: {filterVal} search: {searchVal}");
 
                             if (filterVal != string.Empty)
                             {

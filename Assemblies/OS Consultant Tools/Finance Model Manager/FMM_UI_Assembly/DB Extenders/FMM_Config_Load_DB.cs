@@ -248,7 +248,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch
             {
-                BRApi.ErrorLog.LogMessage(si, "No cube selected likely, no calc information available");
             }
 
             if (CalcType_DT.Rows.Count > 0)
@@ -277,15 +276,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             //			DashboardParamDisplayInfo paramInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, taskResult.ModifiedCustomSubstVars, args.PrimaryDashboard.WorkspaceID, "BL_FMM_ModelID");
             //			string modelID = taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ModelID");
-            //			BRApi.ErrorLog.LogMessage(si, "model ID: " + modelID);
 
             //			if (paramInfo?.ComboBoxItemsForBoundList?.Count > 0) {
             //				modelName = paramInfo.ComboBoxItemsForBoundList.First().Value.ToString();
             //				string tempModelName = paramInfo.ComboBoxItemsForBoundList.Find(x => {
             //					return x.Value == modelID;
             //				}).Name;
-            //				BRApi.ErrorLog.LogMessage(si, "model name temp: " + tempModelName);
-            //				BRApi.ErrorLog.LogMessage(si, "model name param: " + modelName);
             //			}
 
             try
@@ -296,7 +292,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
             catch
             {
-                BRApi.ErrorLog.LogMessage(si, "error converting");
             }
 
 
@@ -337,7 +332,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 modelName = ModelDT.Rows[0]["Name"].ToString();
             }
-            BRApi.ErrorLog.LogMessage(si, "setting model name: " + modelName);
 
             UpdateCustomSubstVar(ref taskResult, "IV_FMM_Model_Name", modelName);
         }
@@ -408,7 +402,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             //TODO: check selectedDashboard based on different higher level menu other than DL_FMM_Cube_Config_Options
             string DialogSelection = args.PrimaryDashboard.Name;
-            BRApi.ErrorLog.LogMessage(si, DialogSelection);
 
             string MainMenuSelection = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) != string.Empty ? args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) : args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue(MainMenuParam);
 
@@ -424,10 +417,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var ARCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved;
             var PRCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun;
 
-            //			BRApi.ErrorLog.LogMessage(si, "Key count: " + taskResult.ModifiedCustomSubstVars.Keys.Count);
             foreach (string param in taskResult.ModifiedCustomSubstVars.Keys)
             {
-                BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
             }
 
 
@@ -439,9 +430,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     foreach (string param in tempDependencyDict[dependencyDepth])
                     {
-                        BRApi.ErrorLog.LogMessage(si, "searching for: " + param + selectedDashboard);
-                        BRApi.ErrorLog.LogMessage(si, "AR: " + ARCustomSubst.XFGetValue(param) + " " + (ARCustomSubst.XFGetValue(param) == string.Empty).ToString());
-                        BRApi.ErrorLog.LogMessage(si, "PR: " + PRCustomSubst.XFGetValue(param) + " " + (PRCustomSubst.XFGetValue(param) == string.Empty).ToString());
 
                         bool ARContainsKey = ARCustomSubst.ContainsKey(param);
                         bool PRContainsKey = PRCustomSubst.ContainsKey(param);
@@ -462,21 +450,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         {
                             if (mappedParam != "")
                             {
-                                //								BRApi.ErrorLog.LogMessage(si, "mapped Param exists for: " + param + " mapped: " + mappedParam + " for dashboard: " + selectedDashboard);
                                 string ARMappedVal = ARCustomSubst.XFGetValue(mappedParam, "");
                                 string PRMappedVal = PRCustomSubst.XFGetValue(mappedParam, "");
 
-                                //								BRApi.ErrorLog.LogMessage(si, "ARval: " + ARVal + " PRval: " + PRVal + " MappedAR: " + ARMappedVal + " MappedPR: " + PRMappedVal);
 
                                 //check AR and PR for values
                                 if (PRContainsKey && isValidParamValue(PRVal) && isValidParamValue(PRMappedVal))
                                 {
                                     if (PRVal != PRMappedVal)
                                     {
-                                        //										BRApi.ErrorLog.LogMessage(si, "Prior dependency changed for: " + param);
                                         priorDependencyChanged = true;
                                     }
-                                    //									BRApi.ErrorLog.LogMessage(si, "setting PRVal for: " + param + " and " + mappedParam);
                                     UpdateCustomSubstVar(ref taskResult, param, PRVal);
                                     UpdateCustomSubstVar(ref taskResult, mappedParam, PRVal);
 
@@ -485,11 +469,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 {
                                     if (ARVal != ARMappedVal)
                                     {
-                                        //										BRApi.ErrorLog.LogMessage(si, "Prior dependency changed for: " + param);
                                         priorDependencyChanged = true;
                                     }
 
-                                    //									BRApi.ErrorLog.LogMessage(si, "setting ARVal for: " + param + " and " + mappedParam);
                                     UpdateCustomSubstVar(ref taskResult, param, ARVal);
                                     UpdateCustomSubstVar(ref taskResult, mappedParam, ARVal);
 
@@ -497,13 +479,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 }
                                 else if (ARContainsKey && isValidParamValue(ARVal))
                                 {
-                                    //									BRApi.ErrorLog.LogMessage(si, "Hit 2");
                                     UpdateCustomSubstVar(ref taskResult, param, ARVal);
                                     UpdateCustomSubstVar(ref taskResult, mappedParam, ARVal);
                                 }
                                 else if (PRContainsKey && isValidParamValue(PRVal))
                                 {
-                                    //									BRApi.ErrorLog.LogMessage(si, "Hit 3");
                                     UpdateCustomSubstVar(ref taskResult, param, PRVal);
                                     UpdateCustomSubstVar(ref taskResult, mappedParam, PRVal);
                                 }
@@ -511,7 +491,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 {
                                     //get default param value
                                     string paramDefault = getDefaultParam(param, taskResult.ModifiedCustomSubstVars);
-                                    //									BRApi.ErrorLog.LogMessage(si, "Hit 4");
                                     UpdateCustomSubstVar(ref taskResult, param, paramDefault);
                                     UpdateCustomSubstVar(ref taskResult, mappedParam, paramDefault);
 
@@ -578,7 +557,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         }
                         else
                         {
-                            //							BRApi.ErrorLog.LogMessage(si,"Prior dependency changed, setting default for: " + param);
                             // get default param if prior dependency changed
                             string paramDefault = getDefaultParam(param, taskResult.ModifiedCustomSubstVars);
                             UpdateCustomSubstVar(ref taskResult, param, paramDefault);
@@ -619,11 +597,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 
             DashboardParamDisplayInfo paramInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, customsubstvars, args.PrimaryDashboard.WorkspaceID, param);
-            //			BRApi.ErrorLog.LogMessage(si, "testing stuff for " + param + ": " + paramInfo?.ComboBoxItemsForBoundList?.Count);
-            //BRApi.ErrorLog.LogMessage(si, "testing stuff 2: " + param + " " + paramInfo?.ListBoxItemsForBoundList?.Count);
             if (paramInfo?.ComboBoxItemsForBoundList?.Count > 0)
             {
-                //				BRApi.ErrorLog.LogMessage(si,"Hit " + paramInfo.ComboBoxItemsForBoundList.First().Value.ToString());
                 return paramInfo.ComboBoxItemsForBoundList.First().Value.ToString();
             }
 

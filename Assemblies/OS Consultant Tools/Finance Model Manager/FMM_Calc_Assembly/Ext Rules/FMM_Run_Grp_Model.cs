@@ -40,7 +40,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                 var accountValue = args.NameValuePairs.XFGetValue("Account", "NA");
                 var flowValue = args.NameValuePairs.XFGetValue("Flow", "NA");
 
-                BRApi.ErrorLog.LogMessage(si, "Hit: Entity: " + entityValue + " Scenario: " + scenarioValue + " Model_Grp_Seq: " + modelGroupSeqValue);
 
                 // SQL query to fetch the required data based on the parameters passed
                 var calc_Model_SQL = @"
@@ -157,7 +156,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                             var calcType = ExecutionFlow[execLvl].Keys.ElementAt(0);
                             var models = ExecutionFlow[execLvl][calcType];
 
-                            //BRApi.ErrorLog.LogMessage(si, "modelID list (converted) : " + string.Join(", ", models));
 
 
 
@@ -186,7 +184,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 									{ "FMM_ModelIDs" , string.Join(", ", models)}
                                 };
 
-                                //BRApi.ErrorLog.LogMessage(si, "cube name: " + row["CubeName"].ToString());
 
                                 var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspace_ID, "Run_FMM_Custom_Cube_Calcs", customSubstVars_Dict);
                             }

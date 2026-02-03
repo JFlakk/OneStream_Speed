@@ -197,7 +197,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 }
                 else
                 {
-                    BRApi.ErrorLog.LogMessage(si, "No matching approval steps found");
                 }
 
             }

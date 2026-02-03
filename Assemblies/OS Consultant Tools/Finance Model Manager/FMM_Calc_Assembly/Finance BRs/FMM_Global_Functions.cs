@@ -157,8 +157,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string DriverDB_UD8 = "NoPassedValue")
         {
             DataBufferCell DriverDBCell = new DataBufferCell(srccell);
-            BRApi.ErrorLog.LogMessage(si, "db cell val: " + DriverDBCell.CellAmount);
-            BRApi.ErrorLog.LogMessage(si, "vals: " + DriverDB_Acct + " " + DriverDB_Flow + " " + DriverDB_Origin + " " + DriverDB_UD1 + " " + DriverDB_UD2 + " " + DriverDB_UD3 + " " + DriverDB_UD4 + " " + DriverDB_UD5 + " " + DriverDB_UD6 + " " + DriverDB_UD7 + " " + DriverDB_UD8);
 
             if (!string.IsNullOrEmpty(DriverDB_Acct) && DriverDB_Acct != "NoPassedValue")
             {
@@ -217,7 +215,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
             else
             {
-                BRApi.ErrorLog.LogMessage(si, "did not find a cell");
                 return 0;
             }
         }
@@ -822,23 +819,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             // Process the parameters as needed in your method
 
             // Example usage of the parameters
-            BRApi.ErrorLog.LogMessage(si, $"Processing CalcID: {CalcID}");
-            BRApi.ErrorLog.LogMessage(si, $"Balanced Buffer Calc: {bal_buffer_calc}, Unbalanced Calc: {UnbalCalc}");
 
             // Log MemberList 1 details
-            BRApi.ErrorLog.LogMessage(si, $"MemberList 1: Dim: {memberList1Dim}, Filter: {memberList1Filter}, DimType: {memberList1DimType}, DestFilter: {memberList1DestFilter}");
 
             // Log MemberList 2 details
-            if (memberList2Dim != null)
-                BRApi.ErrorLog.LogMessage(si, $"MemberList 2: Dim: {memberList2Dim}, Filter: {memberList2Filter}, DimType: {memberList2DimType}, DestFilter: {memberList2DestFilter}");
 
             // Log MemberList 3 details
-            if (memberList3Dim != null)
-                BRApi.ErrorLog.LogMessage(si, $"MemberList 3: Dim: {memberList3Dim}, Filter: {memberList3Filter}, DimType: {memberList3DimType}, DestFilter: {memberList3DestFilter}");
 
             // Log MemberList 4 details
-            if (memberList4Dim != null)
-                BRApi.ErrorLog.LogMessage(si, $"MemberList 4: Dim: {memberList4Dim}, Filter: {memberList4Filter}, DimType: {memberList4DimType}, DestFilter: {memberList4DestFilter}");
 
             // Additional processing logic based on the new parameters can be added here
         }
@@ -868,8 +856,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string memberList4DestFilter
         )
         {
-            //BRApi.ErrorLog.LogMessage(si, "Executing Calc_Ext_UnbalBuffer");
-            //BRApi.ErrorLog.LogMessage(si, "calc id: "  + CalcID.ToString());
 
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
             using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -1065,7 +1051,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     for (int i = 0; i < unbal_srcreader.FieldCount; i++)
                     {
                         string tempstr = unbal_srcreader[i].ToString();
-                        //BRApi.ErrorLog.LogMessage(si, "field name: " + unbal_srcreader.GetName(i) + " field val: " + tempstr);
                         if (tempstr.XFContainsIgnoreCase(memFilterStringPrefix))
                         {
                             int listNum = Convert.ToInt16(tempstr.Substring(unbal_srcreader[i].ToString().IndexOf(memFilterStringPrefix) + memFilterStringPrefix.Length, 1));
@@ -1240,14 +1225,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var os_Curr_Cube_Buffer = destrow["OS_Curr_Cube_Buffer_Filter"].ToString();
                 var Buffer = destrow["BufferFilter"].ToString();
 
-                //BRApi.ErrorLog.LogMessage(si, "balBufferCalc: " + bal_buffer_calc + " srcbuff: " + Buffer);
-                //BRApi.ErrorLog.LogMessage(si, "entity: " + api.Pov.Entity.Name + " time: " + api.Pov.Time.Name);
 
                 var balancedBuffer = api.Data.GetDataBufferUsingFormula($"FilterMembers({bal_buffer_calc},{Buffer})");
                 //balancedBuffer.LogDataBuffer(api, "databuffer:",500);
                 if (balancedBuffer.DataBufferCells.Values.Count > 0)
                 {
-                    BRApi.ErrorLog.LogMessage(si, "balancedBuffer cell count: " + balancedBuffer.DataBufferCells.Values.Count);
                     balancedBuffer.LogDataBuffer(api, "balbuffer", 500);
                 }
 
@@ -1259,12 +1241,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     var destCell = new DataBufferCell(UpdateCellDefinition(balBuffer_Cell, destInfos[0], destInfos[4], destInfos[2],
                         destInfos[3], destInfos[5], destInfos[6], destInfos[7], destInfos[8], destInfos[9], destInfos[10], destInfos[11], destInfos[12]));
 
-                    //						BRApi.ErrorLog.LogMessage(si, "prechange acct: " + destCell.GetAccountName(api));
                     //						destCell.SetAccount(api, acct);
-                    //						BRApi.ErrorLog.LogMessage(si, "post acct: " + destCell.GetAccountName(api));
 
-                    BRApi.ErrorLog.LogMessage(si, "dest cell info: " + destCell.DataBufferCellPk.GetMemberScript(api));
-                    BRApi.ErrorLog.LogMessage(si, "balbuff cell val: " + balBuffer_Cell.CellAmount);
 
 
                     //Call new function, pass in balBuffer_Cell and first unbal src row...  Build up calc string.  Run math  
@@ -1288,11 +1266,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                 string searchName = $"SrcBuffer{i}";
                                 var resultBuffer = new DataBuffer();
 
-                                BRApi.ErrorLog.LogMessage(si, "searching for " + searchName);
                                 if (unbal_srcdataBuffers.ContainsKey(searchName))
                                 {
                                     // The key was found, and resultBuffer now holds the corresponding DataBuffer
-                                    BRApi.ErrorLog.LogMessage(si, "Buffer found for the name: " + searchName);
                                     resultBuffer = unbal_srcdataBuffers.XFGetValue(searchName, resultBuffer);
                                     resultBuffer.LogDataBuffer(api, "result buffer", 500);
                                 }
@@ -1304,10 +1280,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         }
                         else
                         {
-                            BRApi.ErrorLog.LogMessage(si, "Did not find src row");
                         }
                     }
-                    BRApi.ErrorLog.LogMessage(si, "final express: " + expression);
                     // Use the Compute method to evaluate the expression
                     var result = table.Compute(expression, string.Empty);
                     UpdateValue(ref destCell, ref currCubeBuffer, ref destBuffer, Convert.ToDecimal(result));

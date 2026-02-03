@@ -522,7 +522,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					}
 				}
 			}
-			catch (Exception ex) { BRApi.ErrorLog.LogMessage(si, ex.Message); }
+			catch (Exception ex) { }
 
 			// 2. Helper to safely add/update variables
 			Action<string, string> setVar = (key, val) =>
@@ -545,7 +545,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 			else
 			{
-				BRApi.ErrorLog.LogMessage(si, $"No CubeID found for ID: {cubeID}");
 				string[] keys = { "IV_FMM_Cube", "IV_FMM_ScenType", "IV_FMM_EntityMFB", "IV_FMM_CreateDate", "IV_FMM_CreateUser", "IV_FMM_UpdateDate", "IV_FMM_UpdateUser" };
 				foreach (var key in keys) { setVar(key, string.Empty); }
 			}
