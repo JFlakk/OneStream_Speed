@@ -51,9 +51,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_Cube_Names();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Scen_Types"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ScenTypes"))
                         {
-                            return get_FMM_Scen_Types();
+                            return get_FMM_ScenTypes();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_All_Cubes"))
                         {
@@ -215,12 +215,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable get_FMM_Scen_Types()
+        private DataTable get_FMM_ScenTypes()
         {
             try
             {
                 var Cube = args.NameValuePairs.XFGetValue("Cube", string.Empty);
-                var dt = new DataTable("Scen_Types");
+                var dt = new DataTable("ScenType");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {

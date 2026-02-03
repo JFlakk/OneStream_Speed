@@ -5,7 +5,10 @@ using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 using Microsoft.CSharp;
 using Microsoft.Data.SqlClient;
 using OneStream.Finance.Database;
@@ -16,6 +19,7 @@ using OneStream.Shared.Engine;
 using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
+using OpenXmlPowerTools;
 using Workspace.OSConsTools.GBL_UI_Assembly;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_Config_Load_DB
@@ -184,6 +188,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             var Load_Dashboard_Task_Result = new XFLoadDashboardTaskResult();
             Load_Dashboard_Task_Result.ChangeCustomSubstVarsInDashboard = true;
+
             clearParams(ref args, ref Load_Dashboard_Task_Result);
             setParams(ref args, ref Load_Dashboard_Task_Result);
 
@@ -197,7 +202,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         private XFLoadDashboardTaskResult Load_CubeConfig(XFLoadDashboardTaskResult Load_Dashboard_Task_Result)
         {
             var result = new XFLoadDashboardTaskResult();
-            result.ModifiedCustomSubstVars.Add("IV_FMM_CubeID", "100");
+
+            result = Load_Dashboard_Task_Result;
 
             FMM_Config_Helpers.SetCubeConfigParams(si, result.ModifiedCustomSubstVars);
 
