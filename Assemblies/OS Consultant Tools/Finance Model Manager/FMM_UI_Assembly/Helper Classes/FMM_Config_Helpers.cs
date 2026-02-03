@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.CSharp;
+using Microsoft.Data.SqlClient;
 using OneStream.Finance.Database;
 using OneStream.Finance.Engine;
 using OneStream.Shared.Common;
@@ -238,6 +239,42 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				}
 			};
 		}
+
+		public class CubeConfig
+		{
+
+			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
+		}
+
+		public static class CubeConfigRegistry
+		{
+			public static readonly Dictionary<SaveType, CubeConfig> Configs = new()
+			{
+				[SaveType.Add] = new CubeConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Name", "Cube" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_ScenType", "ScenType" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } }
+					}
+				},
+				[SaveType.Update] = new CubeConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Cons", "Descr" } } }
+					}
+				},
+				[SaveType.View] = new CubeConfig
+				{
+					ParameterMappings = new()
+					{
+
+					}
+				}
+			};
+		}
 		#endregion
 
 		public object Test(SessionInfo si)
@@ -285,6 +322,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			return null;
 		}
 
+		public static CubeConfig Get_CubeSaveType(int savetypeintValue)
+		{
+			var saveType = (SaveType)savetypeintValue;
+
+			if (CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
+			{
+				return config;
+			}
+			return null;
+		}
 		/// <summary>
 		/// Gets the list of database column names (property names) that are enabled for a given CalcType in SrcRegistry
 		/// </summary>
@@ -388,6 +435,58 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				throw new XFException(ex.Message, ex);
 			}
 		}
+		public static void SetCubeConfigParams(SessionInfo si, Dictionary<string, string> substVars)
+		{
+			// 1. Get the CubeID from the passed variables
+			string cubeIDStr = substVars.ContainsKey("IV_FMM_CubeID") ? substVars["IV_FMM_CubeID"] : "0";
+			int cubeID = 0;
+			Int32.TryParse(cubeIDStr, out cubeID);
+
+			DataTable cubeConfig_DT = new DataTable("FMM_CubeConfig");
+
+			try
+			{
+				using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
+				{
+					using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
+					{
+						var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+						var sqa = new SqlDataAdapter();
+						var sql = "SELECT * FROM FMM_CubeConfig WHERE CubeID = @CubeID";
+						var sqlparams = new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = cubeID } };
+
+						sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cubeConfig_DT, sql, sqlparams);
+					}
+				}
+			}
+			catch (Exception ex) { BRApi.ErrorLog.LogMessage(si, ex.Message); }
+
+			// 2. Helper to safely add/update variables
+			Action<string, string> setVar = (key, val) =>
+			{
+				if (substVars.ContainsKey(key)) { substVars[key] = val; }
+				else { substVars.Add(key, val); }
+			};
+
+			if (cubeConfig_DT.Rows.Count > 0)
+			{
+				DataRow row = cubeConfig_DT.Rows[0];
+				setVar("IV_FMM_CubeConfig_Name", row["Cube"].ToString());
+				setVar("IV_FMM_ScenType", row["ScenType"].ToString());
+				setVar("IV_FMM_EntityMFB", row["EntityMFB"].ToString());
+				setVar("IV_FMM_CubeConfigDescr", row["Descr"].ToString());
+				setVar("IV_FMM_CreateDate", row["CreateDate"].ToString());
+				setVar("IV_FMM_CreateUser", row["CreateUser"].ToString());
+				setVar("IV_FMM_UpdateDate", row["UpdateDate"].ToString());
+				setVar("IV_FMM_UpdateUser", row["UpdateUser"].ToString());
+			}
+			else
+			{
+				BRApi.ErrorLog.LogMessage(si, $"No CubeID found for ID: {cubeID}");
+				string[] keys = { "IV_FMM_Cube", "IV_FMM_ScenType", "IV_FMM_EntityMFB", "IV_FMM_CreateDate", "IV_FMM_CreateUser", "IV_FMM_UpdateDate", "IV_FMM_UpdateUser" };
+				foreach (var key in keys) { setVar(key, string.Empty); }
+			}
+		}
 
 		private static void SetPropertyIfExists(object target, IEnumerable<string> candidateNames, object value)
 		{
@@ -416,6 +515,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			ImportTabletoCube = 4,
 			CubetoTable = 5,
 			Consolidate = 6
+		}
+
+		public enum SaveType
+		{
+			None = 0,
+			Add = 1,
+			Update = 2,
+			View = 3
 		}
 	}
 }

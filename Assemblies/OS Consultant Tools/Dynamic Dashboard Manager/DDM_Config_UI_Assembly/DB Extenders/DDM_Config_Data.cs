@@ -366,12 +366,46 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 					{
 						foreach (var step in config.ParameterMappings)
 						{
-							// The 'step.Value' is the inner Dictionary<string, string>
-							// It usually contains just one pair, but we loop to be safe
+							// Push DB values back into the matching UI parameters
 							foreach (var map in step.Value)
 							{
 								string tgtParamName = map.Key;   // e.g. "IV_DDM_Layout_Top_Height"
 								string columnName = map.Value;  // e.g. "Top_Height"
+								UpdateCustomSubstVar(ref select_Result, tgtParamName, row[columnName].ToString());
+							}
+
+							// Optional: also set row/column parameters if the config exposes them
+							var rowColProp = config.GetType().GetProperty("RowColumnMappings");
+							if (rowColProp != null)
+							{
+								var rowColMap = rowColProp.GetValue(config) as System.Collections.IDictionary;
+								if (rowColMap != null && rowColMap.Contains(step.Key))
+								{
+									var rowCol = rowColMap[step.Key];
+									int? rowVal = null;
+									int? colVal = null;
+
+									var rowProperty = rowCol.GetType().GetProperty("Row");
+									var colProperty = rowCol.GetType().GetProperty("Column");
+									if (rowProperty != null && colProperty != null)
+									{
+										rowVal = Convert.ToInt32(rowProperty.GetValue(rowCol));
+										colVal = Convert.ToInt32(colProperty.GetValue(rowCol));
+									}
+									else if (rowCol is ValueTuple<int, int> tuple)
+									{
+										rowVal = tuple.Item1;
+										colVal = tuple.Item2;
+									}
+
+									if (rowVal.HasValue)
+										UpdateCustomSubstVar(ref select_Result, "IV_DDM_Layout_Row", rowVal.Value.ToString());
+									if (colVal.HasValue)
+										UpdateCustomSubstVar(ref select_Result, "IV_DDM_Layout_Column", colVal.Value.ToString());
+								}
+							}
+						}
+					}
 								UpdateCustomSubstVar(ref select_Result, tgtParamName, row[columnName].ToString());
 							}
 						}
