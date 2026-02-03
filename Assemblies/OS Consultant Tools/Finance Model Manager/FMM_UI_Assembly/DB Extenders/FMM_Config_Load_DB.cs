@@ -42,7 +42,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         // key string is dialog name, string array is list of IVs associated to textboxes that should be set to empty strings
         private Dictionary<string, string[]> clearTextBoxDict = new Dictionary<string, string[]>() {
             {"1_FMM_Model_Dialog_Add", new string[] {"IV_FMM_Model_Name"}},
-            {"1_FMM_Cube_Config_Dialog_Add", new string[] {"IV_FMM_Cube_Descr"}},
+            {"1_FMM_Cube_Config_Dialog_Add", new string[] {"IV_FMM_Cube_Descr", "BL_FMM_All_Cube_Names", "BL_FMM_ScenTypes", "IV_FMM_EntityMFB", "DL_FMM_Agg_Consol", "BL_FMM_CubeID"}},
             {"1_FMM_Model_Grp_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Name"}},
             {"1_FMM_Model_Grp_Seq_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Seq_Name"}},
 
@@ -145,6 +145,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             HierarchyDict.Add("FMM_ModelGrpSeq", BuildModelGroupSeq);
 
             // setup dialogs for hierarchy dict
+            HierarchyDict.Add("1_FMM_Cube_Config_Dialog_Add", AddCube);
             HierarchyDict.Add("FMM_Model_Dialog_Copy", CopyModel);
             HierarchyDict.Add("3_FMM_Model_Dialog_Update", UpdateModel); // Need to make sure all items on the dialog are set to refresh the dashboard AND dialog to make sure information is reloaded appropriately
                                                                          //			HierarchyDict.Add("1_FMM_Register_Col_Config_Copy", CopyRegisterConfig); // TODO: Based on requirements for copy, add a new dictionary above
