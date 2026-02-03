@@ -46,7 +46,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         // key string is dialog name, string array is list of IVs associated to textboxes that should be set to empty strings
         private Dictionary<string, string[]> clearTextBoxDict = new Dictionary<string, string[]>() {
             {"1_FMM_Model_Dialog_Add", new string[] {"IV_FMM_Model_Name"}},
-            {"1_FMM_Cube_Config_Dialog_Add", new string[] {"IV_FMM_Cube_Descr"}},
+            {"1_FMM_Cube_Config_Dialog_Add", new string[] {"IV_FMM_Cube_Descr", "BL_FMM_All_Cube_Names", "BL_FMM_ScenTypes", "IV_FMM_EntityMFB", "DL_FMM_Agg_Consol", "BL_FMM_CubeID"}},
             {"1_FMM_Model_Grp_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Name"}},
             {"1_FMM_Model_Grp_Seq_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Seq_Name"}},
 
@@ -149,6 +149,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             HierarchyDict.Add("FMM_ModelGrpSeq", BuildModelGroupSeq);
 
             // setup dialogs for hierarchy dict
+            HierarchyDict.Add("1_FMM_Cube_Config_Dialog_Add", AddCube);
             HierarchyDict.Add("FMM_Model_Dialog_Copy", CopyModel);
             HierarchyDict.Add("3_FMM_Model_Dialog_Update", UpdateModel); // Need to make sure all items on the dialog are set to refresh the dashboard AND dialog to make sure information is reloaded appropriately
                                                                          //			HierarchyDict.Add("1_FMM_Register_Col_Config_Copy", CopyRegisterConfig); // TODO: Based on requirements for copy, add a new dictionary above
@@ -334,6 +335,57 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
 
             UpdateCustomSubstVar(ref taskResult, "IV_FMM_Model_Name", modelName);
+        }
+
+        private void setupAddCubeDialog(ref XFLoadDashboardTaskResult taskResult)
+        {
+            // Get cube configuration from database when a cube is selected
+            int cubeID = 0;
+            
+            var CubeConfigDT = new DataTable("CubeConfig");
+            var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+
+            try
+            {
+                cubeID = Convert.ToInt32(taskResult.ModifiedCustomSubstVars.XFGetValue("BL_FMM_CubeID", "0"));
+                
+                // Only populate if a valid cube is selected
+                if (cubeID > 0)
+                {
+                    using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                    {
+                        var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                        var sqa = new SqlDataAdapter();
+                        
+                        // Query to get the cube configuration
+                        var sql = @"SELECT Cube, ScenType, Entity_Dim, Agg_Consol, Descr
+                                    FROM FMM_CubeConfig
+                                    WHERE CubeID = @CubeID";
+                        
+                        var sqlparams = new SqlParameter[]
+                        {
+                            new SqlParameter("@CubeID", SqlDbType.Int) { Value = cubeID }
+                        };
+                        
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, CubeConfigDT, sql, sqlparams);
+                    }
+                    
+                    // Populate the add dialog parameters with the database values
+                    if (CubeConfigDT.Rows.Count > 0)
+                    {
+                        var row = CubeConfigDT.Rows[0];
+                        UpdateCustomSubstVar(ref taskResult, "BL_FMM_All_Cube_Names", row["Cube"]?.ToString() ?? "");
+                        UpdateCustomSubstVar(ref taskResult, "BL_FMM_ScenTypes", row["ScenType"]?.ToString() ?? "");
+                        UpdateCustomSubstVar(ref taskResult, "IV_FMM_EntityMFB", row["Entity_Dim"]?.ToString() ?? "");
+                        UpdateCustomSubstVar(ref taskResult, "DL_FMM_Agg_Consol", row["Agg_Consol"]?.ToString() ?? "");
+                        UpdateCustomSubstVar(ref taskResult, "IV_FMM_Cube_Descr", row["Descr"]?.ToString() ?? "");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                BRApi.ErrorLog.LogMessage(si, $"Error in setupAddCubeDialog: {e.Message}");
+            }
         }
 
         private void UpdateCustomSubstVar(ref XFLoadDashboardTaskResult result, string key, string value)
@@ -581,6 +633,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                         }
                     }
+                }
+                
+                // Special handling for Add Cube dialog: populate from database when a cube is selected
+                if (selectedDashboard == "1_FMM_Cube_Config_Dialog_Add")
+                {
+                    setupAddCubeDialog(ref taskResult);
                 }
             }
         }
