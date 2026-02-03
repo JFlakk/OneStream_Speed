@@ -270,10 +270,9 @@ brapi.ErrorLog.LogMessage(si,"output:" & output)
 #Region "Utilities: Get DataBuffer"
 	
 	Public Sub GetDataBuffer(ByRef si As SessionInfo, ByRef globals As BRGlobals, ByRef api As Object,ByRef args As DashboardStringFunctionArgs)
-			
-		Dim Dictionary As New Dictionary(Of String, String)
-		
-		BRApi.Finance.Calculate.ExecuteCustomCalculateBusinessRule(si,"Global_Buffers","GetCVDataBuffer",Dictionary,customcalculatetimetype.CurrentPeriod)
+
+		' Call the shared parameterized XFBR in GBL_String_Helper
+		Dim result As Object = Workspace.GBL.GBL_Assembly.GBL_String_Helper.GetDataBuffer(si, globals, api, args)
 
 	End Sub
 
