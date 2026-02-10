@@ -83,6 +83,9 @@ GO
 -- =============================================
 -- Table: RegPlan_Details
 -- Description: Detail/Line Items for Regulatory Plans
+-- Note: Dimensional columns (WFScenarioName, WFProfileName, etc.) are denormalized
+-- from RegPlan for performance optimization in reporting and querying scenarios.
+-- This follows the OneStream pattern for detail tables.
 -- =============================================
 CREATE TABLE [dbo].[RegPlan_Details] (
     [RegPlanID] UNIQUEIDENTIFIER NOT NULL,

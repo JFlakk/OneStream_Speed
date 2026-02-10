@@ -115,6 +115,10 @@ GO
 
 -- =============================================
 -- Foreign Key Relationships
+-- Note: Cascade delete behavior is intentional:
+-- - Deleting DDM_Config cascades to delete all child Menu_Layout and Hdr_Ctrls records
+-- - Deleting Menu_Layout cascades to delete all child Hdr_Ctrls records
+-- This ensures complete cleanup of configuration hierarchies
 -- =============================================
 ALTER TABLE [dbo].[DDM_Config_Menu_Layout]
 ADD CONSTRAINT [FK_DDM_Config_Menu_Layout_DDM_Config]
