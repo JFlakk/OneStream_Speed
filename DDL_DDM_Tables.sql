@@ -127,7 +127,7 @@ ALTER TABLE [dbo].[DDM_Config_Hdr_Ctrls]
 ADD CONSTRAINT [FK_DDM_Config_Hdr_Ctrls_DDM_Config]
 FOREIGN KEY ([DDM_Config_ID])
 REFERENCES [dbo].[DDM_Config] ([DDM_Config_ID])
-ON DELETE NO ACTION;
+ON DELETE CASCADE;
 GO
 
 ALTER TABLE [dbo].[DDM_Config_Hdr_Ctrls]

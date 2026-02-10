@@ -95,8 +95,8 @@ CREATE TABLE [dbo].[RegPlan_Details] (
     [ApprLevelID] UNIQUEIDENTIFIER NULL,
     
     -- Planning Data
-    [PlanUnits] NVARCHAR(20) NULL,
-    [Account] NVARCHAR(20) NULL,
+    [PlanUnits] NVARCHAR(20) NOT NULL,
+    [Account] NVARCHAR(20) NOT NULL,
     [Flow] NVARCHAR(100) NULL,
     
     -- User-Defined Fields (1-8)
@@ -110,7 +110,7 @@ CREATE TABLE [dbo].[RegPlan_Details] (
     [UD8] NVARCHAR(100) NULL,
     
     -- Time Dimension
-    [Year] NVARCHAR(4) NULL,
+    [Year] NVARCHAR(4) NOT NULL,
     
     -- Monthly Data (1-12)
     [Month1] DECIMAL(18, 2) NULL,
@@ -158,7 +158,9 @@ GO
 -- Description: Audit Trail for Regulatory Plans
 -- =============================================
 CREATE TABLE [dbo].[RegPlan_Audit] (
+    [AuditID] INT NOT NULL IDENTITY(1,1),
     [RegisterPlanID] UNIQUEIDENTIFIER NOT NULL,
+    [AuditDate] DATETIME NOT NULL DEFAULT GETDATE(),
     [WFScenarioName] NVARCHAR(255) NULL,
     [ProjectID] VARCHAR(255) NULL,
     [Entity] NVARCHAR(255) NULL,
@@ -209,7 +211,9 @@ CREATE TABLE [dbo].[RegPlan_Audit] (
     [DateValue2] DATETIME NULL,
     [DateValue3] DATETIME NULL,
     [DateValue4] DATETIME NULL,
-    [DateValue5] DATETIME NULL
+    [DateValue5] DATETIME NULL,
+    
+    CONSTRAINT [PK_RegPlan_Audit] PRIMARY KEY CLUSTERED ([AuditID] ASC)
 );
 GO
 
@@ -248,6 +252,10 @@ GO
 
 CREATE NONCLUSTERED INDEX [IX_RegPlan_Audit_RegisterPlanID]
 ON [dbo].[RegPlan_Audit] ([RegisterPlanID]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_RegPlan_Audit_AuditDate]
+ON [dbo].[RegPlan_Audit] ([AuditDate]);
 GO
 
 CREATE NONCLUSTERED INDEX [IX_RegPlan_Audit_WFScenario]
