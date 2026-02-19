@@ -20,7 +20,7 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class FMM_Src_CellDB
+    public class FMM_SrcCellDB
     {
         // Database table that will contain our objects
         public string TableName { get; } = "FMM_SrcCell";
@@ -29,7 +29,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public SessionInfo si { get; }
 
         // constructor
-        public FMM_Src_CellDB(SessionInfo si)
+        public FMM_SrcCellDB(SessionInfo si)
         {
             this.si = si;
         }
@@ -46,11 +46,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             // Always include core identification and common fields
             columns.AddRange(new[] {
-                "CellID", "CubeID", "ActID", "ModelID", "CalcID",
-                "Type"
+                "CellID", "CubeID", "ActID", "ModelID", "CalcID","Type",
+                "Src_Order","CreateDate","CreateUser","UpdateDate","UpdateUser"
             });
 
-            var srcConfig = FMM_Config_Helpers.Get_SrcConfigType(calcType);
+            var srcConfig = FMM_ConfigHelpers.Get_SrcConfigType(calcType);
 
             if (srcConfig != null && srcConfig.ParameterMappings != null)
             {
@@ -84,9 +84,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 
         /// <summary>
-        /// Retrieve a single FMM_Src_CellModel by CellID
+        /// Retrieve a single FMM_SrcCellModel by Cell_ID
         /// </summary>
-        public FMM_Src_CellModel GetSrcCell(int cellId, int calcType)
+        public FMM_SrcCellModel GetSrcCell(int cellId, int calcType)
         {
             try
             {
@@ -111,22 +111,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
-        /// Retrieve all FMM_Src_CellModel objects for a given CalcID
+        /// Retrieve all FMM_SrcCellModel objects for a given CalcID
         /// </summary>
-        public List<FMM_Src_CellModel> GetSrcCellsByCalcId(int calcId, int calcType)
+        public List<FMM_SrcCellModel> GetSrcCellsByCalcId(int calcId, int calcType)
         {
             try
             {
-				calcId = string.IsNullOrWhiteSpace(calcId.XFToString()) ? 0 : calcId;
+                calcId = string.IsNullOrWhiteSpace(calcId.XFToString()) ? 0 : calcId;
                 var columns = GetSelectColumnsForCalcType(calcType);
                 string sql = $"SELECT {columns} FROM {this.TableName} WHERE CalcID = @calcID";
+                BRApi.ErrorLog.LogMessage(si, $"Hit {sql}");
 
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@calcID", calcId) };
 
                 using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
                     DataTable dt = BRApi.Database.ExecuteSql(dbConn, sql, paramList, false);
-                    List<FMM_Src_CellModel> result = new List<FMM_Src_CellModel>();
+                    List<FMM_SrcCellModel> result = new List<FMM_SrcCellModel>();
 
                     foreach (DataRow dr in dt.Rows)
                     {
@@ -144,7 +145,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// <summary>
         /// Merge a collection of source cells using the generic SQA process
         /// </summary>
-        public void Merge(List<FMM_Src_CellModel> models, int calcType)
+        public void Merge(List<FMM_SrcCellModel> models, int calcType)
         {
             if (models == null || models.Count == 0) return;
 
@@ -172,7 +173,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
 
-                    // Set primary key if CellID column exists in the result set
+                    // Set primary key if Cell_ID column exists in the result set
                     if (currentTable.Columns.Contains("CellID") && currentTable.Columns["CellID"] != null)
                     {
                         currentTable.PrimaryKey = new[] { currentTable.Columns["CellID"]! };
@@ -194,12 +195,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// <summary>
         /// Merge a single source cell using the generic SQA process
         /// </summary>
-        public void Merge(FMM_Src_CellModel model, int calcType)
+        public void Merge(FMM_SrcCellModel model, int calcType)
         {
-            this.Merge(new List<FMM_Src_CellModel> { model }, calcType);
+            this.Merge(new List<FMM_SrcCellModel> { model }, calcType);
         }
 
-        private DataTable BuildMergeTable(IEnumerable<FMM_Src_CellModel> models, int calcType)
+        private DataTable BuildMergeTable(IEnumerable<FMM_SrcCellModel> models, int calcType)
         {
             var columns = GetRequiredColumnsByCalcType(calcType);
             DataTable dt = new DataTable(this.TableName);
@@ -243,19 +244,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             row[columnName] = value ?? DBNull.Value;
         }
         /// <summary>
-        /// Retrieve all FMM_Src_CellModel objects
+        /// Retrieve all FMM_SrcCellModel objects
         /// Note: Since CalcType may vary, this returns all columns
         /// </summary>
-        public List<FMM_Src_CellModel> GetAllSrcCells()
+        public List<FMM_SrcCellModel> GetAllSrcCells()
         {
             try
             {
-                string sql = $"SELECT * FROM {this.TableName} ORDER BY CalcID, SrcOrder";
+                string sql = $"SELECT * FROM {this.TableName} ORDER BY CalcID, Src_Order";
 
                 using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
                     DataTable dt = BRApi.Database.ExecuteSql(dbConn, sql, false);
-                    List<FMM_Src_CellModel> result = new List<FMM_Src_CellModel>();
+                    List<FMM_SrcCellModel> result = new List<FMM_SrcCellModel>();
 
                     foreach (DataRow dr in dt.Rows)
                     {
@@ -272,30 +273,30 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
-        /// Maps a DataRow to FMM_Src_CellModel, safely handling null values
+        /// Maps a DataRow to FMM_SrcCellModel, safely handling null values
         /// Overload without calcType - uses default parameterless constructor
         /// </summary>
-        private FMM_Src_CellModel MapDataRowToModel(DataRow dr)
+        private FMM_SrcCellModel MapDataRowToModel(DataRow dr)
         {
             return MapDataRowToModel(dr, 0); // 0 = CalcType.None, will use empty enabled properties list
         }
 
         /// <summary>
-        /// Maps a DataRow to FMM_Src_CellModel, safely handling null values
+        /// Maps a DataRow to FMM_SrcCellModel, safely handling null values
         /// </summary>
-        private FMM_Src_CellModel MapDataRowToModel(DataRow dr, int calcType)
+        private FMM_SrcCellModel MapDataRowToModel(DataRow dr, int calcType)
         {
             // Get enabled properties from configuration
-            var enabledProperties = FMM_Config_Helpers.GetEnabledSrcProperties(calcType);
+            var enabledProperties = FMM_ConfigHelpers.GetEnabledSrcProperties(calcType);
 
-            var model = new FMM_Src_CellModel(enabledProperties)
+            var model = new FMM_SrcCellModel(enabledProperties)
             {
                 CubeID = dr.Field<int>("CubeID"),
                 ActID = dr.Field<int>("ActID"),
                 ModelID = dr.Field<int>("ModelID"),
                 CalcID = dr.Field<int>("CalcID"),
                 CellID = dr.Field<int>("CellID"),
-                Order = dr.Field<int?>("Order") ?? 0,
+                Src_Order = dr.Field<int?>("Src_Order") ?? 0,
                 Type = dr.Field<string>("Type") ?? string.Empty,
                 ItemType = dr.Field<string>("ItemType") ?? string.Empty
             };
@@ -341,13 +342,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
-        /// Delete a source cell record by CellID
+        /// Delete a source cell record by Cell_ID
         /// </summary>
         public void Delete(int cellId)
         {
             try
             {
-                string sql = $"DELETE FROM {this.TableName} WHERE CellID = @cellID";
+                string sql = $"DELETE FROM {this.TableName} WHERE Cell_ID = @cellID";
                 List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@cellID", cellId) };
 
                 using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
@@ -362,7 +363,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
         /// <summary>
-        /// Delete a source cell record by CellID (string representation)
+        /// Delete a source cell record by Cell_ID (string representation)
         /// </summary>
         public void Delete(string cellIdStr)
         {
@@ -372,14 +373,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
             else
             {
-                throw new XFException(si, new ArgumentException($"Invalid CellID format: {cellIdStr}"));
+                throw new XFException(si, new ArgumentException($"Invalid Cell_ID format: {cellIdStr}"));
             }
         }
 
         /// <summary>
         /// Delete a source cell record by model instance
         /// </summary>
-        public void Delete(FMM_Src_CellModel model)
+        public void Delete(FMM_SrcCellModel model)
         {
             this.Delete(model.CellID);
         }
@@ -408,7 +409,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     // Compute next key
                     var maxIdHelper = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(this.si, connection);
-                    var nextCellId = maxIdHelper.Get_Max_ID(this.si, this.TableName, "Src_Cell_ID");
+                    var nextCellId = maxIdHelper.Get_Max_ID(this.si, this.TableName, "CellID");
 
                     // Pull current set (schema) using SQA builder
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(this.si, connection);
@@ -416,7 +417,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     var currentTable = new DataTable();
 
                     var selectColumns = GetSelectColumnsForCalcType(defaultCalcType);
-                    if (!selectColumns.Split(',').Select(c => c.Trim()).Contains("Src_Cell_ID", StringComparer.OrdinalIgnoreCase))
+                    if (!selectColumns.Split(',').Select(c => c.Trim()).Contains("CellID", StringComparer.OrdinalIgnoreCase))
                     {
                         selectColumns = $"CellID, {selectColumns}";
                     }
@@ -440,9 +441,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     SetColumnValue(row, "ActID", ActID);
                     SetColumnValue(row, "ModelID", ModelID);
                     SetColumnValue(row, "CalcID", CalcID);
-                    SetColumnValue(row, "Order", 1);
+                    SetColumnValue(row, "Src_Order", 1);
                     SetColumnValue(row, "Type", string.Empty);
                     SetColumnValue(row, "ItemType", string.Empty);
+                    SetColumnValue(row, "CreateDate", DateTime.Now);
+                    SetColumnValue(row, "CreateUser", si.UserName);
+                    SetColumnValue(row, "UpdateDate", DateTime.Now);
+                    SetColumnValue(row, "UpdateUser", si.UserName);
 
                     currentTable.Rows.Add(row);
 

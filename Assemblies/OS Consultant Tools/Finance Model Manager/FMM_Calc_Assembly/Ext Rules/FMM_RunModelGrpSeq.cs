@@ -17,7 +17,7 @@ using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.FMM_Run_DM
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.FMM_RunModelGrpSeq
 {
     public class MainClass
     {

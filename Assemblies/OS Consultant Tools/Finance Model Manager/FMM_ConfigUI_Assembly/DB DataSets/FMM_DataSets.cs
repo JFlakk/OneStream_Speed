@@ -17,7 +17,7 @@ using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
 using Workspace.OSConsTools.GBL_UI_Assembly;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.FMM_DB_DataSets
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.FMM_DataSets
 {
     public class MainClass
     {
@@ -81,7 +81,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_Acts("By_Cube");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_Table"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_TableAct"))
                         {
                             return get_FMM_Acts("Table");
                         }
@@ -202,7 +202,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sqlparams = new SqlParameter[]
                     {};
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
-
                 }
 
                 return dt;
@@ -273,8 +272,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 UNION ALL
                                 SELECT 'ScenarioType7' AS ScenType
                                 UNION ALL
-                                SELECT 'ScenarioType8' AS ScenType
-                            )
+                                SELECT 'ScenarioType8' AS ScenType)
                             SELECT ScenType
                             FROM ScenType_List Scen
                             WHERE NOT EXISTS (
@@ -350,7 +348,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             try
             {
                 var CubeID = args.NameValuePairs.XFGetValue("CubeID", "-1");
-                CubeID = "1";
                 var dt = new DataTable("Act_Config");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -402,10 +399,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     }
                     else if (actType.XFEqualsIgnoreCase("Table"))
                     {
-                        dt.TableName = "Table_Act_Config";
-                        sql = @"SELECT CONCAT(Name, ' - ',CalcType) AS Act,ActID
+                        dt.TableName = "TableAct";
+                        sql = @"SELECT Name AS Act,ActID
                                 FROM FMM_CubeConfig Con
-                                JOIN FMM_ActConfig Act ON Con.CubeID = Act.CubeID
+                                JOIN FMM_ActConfig Act 
+								ON Con.CubeID = Act.CubeID
                                 WHERE Con.CubeID = @CubeID
                                 AND Act.CalcType = 1
                                 ORDER BY Cube,ScenType,Name";
@@ -566,20 +564,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                    // Create a new DataTable
                     var sqa = new SqlDataAdapter();
-                    // Define the select query and sqlparams
-
-                    // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
                         new SqlParameter("@CubeID", SqlDbType.Int) { Value = Convert.ToInt16(CubeID) },
                         new SqlParameter("@ActID", SqlDbType.Int) { Value = Convert.ToInt16(ActID) }
                  };
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
-
                 }
-
                 return dt;
             }
             catch (Exception ex)
@@ -620,9 +612,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         new SqlParameter("@ModelID", SqlDbType.Int) { Value = Convert.ToInt16(ModelID) }
                     };
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
-
                 }
-
                 return dt;
             }
             catch (Exception ex)
@@ -825,9 +815,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
                     var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                    // Create a new DataTable
                     var sqa = new SqlDataAdapter();
-                    // Define the select query and sqlparams
                     var sql = @"
 			        	SELECT Name as DisplayValue,Name as StoredValue
 			       		FROM WorkflowChannel

@@ -19,7 +19,7 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-	public class DDM_Config_Helpers
+	public class DDM_ConfigHelpers
 	{
 		#region "Config Setup"
 		public class LayoutConfig
@@ -35,7 +35,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			{
 				[Layout_OptionType.Dashboard] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2a_DDM_Config_Content_NewUpdates_DB",
+					DashboardName = "DDM_Config_AddUpdate_DB",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_DB_Name", "DB_Name" } } }
@@ -43,7 +43,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				},
 				[Layout_OptionType.CubeView] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2b_DDM_Config_Content_NewUpdates_CV",
+					DashboardName = "DDM_Config_AddUpdate_CV",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_CV_Name", "CV_Name" } } }
@@ -51,112 +51,108 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				},
 				[Layout_OptionType.Dashboard_TopBottom] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2c_DDM_Config_Content_NewUpdates_DB_TopBottom",
+					DashboardName = "DDM_Config_Content_AddUpdate_TB_DB",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Top_Height", "Top_Height" } } },
-					{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Top_Content_Type", "Top_Content_Type" } } },
-						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Top", "DB_Name_Top" } } },
-						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Top", "CV_Name_Top" } } },
-					{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Bottom_Content_Type", "Bottom_Content_Type" } } },
-						{ 5, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Bottom", "DB_Name_Bottom" } } },
-						{ 6, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Bottom", "CV_Name_Bottom" } } }
+						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_T_Height", "T_Height" } } },
+						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_T_Content_Type", "T_ContentType" } } },
+						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_T_Name", "T_Name" } } },
+						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_B_ContentType", "B_ContentType" } } },
+						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_B_Name", "B_Name" } } }
 					}
 				},
 				[Layout_OptionType.Dashboard_LeftRight] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2d_DDM_Config_Content_NewUpdates_DB_LeftRight",
+					DashboardName = "DDM_Config_AddUpdate_LR_DB",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Left_Width", "Left_Width" } } },
-					{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Content_Type" } } },
-						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Left", "DB_Name_Left" } } },
-						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Left", "CV_Name_Left" } } },
-					{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Content_Type" } } },
-						{ 5, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Right", "DB_Name_Right" } } },
-						{ 6, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Right", "CV_Name_Right" } } }
+						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_L_Width", "L_Width" } } },
+						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_L_ContentType", "L_ContentType" } } },
+						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_L_Name", "L_Name" } } },
+						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_R_ContentType", "R_ContentType" } } },
+						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_R_Name", "R_Name" } } }
 					}
 				},
 				[Layout_OptionType.Dashboard_2Top1Bottom] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2e_DDM_Config_Content_NewUpdates_DB_2Top1Bottom",
+					DashboardName = "DDM_Config_AddUpdate_2T1B_DB",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Left_Width", "Left_Width" } } },
-					{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Content_Type" } } },
-						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Left", "DB_Name_Left" } } },
+						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_L_Width", "L_Width" } } },
+						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_TL_ContentType", "TL_ContentType" } } },
+						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_TL_Name", "TL_Name" } } },
 						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Left", "CV_Name_Left" } } },
-					{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Content_Type" } } },
+						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Option_Type" } } },
 						{ 5, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Right", "DB_Name_Right" } } },
 						{ 6, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Right", "CV_Name_Right" } } }
 					}
 				},
 				[Layout_OptionType.Dashboard_1Top2Bottom] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2f_DDM_Config_Content_NewUpdates_DB_1Top2Bottom",
+					DashboardName = "DDM_Config_AddUpdate_1T2B_DB",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Left_Width", "Left_Width" } } },
-					{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Content_Type" } } },
+						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Option_Type" } } },
 						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Left", "DB_Name_Left" } } },
 						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Left", "CV_Name_Left" } } },
-					{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Content_Type" } } },
+						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Option_Type" } } },
 						{ 5, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Right", "DB_Name_Right" } } },
 						{ 6, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Right", "CV_Name_Right" } } }
 					}
 				},
 				[Layout_OptionType.Dashboard_2Left1Right] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2g_DDM_Config_Content_NewUpdates_DB_2Left1Right",
+					DashboardName = "DDM_Config_Content_AddUpdate_2L1R_DB",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Left_Width", "Left_Width" } } },
-					{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Content_Type" } } },
+						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Option_Type" } } },
 						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Left", "DB_Name_Left" } } },
 						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Left", "CV_Name_Left" } } },
-					{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Content_Type" } } },
+						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Option_Type" } } },
 						{ 5, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Right", "DB_Name_Right" } } },
 						{ 6, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Right", "CV_Name_Right" } } }
 					}
 				},
 				[Layout_OptionType.Dashboard_1Left2Right] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2h_DDM_Config_Content_NewUpdates_DB_1Left3Right",
+					DashboardName = "DDM_Config_Content_AddUpdate_1L2R_DB",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Left_Width", "Left_Width" } } },
-					{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Content_Type" } } },
+						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Option_Type" } } },
 						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Left", "DB_Name_Left" } } },
 						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Left", "CV_Name_Left" } } },
-					{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Content_Type" } } },
+						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Option_Type" } } },
 						{ 5, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Right", "DB_Name_Right" } } },
 						{ 6, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Right", "CV_Name_Right" } } }
 					}
 				},
-				[Layout_OptionType.Dashboard_1Left2Right] = new LayoutConfig
+				[Layout_OptionType.Dashboard_2x2] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2i_DDM_Config_Content_NewUpdates_DB_2x2",
+					DashboardName = "DDM_Config_Content_AddUpdate_2x2_DB",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Left_Width", "Left_Width" } } },
-					{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Content_Type" } } },
+						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Option_Type" } } },
 						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Left", "DB_Name_Left" } } },
 						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Left", "CV_Name_Left" } } },
-					{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Content_Type" } } },
+						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Option_Type" } } },
 						{ 5, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Right", "DB_Name_Right" } } },
 						{ 6, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Right", "CV_Name_Right" } } }
 					}
 				},
-				[Layout_OptionType.Dashboard_1Left2Right] = new LayoutConfig
+				[Layout_OptionType.Dashboard_CustomDB] = new LayoutConfig
 				{
-					DashboardName = "0b1b2b2a2j_DDM_Config_Content_NewUpdates_CustomDB",
+					DashboardName = "DDM_Config_Content_AddUpdate_CustomDB",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Left_Width", "Left_Width" } } },
-					{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Content_Type" } } },
+						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "Left_Option_Type" } } },
 						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Left", "DB_Name_Left" } } },
 						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Left", "CV_Name_Left" } } },
-					{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Content_Type" } } },
+						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_Right_Content_Type", "Right_Option_Type" } } },
 						{ 5, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Right", "DB_Name_Right" } } },
 						{ 6, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Right", "CV_Name_Right" } } }
 					}
@@ -177,7 +173,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			{
 				[HdrCtrlType.Filter] = new HdrCtrlConfig
 				{
-					DashboardName = "0b1b2c2a2a_DDM_Config_Content_NewUpdates_Filter",
+					DashboardName = "DDM_Config_Header_AddUpdate_Filter",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Hdr_Ctrl_Name", "Name" } } }
@@ -185,7 +181,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				},
 				[HdrCtrlType.Button] = new HdrCtrlConfig
 				{
-					DashboardName = "0b1b2c2a2b_DDM_Config_Content_NewUpdates_Button",
+					DashboardName = "DDM_Config_Header_AddUpdate_Btn",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Hdr_Ctrl_Name", "Name" } } }
@@ -248,7 +244,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Dashboard_2Left1Right = 7,
 			Dashboard_1Left2Right = 8,
 			Dashboard_2x2 = 9,
-			Custom_Dashboard = 10
+			Dashboard_CustomDB = 10
 		}
 
 		public enum HdrCtrlType

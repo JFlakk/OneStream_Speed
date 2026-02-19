@@ -16,20 +16,20 @@ using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.DDM_Config_Load_DB
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.DDM_ConfigLoadDB
 {
     public class MainClass
     {
-		#region "Global Params"
-			private SessionInfo si;
-	        private BRGlobals globals;
-	        private object api;
-	        private DashboardExtenderArgs args;
-		#endregion
-		
-		#region "Dictionary Setup"
-		private string MainMenuParam = "DL_FMM_Setup_Options";
-		private string menuLayoutParam = "DL_FMM_Cube_Config_Options";
+        #region "Global Params"
+        private SessionInfo si;
+        private BRGlobals globals;
+        private object api;
+        private DashboardExtenderArgs args;
+        #endregion
+
+        #region "Dictionary Setup"
+        private string MainMenuParam = "DL_FMM_Setup_Options";
+        private string menuLayoutParam = "DL_FMM_Cube_Config_Options";
         private Dictionary<string, string> paramMap = new Dictionary<string, string>()
         {
             {"BL_FMM_Setup_Cube_ID", "IV_FMM_Cube_ID"},
@@ -49,34 +49,34 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {"1_FMM_Model_Grp_Seq_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Seq_Name"}},
 
         };
-		private Dictionary<string, Dictionary<int, string[]>> HierarchyDict = new Dictionary<string, Dictionary<int, string[]>>();
-		
+        private Dictionary<string, Dictionary<int, string[]>> HierarchyDict = new Dictionary<string, Dictionary<int, string[]>>();
+
         private Dictionary<int, string[]> AddWFProfileDB = new Dictionary<int, string[]>()
         {
             {0, new string[] {"DL_DDM_Type"}},
             {1, new string[] {"BL_DDM_Root_WFProfiles"}},
             {2, new string[] {"BL_DDM_Scen_Type"}},
-			{3, new string[] {"IV_DDM_trv_WF_Profile"}},
-			{4, new string[] {"IV_DDM_Config_ID"}},
-			{5, new string[] {"IV_DDM_Config_ID"}},
-			{6, new string[] {"IV_DDM_Config_ID"}}
+            {3, new string[] {"IV_DDM_trv_WF_Profile"}},
+            {4, new string[] {"IV_DDM_Config_ID"}},
+            {5, new string[] {"IV_DDM_Config_ID"}},
+            {6, new string[] {"IV_DDM_Config_ID"}}
         };
         private Dictionary<int, string[]> AddStandAloneDB = new Dictionary<int, string[]>()
         {
             {0, new string[] {"DL_DDM_Type"}},
             {1, new string[] {"BL_DDM_Root_WFProfiles"}},
             {2, new string[] {"BL_DDM_Scen_Type"}},
-			{3, new string[] {"IV_DDM_trv_WF_Profile"}},
-			{4, new string[] {"IV_DDM_Config_ID"}},
-			{5, new string[] {"IV_DDM_Config_ID"}},
-			{6, new string[] {"IV_DDM_Config_ID"}}
+            {3, new string[] {"IV_DDM_trv_WF_Profile"}},
+            {4, new string[] {"IV_DDM_Config_ID"}},
+            {5, new string[] {"IV_DDM_Config_ID"}},
+            {6, new string[] {"IV_DDM_Config_ID"}}
         };
-		#endregion
+        #endregion
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
             try
             {
-				this.si = si;
+                this.si = si;
                 this.globals = globals;
                 this.api = api;
                 this.args = args;
@@ -88,12 +88,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Implement Load Dashboard logic here.
                             if (args.LoadDashboardTaskInfo.Reason == LoadDashboardReasonType.Initialize && args.LoadDashboardTaskInfo.Action == LoadDashboardActionType.BeforeFirstGetParameters)
                             {
-                                var load_Dashboard_Task_Result = Load_Admin_Dashboard("Initial",ref args);
+                                var load_Dashboard_Task_Result = Load_Admin_Dashboard("Initial", ref args);
                                 return load_Dashboard_Task_Result;
                             }
                             else if (args.LoadDashboardTaskInfo.Reason == LoadDashboardReasonType.ComponentSelectionChanged && (args.LoadDashboardTaskInfo.Action == LoadDashboardActionType.BeforeFirstGetParameters || args.LoadDashboardTaskInfo.Action == LoadDashboardActionType.BeforeSubsequentGetParameters))
                             {
-                                var load_Dashboard_Task_Result = Load_Admin_Dashboard("Post-Initial",ref args);
+                                var load_Dashboard_Task_Result = Load_Admin_Dashboard("Post-Initial", ref args);
                                 return load_Dashboard_Task_Result;
                             }
                         }
@@ -122,8 +122,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             return Load_Dashboard_Task_Result;
 
         }
-		#endregion
-		
+        #endregion
+
         private void updateShowHide(ref DashboardExtenderArgs args, ref XFLoadDashboardTaskResult taskResult)
         {
             string showHideIVName = "IV_DDM_Show_Hide_Menu_Btn";
@@ -149,7 +149,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 UpdateCustomSubstVar(ref taskResult, menuWidthIV, "Auto");
             }
         }
-		
+
         private void clearParams(ref DashboardExtenderArgs args, ref XFLoadDashboardTaskResult taskResult)
         {
 
@@ -171,7 +171,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             //TODO: check selectedDashboard based on different higher level menu other than DL_FMM_Cube_Config_Options
             string DialogSelection = args.PrimaryDashboard.Name;
-			BRApi.ErrorLog.LogMessage(si,DialogSelection);
+            BRApi.ErrorLog.LogMessage(si, DialogSelection);
 
             string MainMenuSelection = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) != string.Empty ? args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) : args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue(MainMenuParam);
 
@@ -188,9 +188,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var PRCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun;
 
             //			BRApi.ErrorLog.LogMessage(si, "Key count: " + taskResult.ModifiedCustomSubstVars.Keys.Count);
-            			foreach(string param in taskResult.ModifiedCustomSubstVars.Keys) {
-            				BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
-            			}
+            foreach (string param in taskResult.ModifiedCustomSubstVars.Keys)
+            {
+                BRApi.ErrorLog.LogMessage(si, "param: " + param + " val: " + taskResult.ModifiedCustomSubstVars[param]);
+            }
 
 
             if (HierarchyDict.ContainsKey(selectedDashboard))
@@ -201,9 +202,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     foreach (string param in tempDependencyDict[dependencyDepth])
                     {
-                        						BRApi.ErrorLog.LogMessage(si, "searching for: " + param + selectedDashboard);
-                        						BRApi.ErrorLog.LogMessage(si, "AR: " + ARCustomSubst.XFGetValue(param) + " " + (ARCustomSubst.XFGetValue(param) == string.Empty).ToString());
-                        						BRApi.ErrorLog.LogMessage(si, "PR: " + PRCustomSubst.XFGetValue(param) + " " + (PRCustomSubst.XFGetValue(param) == string.Empty).ToString());
+                        BRApi.ErrorLog.LogMessage(si, "searching for: " + param + selectedDashboard);
+                        BRApi.ErrorLog.LogMessage(si, "AR: " + ARCustomSubst.XFGetValue(param) + " " + (ARCustomSubst.XFGetValue(param) == string.Empty).ToString());
+                        BRApi.ErrorLog.LogMessage(si, "PR: " + PRCustomSubst.XFGetValue(param) + " " + (PRCustomSubst.XFGetValue(param) == string.Empty).ToString());
 
                         bool ARContainsKey = ARCustomSubst.ContainsKey(param);
                         bool PRContainsKey = PRCustomSubst.ContainsKey(param);
@@ -280,7 +281,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     //set defaults
                                     if (mappedParam == "IV_FMM_Cube_ID" && selectedDashboard == "0_FMM_Cube_Config")
                                     {
-                                       // Load_Cube_Settings(taskResult);
+                                        // Load_Cube_Settings(taskResult);
                                     }
                                     if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "0_FMM_Model")
                                     {
@@ -288,7 +289,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                     }
                                     if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config")
                                     {
-                                       // Get_Calc_Type(taskResult);
+                                        // Get_Calc_Type(taskResult);
                                     }
 
                                     if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "3_FMM_Model_Dialog_Update")
@@ -301,15 +302,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 //if a prior dependency change was detected as part of this loop, update the corresponding defaults
                                 if (mappedParam == "IV_FMM_Cube_ID" && selectedDashboard == "0_FMM_Cube_Config" && priorDependencyChanged)
                                 {
-                                   // Load_Cube_Settings(taskResult);
+                                    // Load_Cube_Settings(taskResult);
                                 }
                                 if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "0_FMM_Model" && priorDependencyChanged)
                                 {
-                                   // Get_Calc_Type(taskResult);
+                                    // Get_Calc_Type(taskResult);
                                 }
                                 if (mappedParam == "IV_FMM_Act_ID" && selectedDashboard == "0_FMM_Appr_Config" && priorDependencyChanged)
                                 {
-                                   // Get_Calc_Type(taskResult);
+                                    // Get_Calc_Type(taskResult);
                                 }
                                 if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "3_FMM_Model_Dialog_Update" && priorDependencyChanged)
                                 {
@@ -349,7 +350,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // if a dependency changed and there's a mapped param, make sure the associated information is updated to defaults
                             if (mappedParam == "IV_FMM_Cube_ID" && selectedDashboard == "0_FMM_Cube_Config")
                             {
-                               // Load_Cube_Settings(taskResult);
+                                // Load_Cube_Settings(taskResult);
                             }
                             if (mappedParam == "IV_FMM_Model_ID" && selectedDashboard == "0_FMM_Model")
                             {
@@ -368,7 +369,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
             }
         }
-		
+
         private bool isValidParamValue(string value)
         {
             if (value == null || value == string.Empty)
@@ -385,7 +386,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 // there is currently no logic to tell whether a string param is a valid value, so return true by default
                 return true;
             }
-		}
+        }
         #region "Setup Helpers"
 
         private String get_Default_Root_Profile(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs db_args)
@@ -495,7 +496,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 
         }
-		
+
         private void UpdateCustomSubstVar(ref XFLoadDashboardTaskResult result, string key, string value)
         {
             if (result.ModifiedCustomSubstVars.ContainsKey(key))

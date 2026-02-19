@@ -20,7 +20,7 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-	public class FMM_Config_Helpers
+	public class FMM_ConfigHelpers
 	{
 		#region "Config Setup"
 		public class CalcConfig
@@ -180,20 +180,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Cons", "Cons" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_View", "View" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Acct", "Acct" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Flow", "Flow" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_IC", "IC" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_Origin", "Origin" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD1", "UD1" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD2", "UD2" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD3", "UD3" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD4", "UD4" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD5", "UD5" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD6", "UD6" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD7", "UD7" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_Dest_UD8", "UD8" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_Dest_Cons", "Cons" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_Dest_View", "View" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_Dest_Acct", "Acct" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_Dest_Flow", "Flow" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_Dest_IC", "IC" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_Dest_Origin", "Origin" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_Dest_UD1", "UD1" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_Dest_UD2", "UD2" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_Dest_UD3", "UD3" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_Dest_UD4", "UD4" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_Dest_UD5", "UD5" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_Dest_UD6", "UD6" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_Dest_UD7", "UD7" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_Dest_UD8", "UD8" } } }
 					}
 				},
 				[CalcType.BRTabletoCube] = new DestConfig
@@ -445,7 +445,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			return properties;
 		}
 
-		public static List<FMM_Src_CellModel> BuildSrcCellModels(
+		public static List<FMM_SrcCellModel> BuildSrcCellModels(
 			IDictionary<string, string> customSubstVarsWithUserSelectedValues,
 			string componentId,
 			string dynamicSuffix,
@@ -454,7 +454,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		{
 			try
 			{
-				var cellModels = new List<FMM_Src_CellModel>();
+				var cellModels = new List<FMM_SrcCellModel>();
 
 				if (customSubstVarsWithUserSelectedValues == null)
 				{
@@ -484,7 +484,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					customSubstVarsWithUserSelectedValues.TryGetValue(paramName, out var defaultValue);
 
 					var dynamicParamName = $"{paramName}{dynamicSuffix}";
-					var model = new FMM_Src_CellModel();
+					var model = new FMM_SrcCellModel();
 					SetPropertyIfExists(model, new[] { "DynamicParamGuid", "DynamicParameterGuid", "ParamGuid" }, getDynamicParamGuid(dynamicParamName));
 					SetPropertyIfExists(model, new[] { "DynamicParamName", "DynamicParameterName", "ParamName" }, dynamicParamName);
 					SetPropertyIfExists(model, new[] { "Value", "ParamValue", "DynamicParameterValue" }, getDynamicParamValue(paramName, defaultValue ?? string.Empty));

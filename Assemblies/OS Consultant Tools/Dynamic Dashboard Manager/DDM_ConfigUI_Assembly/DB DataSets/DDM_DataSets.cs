@@ -16,7 +16,7 @@ using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.DDM_DB_DataSets
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.DDM_DataSets
 {
     /// <summary>
     /// MainClass provides data retrieval methods for Dynamic Dashboard Manager datasets.
@@ -85,16 +85,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_Config_Menu"))
                         {
                             return Get_Config_Menu();
-                        }						
-						else if (args.DataSetName.XFEqualsIgnoreCase("Get_Config_Hdr_Ctrls"))
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_Config_Hdr_Ctrls"))
                         {
                             return Get_Config_Hdr_Ctrls();
-                        }	
-						else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFP_ScenTypes"))
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFP_ScenTypes"))
                         {
                             return Get_WFP_ScenTypes();
-                        }	
-						break;
+                        }
+                        break;
                 }
                 return null;
             }
@@ -138,25 +138,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         {
             try
             {
-				var dt = new DataTable();
-				dt.Columns.Add("Key",typeof(int));
-				dt.Columns.Add("Value",typeof(string));
-				var topWFP = "Army_RMW_Consol_CMD_PGM";
-				var cubeList = BRApi.Finance.Cubes.GetTopLevelCubesForWorkflow(si);
-				
-				foreach (Cube topCube in cubeList)
-				{
-					var topCubeInfo = BRApi.Finance.Cubes.GetCubeInfo(si, topCube.Name);
-				    var scenTypeDict = topCubeInfo.GetScenarioTypesUsedByTopLevelCubeWFPName(si, topWFP);
-					if (scenTypeDict != null)
-		            {
-		                foreach (var entry in scenTypeDict)
-		                {
-		                    dt.Rows.Add(entry.Key, entry.Value);
-		                }
-		            }
-				}
-				return dt;
+                var dt = new DataTable();
+                dt.Columns.Add("Key", typeof(int));
+                dt.Columns.Add("Value", typeof(string));
+                var topWFP = "Army_RMW_Consol_CMD_PGM";
+                var cubeList = BRApi.Finance.Cubes.GetTopLevelCubesForWorkflow(si);
+
+                foreach (Cube topCube in cubeList)
+                {
+                    var topCubeInfo = BRApi.Finance.Cubes.GetCubeInfo(si, topCube.Name);
+                    var scenTypeDict = topCubeInfo.GetScenarioTypesUsedByTopLevelCubeWFPName(si, topWFP);
+                    if (scenTypeDict != null)
+                    {
+                        foreach (var entry in scenTypeDict)
+                        {
+                            dt.Rows.Add(entry.Key, entry.Value);
+                        }
+                    }
+                }
+                return dt;
             }
             catch (Exception ex)
             {
@@ -175,7 +175,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var hierarchy = new XFTreeItemCollection();
                 var hierarchy_mbrs = new List<XFTreeItem>();
                 var parent_child = new Dictionary<string, string>();
-                string rootProfileName = args.CustomSubstVars.XFGetValue("BL_DDM_Root_WFProfiles");
+                string rootProfileName = args.CustomSubstVars.XFGetValue("BL_DDM_Root_WFP");
 
                 var dt = new DataTable();
 
@@ -284,7 +284,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
         #endregion
-		
+
         #region "Get WFProfile TreeView"
 
         /// <summary>
@@ -347,16 +347,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 // Build the tree structure from the DataTable
                 foreach (DataRow row in dt.Rows)
                 {
-					BRApi.ErrorLog.LogMessage(si,row["Name"].ToString());
+                    BRApi.ErrorLog.LogMessage(si, row["Name"].ToString());
                     var hierarchy_children_mbrs = new List<XFTreeItem>();
                     string Name = row["Name"].ToString();
                     string Value = row["Value"].ToString();
                     string parentNode = row["ParentNode"].ToString();
                     var Bold_WFProfile = true;
-//                    if (row["DDM_Config_ID"] == DBNull.Value)
-//                    {
-//                        Bold_WFProfile = false;
-//                    }
+                    //                    if (row["DDM_Config_ID"] == DBNull.Value)
+                    //                    {
+                    //                        Bold_WFProfile = false;
+                    //                    }
                     parent_child.Add(Value, parentNode);
                     var childProfiles = parent_child.Where(pair => pair.Value == Value)
                                         .Select(pair => pair.Key)
@@ -367,11 +367,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             // Create an XFTreeItem for each child profile
                             var childXFTreeItem = hierarchy_mbrs.Find(item => item.UniqueName == childProfile);
-							if (childXFTreeItem != null)
-							{
-                            	hierarchy_children_mbrs.Add(childXFTreeItem);
-                        	}
-							}
+                            if (childXFTreeItem != null)
+                            {
+                                hierarchy_children_mbrs.Add(childXFTreeItem);
+                            }
+                        }
                         var wfprofile_xftreeitem = new XFTreeItem(Value, Name, string.Empty, Bold_WFProfile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
                         hierarchy_mbrs.Add(wfprofile_xftreeitem);
                     }
@@ -391,7 +391,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-		
+
         private DataSet Get_WSMU_DB_TreeView()
         {
             try
@@ -448,16 +448,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 // Build the tree structure from the DataTable
                 foreach (DataRow row in dt.Rows)
                 {
-					BRApi.ErrorLog.LogMessage(si,row["Name"].ToString());
+                    BRApi.ErrorLog.LogMessage(si, row["Name"].ToString());
                     var hierarchy_children_mbrs = new List<XFTreeItem>();
                     string Name = row["Name"].ToString();
                     string Value = row["Value"].ToString();
                     string parentNode = row["ParentNode"].ToString();
                     var Bold_WFProfile = true;
-//                    if (row["DDM_Config_ID"] == DBNull.Value)
-//                    {
-//                        Bold_WFProfile = false;
-//                    }
+                    //                    if (row["DDM_Config_ID"] == DBNull.Value)
+                    //                    {
+                    //                        Bold_WFProfile = false;
+                    //                    }
                     parent_child.Add(Value, parentNode);
                     var childProfiles = parent_child.Where(pair => pair.Value == Value)
                                         .Select(pair => pair.Key)
@@ -468,11 +468,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             // Create an XFTreeItem for each child profile
                             var childXFTreeItem = hierarchy_mbrs.Find(item => item.UniqueName == childProfile);
-							if (childXFTreeItem != null)
-							{
-                            	hierarchy_children_mbrs.Add(childXFTreeItem);
-                        	}
-							}
+                            if (childXFTreeItem != null)
+                            {
+                                hierarchy_children_mbrs.Add(childXFTreeItem);
+                            }
+                        }
                         var wfprofile_xftreeitem = new XFTreeItem(Value, Name, string.Empty, Bold_WFProfile, true, true, true, XFImageFileSourceType.Unknown, string.Empty, string.Empty, hierarchy_children_mbrs, TriStateBool.TrueValue);
                         hierarchy_mbrs.Add(wfprofile_xftreeitem);
                     }
@@ -564,7 +564,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-		
+
         #region "Get Config Menus"
         /// <summary>
         /// Retrieves the menu options for a given workflow profile.
@@ -573,7 +573,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         {
             try
             {
-                var ddm_Config_ID = args.NameValuePairs.XFGetValue("IV_DDM_Config_ID","0");
+                var ddm_Config_ID = args.NameValuePairs.XFGetValue("IV_DDM_Config_ID", "0");
                 var ddm_Config_Menu_DT = new DataTable("DDM_Config_Menu");
                 // Define the SQL Statement
                 var sql = @"SELECT CONCAT(Sort_Order,'-',Name) as Name, DDM_Menu_ID as Value
@@ -603,13 +603,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-		
+
         private DataTable Get_Config_Hdr_Ctrls()
         {
             try
             {
-                var ddm_Menu_ID = args.NameValuePairs.XFGetValue("BL_DDM_Config_Menu","0");
-				BRApi.ErrorLog.LogMessage(si,$"Menu_ID: {ddm_Menu_ID}");
+                var ddm_Menu_ID = args.NameValuePairs.XFGetValue("BL_DDM_Config_Menu", "0");
+                BRApi.ErrorLog.LogMessage(si, $"Menu_ID: {ddm_Menu_ID}");
                 var dt = new DataTable("DDM_Config_Hdr_Ctrls");
                 // Define the SQL Statement
                 var sql = @"SELECT CONCAT(Sort_Order,'-',Name) as Name, DDM_Hdr_Ctrl_ID as Value
@@ -640,7 +640,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
         #endregion
-		
+
 
         #region "Get WF Profile Headers"
         /// <summary>
@@ -686,7 +686,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
         #endregion
 
-		#region "Get Workspaces"
+        #region "Get Workspaces"
         /// <summary>
         /// Retrieves workspace configuration options for a given workflow profile and menu option.
         /// </summary>

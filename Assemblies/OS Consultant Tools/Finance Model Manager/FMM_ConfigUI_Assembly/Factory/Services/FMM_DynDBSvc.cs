@@ -19,7 +19,7 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class FMM_DynDB_Svc : IWsasDynamicDashboardsV800
+    public class FMM_DynDBSvc : IWsasDynamicDashboardsV800
     {
         public WsDynamicDashboardEx GetEmbeddedDynamicDashboard(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
             WsDynamicComponentEx parentDynamicComponentEx, Dashboard storedDashboard, Dictionary<string, string> customSubstVarsAlreadyResolved)
@@ -31,21 +31,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     if (storedDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
                     {
                         // retrieve our items
-                        var src_CellDB = new FMM_Src_CellDB(si);
+                        var src_CellDB = new FMM_SrcCellDB(si);
                         var src_Cells = src_CellDB.GetSrcCellsByCalcId(4, 2);
 
                         // prepare a list of repeated components			
                         var repeatArgs = new List<WsDynamicComponentRepeatArgs>();
 
                         // Get configuration to determine which properties to use
-                        var enabledProperties = FMM_Config_Helpers.GetEnabledSrcProperties(2); // calcType = 1 (Table)
+                        var enabledProperties = FMM_ConfigHelpers.GetEnabledSrcProperties(2); // calcType = 1 (Table)
 
                         // loop through our items, populating dictionaries that will contain Parameter values for each "row"
-                        foreach (FMM_Src_CellModel cellModel in src_Cells)
+                        foreach (FMM_SrcCellModel cellModel in src_Cells)
                         {
                             Dictionary<string, string> nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>();
 
-                            // Always add CellID as the primary identifier
+                            // Always add Cell_ID as the primary identifier
                             nextLevelTemplateSubstVarsToAdd["CellID"] = cellModel.CellID.ToString();
                             nextLevelTemplateSubstVarsToAdd["CalcID"] = cellModel.CalcID.ToString();
                             //nextLevelTemplateSubstVarsToAdd["Order"] = cellModel.Order.ToString();
@@ -166,12 +166,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-	                if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
-	                {
-	                    var repeatArgsList = dynamicDashboardEx.DynamicDashboard.Tag as List<WsDynamicComponentRepeatArgs>;						
-						return api.GetDynamicComponentsRepeatedForDynamicDashboard(si, workspace, dynamicDashboardEx, 
-							repeatArgsList, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
-	                }
+                    if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
+                    {
+                        var repeatArgsList = dynamicDashboardEx.DynamicDashboard.Tag as List<WsDynamicComponentRepeatArgs>;
+                        return api.GetDynamicComponentsRepeatedForDynamicDashboard(si, workspace, dynamicDashboardEx,
+                            repeatArgsList, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
+                    }
                     return api.GetDynamicComponentsForDynamicDashboard(si, workspace, dynamicDashboardEx, string.Empty, null, TriStateBool.Unknown, WsDynamicItemStateType.Unknown);
                 }
 

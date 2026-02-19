@@ -19,7 +19,7 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class FMM_Comp_Svc : IWsasComponentV800
+    public class FMM_CompSvc : IWsasComponentV800
     {
         public XFSelectionChangedTaskResult ProcessComponentSelectionChanged(SessionInfo si, BRGlobals brGlobals, DashboardWorkspace workspace, DashboardExtenderArgs args)
         {
@@ -29,7 +29,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
 
                     // create our data-handling object
-                    var src_CellDb = new FMM_Src_CellDB(si);
+                    var src_CellDb = new FMM_SrcCellDB(si);
 
                     // Save any change to Config records
                     if (args.FunctionName.XFEqualsIgnoreCase("Save"))
@@ -38,7 +38,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                         var componentId = this.getIdFromComponentName(args.ComponentInfo.Component.Name);
                         var dynamicSuffix = this.getDynamicSuffix(args.ComponentInfo.Component.Name);
 
-                        var srcCellModels = FMM_Config_Helpers.BuildSrcCellModels(
+                        var srcCellModels = FMM_ConfigHelpers.BuildSrcCellModels(
                             args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues,
                             componentId,
                             dynamicSuffix,

@@ -19,20 +19,20 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class FMM_Src_CellModel
+    public class FMM_SrcCellModel
     {
         private readonly Dictionary<string, string> _dimensionValues;
 
-        public FMM_Src_CellModel() : this(null)
+        public FMM_SrcCellModel() : this(null)
         {
         }
 
-        public FMM_Src_CellModel(IEnumerable<string> enabledDimensions)
+        public FMM_SrcCellModel(IEnumerable<string> enabledDimensions)
         {
             Type = OpenParens = MathOperator = CloseParens = string.Empty;
             Entity = Cons = Scenario = Time = View = Acct = IC = Origin = Flow = string.Empty;
             UD1 = UD2 = UD3 = UD4 = UD5 = UD6 = UD7 = UD8 = string.Empty;
-            
+
             _dimensionValues = enabledDimensions?
                 .ToDictionary(d => d, _ => string.Empty, StringComparer.OrdinalIgnoreCase)
                 ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -43,7 +43,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public int ModelID { get; set; }
         public int CalcID { get; set; }
         public int CellID { get; set; }
-        public int Order { get; set; }
+        public int Src_Order { get; set; }
 
         public string Type { get; set; }
         public string ItemType { get; set; }

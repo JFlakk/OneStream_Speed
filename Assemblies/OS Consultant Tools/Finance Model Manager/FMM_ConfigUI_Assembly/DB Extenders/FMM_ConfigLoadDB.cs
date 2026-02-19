@@ -22,7 +22,7 @@ using OneStream.Stage.Engine;
 using OpenXmlPowerTools;
 using Workspace.OSConsTools.GBL_UI_Assembly;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_Config_Load_DB
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_ConfigLoadDB
 {
     public class MainClass
     {
@@ -35,9 +35,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             {"BL_FMM_Setup_CubeID", "IV_FMM_CubeID"},
             {"BL_FMM_CubeID", "IV_FMM_CubeID"},
-            {"BL_FMM_Table_CubeID", "IV_FMM_CubeID"},
+            {"BL_FMM_TableCubeID", "IV_FMM_CubeID"},
             {"BL_FMM_ActID", "IV_FMM_ActID"},
-            {"BL_FMM_Table_ActID", "IV_FMM_ActID"},
+            {"BL_FMM_TableActID", "IV_FMM_ActID"},
             {"BL_FMM_ModelID", "IV_FMM_ModelID"},
             {"BL_FMM_ModelGrpSeqID", "IV_FMM_ModelGrpSeqID"},
             {"BL_FMM_ModelGrpID","IV_FMM_ModelGrpID"}
@@ -69,8 +69,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private Dictionary<int, string[]> UnitAcctConfig = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Table_CubeID"}},
-            {1, new string[] {"BL_FMM_Table_ActID"}},
+            {0, new string[] {"BL_FMM_TableCubeID"}},
+            {1, new string[] {"BL_FMM_TableActID"}},
             {2, new string[] {"IV_FMM_UnitID"}}
         };
 
@@ -141,7 +141,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             //setup HierarchyDict
             HierarchyDict.Add("FMM_CubeConfig", CubeConfig);
-            HierarchyDict.Add("FMM_Unit_and_Acct_Config", UnitAcctConfig);
+            HierarchyDict.Add("FMM_UnitAcctConfig", UnitAcctConfig);
             HierarchyDict.Add("FMM_Appr_Config", ApprovalConfig);
             HierarchyDict.Add("FMM_Reg_Col_Config", RegisterConfig);
             HierarchyDict.Add("FMM_Model", BuildModel);
@@ -167,7 +167,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
                     case DashboardExtenderFunctionType.LoadDashboard:
                         // Implement Load Dashboard logic here.
-                        if (args.FunctionName.XFEqualsIgnoreCase("Load_FMM_Dashboard"))
+                        if (args.FunctionName.XFEqualsIgnoreCase("Load_FMM_DB"))
                         {
                             var load_Dashboard_Task_Result = Load_Dashboard("", ref args);
                             return load_Dashboard_Task_Result;
@@ -205,7 +205,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             result = Load_Dashboard_Task_Result;
 
-            FMM_Config_Helpers.SetCubeConfigParams(si, result.ModifiedCustomSubstVars);
+            FMM_ConfigHelpers.SetCubeConfigParams(si, result.ModifiedCustomSubstVars);
 
             return result;
         }

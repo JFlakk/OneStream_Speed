@@ -22,7 +22,7 @@ using OneStream.Stage.Engine;
 using OpenXmlPowerTools;
 using Workspace.OSConsTools.GBL_UI_Assembly;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_Config_Data
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_ConfigData
 {
     public class MainClass
     {
@@ -391,8 +391,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var rowToMap = FMM_Calc_Config_DT.Rows.Find(CalcID);
                         if (rowToMap != null)
                         {
-                            var calcType = (FMM_Config_Helpers.CalcType)calcTypeValue;
-                            if (FMM_Config_Helpers.CalcRegistry.Configs.TryGetValue(calcType, out var calcConfig))
+                            var calcType = (FMM_ConfigHelpers.CalcType)calcTypeValue;
+                            if (FMM_ConfigHelpers.CalcRegistry.Configs.TryGetValue(calcType, out var calcConfig))
                             {
                                 foreach (var group in calcConfig.ParameterMappings.Values)
                                 {
@@ -573,8 +573,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 new_DataRow["CubeID"] = (int)xfRow.ModifiedDataRow["CubeID"];
                                 new_DataRow["ActID"] = ActID;
                                 new_DataRow["Name"] = (string)xfRow.ModifiedDataRow.Items["Name"];
-                                new_DataRow["CalcType"] = (string)xfRow.ModifiedDataRow.Items["CalcType"];
-                                new_DataRow["Status"] = "Build";
+                                new_DataRow["CalcType"] = (int)xfRow.ModifiedDataRow.Items["CalcType"];
+                                new_DataRow["Status"] = 1;
                                 new_DataRow["CreateDate"] = DateTime.Now;
                                 new_DataRow["CreateUser"] = si.UserName;
                                 new_DataRow["UpdateDate"] = DateTime.Now;
@@ -590,7 +590,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             {
                                 var rowToUpdate = rowsToUpdate[0];
                                 rowToUpdate["Name"] = (string)xfRow.ModifiedDataRow["Name"];
-                                rowToUpdate["Status"] = (string)xfRow.ModifiedDataRow["Status"];
+                                rowToUpdate["Status"] = (int)xfRow.ModifiedDataRow["Status"];
                                 rowToUpdate["UpdateDate"] = DateTime.Now;
                                 rowToUpdate["UpdateUser"] = si.UserName;
                                 Duplicate_ActConfig(CubeID, "Update Row", ref save_Result, "Update", xfRow);
@@ -3338,8 +3338,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         var new_DataRow = FMM_CubeConfig_DT.NewRow();
                         var SaveTypeintValue = 1;
-                        FMM_Config_Helpers.SaveType saveType = (FMM_Config_Helpers.SaveType)SaveTypeintValue;
-                        if (FMM_Config_Helpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
+                        FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
+                        if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
                         {
                             foreach (var step in config.ParameterMappings)
                             {
@@ -3378,8 +3378,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         {
                             var rowToUpdate = FMM_CubeConfig_DT.Rows[0];
                             var SaveTypeintValue = 2;
-                            FMM_Config_Helpers.SaveType saveType = (FMM_Config_Helpers.SaveType)SaveTypeintValue;
-                            if (FMM_Config_Helpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
+                            FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
+                            if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
                             {
                                 foreach (var step in config.ParameterMappings)
                                 {
@@ -5837,9 +5837,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var SaveTypeintValue = 1;
                 var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
                 gbl_helpers.UpdateCustomSubstVar(ref select_Result, "BL_FMM_CubeID", string.Empty);
-                FMM_Config_Helpers.SaveType saveType = (FMM_Config_Helpers.SaveType)SaveTypeintValue;
+                FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
 
-                if (FMM_Config_Helpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
+                if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
                 {
                     foreach (var step in config.ParameterMappings)
                     {
@@ -5891,8 +5891,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var row = fmm_CubeConfig_DT.Rows[0];
 
                     // 2. Extract Option_Type and Convert to Enum
-                    FMM_Config_Helpers.SaveType saveType = (FMM_Config_Helpers.SaveType)SaveTypeintValue;
-                    if (FMM_Config_Helpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
+                    FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
+                    if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
                     {
                         foreach (var step in config.ParameterMappings)
                         {
