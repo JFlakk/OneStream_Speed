@@ -250,6 +250,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
 						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
 					}
+				},
+				[SaveType.View] = new CubeConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Name", "Cube" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_ScenType", "ScenType" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_EntityMFB", "EntityMFB" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_CreateDate", "CreateDate" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_CreateUser", "CreateUser" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_UpdateDate", "UpdateDate" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_UpdateUser", "UpdateUser" } } }
+					}
 				}
 			};
 		}
@@ -575,14 +589,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			if (cubeConfig_DT.Rows.Count > 0)
 			{
 				DataRow row = cubeConfig_DT.Rows[0];
-				setVar("IV_FMM_CubeConfig_Name", row["Cube"].ToString());
-				setVar("IV_FMM_CubeConfig_ScenType", row["ScenType"].ToString());
-				setVar("IV_FMM_EntityMFB", row["EntityMFB"].ToString());
-				setVar("IV_FMM_CubeConfig_Descr", row["Descr"].ToString());
-				setVar("IV_FMM_CreateDate", row["CreateDate"].ToString());
-				setVar("IV_FMM_CreateUser", row["CreateUser"].ToString());
-				setVar("IV_FMM_UpdateDate", row["UpdateDate"].ToString());
-				setVar("IV_FMM_UpdateUser", row["UpdateUser"].ToString());
+				if (CubeConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
+				{
+					foreach (var step in config.ParameterMappings)
+					{
+						foreach (var map in step.Value)
+						{
+							setVar(map.Key, row[map.Value].ToString());
+						}
+					}
+				}
 			}
 			else
 			{
