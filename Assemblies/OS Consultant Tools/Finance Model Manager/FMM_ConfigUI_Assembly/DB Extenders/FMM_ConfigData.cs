@@ -4122,48 +4122,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var selectResult = new XFSelectionChangedTaskResult();
                 selectResult.ChangeCustomSubstVarsInDashboard = true;
-                var SaveTypeintValue = 3;
                 var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
                 var existingCubeID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeID", "0").XFConvertToInt();
 
                 gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", existingCubeID.XFToString());
-                var fmm_CubeConfig_DT = new DataTable();
                 gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeConfig_AddUpdate", "Update");
-                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
-                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
-                {
-                    var sqa = new SqlDataAdapter();
-                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                    connection.Open();
-                    var sql = @"SELECT *
-	                            FROM FMM_CubeConfig
-							    WHERE CubeID = @CubeID";
-                    var sqlparams = new SqlParameter[]
-                    {
-                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = existingCubeID }
-                    };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, fmm_CubeConfig_DT, sql, sqlparams);
-                }
-                if (fmm_CubeConfig_DT.Rows.Count > 0)
-                {
-                    var row = fmm_CubeConfig_DT.Rows[0];
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeID", existingCubeID.XFToString());
+                FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
 
-                    // 2. Extract Option_Type and Convert to Enum
-                    FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
-                    if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
-                    {
-                        foreach (var step in config.ParameterMappings)
-                        {
-                            // The 'step.Value' is the inner Dictionary<string, string>
-                            // It usually contains just one pair, but we loop to be safe
-                            foreach (var map in step.Value)
-                            {
-                                gbl_helpers.UpdateCustomSubstVar(ref selectResult, map.Key, row[map.Value].ToString());
-                            }
-                        }
-                    }
-
-                }
                 return selectResult;
             }
             catch (Exception ex)
@@ -4179,48 +4145,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var selectResult = new XFSelectionChangedTaskResult();
                 selectResult.ChangeCustomSubstVarsInDashboard = true;
-                var SaveTypeintValue = 3;
                 var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
                 var existingCubeID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeID", "0").XFConvertToInt();
 
                 gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", existingCubeID.XFToString());
-                var fmm_CubeConfig_DT = new DataTable();
                 gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeConfig_AddUpdate", "Update");
-                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
-                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
-                {
-                    var sqa = new SqlDataAdapter();
-                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                    connection.Open();
-                    var sql = @"SELECT *
-	                            FROM FMM_CubeConfig
-							    WHERE CubeID = @CubeID";
-                    var sqlparams = new SqlParameter[]
-                    {
-                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = existingCubeID }
-                    };
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, fmm_CubeConfig_DT, sql, sqlparams);
-                }
-                if (fmm_CubeConfig_DT.Rows.Count > 0)
-                {
-                    var row = fmm_CubeConfig_DT.Rows[0];
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeID", existingCubeID.XFToString());
+                FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
 
-                    // 2. Extract Option_Type and Convert to Enum
-                    FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
-                    if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
-                    {
-                        foreach (var step in config.ParameterMappings)
-                        {
-                            // The 'step.Value' is the inner Dictionary<string, string>
-                            // It usually contains just one pair, but we loop to be safe
-                            foreach (var map in step.Value)
-                            {
-                                gbl_helpers.UpdateCustomSubstVar(ref selectResult, map.Key, row[map.Value].ToString());
-                            }
-                        }
-                    }
-
-                }
                 return selectResult;
             }
             catch (Exception ex)
