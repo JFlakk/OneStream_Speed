@@ -142,10 +142,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             //setup HierarchyDict
             HierarchyDict.Add("FMM_CubeConfig", CubeConfig);
             HierarchyDict.Add("FMM_UnitAcctConfig", UnitAcctConfig);
-            HierarchyDict.Add("FMM_Appr_Config", ApprovalConfig);
-            HierarchyDict.Add("FMM_Reg_Col_Config", RegisterConfig);
+            HierarchyDict.Add("FMM_Appr", ApprovalConfig);
+            HierarchyDict.Add("FMM_RegConfig", RegisterConfig);
             HierarchyDict.Add("FMM_Model", BuildModel);
-            HierarchyDict.Add("FMM_Model_Grp", BuildModelGroup);
+            HierarchyDict.Add("FMM_ModelGrp", BuildModelGroup);
             HierarchyDict.Add("FMM_ModelGrpSeq", BuildModelGroupSeq);
 
             // setup dialogs for hierarchy dict
@@ -166,11 +166,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 switch (args.FunctionType)
                 {
                     case DashboardExtenderFunctionType.LoadDashboard:
-                        // Implement Load Dashboard logic here.
                         if (args.FunctionName.XFEqualsIgnoreCase("Load_FMM_DB"))
                         {
-                            var load_Dashboard_Task_Result = Load_Dashboard("", ref args);
-                            return load_Dashboard_Task_Result;
+                            var LoadDBTaskResult = Load_Dashboard("", ref args);
+                            return LoadDBTaskResult;
                         }
                         break;
                 }
@@ -186,34 +185,34 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #region "Load Dashboard"
         private XFLoadDashboardTaskResult Load_Dashboard(string RunType, ref DashboardExtenderArgs args)
         {
-            var Load_Dashboard_Task_Result = new XFLoadDashboardTaskResult();
-            Load_Dashboard_Task_Result.ChangeCustomSubstVarsInDashboard = true;
+            var LoadDBTaskResult = new XFLoadDashboardTaskResult();
+            LoadDBTaskResult.ChangeCustomSubstVarsInDashboard = true;
 
-            clearParams(ref args, ref Load_Dashboard_Task_Result);
-            setParams(ref args, ref Load_Dashboard_Task_Result);
+            clearParams(ref args, ref LoadDBTaskResult);
+            setParams(ref args, ref LoadDBTaskResult);
 
-            updateShowHide(ref args, ref Load_Dashboard_Task_Result);
+            updateShowHide(ref args, ref LoadDBTaskResult);
 
-            return Load_Dashboard_Task_Result;
+            return LoadDBTaskResult;
 
         }
 
         #region "Setup Helpers"
-        private XFLoadDashboardTaskResult Load_CubeConfig(XFLoadDashboardTaskResult Load_Dashboard_Task_Result)
+        private XFLoadDashboardTaskResult Load_CubeConfig(XFLoadDashboardTaskResult LoadDBTaskResult)
         {
             var result = new XFLoadDashboardTaskResult();
 
-            result = Load_Dashboard_Task_Result;
+            result = LoadDBTaskResult;
 
             FMM_ConfigHelpers.SetCubeConfigParams(si, result.ModifiedCustomSubstVars);
 
             return result;
         }
 
-        private XFLoadDashboardTaskResult Get_CalcType(XFLoadDashboardTaskResult Load_Dashboard_Task_Result)
+        private XFLoadDashboardTaskResult Get_CalcType(XFLoadDashboardTaskResult LoadDBTaskResult)
         {
-            var XF_Load_Dashboard_Task_Result = new XFLoadDashboardTaskResult();
-            XF_Load_Dashboard_Task_Result = Load_Dashboard_Task_Result;
+            var XF_LoadDBTaskResult = new XFLoadDashboardTaskResult();
+            XF_LoadDBTaskResult = LoadDBTaskResult;
 
             var CalcType_DT = new DataTable("CalcType");
 
@@ -239,8 +238,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     // Create an array of SqlParameter objects
                     var sqlparams = new SqlParameter[]
                     {
-                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_CubeID","0"))},
-                        new SqlParameter("@ActID", SqlDbType.Int) { Value = Convert.ToInt32(XF_Load_Dashboard_Task_Result.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ActID","0"))}
+                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = Convert.ToInt32(XF_LoadDBTaskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_CubeID","0"))},
+                        new SqlParameter("@ActID", SqlDbType.Int) { Value = Convert.ToInt32(XF_LoadDBTaskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ActID","0"))}
                     };
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, CalcType_DT, sql, sqlparams);
@@ -252,13 +251,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
             if (CalcType_DT.Rows.Count > 0)
             {
-                UpdateCustomSubstVar(ref XF_Load_Dashboard_Task_Result, "DL_FMM_CalcType", CalcType_DT.Rows[0]["CalcType"].ToString());
+                UpdateCustomSubstVar(ref XF_LoadDBTaskResult, "DL_FMM_CalcType", CalcType_DT.Rows[0]["CalcType"].ToString());
             }
             else
             {
-                UpdateCustomSubstVar(ref XF_Load_Dashboard_Task_Result, "DL_FMM_CalcType", "Table");
+                UpdateCustomSubstVar(ref XF_LoadDBTaskResult, "DL_FMM_CalcType", "Table");
             }
-            return XF_Load_Dashboard_Task_Result;
+            return XF_LoadDBTaskResult;
         }
 
         private void setupUpdateModelDialog(ref XFLoadDashboardTaskResult taskResult)
@@ -453,8 +452,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 string ARMappedVal = ARCustomSubst.XFGetValue(mappedParam, "");
                                 string PRMappedVal = PRCustomSubst.XFGetValue(mappedParam, "");
 
-
-                                //check AR and PR for values
                                 if (PRContainsKey && isValidParamValue(PRVal) && isValidParamValue(PRMappedVal))
                                 {
                                     if (PRVal != PRMappedVal)

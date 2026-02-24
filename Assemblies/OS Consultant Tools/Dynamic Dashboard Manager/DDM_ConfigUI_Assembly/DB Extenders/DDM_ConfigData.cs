@@ -97,7 +97,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 							selection_Changed_Task_Result = Save_New_Profile_Config();
 							return selection_Changed_Task_Result;
 						}
-						else if (args.FunctionName.XFEqualsIgnoreCase("Select_Add_DDM_Config_Menu_Layout"))
+						else if (args.FunctionName.XFEqualsIgnoreCase("Add_DDM_Config_Menu_Layout"))
 						{
 							return this.Select_Add_DDM_Config_Menu_Layout();
 						}

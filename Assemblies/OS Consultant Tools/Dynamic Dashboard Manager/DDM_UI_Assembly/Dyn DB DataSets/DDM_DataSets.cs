@@ -16,7 +16,7 @@ using OneStream.Shared.Wcf;
 using OneStream.Stage.Database;
 using OneStream.Stage.Engine;
 
-namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.DDM_DB_DataSets
+namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.DDM_DataSets
 {
     /// <summary>
     /// MainClass provides data retrieval methods for Dynamic Dashboard Manager datasets.
@@ -66,7 +66,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-		#region "Get App Menus"
+        #region "Get App Menus"
         /// <summary>
         /// Retrieves the menu options for a given workflow profile.
         /// </summary>
@@ -74,7 +74,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         {
             try
             {
-				//args.CustomSubstVars.
+                //args.CustomSubstVars.
                 var wfUserPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
                 var dt = new DataTable("DDM_Config_Menu");
                 // Define the SQL Statement
@@ -89,7 +89,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-					connection.Open();
+                    connection.Open();
                     var sql_GBL_Get_DataSets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     var sqa = new SqlDataAdapter();
 
@@ -108,6 +108,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-		#endregion
+        #endregion
     }
 }
