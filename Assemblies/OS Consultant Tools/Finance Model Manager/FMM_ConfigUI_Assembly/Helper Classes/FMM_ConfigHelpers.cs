@@ -234,7 +234,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Cube" } } },
+						{ 0, new Dictionary<string, string> { { "BL_FMM_CubeConfig_Cubes", "Cube" } } },
 						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
 						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
 						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
@@ -342,6 +342,40 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					}
 				},
 				[SaveType.Update] = new ApprConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
+						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
+					}
+				}
+			};
+		}
+
+		public class ApprStepConfig
+		{
+
+			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
+		}
+
+		public static class ApprStepConfigRegistry
+		{
+			public static readonly Dictionary<SaveType, ApprStepConfig> Configs = new()
+			{
+				[SaveType.Add] = new ApprStepConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Cube" } } },
+						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
+					}
+				},
+				[SaveType.Update] = new ApprStepConfig
 				{
 					ParameterMappings = new()
 					{
@@ -532,7 +566,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 			catch (Exception ex) { }
 
-			// 2. Helper to safely add/update variables
 			Action<string, string> setVar = (key, val) =>
 			{
 				if (substVars.ContainsKey(key)) { substVars[key] = val; }
@@ -590,7 +623,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		{
 			None = 0,
 			Add = 1,
-			Update = 2
+			Update = 2,
+			View = 3
 		}
 	}
 }

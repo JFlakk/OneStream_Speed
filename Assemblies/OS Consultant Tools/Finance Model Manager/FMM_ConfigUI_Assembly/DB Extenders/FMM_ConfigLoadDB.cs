@@ -33,11 +33,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private Dictionary<string, string> paramMap = new Dictionary<string, string>()
         {
-            {"BL_FMM_Setup_CubeID", "IV_FMM_CubeID"},
+            {"BL_FMM_CubeID_Setup", "IV_FMM_CubeID"},
             {"BL_FMM_CubeID", "IV_FMM_CubeID"},
-            {"BL_FMM_TableCubeID", "IV_FMM_CubeID"},
+            {"BL_FMM_CubeID_Table", "IV_FMM_CubeID"},
             {"BL_FMM_ActID", "IV_FMM_ActID"},
-            {"BL_FMM_TableActID", "IV_FMM_ActID"},
+            {"BL_FMM_ActID_Table", "IV_FMM_ActID"},
             {"BL_FMM_ModelID", "IV_FMM_ModelID"},
             {"BL_FMM_ModelGrpSeqID", "IV_FMM_ModelGrpSeqID"},
             {"BL_FMM_ModelGrpID","IV_FMM_ModelGrpID"}
@@ -69,15 +69,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private Dictionary<int, string[]> UnitAcctConfig = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_TableCubeID"}},
-            {1, new string[] {"BL_FMM_TableActID"}},
+            {0, new string[] {"BL_FMM_CubeID_Table"}},
+            {1, new string[] {"BL_FMM_ActID_Table"}},
             {2, new string[] {"IV_FMM_UnitID"}}
         };
 
         private Dictionary<int, string[]> RegisterConfig = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_Table_CubeID"}},
-            {1, new string[] {"BL_FMM_Table_ActID"}}
+            {0, new string[] {"BL_FMM_CubeID_Table"}},
+            {1, new string[] {"BL_FMM_ActID_Table"}}
         };
 
         private Dictionary<int, string[]> BuildModel = new Dictionary<int, string[]>()
@@ -142,8 +142,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             //setup HierarchyDict
             HierarchyDict.Add("FMM_CubeConfig", CubeConfig);
             HierarchyDict.Add("FMM_UnitAcctConfig", UnitAcctConfig);
+            HierarchyDict.Add("FMM_CustTableDef", UnitAcctConfig);
+            HierarchyDict.Add("FMM_CustTableAssign", UnitAcctConfig);
             HierarchyDict.Add("FMM_Appr", ApprovalConfig);
-            HierarchyDict.Add("FMM_RegConfig", RegisterConfig);
+            HierarchyDict.Add("FMM_RegCol", RegisterConfig);
+            HierarchyDict.Add("FMM_DatVal", UnitAcctConfig);
             HierarchyDict.Add("FMM_Model", BuildModel);
             HierarchyDict.Add("FMM_ModelGrp", BuildModelGroup);
             HierarchyDict.Add("FMM_ModelGrpSeq", BuildModelGroupSeq);

@@ -50,6 +50,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 {
                     return Get_CubeConfigDB();
                 }
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_ModelDB"))
+                {
+                    return Get_ModelDB();
+                }
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_CalcDB"))
+                {
+                    return Get_CalcDB();
+                }
                 return null;
 
             }
@@ -123,24 +131,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 
         private string Get_ModelDB()
         {
-            var CubeConfigType = args.NameValuePairs.XFGetValue("CubeConfigType", "NA");
-            var CubeID = args.NameValuePairs.XFGetValue("cubeID", "0");
+            var ModelType = args.NameValuePairs.XFGetValue("ModelType", "NA");
+            var ModelID = args.NameValuePairs.XFGetValue("ModelID", "0");
             var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
-            if (currDB.XFEqualsIgnoreCase("FMM_CubeConfig_Content_C2"))
+            if (currDB.XFEqualsIgnoreCase("FMM_Model_C1R2"))
             {
-                var isUpdate = CubeConfigType.XFEqualsIgnoreCase("Update");
-                int.TryParse(CubeID, out var cubeId);
+                var isUpdate = ModelType.XFEqualsIgnoreCase("Update");
+                int.TryParse(ModelID, out var modelId);
 
-                if (isUpdate && cubeId == 0)
+                if (isUpdate && modelId == 0)
                 {
-                    return "FMM_CubeConfig_Content_C2_Blank";
+                    return "FMM_Model_C1R2_Blank";
                 }
 
-                return "FMM_CubeConfig_Content_C2_AddUpdate";
+                return "FMM_Model_C1R2_AddUpdate";
             }
             else
             {
-                var isUpdate = CubeConfigType.XFEqualsIgnoreCase("Update");
+                var isUpdate = ModelType.XFEqualsIgnoreCase("Update");
 
                 if (isUpdate)
                 {
@@ -148,6 +156,28 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 }
 
                 return $"{currDB}_Add";
+            }
+            return currDB;
+        }
+
+
+        private string Get_CalcDB()
+        {
+            var CalcAddUpdate = args.NameValuePairs.XFGetValue("CalcAddUpdate", "NA");
+            var CalcType = args.NameValuePairs.XFGetValue("CalcType", "NA");
+            var CalcID = args.NameValuePairs.XFGetValue("CalcID", "0");
+            var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
+            if (currDB.XFEqualsIgnoreCase("FMM_Model_C2C2"))
+            {
+                var isUpdate = CalcAddUpdate.XFEqualsIgnoreCase("Update");
+                int.TryParse(CalcID, out var calcId);
+
+                if (isUpdate && calcId == 0)
+                {
+                    return "FMM_Model_C2C2_Blank";
+                }
+
+                return "FMM_Model_C2C2_AddUpdate";
             }
             return currDB;
         }
