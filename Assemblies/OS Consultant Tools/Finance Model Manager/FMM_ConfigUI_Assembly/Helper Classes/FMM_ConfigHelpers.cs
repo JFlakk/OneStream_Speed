@@ -602,8 +602,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 			else
 			{
-				string[] keys = { "IV_FMM_Cube", "IV_FMM_ScenType", "IV_FMM_EntityMFB", "IV_FMM_CreateDate", "IV_FMM_CreateUser", "IV_FMM_UpdateDate", "IV_FMM_UpdateUser" };
-				foreach (var key in keys) { setVar(key, string.Empty); }
+				if (CubeConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
+				{
+					foreach (var step in config.ParameterMappings)
+					{
+						foreach (var map in step.Value)
+						{
+							setVar(map.Key, string.Empty);
+						}
+					}
+				}
 			}
 		}
 

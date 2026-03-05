@@ -50,6 +50,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 {
                     return Get_CubeConfigDB();
                 }
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_CustTableDB"))
+                {
+                    return Get_CustTableDB();
+                }
                 else if (args.FunctionName.XFEqualsIgnoreCase("Get_ModelDB"))
                 {
                     return Get_ModelDB();
@@ -68,6 +72,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
         }
 
         private string Get_CubeConfigDB()
+        {
+            var CubeConfigType = args.NameValuePairs.XFGetValue("CubeConfigType", "NA");
+            var CubeID = args.NameValuePairs.XFGetValue("cubeID", "0");
+            var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
+            if (currDB.XFEqualsIgnoreCase("FMM_CubeConfig_C2"))
+            {
+                var isUpdate = CubeConfigType.XFEqualsIgnoreCase("Update");
+                int.TryParse(CubeID, out var cubeId);
+
+                if (isUpdate && cubeId == 0)
+                {
+                    return "FMM_CubeConfig_C2_Blank";
+                }
+
+                return "FMM_CubeConfig_C2_AddUpdate";
+            }
+            else
+            {
+                var isUpdate = CubeConfigType.XFEqualsIgnoreCase("Update");
+
+                if (isUpdate)
+                {
+                    return $"{currDB}_Update";
+                }
+
+                return $"{currDB}_Add";
+            }
+            return currDB;
+        }
+
+        private string Get_CustTableDB()
         {
             var CubeConfigType = args.NameValuePairs.XFGetValue("CubeConfigType", "NA");
             var CubeID = args.NameValuePairs.XFGetValue("cubeID", "0");

@@ -144,6 +144,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_RegConfigs("Target");
                         }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_CustTables"))
+                        {
+                            return get_FMM_CustTables("All");
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_CustTables_Audit"))
+                        {
+                            return get_FMM_CustTables("Audit");
+                        }
                         //Return WF Profile Hierarchy for WF Root Profile selected
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_WFProfile_TreeView"))
                         {
@@ -405,6 +413,44 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         sqlparams = new SqlParameter[]
                         {
                             new SqlParameter("@CubeID", SqlDbType.Int) { Value = CubeID.XFConvertToInt() }
+                        };
+                    }
+
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        private DataTable get_FMM_CustTables(string custTableType)
+        {
+            try
+            {
+                var dt = new DataTable("CustTable");
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+                    var sql = string.Empty;
+                    var sqlparams = new SqlParameter[]
+                        {
+                        };
+
+                    // Determine SQL and parameters based on actType
+                    if (custTableType.XFEqualsIgnoreCase("All"))
+                    {
+                        dt.TableName = "CustTable_All";
+                        sql = @"SELECT CONCAT(Name, ' - ',Type) AS CustTable,CustTableID
+                                FROM FMM_CustTable
+                                ORDER BY Name,Type";
+                        sqlparams = new SqlParameter[]
+                        {
                         };
                     }
 
