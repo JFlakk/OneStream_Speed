@@ -246,10 +246,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 changed_Result = CubeConfig_Select();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("CustTableConfig_Add"):
-                                changed_Result = CubeConfig_Add();
+                                changed_Result = CustTableConfig_Add();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("CustTableConfig_Select"):
-                                changed_Result = CubeConfig_Select();
+                                changed_Result = CustTableConfig_Select();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Select_Add_FMM_CalcID"):
                                 return changed_Result;
