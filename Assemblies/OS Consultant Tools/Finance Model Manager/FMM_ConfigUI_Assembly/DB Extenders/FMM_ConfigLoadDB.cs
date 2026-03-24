@@ -1,26 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Forms;
-using Microsoft.CSharp;
 using Microsoft.Data.SqlClient;
-using OneStream.Finance.Database;
 using OneStream.Finance.Engine;
 using OneStream.Shared.Common;
-using OneStream.Shared.Database;
 using OneStream.Shared.Engine;
-using OneStream.Shared.Wcf;
-using OneStream.Stage.Database;
-using OneStream.Stage.Engine;
-using OpenXmlPowerTools;
 using Workspace.OSConsTools.GBL_UI_Assembly;
+using Workspace.__WsNamespacePrefix.__WsAssemblyName;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_ConfigLoadDB
 {
@@ -28,7 +15,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
     {
         private string MainMenuParam = "DL_FMM_SetupOptions";
         private string CubeConfigSubMenuParam = "DL_FMM_CubeConfig_Options";
-
         private string CubeConfigOpt = "FMM_CubeSettings";
 
         private Dictionary<string, string> paramMap = new Dictionary<string, string>()
@@ -40,25 +26,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {"BL_FMM_ActID_Table", "IV_FMM_ActID"},
             {"BL_FMM_ModelID", "IV_FMM_ModelID"},
             {"BL_FMM_ModelGrpSeqID", "IV_FMM_ModelGrpSeqID"},
-            {"BL_FMM_ModelGrpID","IV_FMM_ModelGrpID"}
-        };
-
-        // key string is dialog name, string array is list of IVs associated to textboxes that should be set to empty strings
-        private Dictionary<string, string[]> clearTextBoxDict = new Dictionary<string, string[]>() {
-            {"1_FMM_Model_Dialog_Add", new string[] {"IV_FMM_Model_Name"}},
-            {"1_FMM_Cube_Config_Dialog_Add", new string[] {"IV_FMM_Cube_Descr"}},
-            {"1_FMM_Model_Grp_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Name"}},
-            {"1_FMM_Model_Grp_Seq_Dialog_Add", new string[] {"IV_FMM_Model_Grp_Seq_Name"}},
-
+            {"BL_FMM_ModelGrpID", "IV_FMM_ModelGrpID"}
         };
 
         private Dictionary<string, Dictionary<int, string[]>> HierarchyDict = new Dictionary<string, Dictionary<int, string[]>>();
-        //Dictionary<int, string[]> DependencyDict = new Dictionary<int, string[]>();
 
-        // dependency hierarchys per page
         private Dictionary<int, string[]> CubeConfig = new Dictionary<int, string[]>()
         {
-            {0, new string[] {"BL_FMM_CubeID"}}
+            {0, new string[] {"IV_FMM_CubeConfig_AddUpdate"}},
+            {1, new string[] {"BL_FMM_CubeID"}}
         };
 
         private Dictionary<int, string[]> ApprovalConfig = new Dictionary<int, string[]>()
@@ -130,16 +106,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {1, new string[] {"BL_FMM_ModelID"}},
         };
 
-        #region "Global Variables"
         private SessionInfo si;
         private BRGlobals globals;
         private object api;
         private DashboardExtenderArgs args;
-        private StringBuilder debugString;
-        #endregion
+        private readonly GBL_Helpers gblHelpers = new GBL_Helpers();
+
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
-            //setup HierarchyDict
             HierarchyDict.Add("FMM_CubeConfig", CubeConfig);
             HierarchyDict.Add("FMM_UnitAcctConfig", UnitAcctConfig);
             HierarchyDict.Add("FMM_CustTableDef", UnitAcctConfig);
@@ -150,15 +124,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             HierarchyDict.Add("FMM_Model", BuildModel);
             HierarchyDict.Add("FMM_ModelGrp", BuildModelGroup);
             HierarchyDict.Add("FMM_ModelGrpSeq", BuildModelGroupSeq);
-
-            // setup dialogs for hierarchy dict
             HierarchyDict.Add("FMM_Model_Dialog_Copy", CopyModel);
-            HierarchyDict.Add("3_FMM_Model_Dialog_Update", UpdateModel); // Need to make sure all items on the dialog are set to refresh the dashboard AND dialog to make sure information is reloaded appropriately
-                                                                         //			HierarchyDict.Add("1_FMM_Register_Col_Config_Copy", CopyRegisterConfig); // TODO: Based on requirements for copy, add a new dictionary above
-                                                                         //			HierarchyDict.Add("3_FMM_Model_Grp_Dialog_Update", UpdateModelGroup); // TODO: Dialog needs addition of Model Group selection to udpate model group name
-                                                                         //			HierarchyDict.Add("2_FMM_Model_Grp_Dialog_Copy",CopyModelGroup); // TODO: 
-
-
+            HierarchyDict.Add("3_FMM_Model_Dialog_Update", UpdateModel);
 
             try
             {
@@ -166,16 +133,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 this.globals = globals;
                 this.api = api;
                 this.args = args;
+
                 switch (args.FunctionType)
                 {
                     case DashboardExtenderFunctionType.LoadDashboard:
                         if (args.FunctionName.XFEqualsIgnoreCase("Load_FMM_DB"))
                         {
-                            var LoadDBTaskResult = Load_Dashboard("", ref args);
-                            return LoadDBTaskResult;
+                            var loadDbTaskResult = Load_Dashboard(string.Empty, ref args);
+                            return loadDbTaskResult;
                         }
+
                         break;
                 }
+
                 return null;
             }
             catch (Exception ex)
@@ -184,107 +154,84 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        #region "Class Helper Functions"	
-        #region "Load Dashboard"
-        private XFLoadDashboardTaskResult Load_Dashboard(string RunType, ref DashboardExtenderArgs args)
+        private XFLoadDashboardTaskResult Load_Dashboard(string runType, ref DashboardExtenderArgs args)
         {
-            var LoadDBTaskResult = new XFLoadDashboardTaskResult();
-            LoadDBTaskResult.ChangeCustomSubstVarsInDashboard = true;
+            var loadDbTaskResult = new XFLoadDashboardTaskResult
+            {
+                ChangeCustomSubstVarsInDashboard = true
+            };
 
-            clearParams(ref args, ref LoadDBTaskResult);
-            setParams(ref args, ref LoadDBTaskResult);
+            clearParams(ref args, ref loadDbTaskResult);
+            setParams(ref args, ref loadDbTaskResult);
+            updateShowHide(ref args, ref loadDbTaskResult);
 
-            updateShowHide(ref args, ref LoadDBTaskResult);
-
-            return LoadDBTaskResult;
-
+            return loadDbTaskResult;
         }
 
-        #region "Setup Helpers"
-        private XFLoadDashboardTaskResult Load_CubeConfig(XFLoadDashboardTaskResult LoadDBTaskResult)
+        private void Load_CubeConfig(ref XFLoadDashboardTaskResult loadDbTaskResult)
         {
-            var result = new XFLoadDashboardTaskResult();
-
-            result = LoadDBTaskResult;
-
-            FMM_ConfigHelpers.SetCubeConfigParams(si, result.ModifiedCustomSubstVars);
-
-            return result;
+            FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
         }
 
-        private XFLoadDashboardTaskResult Get_CalcType(XFLoadDashboardTaskResult LoadDBTaskResult)
+        private XFLoadDashboardTaskResult Get_CalcType(XFLoadDashboardTaskResult loadDbTaskResult)
         {
-            var XF_LoadDBTaskResult = new XFLoadDashboardTaskResult();
-            XF_LoadDBTaskResult = LoadDBTaskResult;
-
-            var CalcType_DT = new DataTable("CalcType");
-
+            var xfLoadDbTaskResult = loadDbTaskResult;
+            var calcTypeTable = new DataTable("CalcType");
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
 
             try
             {
-
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                    // Create a new DataTable
-
-                    var sqa = new SqlDataAdapter();
-                    // Define the select query and parameters
+                    var sqlGblGetDatasets = new SQL_GBL_Get_DataSets(si, connection);
+                    var adapter = new SqlDataAdapter();
                     var sql = @"SELECT CalcType
-								FROM FMM_CubeConfig Cb
+                                FROM FMM_CubeConfig Cb
                                 JOIN FMM_ActConfig Act
-                                ON Cb.CubeID = Act.CubeID
+                                    ON Cb.CubeID = Act.CubeID
                                 WHERE Cb.CubeID = @CubeID
-                                AND Act.ActID = @ActID";
+                                    AND Act.ActID = @ActID";
 
-                    // Create an array of SqlParameter objects
-                    var sqlparams = new SqlParameter[]
+                    var parameters = new SqlParameter[]
                     {
-                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = Convert.ToInt32(XF_LoadDBTaskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_CubeID","0"))},
-                        new SqlParameter("@ActID", SqlDbType.Int) { Value = Convert.ToInt32(XF_LoadDBTaskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ActID","0"))}
+                        new SqlParameter("@CubeID", SqlDbType.Int)
+                        {
+                            Value = Convert.ToInt32(xfLoadDbTaskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_CubeID", "0"))
+                        },
+                        new SqlParameter("@ActID", SqlDbType.Int)
+                        {
+                            Value = Convert.ToInt32(xfLoadDbTaskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ActID", "0"))
+                        }
                     };
 
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, CalcType_DT, sql, sqlparams);
+                    sqlGblGetDatasets.Fill_Get_GBL_DT(si, adapter, calcTypeTable, sql, parameters);
                 }
             }
             catch
             {
             }
 
-            if (CalcType_DT.Rows.Count > 0)
+            if (calcTypeTable.Rows.Count > 0)
             {
-                UpdateCustomSubstVar(ref XF_LoadDBTaskResult, "DL_FMM_CalcType", CalcType_DT.Rows[0]["CalcType"].ToString());
+                gblHelpers.UpdateCustomSubstVar(ref xfLoadDbTaskResult, globals, "DL_FMM_CalcType", calcTypeTable.Rows[0]["CalcType"].ToString());
             }
             else
             {
-                UpdateCustomSubstVar(ref XF_LoadDBTaskResult, "DL_FMM_CalcType", "Table");
+                gblHelpers.UpdateCustomSubstVar(ref xfLoadDbTaskResult, globals, "DL_FMM_CalcType", "Table");
             }
-            return XF_LoadDBTaskResult;
+
+            return xfLoadDbTaskResult;
         }
 
         private void setupUpdateModelDialog(ref XFLoadDashboardTaskResult taskResult)
         {
-
-            // Get model name
-            string modelName = "";
+            string modelName = string.Empty;
             int cubeID = 0;
             int activityID = 0;
             int modelID = 0;
 
-            var ModelDT = new DataTable("Models");
-
+            var modelTable = new DataTable("Models");
             var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
-
-            //			DashboardParamDisplayInfo paramInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, taskResult.ModifiedCustomSubstVars, args.PrimaryDashboard.WorkspaceID, "BL_FMM_ModelID");
-            //			string modelID = taskResult.ModifiedCustomSubstVars.XFGetValue("IV_FMM_ModelID");
-
-            //			if (paramInfo?.ComboBoxItemsForBoundList?.Count > 0) {
-            //				modelName = paramInfo.ComboBoxItemsForBoundList.First().Value.ToString();
-            //				string tempModelName = paramInfo.ComboBoxItemsForBoundList.Find(x => {
-            //					return x.Value == modelID;
-            //				}).Name;
-            //			}
 
             try
             {
@@ -296,66 +243,39 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
             }
 
-
             try
             {
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
-                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-                    // Create a new DataTable
-
-                    var sqa = new SqlDataAdapter();
-                    // Define the select query and parameters
+                    var sqlGblGetDatasets = new SQL_GBL_Get_DataSets(si, connection);
+                    var adapter = new SqlDataAdapter();
                     var sql = @"SELECT *
-						    	FROM FMM_Models
-								WHERE CubeID = @CubeID
-								AND ActID = @ActID
-								AND ModelID = @ModelID";
+                                FROM FMM_Models
+                                WHERE CubeID = @CubeID
+                                    AND ActID = @ActID
+                                    AND ModelID = @ModelID";
 
-                    // Create an array of SqlParameter objects
-                    var sqlparams = new SqlParameter[]
+                    var parameters = new SqlParameter[]
                     {
-                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = cubeID},
-                        new SqlParameter("@ActID", SqlDbType.Int) { Value = activityID},
-                        new SqlParameter("@ModelID", SqlDbType.Int) { Value = modelID},
-
+                        new SqlParameter("@CubeID", SqlDbType.Int) { Value = cubeID },
+                        new SqlParameter("@ActID", SqlDbType.Int) { Value = activityID },
+                        new SqlParameter("@ModelID", SqlDbType.Int) { Value = modelID },
                     };
 
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, ModelDT, sql, sqlparams);
+                    sqlGblGetDatasets.Fill_Get_GBL_DT(si, adapter, modelTable, sql, parameters);
                 }
             }
-            catch (Exception e)
+            catch
             {
-
             }
 
-
-            if (ModelDT.Rows.Count > 0)
+            if (modelTable.Rows.Count > 0)
             {
-                modelName = ModelDT.Rows[0]["Name"].ToString();
+                modelName = modelTable.Rows[0]["Name"].ToString();
             }
 
-            UpdateCustomSubstVar(ref taskResult, "IV_FMM_Model_Name", modelName);
+            gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, "IV_FMM_Model_Name", modelName);
         }
-
-        private void UpdateCustomSubstVar(ref XFLoadDashboardTaskResult result, string key, string value)
-        {
-            if (result.ModifiedCustomSubstVars.ContainsKey(key))
-            {
-                result.ModifiedCustomSubstVars.XFSetValue(key, value);
-                globals.SetStringValue(key, value);
-            }
-            else
-            {
-                result.ModifiedCustomSubstVars.Add(key, value);
-                globals.SetStringValue(key, value);
-            }
-        }
-
-        #endregion
-
-        #endregion
-
 
         private void updateShowHide(ref DashboardExtenderArgs args, ref XFLoadDashboardTaskResult taskResult)
         {
@@ -364,220 +284,128 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             string hideBtnVisibleName = "IV_FMM_Display_Hide_Menu_Btn";
             string menuWidthIV = "IV_FMM_Menu_Width";
 
-
-            var ARCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved;
-
-            string showHideIVVal = ARCustomSubst.XFGetValue(showHideIVName, "");
+            var arCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved;
+            string showHideIVVal = arCustomSubst.XFGetValue(showHideIVName, string.Empty);
 
             if (showHideIVVal == "Hide")
             {
-                UpdateCustomSubstVar(ref taskResult, showBtnVisibleName, "True");
-                UpdateCustomSubstVar(ref taskResult, hideBtnVisibleName, "False");
-                UpdateCustomSubstVar(ref taskResult, menuWidthIV, "0");
+                gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, showBtnVisibleName, "True");
+                gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, hideBtnVisibleName, "False");
+                gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, menuWidthIV, "0");
             }
             else if (showHideIVVal == "Show")
             {
-                UpdateCustomSubstVar(ref taskResult, showBtnVisibleName, "False");
-                UpdateCustomSubstVar(ref taskResult, hideBtnVisibleName, "True");
-                UpdateCustomSubstVar(ref taskResult, menuWidthIV, "Auto");
+                gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, showBtnVisibleName, "False");
+                gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, hideBtnVisibleName, "True");
+                gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, menuWidthIV, "Auto");
             }
         }
 
         private void clearParams(ref DashboardExtenderArgs args, ref XFLoadDashboardTaskResult taskResult)
         {
-
-            // get dialog name
-            string DialogSelection = args.PrimaryDashboard.Name;
-
-            // if dialog dashboard name is contained within the clearTextBoxDict, set all underlying textbox params to empty strings
-            if (clearTextBoxDict.ContainsKey(DialogSelection))
-            {
-                foreach (string param in clearTextBoxDict[DialogSelection])
-                {
-                    UpdateCustomSubstVar(ref taskResult, param, "");
-                }
-            }
         }
 
         private void setParams(ref DashboardExtenderArgs args, ref XFLoadDashboardTaskResult taskResult)
         {
+            string dialogSelection = args.PrimaryDashboard.Name;
 
-            //TODO: check selectedDashboard based on different higher level menu other than DL_FMM_Cube_Config_Options
-            string DialogSelection = args.PrimaryDashboard.Name;
+            string mainMenuSelection = !string.IsNullOrEmpty(args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam))
+                ? args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam)
+                : args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue(MainMenuParam);
 
-            string MainMenuSelection = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) != string.Empty ? args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(MainMenuParam) : args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue(MainMenuParam);
+            string cubeSubMenuSelection = !string.IsNullOrEmpty(args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(CubeConfigSubMenuParam))
+                ? args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(CubeConfigSubMenuParam)
+                : args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue(CubeConfigSubMenuParam);
 
-            string CubeSubMenuSelection = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(CubeConfigSubMenuParam) != string.Empty ? args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved.XFGetValue(CubeConfigSubMenuParam) : args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun.XFGetValue(CubeConfigSubMenuParam);
+            string selectedDashboard = mainMenuSelection == CubeConfigOpt ? cubeSubMenuSelection : mainMenuSelection;
+            selectedDashboard = HierarchyDict.ContainsKey(dialogSelection) ? dialogSelection : selectedDashboard;
 
-            // check if cube menu option (secondary layer) has a real selection. If so, use it.
-            string selectedDashboard = MainMenuSelection == CubeConfigOpt ? CubeSubMenuSelection : MainMenuSelection;
-
-            //check if there's a dialog that exists as part of the hierarchy dict, if so use that instead.
-            selectedDashboard = HierarchyDict.ContainsKey(DialogSelection) ? DialogSelection : selectedDashboard;
-
-
-            var ARCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved;
-            var PRCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun;
-
-            foreach (string param in taskResult.ModifiedCustomSubstVars.Keys)
-            {
-            }
-
+            var arCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved;
+            var prCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsFromPriorRun;
 
             if (HierarchyDict.ContainsKey(selectedDashboard))
             {
-                Dictionary<int, string[]> tempDependencyDict = HierarchyDict[selectedDashboard];
+                Dictionary<int, string[]> dependencyDict = HierarchyDict[selectedDashboard];
                 bool priorDependencyChanged = false;
-                foreach (int dependencyDepth in tempDependencyDict.Keys)
+
+                foreach (int dependencyDepth in dependencyDict.Keys)
                 {
-                    foreach (string param in tempDependencyDict[dependencyDepth])
+                    foreach (string param in dependencyDict[dependencyDepth])
                     {
-
-                        bool ARContainsKey = ARCustomSubst.ContainsKey(param);
-                        bool PRContainsKey = PRCustomSubst.ContainsKey(param);
-                        string ARVal = ARCustomSubst.XFGetValue(param);
-                        string PRVal = PRCustomSubst.XFGetValue(param);
-
-                        //						bool ARContainsBRReplaceVal = false;
-                        //						string ARBLReplaceVal = "";
-
-                        //						bool PRContainsBRReplaceVal = false;
-                        //						string PRBLReplaceVal = "";
-
-                        string mappedParam = paramMap.ContainsKey(param) ? paramMap[param] : "";
-
-
+                        bool arContainsKey = arCustomSubst.ContainsKey(param);
+                        bool prContainsKey = prCustomSubst.ContainsKey(param);
+                        string arVal = arCustomSubst.XFGetValue(param);
+                        string prVal = prCustomSubst.XFGetValue(param);
+                        string mappedParam = paramMap.ContainsKey(param) ? paramMap[param] : string.Empty;
 
                         if (!priorDependencyChanged)
                         {
-                            if (mappedParam != "")
+                            if (mappedParam != string.Empty)
                             {
-                                string ARMappedVal = ARCustomSubst.XFGetValue(mappedParam, "");
-                                string PRMappedVal = PRCustomSubst.XFGetValue(mappedParam, "");
+                                string arMappedVal = arCustomSubst.XFGetValue(mappedParam, string.Empty);
+                                string prMappedVal = prCustomSubst.XFGetValue(mappedParam, string.Empty);
 
-                                if (PRContainsKey && isValidParamValue(PRVal) && isValidParamValue(PRMappedVal))
+                                if (prContainsKey && isValidParamValue(prVal) && isValidParamValue(prMappedVal))
                                 {
-                                    if (PRVal != PRMappedVal)
-                                    {
-                                        priorDependencyChanged = true;
-                                    }
-                                    UpdateCustomSubstVar(ref taskResult, param, PRVal);
-                                    UpdateCustomSubstVar(ref taskResult, mappedParam, PRVal);
-
-                                }
-                                else if (ARContainsKey && isValidParamValue(ARVal) && isValidParamValue(ARMappedVal))
-                                {
-                                    if (ARVal != ARMappedVal)
+                                    if (prVal != prMappedVal)
                                     {
                                         priorDependencyChanged = true;
                                     }
 
-                                    UpdateCustomSubstVar(ref taskResult, param, ARVal);
-                                    UpdateCustomSubstVar(ref taskResult, mappedParam, ARVal);
-
-
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, prVal);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, mappedParam, prVal);
                                 }
-                                else if (ARContainsKey && isValidParamValue(ARVal))
+                                else if (arContainsKey && isValidParamValue(arVal) && isValidParamValue(arMappedVal))
                                 {
-                                    UpdateCustomSubstVar(ref taskResult, param, ARVal);
-                                    UpdateCustomSubstVar(ref taskResult, mappedParam, ARVal);
+                                    if (arVal != arMappedVal)
+                                    {
+                                        priorDependencyChanged = true;
+                                    }
+
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, arVal);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, mappedParam, arVal);
                                 }
-                                else if (PRContainsKey && isValidParamValue(PRVal))
+                                else if (arContainsKey && isValidParamValue(arVal))
                                 {
-                                    UpdateCustomSubstVar(ref taskResult, param, PRVal);
-                                    UpdateCustomSubstVar(ref taskResult, mappedParam, PRVal);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, arVal);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, mappedParam, arVal);
+                                }
+                                else if (prContainsKey && isValidParamValue(prVal))
+                                {
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, prVal);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, mappedParam, prVal);
                                 }
                                 else
                                 {
-                                    //get default param value
                                     string paramDefault = getDefaultParam(param, taskResult.ModifiedCustomSubstVars);
-                                    UpdateCustomSubstVar(ref taskResult, param, paramDefault);
-                                    UpdateCustomSubstVar(ref taskResult, mappedParam, paramDefault);
-
-                                    //set defaults
-                                    if (mappedParam == "IV_FMM_CubeID" && selectedDashboard == "FMM_CubeConfig")
-                                    {
-                                        Load_CubeConfig(taskResult);
-                                    }
-                                    if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "FMM_Model")
-                                    {
-                                        Get_CalcType(taskResult);
-                                    }
-                                    if (mappedParam == "IV_FMM_ActID" && selectedDashboard == "FMM_Appr_Config")
-                                    {
-                                        Get_CalcType(taskResult);
-                                    }
-
-                                    if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "3_FMM_Model_Dialog_Update")
-                                    {
-                                        setupUpdateModelDialog(ref taskResult);
-                                    }
-
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, paramDefault);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, mappedParam, paramDefault);
                                 }
-
-                                //if a prior dependency change was detected as part of this loop, update the corresponding defaults
-                                if (mappedParam == "IV_FMM_CubeID" && selectedDashboard == "FMM_CubeConfig" && priorDependencyChanged)
-                                {
-                                    Load_CubeConfig(taskResult);
-                                }
-                                if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "FMM_Model" && priorDependencyChanged)
-                                {
-                                    Get_CalcType(taskResult);
-                                }
-                                if (mappedParam == "IV_FMM_ActID" && selectedDashboard == "FMM_Appr_Config" && priorDependencyChanged)
-                                {
-                                    Get_CalcType(taskResult);
-                                }
-                                if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "3_FMM_Model_Dialog_Update" && priorDependencyChanged)
-                                {
-                                    setupUpdateModelDialog(ref taskResult);
-                                }
-
-
                             }
                             else
                             {
-                                if (ARContainsKey && isValidParamValue(ARVal))
+                                if (arContainsKey && isValidParamValue(arVal))
                                 {
-                                    UpdateCustomSubstVar(ref taskResult, param, ARVal);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, arVal);
                                 }
-                                else if (PRContainsKey && isValidParamValue(PRVal))
+                                else if (prContainsKey && isValidParamValue(prVal))
                                 {
-                                    UpdateCustomSubstVar(ref taskResult, param, PRVal);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, prVal);
                                 }
                                 else
                                 {
-                                    //get default param value
-                                    string paramDefault = getDefaultParam(param, taskResult.ModifiedCustomSubstVars);
-                                    UpdateCustomSubstVar(ref taskResult, param, paramDefault);
+                                    gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, getDefaultParam(param, taskResult.ModifiedCustomSubstVars));
                                 }
-
-
                             }
                         }
                         else
                         {
-                            // get default param if prior dependency changed
                             string paramDefault = getDefaultParam(param, taskResult.ModifiedCustomSubstVars);
-                            UpdateCustomSubstVar(ref taskResult, param, paramDefault);
-                            UpdateCustomSubstVar(ref taskResult, mappedParam, paramDefault);
+                            gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, param, paramDefault);
 
-                            // if a dependency changed and there's a mapped param, make sure the associated information is updated to defaults
-                            if (mappedParam == "IV_FMM_CubeID" && selectedDashboard == "FMM_CubeConfig")
+                            if (mappedParam != string.Empty)
                             {
-                                Load_CubeConfig(taskResult);
-                            }
-                            if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "FMM_Model")
-                            {
-                                Get_CalcType(taskResult);
-                            }
-                            if (mappedParam == "IV_FMM_ActID" && selectedDashboard == "FMM_Appr_Config")
-                            {
-                                Get_CalcType(taskResult);
-                            }
-                            if (mappedParam == "IV_FMM_ModelID" && selectedDashboard == "3_FMM_Model_Dialog_Update")
-                            {
-                                setupUpdateModelDialog(ref taskResult);
+                                gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, mappedParam, paramDefault);
                             }
                         }
                     }
@@ -585,45 +413,60 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
-        private string getDefaultParam(string param, Dictionary<string, string> customsubstvars)
+        private void ExecuteSpecificRefreshLogic(string dashboard, string mappedParam, ref XFLoadDashboardTaskResult taskResult)
         {
+            if (mappedParam == "IV_FMM_CubeID" && dashboard == "FMM_CubeConfig")
+            {
+                Load_CubeConfig(ref taskResult);
+            }
 
-            // replace IV with associated BL
-            // IV should only be passed in if it's a value coming from a SQL Table Editor
+            if (mappedParam == "IV_FMM_ModelID" && dashboard == "FMM_Model")
+            {
+                Get_CalcType(taskResult);
+            }
+
+            if (mappedParam == "IV_FMM_ActID" && dashboard == "FMM_Appr_Config")
+            {
+                Get_CalcType(taskResult);
+            }
+
+            if (mappedParam == "IV_FMM_ModelID" && dashboard == "3_FMM_Model_Dialog_Update")
+            {
+                setupUpdateModelDialog(ref taskResult);
+            }
+        }
+
+        private string getDefaultParam(string param, Dictionary<string, string> customSubstVars)
+        {
             if (param.Contains("IV_"))
             {
                 param = param.Replace("IV_", "BL_");
             }
 
-
-            DashboardParamDisplayInfo paramInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, customsubstvars, args.PrimaryDashboard.WorkspaceID, param);
+            DashboardParamDisplayInfo paramInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, customSubstVars, args.PrimaryDashboard.WorkspaceID, param);
             if (paramInfo?.ComboBoxItemsForBoundList?.Count > 0)
             {
                 return paramInfo.ComboBoxItemsForBoundList.First().Value.ToString();
             }
 
             return "0";
-
         }
 
         private bool isValidParamValue(string value)
         {
-            if (value == null || value == string.Empty)
+            if (string.IsNullOrEmpty(value))
             {
                 return false;
             }
+
             try
             {
-                return Int32.Parse(value) > 0;
+                return int.Parse(value) > 0;
             }
             catch
             {
-                // if we can't convert the param to an integer, that likely means it's a string value
-                // there is currently no logic to tell whether a string param is a valid value, so return true by default
                 return true;
             }
         }
-
-        #endregion
     }
 }

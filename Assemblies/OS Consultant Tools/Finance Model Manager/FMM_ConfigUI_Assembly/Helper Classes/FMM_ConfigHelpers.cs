@@ -23,6 +23,193 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 	public class FMM_ConfigHelpers
 	{
 		#region "Config Setup"
+		#region "Cube Config"
+		public class CubeConfig
+		{
+
+			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
+		}
+
+		public static class CubeConfigRegistry
+		{
+			public static readonly Dictionary<SaveType, CubeConfig> Configs = new()
+			{
+				[SaveType.Add] = new CubeConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "BL_FMM_CubeConfig_Cubes", "Cube" } } },
+						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
+					}
+				},
+				[SaveType.Update] = new CubeConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
+						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
+					}
+				},
+				[SaveType.View] = new CubeConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Name", "Cube" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_ScenType", "ScenType" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_CubeConfig_CreateDate", "CreateDate" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_CubeConfig_CreateUser", "CreateUser" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_CubeConfig_UpdateDate", "UpdateDate" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_CubeConfig_UpdateUser", "UpdateUser" } } }
+					}
+				}
+			};
+		}
+		#endregion
+		#region "Acct Config"
+		public class AcctConfig
+		{
+
+			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
+		}
+
+		public static class AcctConfigRegistry
+		{
+			public static readonly Dictionary<SaveType, AcctConfig> Configs = new()
+			{
+				[SaveType.Add] = new AcctConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Cube" } } },
+						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
+					}
+				},
+				[SaveType.Update] = new AcctConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
+						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
+					}
+				}
+			};
+		}
+		#endregion
+		#region "CustTable Config"
+		public class CustTableConfig
+		{
+
+			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
+		}
+
+		public static class CustTableConfigRegistry
+		{
+			public static readonly Dictionary<SaveType, CustTableConfig> Configs = new()
+			{
+				[SaveType.Add] = new CustTableConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Name" } } },
+						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "Type" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "Audit" } } }
+					}
+				},
+				[SaveType.Update] = new CustTableConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Name" } } },
+						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "Type" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "Audit" } } }
+					}
+				}
+			};
+		}
+		#endregion
+		#region "Approval Config"
+		public class ApprConfig
+		{
+
+			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
+		}
+
+		public static class ApprConfigRegistry
+		{
+			public static readonly Dictionary<SaveType, ApprConfig> Configs = new()
+			{
+				[SaveType.Add] = new ApprConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Cube" } } },
+						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
+					}
+				},
+				[SaveType.Update] = new ApprConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
+						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
+					}
+				}
+			};
+		}
+
+		public class ApprStepConfig
+		{
+
+			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
+		}
+
+		public static class ApprStepConfigRegistry
+		{
+			public static readonly Dictionary<SaveType, ApprStepConfig> Configs = new()
+			{
+				[SaveType.Add] = new ApprStepConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Cube" } } },
+						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
+					}
+				},
+				[SaveType.Update] = new ApprStepConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
+						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
+						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
+					}
+				}
+			};
+		}
+		#endregion
 		public class CalcConfig
 		{
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -220,87 +407,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			};
 		}
 
-		public class CubeConfig
-		{
-
-			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
-		}
-
-		public static class CubeConfigRegistry
-		{
-			public static readonly Dictionary<SaveType, CubeConfig> Configs = new()
-			{
-				[SaveType.Add] = new CubeConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "BL_FMM_CubeConfig_Cubes", "Cube" } } },
-						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
-					}
-				},
-				[SaveType.Update] = new CubeConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
-						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
-					}
-				},
-				[SaveType.View] = new CubeConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Name", "Cube" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_ScenType", "ScenType" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_EntityMFB", "EntityMFB" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_CreateDate", "CreateDate" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_CreateUser", "CreateUser" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_UpdateDate", "UpdateDate" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_UpdateUser", "UpdateUser" } } }
-					}
-				}
-			};
-		}
-		public class AcctConfig
-		{
-
-			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
-		}
-
-		public static class AcctConfigRegistry
-		{
-			public static readonly Dictionary<SaveType, AcctConfig> Configs = new()
-			{
-				[SaveType.Add] = new AcctConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Cube" } } },
-						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
-					}
-				},
-				[SaveType.Update] = new AcctConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
-						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
-					}
-				}
-			};
-		}
-
 		public class RegConfig
 		{
 
@@ -323,73 +429,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					}
 				},
 				[SaveType.Update] = new RegConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
-						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
-					}
-				}
-			};
-		}
-		public class ApprConfig
-		{
-
-			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
-		}
-
-		public static class ApprConfigRegistry
-		{
-			public static readonly Dictionary<SaveType, ApprConfig> Configs = new()
-			{
-				[SaveType.Add] = new ApprConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Cube" } } },
-						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
-					}
-				},
-				[SaveType.Update] = new ApprConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 2, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
-						{ 3, new Dictionary<string, string> { { "DL_FMM_Status", "Status" } } }
-					}
-				}
-			};
-		}
-
-		public class ApprStepConfig
-		{
-
-			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
-		}
-
-		public static class ApprStepConfigRegistry
-		{
-			public static readonly Dictionary<SaveType, ApprStepConfig> Configs = new()
-			{
-				[SaveType.Add] = new ApprStepConfig
-				{
-					ParameterMappings = new()
-					{
-						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Cube" } } },
-						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
-					}
-				},
-				[SaveType.Update] = new ApprStepConfig
 				{
 					ParameterMappings = new()
 					{
@@ -560,6 +599,68 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			var cubeIDStr = substVars.ContainsKey("IV_FMM_CubeID") ? substVars["IV_FMM_CubeID"] : "0";
 			var cubeID = 0;
 			Int32.TryParse(cubeIDStr, out cubeID);
+			BRApi.ErrorLog.LogMessage(si, $"Hit {cubeIDStr} - {substVars["IV_FMM_CubeConfig_AddUpdate"]}");
+
+			var cubeConfig_DT = new DataTable("FMM_CubeConfig");
+
+			try
+			{
+				using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
+				{
+					using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
+					{
+						var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+						var sqa = new SqlDataAdapter();
+						var sql = "SELECT * FROM FMM_CubeConfig WHERE CubeID = @CubeID";
+						var sqlparams = new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = cubeID } };
+
+						sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cubeConfig_DT, sql, sqlparams);
+					}
+				}
+			}
+			catch (Exception ex) { }
+
+			Action<string, string> setVar = (key, val) =>
+			{
+				if (substVars.ContainsKey(key)) { substVars[key] = val; }
+				else { substVars.Add(key, val); }
+			};
+
+			if (cubeConfig_DT.Rows.Count > 0)
+			{
+				DataRow row = cubeConfig_DT.Rows[0];
+				if (CubeConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
+				{
+					foreach (var step in config.ParameterMappings)
+					{
+						foreach (var map in step.Value)
+						{
+							setVar(map.Key, row[map.Value].ToString());
+						}
+					}
+				}
+			}
+			else
+			{
+				if (CubeConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
+				{
+					foreach (var step in config.ParameterMappings)
+					{
+						foreach (var map in step.Value)
+						{
+							setVar(map.Key, string.Empty);
+						}
+					}
+				}
+			}
+		}
+
+		public static void SetCustTableParams(SessionInfo si, Dictionary<string, string> substVars)
+		{
+			var cubeIDStr = substVars.ContainsKey("IV_FMM_CubeID") ? substVars["IV_FMM_CubeID"] : "0";
+			var cubeID = 0;
+			Int32.TryParse(cubeIDStr, out cubeID);
+			BRApi.ErrorLog.LogMessage(si, $"Hit {cubeIDStr} - {substVars["IV_FMM_CubeConfig_AddUpdate"]}");
 
 			var cubeConfig_DT = new DataTable("FMM_CubeConfig");
 
