@@ -1,13 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Windows.Forms;
+using Microsoft.CSharp;
 using Microsoft.Data.SqlClient;
+using OneStream.Finance.Database;
 using OneStream.Finance.Engine;
 using OneStream.Shared.Common;
+using OneStream.Shared.Database;
 using OneStream.Shared.Engine;
+using OneStream.Shared.Wcf;
+using OneStream.Stage.Database;
+using OneStream.Stage.Engine;
 using Workspace.OSConsTools.GBL_UI_Assembly;
-using Workspace.__WsNamespacePrefix.__WsAssemblyName;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardExtender.FMM_ConfigLoadDB
 {
@@ -47,7 +59,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             {0, new string[] {"BL_FMM_CubeID_Table"}},
             {1, new string[] {"BL_FMM_ActID_Table"}},
-            {2, new string[] {"IV_FMM_UnitID"}}
+            {2, new string[] {"IV_FMM_UnitID"}},
+            {3, new string[] {"IV_FMM_AcctConfig_AddUpdate"}}
         };
 
         private Dictionary<int, string[]> RegisterConfig = new Dictionary<int, string[]>()
@@ -173,6 +186,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
         }
 
+        private void Load_AcctConfig(ref XFLoadDashboardTaskResult loadDbTaskResult)
+        {
+            FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
+        }
+
+        private void Load_CustTableConfig(ref XFLoadDashboardTaskResult loadDbTaskResult)
+        {
+            FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
+        }
         private XFLoadDashboardTaskResult Get_CalcType(XFLoadDashboardTaskResult loadDbTaskResult)
         {
             var xfLoadDbTaskResult = loadDbTaskResult;
@@ -279,10 +301,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private void updateShowHide(ref DashboardExtenderArgs args, ref XFLoadDashboardTaskResult taskResult)
         {
-            string showHideIVName = "IV_FMM_Show_Hide_Menu_Btn";
-            string showBtnVisibleName = "IV_FMM_Display_Show_Menu_Btn";
-            string hideBtnVisibleName = "IV_FMM_Display_Hide_Menu_Btn";
-            string menuWidthIV = "IV_FMM_Menu_Width";
+            string showHideIVName = "IV_FMM_ShowHide_MenuBtn";
+            string showBtnVisibleName = "IV_FMM_DispShow_MenuBtn";
+            string hideBtnVisibleName = "IV_FMM_DispHide_MenuBtn";
+            string menuWidthIV = "IV_FMM_MenuWidth";
 
             var arCustomSubst = args.LoadDashboardTaskInfo.CustomSubstVarsAlreadyResolved;
             string showHideIVVal = arCustomSubst.XFGetValue(showHideIVName, string.Empty);
@@ -408,6 +430,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 gblHelpers.UpdateCustomSubstVar(ref taskResult, globals, mappedParam, paramDefault);
                             }
                         }
+                        ExecuteSpecificRefreshLogic(selectedDashboard, mappedParam, ref taskResult);
                     }
                 }
             }

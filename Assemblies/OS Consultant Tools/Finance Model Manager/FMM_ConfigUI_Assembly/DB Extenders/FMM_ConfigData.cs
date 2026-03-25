@@ -34,7 +34,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         public string gbl_CalcLogic_Table { get; set; } = string.Empty;
         public int gbl_Table_SrcCell { get; set; }
         public int gbl_SrcCell_Cnt { get; set; }
-        public string gbl_Model_Type { get; set; } = "Cube";
+        public string gbl_ModelType { get; set; } = "Cube";
         public Dictionary<int, string> gbl_SrcCell_Dict { get; set; } = new Dictionary<int, string>();
         public Dictionary<int, string> gbl_UnbalCalc_Dict { get; set; } = new Dictionary<int, string>();
         public Dictionary<int, string> gbl_SrcCell_Drill_Dict { get; set; } = new Dictionary<int, string>();
@@ -143,29 +143,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var changed_Result = new XFSelectionChangedTaskResult();
                         switch (args.FunctionName)
                         {
-                            case var fn when fn.XFEqualsIgnoreCase("Save_CalcConfig_Rows"):
-                                gbl_Model_Type = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_Calc_Type");
-                                changed_Result = Save_CalcConfig_Rows();
-                                if (gbl_Model_Type == "Cube")
-                                {
-                                    Evaluate_CalcConfig_Setup(gbl_CalcID);
-                                }
+                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_SaveAdd"):
+                                changed_Result = CubeConfig_Save("Add");
                                 return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("save_DestCell_Rows"):
-                                gbl_Model_Type = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_Calc_Type");
-                                changed_Result = Save_DestCell_Rows();
-                                if (gbl_Model_Type == "Cube")
-                                {
-                                    Evaluate_CalcConfig_Setup(gbl_CalcID);
-                                }
+                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_SaveUpdate"):
+                                changed_Result = CubeConfig_Save("Update");
                                 return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("Save_SrcCell_Rows"):
-                                gbl_Model_Type = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_Calc_Type");
-                                changed_Result = Save_SrcCell_Rows();
-                                if (gbl_Model_Type == "Cube")
-                                {
-                                    Evaluate_CalcConfig_Setup(gbl_CalcID);
-                                }
+                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_SaveDelete"):
+                                changed_Result = CubeConfig_Save("Delete");
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("AcctConfig_SaveAdd"):
                                 changed_Result = AcctConfig_Save("Add");
@@ -173,20 +158,35 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             case var fn when fn.XFEqualsIgnoreCase("AcctConfig_SaveUpdate"):
                                 changed_Result = AcctConfig_Save("Update");
                                 return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_SaveAdd"):
-                                changed_Result = CubeConfig_Save("Add");
-                                return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_SaveUpdate"):
-                                changed_Result = CubeConfig_Save("Update");
-                                return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("CustTableConfig_SaveAdd"):
                                 changed_Result = CustTableConfig_Save("Add");
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("CustTableConfig_SaveUpdate"):
                                 changed_Result = CustTableConfig_Save("Update");
                                 return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_SaveDelete"):
-                                changed_Result = CubeConfig_Save("Delete");
+                            case var fn when fn.XFEqualsIgnoreCase("Save_CalcConfig_Rows"):
+                                gbl_ModelType = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_CalcType");
+                                changed_Result = Save_CalcConfig_Rows();
+                                if (gbl_ModelType == "Cube")
+                                {
+                                    Evaluate_CalcConfig_Setup(gbl_CalcID);
+                                }
+                                return changed_Result;
+                            case var fn when fn.XFEqualsIgnoreCase("save_DestCell_Rows"):
+                                gbl_ModelType = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_CalcType");
+                                changed_Result = Save_DestCell_Rows();
+                                if (gbl_ModelType == "Cube")
+                                {
+                                    Evaluate_CalcConfig_Setup(gbl_CalcID);
+                                }
+                                return changed_Result;
+                            case var fn when fn.XFEqualsIgnoreCase("Save_SrcCell_Rows"):
+                                gbl_ModelType = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_CalcType");
+                                changed_Result = Save_SrcCell_Rows();
+                                if (gbl_ModelType == "Cube")
+                                {
+                                    Evaluate_CalcConfig_Setup(gbl_CalcID);
+                                }
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Model_SaveAdd"):
                                 changed_Result = Model_Save("Add");
@@ -245,11 +245,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             case var fn when fn.XFEqualsIgnoreCase("CubeConfig_Select"):
                                 changed_Result = CubeConfig_Select();
                                 return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CustTableConfig_Add"):
-                                changed_Result = CustTableConfig_Add();
+                            case var fn when fn.XFEqualsIgnoreCase("CustTable_Add"):
+                                changed_Result = CubeConfig_Add();
                                 return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CustTableConfig_Select"):
-                                changed_Result = CustTableConfig_Select();
+                            case var fn when fn.XFEqualsIgnoreCase("CustTable_Select"):
+                                changed_Result = CubeConfig_Select();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Select_Add_FMM_CalcID"):
                                 return changed_Result;
@@ -603,7 +603,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         saveResult.IsOK = true;
                         saveResult.ShowMessageBox = false;
 
-                        var calcTypeValue = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_Calc_Type", "0").XFConvertToInt();
+                        var calcTypeValue = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_CalcType", "0").XFConvertToInt();
                         var rowToMap = FMM_CalcConfig_DT.Rows.Find(CalcID);
                         if (rowToMap != null)
                         {
@@ -1902,7 +1902,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         #endregion
 
-        #region "Config Saves"
+        #region "Cube Config Functions"
 
         private XFSelectionChangedTaskResult CubeConfig_Save(string runType)
         {
@@ -1985,7 +1985,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_CubeID", "0"));
                         sqlparams = new SqlParameter[]
                         {
-                    new SqlParameter("@CubeID", SqlDbType.Int) { Value = new_CubeID }
+                            new SqlParameter("@CubeID", SqlDbType.Int) { Value = new_CubeID }
                         };
 
                         cmdBuilder.FillDataTable(si, sqa, FMM_CubeConfig_DT, sql, sqlparams);
@@ -2065,6 +2065,60 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
+        private XFSelectionChangedTaskResult CubeConfig_Add()
+        {
+            try
+            {
+                var selectResult = new XFSelectionChangedTaskResult();
+                selectResult.ChangeCustomSubstVarsInDashboard = true;
+                var SaveTypeintValue = 1;
+                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", string.Empty);
+                FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
+
+                if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
+                {
+                    foreach (var step in config.ParameterMappings)
+                    {
+                        foreach (var map in step.Value)
+                        {
+                            gbl_helpers.UpdateCustomSubstVar(ref selectResult, map.Value, string.Empty);
+                        }
+                    }
+                }
+                return selectResult;
+            }
+            catch (Exception ex)
+            {
+                // Log and rethrow exceptions for error handling.
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        private XFSelectionChangedTaskResult CubeConfig_Select()
+        {
+            try
+            {
+                var selectResult = new XFSelectionChangedTaskResult();
+                selectResult.ChangeCustomSubstVarsInDashboard = true;
+                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
+                var existingCubeID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeID", "0").XFConvertToInt();
+
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", existingCubeID.XFToString());
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeConfig_AddUpdate", "Update");
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeID", existingCubeID.XFToString());
+                FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
+
+                return selectResult;
+            }
+            catch (Exception ex)
+            {
+                // Log and rethrow exceptions for error handling.
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+        #endregion
+        #region "Custom Table Config Functions"
         private XFSelectionChangedTaskResult CustTableConfig_Save(string runType)
         {
             try
@@ -2226,6 +2280,60 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
 
+        private XFSelectionChangedTaskResult CustTableConfig_Add()
+        {
+            try
+            {
+                var selectResult = new XFSelectionChangedTaskResult();
+                selectResult.ChangeCustomSubstVarsInDashboard = true;
+                var SaveTypeintValue = 1;
+                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CustTableID", string.Empty);
+                FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
+
+                if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
+                {
+                    foreach (var step in config.ParameterMappings)
+                    {
+                        foreach (var map in step.Value)
+                        {
+                            gbl_helpers.UpdateCustomSubstVar(ref selectResult, map.Value, string.Empty);
+                        }
+                    }
+                }
+                return selectResult;
+            }
+            catch (Exception ex)
+            {
+                // Log and rethrow exceptions for error handling.
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        private XFSelectionChangedTaskResult CustTableConfig_Select()
+        {
+            try
+            {
+                var selectResult = new XFSelectionChangedTaskResult();
+                selectResult.ChangeCustomSubstVarsInDashboard = true;
+                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
+                var existingCubeID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeID", "0").XFConvertToInt();
+
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", existingCubeID.XFToString());
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeConfig_AddUpdate", "Update");
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeID", existingCubeID.XFToString());
+                FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
+
+                return selectResult;
+            }
+            catch (Exception ex)
+            {
+                // Log and rethrow exceptions for error handling.
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
+        #endregion
         private XFSelectionChangedTaskResult Model_Save(string runType)
         {
             try
@@ -3196,7 +3304,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
 
         }
-        #endregion
 
         #region "Check Duplicates"
         private void Duplicate_ActConfig(int CubeID, string dupProcStep, ref XFSqlTableEditorSaveDataTaskResult saveResult, [Optional] string ddl_Process, [Optional] XFEditedDataRow Modified_FMM_ActConfig_DataRow)
@@ -4259,116 +4366,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 throw ErrorHandler.LogWrite(si, new XFException(si, ex));
             }
         }
-
-        #region "Cube Config Helpers"
-        private XFSelectionChangedTaskResult CubeConfig_Add()
-        {
-            try
-            {
-                var selectResult = new XFSelectionChangedTaskResult();
-                selectResult.ChangeCustomSubstVarsInDashboard = true;
-                var SaveTypeintValue = 1;
-                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", string.Empty);
-                FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
-
-                if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
-                {
-                    foreach (var step in config.ParameterMappings)
-                    {
-                        foreach (var map in step.Value)
-                        {
-                            gbl_helpers.UpdateCustomSubstVar(ref selectResult, map.Value, string.Empty);
-                        }
-                    }
-                }
-                return selectResult;
-            }
-            catch (Exception ex)
-            {
-                // Log and rethrow exceptions for error handling.
-                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-            }
-        }
-
-        private XFSelectionChangedTaskResult CubeConfig_Select()
-        {
-            try
-            {
-                var selectResult = new XFSelectionChangedTaskResult();
-                selectResult.ChangeCustomSubstVarsInDashboard = true;
-                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
-                var existingCubeID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeID", "0").XFConvertToInt();
-
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", existingCubeID.XFToString());
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeConfig_AddUpdate", "Update");
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeID", existingCubeID.XFToString());
-                FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
-
-                return selectResult;
-            }
-            catch (Exception ex)
-            {
-                // Log and rethrow exceptions for error handling.
-                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-            }
-        }
-        #endregion
-
-        #region "Cust Table Config Helpers"
-        private XFSelectionChangedTaskResult CustTableConfig_Add()
-        {
-            try
-            {
-                var selectResult = new XFSelectionChangedTaskResult();
-                selectResult.ChangeCustomSubstVarsInDashboard = true;
-                var SaveTypeintValue = 1;
-                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", string.Empty);
-                FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
-
-                if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
-                {
-                    foreach (var step in config.ParameterMappings)
-                    {
-                        foreach (var map in step.Value)
-                        {
-                            gbl_helpers.UpdateCustomSubstVar(ref selectResult, map.Value, string.Empty);
-                        }
-                    }
-                }
-                return selectResult;
-            }
-            catch (Exception ex)
-            {
-                // Log and rethrow exceptions for error handling.
-                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-            }
-        }
-
-        private XFSelectionChangedTaskResult CustTableConfig_Select()
-        {
-            try
-            {
-                var selectResult = new XFSelectionChangedTaskResult();
-                selectResult.ChangeCustomSubstVarsInDashboard = true;
-                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
-                var existingCubeID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeID", "0").XFConvertToInt();
-
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", existingCubeID.XFToString());
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeConfig_AddUpdate", "Update");
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeID", existingCubeID.XFToString());
-                FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
-
-                return selectResult;
-            }
-            catch (Exception ex)
-            {
-                // Log and rethrow exceptions for error handling.
-                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-            }
-        }
-        #endregion
 
         private XFSelectionChangedTaskResult ActConfig_Select()
         {
