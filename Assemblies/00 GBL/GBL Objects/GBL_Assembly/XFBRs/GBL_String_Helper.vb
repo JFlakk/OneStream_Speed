@@ -1559,7 +1559,7 @@ Public Function GetcPROBEFDXAPPNRows() As String
 #End Region
 #Region "Utilities: Get DataBuffer"
 	
-	Public Sub GetDataBuffer(ByRef si As SessionInfo, ByRef globals As BRGlobals, ByRef api As Object,ByRef args As DashboardStringFunctionArgs)
+	Public Shared Sub GetDataBuffer(ByRef si As SessionInfo, ByRef globals As BRGlobals, ByRef api As Object,ByRef args As DashboardStringFunctionArgs)
 		Dim filter = globals.GetStringValue("Filter","NA")
 			
 		Dim Dictionary As New Dictionary(Of String, String)

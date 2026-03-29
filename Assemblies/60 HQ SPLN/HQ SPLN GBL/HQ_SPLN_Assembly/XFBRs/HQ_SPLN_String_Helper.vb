@@ -698,13 +698,9 @@ Public Function GetScenarios(ByVal si As SessionInfo, ByVal globals As BRGlobals
 #Region "Utilities: Get DataBuffer"
 	
 	Public Sub GetDataBuffer(ByRef si As SessionInfo, ByRef globals As BRGlobals, ByRef api As Object,ByRef args As DashboardStringFunctionArgs)
-		
-		'Dim workspaceID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "00 GBL")				
-		Dim Dictionary As Dictionary(Of String, String)
-		
-		'BRApi.Finance.Calculate.ExecuteCustomCalculateBusinessRule(si,workspaceID, "workspace.GBL.GBL Objects.WSMU","Global_Buffers",Dictionary,customcalculatetimetype.CurrentPeriod)
-		BRApi.Finance.Calculate.ExecuteCustomCalculateBusinessRule(si,"Global_Buffers","GetCVDataBuffer",Dictionary,customcalculatetimetype.CurrentPeriod)
 
+		' Call the shared parameterized XFBR in GBL_String_Helper
+		Dim result As Object = Workspace.GBL.GBL_Assembly.GBL_String_Helper.GetDataBuffer(si, globals, api, args)
 
 	End Sub
 

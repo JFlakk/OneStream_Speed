@@ -360,11 +360,10 @@ Public GBL_DataSet As New Workspace.GBL.GBL_Assembly.BusinessRule.DashboardDataS
 
 #Region "Utilities: Get DataBuffer"
 	Public Sub GetDataBuffer(ByRef si As SessionInfo, ByRef globals As BRGlobals, ByRef api As Object,ByRef args As DashboardStringFunctionArgs)
-		'Dim filter = globals.GetStringValue("Filter","NA")
-		'Dim workspaceID As Guid = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, False, "00 GBL")				
-		Dim Dictionary As New Dictionary(Of String, String)
-		'BRApi.Finance.Calculate.ExecuteCustomCalculateBusinessRule(si,workspaceID, "workspace.GBL.GBL Objects.WSMU","Global_Buffers",Dictionary,customcalculatetimetype.CurrentPeriod)
-		BRApi.Finance.Calculate.ExecuteCustomCalculateBusinessRule(si,"Global_Buffers","GetCVDataBuffer",Dictionary,customcalculatetimetype.CurrentPeriod)
+
+		' Call the shared parameterized XFBR in GBL_String_Helper
+		Dim result As Object = Workspace.GBL.GBL_Assembly.GBL_String_Helper.GetDataBuffer(si, globals, api, args)
+
 	End Sub
 
 #End Region
