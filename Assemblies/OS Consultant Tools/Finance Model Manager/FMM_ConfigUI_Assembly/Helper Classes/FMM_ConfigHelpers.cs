@@ -122,17 +122,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Name" } } },
-						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "Type" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "Audit" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTable_Name", "Name" } } },
+						{ 1, new Dictionary<string, string> { { "DL_FMM_CustTable_Type", "Type" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CustTable_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CustTable_Audit", "Audit" } } }
 					}
 				},
 				[SaveType.Update] = new CustTableConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "BL_FMM_All_Cube_Names", "Name" } } },
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTable_Name", "Name" } } },
 						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "Type" } } },
 						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
 						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "Audit" } } }

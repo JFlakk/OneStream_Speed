@@ -244,7 +244,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             adapter.InsertCommand = BuildInsertCommand(transaction);
             adapter.UpdateCommand = BuildUpdateCommand(transaction);
             adapter.DeleteCommand = BuildDeleteCommand(transaction);
-            adapter.UpdateBatchSize = 0; // Set batch size for performance
+            //adapter.UpdateBatchSize = ; // Set batch size for performance
         }
 
         /// <summary>

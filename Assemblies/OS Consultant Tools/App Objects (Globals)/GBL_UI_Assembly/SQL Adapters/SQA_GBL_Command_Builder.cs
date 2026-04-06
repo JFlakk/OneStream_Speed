@@ -31,8 +31,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
 
-        public void UpdateTable(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa,
-            string[] primaryKeyColumns, string[]? excludeFromUpdate = null, string[]? excludeFromInsert = null)
+        public void UpdateTable(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa, string[] primaryKeyColumns, string[] excludeFromUpdate, string[] excludeFromInsert)
         {
             _ = si;
 
@@ -42,10 +41,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 .Distinct(StringComparer.OrdinalIgnoreCase)
                 .ToArray();
 
+
             var resolvedPrimaryKeys = FilterColumns(primaryKeyColumns);
             if (resolvedPrimaryKeys.Length == 0)
             {
-            throw new XFException("Primary key columns must exist in the DataTable.");
+                throw new XFException("Primary key columns must exist in the DataTable.");
             }
 
             var updateExclusions = FilterColumns(excludeFromUpdate);
@@ -54,43 +54,47 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             using var transaction = _connection.BeginTransaction();
             try
             {
-            var builder = new GBL_SQL_Command_Builder(_connection, tableName, dt);
+                var builder = new GBL_SQL_Command_Builder(_connection, tableName, dt);
 
-            builder.SetPrimaryKey(resolvedPrimaryKeys);
+                builder.SetPrimaryKey(resolvedPrimaryKeys);
 
-            if (updateExclusions.Length > 0)
-            {
-                builder.ExcludeFromUpdate(updateExclusions);
-            }
+                if (updateExclusions.Length > 0)
+                {
+                    builder.ExcludeFromUpdate(updateExclusions);
+                }
 
-            if (insertExclusions.Length > 0)
-            {
-                builder.ExcludeFromInsert(insertExclusions);
-            }
+                if (insertExclusions.Length > 0)
+                {
+                    builder.ExcludeFromInsert(insertExclusions);
+                }
 
-            builder.ConfigureAdapter(sqa, transaction);
+                builder.ConfigureAdapter(sqa, transaction);
 
-            sqa.Update(dt);
-            transaction.Commit();
+                sqa.Update(dt);
+                transaction.Commit();
+
             }
             catch (Exception ex)
             {
-            transaction.Rollback();
-            throw new XFException(si, ex);
+                transaction.Rollback();
+                throw new XFException(si, ex);
             }
             finally
             {
-            sqa.InsertCommand = null;
-            sqa.UpdateCommand = null;
-            sqa.DeleteCommand = null;
+                sqa.InsertCommand = null;
+                sqa.UpdateCommand = null;
+                sqa.DeleteCommand = null;
             }
         }
+
 
         public void UpdateTableSimple(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa, string primaryKeyColumn)
         {
             // Standard pattern: exclude primary key and common audit columns from updates
-            string[] excludeFromUpdate = new[] { primaryKeyColumn, "Create_Date", "Create_User" };
-            UpdateTable(si, tableName, dt, sqa, new[] { primaryKeyColumn }, excludeFromUpdate);
+            var excludeFromUpdate = new string[] { primaryKeyColumn, "CreateDate", "CreateUser" };
+            var excludeFromInsert = new string[] { "CustTableID" };
+            BRApi.ErrorLog.LogMessage(si, "Hit Update");
+            UpdateTable(si, tableName, dt, sqa, new[] { primaryKeyColumn }, excludeFromUpdate, excludeFromInsert);
         }
 
         public void UpdateTableComposite(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa, params string[] primaryKeyColumns)
@@ -99,8 +103,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             var excludeList = new List<string>(primaryKeyColumns);
             excludeList.Add("Create_Date");
             excludeList.Add("Create_User");
+            var excludeFromInsert = new string[] { "Audit" };
 
-            UpdateTable(si, tableName, dt, sqa, primaryKeyColumns, excludeList.ToArray());
+            UpdateTable(si, tableName, dt, sqa, primaryKeyColumns, excludeList.ToArray(), excludeFromInsert);
         }
 
         public GBL_SQL_Command_Builder GetCommandBuilder(SessionInfo si, string tableName, DataTable dt)
@@ -141,7 +146,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// <param name="sourceDt">Source DataTable to merge from</param>
         /// <param name="preserveChanges">True to preserve changes in the target; false to overwrite</param>
         /// <param name="missingSchemaAction">Action to take when schema doesn't match</param>
-        public void MergeDataTable(SessionInfo si, DataTable targetDt, DataTable sourceDt, 
+        public void MergeDataTable(SessionInfo si, DataTable targetDt, DataTable sourceDt,
             bool preserveChanges = true, MissingSchemaAction missingSchemaAction = MissingSchemaAction.Error)
         {
             try
@@ -150,7 +155,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
             catch (Exception ex)
             {
-                throw new XFException(si, $"Error merging DataTable: {ex.Message}", ex);
+                throw new XFException($"Error merging DataTable: {ex.Message}");
             }
         }
 
@@ -162,7 +167,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// <param name="sourceDt">Source DataTable to merge from</param>
         /// <param name="primaryKeyColumns">Array of column names that form the composite primary key</param>
         /// <param name="preserveChanges">True to preserve changes in the target; false to overwrite</param>
-        public void MergeDataTableWithKeys(SessionInfo si, DataTable targetDt, DataTable sourceDt, 
+        public void MergeDataTableWithKeys(SessionInfo si, DataTable targetDt, DataTable sourceDt,
             string[] primaryKeyColumns, bool preserveChanges = false)
         {
             try
@@ -170,7 +175,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 // Set primary keys on both tables if not already set
                 if (targetDt.PrimaryKey == null || targetDt.PrimaryKey.Length == 0)
                 {
-                    var targetKeys = primaryKeyColumns.Select(col => 
+                    var targetKeys = primaryKeyColumns.Select(col =>
                     {
                         if (targetDt.Columns[col] == null)
                             throw new ArgumentException($"Column '{col}' does not exist in target DataTable");
@@ -181,7 +186,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 if (sourceDt.PrimaryKey == null || sourceDt.PrimaryKey.Length == 0)
                 {
-                    var sourceKeys = primaryKeyColumns.Select(col => 
+                    var sourceKeys = primaryKeyColumns.Select(col =>
                     {
                         if (sourceDt.Columns[col] == null)
                             throw new ArgumentException($"Column '{col}' does not exist in source DataTable");
@@ -195,7 +200,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
             catch (Exception ex)
             {
-                throw new XFException(si, $"Error merging DataTable with keys: {ex.Message}", ex);
+                throw new XFException($"Error merging DataTable with keys: {ex.Message}");
             }
         }
     }

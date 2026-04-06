@@ -51,5 +51,39 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             globals?.SetStringValue(key, value);
         }
+
+        public string checkBlankValue(ref DataRow row, string columnName, string rawValue)
+        {
+            if (!row.Table.Columns.Contains(columnName)) return "Error";
+
+            DataColumn col = row.Table.Columns[columnName];
+            bool isEmpty = string.IsNullOrWhiteSpace(rawValue);
+
+            if (isEmpty)
+            {
+                if (col.DataType == typeof(string))
+                {
+                    row[columnName] = string.Empty;
+                }
+                else if (col.DataType == typeof(int))
+                {
+                    row[columnName] = 0;
+                }
+                else if (col.DataType == typeof(decimal) || col.DataType == typeof(double) || col.DataType == typeof(float))
+                {
+                    row[columnName] = 0.0;
+                }
+                else if (col.DataType == typeof(bool))
+                {
+                    row[columnName] = false;
+                }
+                else
+                {
+                    return "Error";
+                }
+                return "Success";
+            }
+            return "Success;
+        }
     }
 }
