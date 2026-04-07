@@ -431,6 +431,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         {
             try
             {
+                var cases = string.Join(" ", Enum.GetValues(typeof(FMM_ConfigHelpers.CustTableType))
+                        .Cast<FMM_ConfigHelpers.CustTableType>()
+                        .Select(e => $"WHEN {(int)e} THEN '{e}'"));
                 var dt = new DataTable("CustTable");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -446,7 +449,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     if (custTableType.XFEqualsIgnoreCase("All"))
                     {
                         dt.TableName = "CustTable_All";
-                        sql = @"SELECT CONCAT(Name, ' - ',Type) AS CustTable,CustTableID
+                        sql = $@"SELECT CONCAT(Name, ' - ',
+                                CASE Type 
+                                    {cases} 
+                                ELSE CAST(Type AS VARCHAR) 
+                                END) AS CustTable,CustTableID
                                 FROM FMM_CustTable
                                 ORDER BY Name,Type";
                         sqlparams = new SqlParameter[]

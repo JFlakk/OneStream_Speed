@@ -51,6 +51,57 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             _excludeFromInsert = new List<string>();
         }
 
+        public (string[] PKs, string[] UpdEx, string[] InsEx) gettableDefsfromConfig(SessionInfo si, string tableName)
+        {
+            var tableDef = new Dictionary<string, (string[] PKs, string[] UpdEx, string[] InsEx)>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "FMM_CustTable", (new[] { "CustTableID" }, new[] { "CustTableID", "CreateDate", "CreateUser" }, new[] { "CustTableID" }) },
+                { "FMM_CustTableFK", (new[] { "CustTableFKID" }, new[] { "CustTableFKID", "CreateDate" }, new[] { "CustTableFKID" }) }
+            };
+
+            if (tableDef.TryGetValue(tableName, out var def))
+            {
+                return def;
+            }
+            else
+            {
+                // Call the fallback function to query the database
+                return GetTableDefsFromMetadata(si, tableName);
+            }
+        }
+
+        private (string[] PKs, string[] UpdEx, string[] InsEx) GetTableDefsFromMetadata(SessionInfo si, string tableName)
+        {
+            var pks = new List<string>();
+
+            // Query SQL Server Schema for Primary Keys
+            string sql = @"
+                SELECT COLUMN_NAME 
+                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
+                WHERE TABLE_NAME = @tableName 
+                AND OBJECTPROPERTY(OBJECT_ID(CONSTRAINT_SCHEMA + '.' + CONSTRAINT_NAME), 'IsPrimaryKey') = 1";
+
+            using (var cmd = new SqlCommand(sql, si.Connection))
+            {
+                cmd.Parameters.AddWithValue("@tableName", tableName);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        pks.Add(reader["COLUMN_NAME"].ToString());
+                    }
+                }
+            }
+
+            // Convert list to array
+            string[] pkArray = pks.ToArray();
+
+            // In a generic metadata fallback, we usually exclude PKs from both 
+            // updates and inserts assuming they are Identity columns.
+            return (pkArray, pkArray, pkArray);
+        }
+
         /// <summary>
         /// Set primary key column(s) for the table
         /// </summary>

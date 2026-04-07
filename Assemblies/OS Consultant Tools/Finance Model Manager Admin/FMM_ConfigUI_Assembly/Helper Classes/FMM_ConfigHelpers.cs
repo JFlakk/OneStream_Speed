@@ -751,5 +751,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			Update = 2,
 			View = 3
 		}
+
+		public enum CustTableType
+		{
+			None = 0,
+			Add = 1,
+			Update = 2,
+			View = 3
+		}
 	}
 }

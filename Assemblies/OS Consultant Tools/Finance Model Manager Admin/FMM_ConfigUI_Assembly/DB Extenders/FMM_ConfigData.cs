@@ -110,7 +110,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             try
             {
-                BRApi.ErrorLog.LogMessage(si, args.FunctionName);
                 this.si = si;
                 this.globals = globals;
                 this.api = api;
@@ -143,6 +142,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var changed_Result = new XFSelectionChangedTaskResult();
                         switch (args.FunctionName)
                         {
+                            case var fn when fn.XFEqualsIgnoreCase("SolutionTableSetup"):
+                                changed_Result = SolutionTableSetup(si, globals, api, args);
+                                return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("CubeConfig_SaveAdd"):
                                 changed_Result = CubeConfig_Save("Add");
                                 return changed_Result;
@@ -151,6 +153,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("CubeConfig_SaveDelete"):
                                 changed_Result = CubeConfig_Save("Delete");
+                                return changed_Result;
+                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_Add"):
+                                changed_Result = CubeConfig_Add();
+                                return changed_Result;
+                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_Select"):
+                                changed_Result = CubeConfig_Select();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("AcctConfig_SaveAdd"):
                                 changed_Result = AcctConfig_Save("Add");
@@ -163,6 +171,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("CustTableConfig_SaveUpdate"):
                                 changed_Result = CustTableConfig_Save("Update");
+                                return changed_Result;
+                            case var fn when fn.XFEqualsIgnoreCase("CustTable_Add"):
+                                changed_Result = CubeConfig_Add();
+                                return changed_Result;
+                            case var fn when fn.XFEqualsIgnoreCase("CustTable_Select"):
+                                changed_Result = CubeConfig_Select();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Save_CalcConfig_Rows"):
                                 gbl_ModelType = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("DL_FMM_CalcType");
@@ -238,18 +252,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Copy_Model_Grp_Config"):
                                 changed_Result = Process_Bulk_Calc_Unit();
-                                return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_Add"):
-                                changed_Result = CubeConfig_Add();
-                                return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CubeConfig_Select"):
-                                changed_Result = CubeConfig_Select();
-                                return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CustTable_Add"):
-                                changed_Result = CubeConfig_Add();
-                                return changed_Result;
-                            case var fn when fn.XFEqualsIgnoreCase("CustTable_Select"):
-                                changed_Result = CubeConfig_Select();
                                 return changed_Result;
                             case var fn when fn.XFEqualsIgnoreCase("Select_Add_FMM_CalcID"):
                                 return changed_Result;
@@ -362,7 +364,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         saveResult.IsOK = true;
                         saveResult.ShowMessageBox = false;
-                        cmdBuilder.UpdateTableSimple(si, "FMM_ActConfig", FMM_ActConfig_DT, sqa, "ActID");
+                        cmdBuilder.UpdateTable(si, "FMM_ActConfig", FMM_ActConfig_DT, sqa);
                     }
                 }
 
@@ -468,7 +470,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         saveResult.IsOK = true;
                         saveResult.ShowMessageBox = false;
-                        cmdBuilder.UpdateTableSimple(si, "FMM_CalcUnitConfig", FMM_CalcUnitConfig_DT, sqa, "CalcUnitID");
+
+                        cmdBuilder.UpdateTable(si, "FMM_CalcUnitConfig", FMM_CalcUnitConfig_DT, sqa);
                     }
                 }
 
@@ -621,11 +624,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                 }
                             }
                         }
-                        cmdBuilder.UpdateTableSimple(si, "FMM_CalcConfig", FMM_CalcConfig_DT, sqa, "CalcID");
+
+                        cmdBuilder.UpdateTable(si, "FMM_CalcConfig", FMM_CalcConfig_DT, sqa);
 
                         if (createNewDestCell)
                         {
-                            cmdBuilder.UpdateTableSimple(si, "FMM_DestCell", FMM_DestCell_DT, sqa, "DestCell_ID");
+                            cmdBuilder.UpdateTable(si, "FMM_DestCell", FMM_DestCell_DT, sqa);
                         }
                     }
                 }
@@ -680,7 +684,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     destRow["UpdateDate"] = DateTime.Now;
                     destRow["UpdateUser"] = si.UserName;
 
-                    cmdBuilder.UpdateTableSimple(si, "FMM_DestCell", fmmDestCellDt, sqa, "DestCell_ID");
+                    cmdBuilder.UpdateTable(si, "FMM_DestCell", fmmDestCellDt, sqa);
                 }
 
                 saveResult.IsOK = true;
@@ -737,7 +741,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         row["UpdateUser"] = si.UserName;
                     }
 
-                    cmdBuilder.UpdateTableSimple(si, "FMM_SrcCell", fmmSrcCellDt, sqa, "SrcCell_ID");
+                    cmdBuilder.UpdateTable(si, "FMM_SrcCell", fmmSrcCellDt, sqa);
                 }
 
                 saveResult.IsOK = true;
@@ -844,7 +848,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         saveResult.IsOK = true;
                         saveResult.ShowMessageBox = false;
-                        cmdBuilder.UpdateTableSimple(si, "FMM_UnitConfig", FMM_UnitConfig_DT, sqa, "UnitID");
+                        cmdBuilder.UpdateTable(si, "FMM_UnitConfig", FMM_UnitConfig_DT, sqa);
                     }
                 }
 
@@ -932,7 +936,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateUser"] = si.UserName;
 
                         FMM_CubeConfig_DT.Rows.Add(new_DataRow);
-                        cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa, "CubeID");
+                        cmdBuilder.UpdateTable(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa);
                         saveResult.IsOK = true;
                         saveResult.Message = "New Cube Config Saved.";
                         saveResult.ShowMessageBox = true;
@@ -966,7 +970,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             rowToUpdate["UpdateDate"] = DateTime.Now;
                             rowToUpdate["UpdateUser"] = si.UserName;
 
-                            cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa, "CubeID");
+                            cmdBuilder.UpdateTable(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa);
 
                             saveResult.IsOK = true;
                             saveResult.Message = "Cube Config Updates Saved.";
@@ -1081,7 +1085,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     {
                         saveResult.IsOK = true;
                         saveResult.ShowMessageBox = false;
-                        cmdBuilder.UpdateTableSimple(si, "FMM_Col_Config", FMM_Col_Config_DT, sqa, "Col_ID");
+                        cmdBuilder.UpdateTable(si, "FMM_Col_Config", FMM_Col_Config_DT, sqa);
                     }
                 }
 
@@ -1316,7 +1320,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
 
 
-                cmdBuilder.UpdateTableSimple(si, "FMM_SrcCell", FMM_SrcCell_DT, sqlDataAdapter, "SrcCell_ID");
+                cmdBuilder.UpdateTable(si, "FMM_SrcCell", FMM_SrcCell_DT, sqlDataAdapter);
             }
         }
 
@@ -1394,7 +1398,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         src_DataRow["UnbalBuffer_Filter"] = unbal_SrcCell_Buffer_Filter;
                         src_DataRow["OverrideValue"] = override_Dest_Val;
                     }
-                    cmdBuilder.UpdateTableSimple(si, "FMM_SrcCell", FMM_SrcCell_DT, sqa, "SrcCell_ID");
+                    cmdBuilder.UpdateTable(si, "FMM_SrcCell", FMM_SrcCell_DT, sqa);
                 }
             }
         }
@@ -1544,7 +1548,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             FMM_DestCell_DT_Row["Curr_Cube_Buffer_Filter"] = curr_Cube_Buffer_Filter;
                             FMM_DestCell_DT_Row["BufferFilter"] = src_Buffer_Filter;
                         }
-                        cmdBuilder.UpdateTableSimple(si, "FMM_DestCell", FMM_DestCell_DT, sqa, "DestCell_ID");
+                        cmdBuilder.UpdateTable(si, "FMM_DestCell", FMM_DestCell_DT, sqa);
 
                     }
 
@@ -1693,7 +1697,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
 
                         }
-                        cmdBuilder.UpdateTableSimple(si, "FMM_CalcConfig", FMM_CalcConfig_DT, sqa, "CalcID");
+                        cmdBuilder.UpdateTable(si, "FMM_CalcConfig", FMM_CalcConfig_DT, sqa);
                     }
                     else
                     {
@@ -1903,7 +1907,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         #endregion
 
         #region "Cube Config Functions"
-
         private XFSelectionChangedTaskResult CubeConfig_Save(string runType)
         {
             try
@@ -1975,7 +1978,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateUser"] = si.UserName;
 
                         FMM_CubeConfig_DT.Rows.Add(new_DataRow);
-                        cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa, "CubeID");
+                        cmdBuilder.UpdateTable(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa);
                         saveResult.IsOK = true;
                         saveResult.Message = "New Cube Config Saved.";
                         saveResult.ShowMessageBox = true;
@@ -2008,7 +2011,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             rowToUpdate["UpdateDate"] = DateTime.Now;
                             rowToUpdate["UpdateUser"] = si.UserName;
 
-                            cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa, "CubeID");
+                            cmdBuilder.UpdateTable(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa);
 
                             saveResult.IsOK = true;
                             saveResult.Message = "Cube Config Updates Saved.";
@@ -2030,8 +2033,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             // Mark the row as deleted
                             FMM_CubeConfig_DT.Rows[0].Delete();
 
-                            // Commit the deletion to the database
-                            cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa, "CubeID");
+                            cmdBuilder.UpdateTable(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa);
 
                             saveResult.IsOK = true;
                             saveResult.Message = "Cube Config Deleted Successfully.";
@@ -2118,6 +2120,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             }
         }
         #endregion
+
+        #region "Custom Table Functions"
         private XFSelectionChangedTaskResult CustTableConfig_Save(string runType)
         {
             try
@@ -2145,7 +2149,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sqlparams = new SqlParameter[]
                     {};
 
-                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_CustTable_Count_DT, sql, sqlparams);
+                    //sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_CustTable_Count_DT, sql, sqlparams);
 
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var FMM_CustTable_DT = new DataTable();
@@ -2183,6 +2187,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                                         {
                                             uiErrorMessageList.Add(map.Value);
                                         }
+                                        else if (errorMessage == "Success")
+                                        {
+                                            new_DataRow[map.Value] = result;
+                                        }
                                     }
                                 }
                             }
@@ -2195,7 +2203,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateDate"] = DateTime.Now;
                         new_DataRow["UpdateUser"] = si.UserName;
 
-                        if uiErrorMessageList.Count > 0)
+                        if (uiErrorMessageList.Count > 0)
                         {
                             uiErrorMessage = "The following fields cannot be blank: " + string.Join(", ", uiErrorMessageList);
                             saveResult.IsOK = false;
@@ -2203,8 +2211,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             saveResult.ShowMessageBox = true;
                             return saveResult;
                         }
+                        foreach (DataColumn col in FMM_CustTable_DT.Columns)
+                        {
+                            string colName = col.ColumnName;
+                            string colType = col.DataType.Name;
+
+                            // 3. Retrieve the value safely
+                            object value = new_DataRow[colName];
+
+                            // 4. Handle Nulls for the log display
+                            string displayValue = (value == null || value == DBNull.Value) ? "[NULL / DBNull]" : value.ToString();
+
+                            // 5. Write to OneStream Error Log
+                            BRApi.ErrorLog.LogMessage(si, $"COLUMN: {colName.PadRight(20)} | TYPE: {colType.PadRight(10)} | VALUE: {displayValue}");
+                        }
                         FMM_CustTable_DT.Rows.Add(new_DataRow);
-                        cmdBuilder.UpdateTableSimple(si, "FMM_CustTable", FMM_CustTable_DT, sqa, "CustTableID");
+                        cmdBuilder.UpdateTable(si, "FMM_CustTable", FMM_CustTable_DT, sqa);
                         saveResult.IsOK = true;
                         saveResult.Message = "New Cube Config Saved.";
                         saveResult.ShowMessageBox = true;
@@ -2237,7 +2259,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             rowToUpdate["UpdateDate"] = DateTime.Now;
                             rowToUpdate["UpdateUser"] = si.UserName;
 
-                            cmdBuilder.UpdateTableSimple(si, "FMM_CustTable", FMM_CustTable_DT, sqa, "custTableID");
+                            cmdBuilder.UpdateTable(si, "FMM_CustTable", FMM_CustTable_DT, sqa);
 
                             saveResult.IsOK = true;
                             saveResult.Message = "Cube Config Updates Saved.";
@@ -2260,7 +2282,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             FMM_CustTable_DT.Rows[0].Delete();
 
                             // Commit the deletion to the database
-                            cmdBuilder.UpdateTableSimple(si, "FMM_CustTable", FMM_CustTable_DT, sqa, "custTableID");
+                            cmdBuilder.UpdateTable(si, "FMM_CustTable", FMM_CustTable_DT, sqa);
 
                             saveResult.IsOK = true;
                             saveResult.Message = "Cube Config Deleted Successfully.";
@@ -2293,6 +2315,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 };
             }
         }
+        #endregion
 
         private XFSelectionChangedTaskResult Model_Save(string runType)
         {
@@ -2364,7 +2387,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         }
 
-                        cmdBuilder.UpdateTableSimple(si, "FMM_Models", FMM_Models_DT, sqa, "ModelID");
+                        cmdBuilder.UpdateTable(si, "FMM_Models", FMM_Models_DT, sqa);
                     }
                 }
 
@@ -2422,7 +2445,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateUser"] = si.UserName;
                         FMM_ModelGrps_DT.Rows.Add(new_DataRow);
 
-                        cmdBuilder.UpdateTableSimple(si, "FMM_ModelGrps", FMM_ModelGrps_DT, sqa, "Model_Grp_ID");
+                        cmdBuilder.UpdateTable(si, "FMM_ModelGrps", FMM_ModelGrps_DT, sqa);
                     }
                 }
 
@@ -2480,7 +2503,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateUser"] = si.UserName;
                         FMM_Model_Grp_Seqs_DT.Rows.Add(new_DataRow);
 
-                        cmdBuilder.UpdateTableSimple(si, "FMM_Model_Grp_Seqs", FMM_Model_Grp_Seqs_DT, sqa, "Model_Grp_Seq_ID");
+                        cmdBuilder.UpdateTable(si, "FMM_Model_Grp_Seqs", FMM_Model_Grp_Seqs_DT, sqa);
                     }
                 }
 
@@ -2554,7 +2577,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             FMM_ModelGrpAssign_DT.Rows.Add(new_DataRow);
                         }
 
-                        cmdBuilder.UpdateTableSimple(si, "FMM_ModelGrpAssign", FMM_ModelGrpAssign_DT, sqa, "Model_Grp_Assign_ID");
+                        cmdBuilder.UpdateTable(si, "FMM_ModelGrpAssign", FMM_ModelGrpAssign_DT, sqa);
                     }
                 }
 
@@ -2633,7 +2656,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             }
                         }
 
-                        cmdBuilder.UpdateTableSimple(si, "FMM_Calc_Unit_Assign", FMM_Calc_Unit_Assign_DT, sqa, "Calc_Unit_Assign_ID");
+                        cmdBuilder.UpdateTable(si, "FMM_Calc_Unit_Assign", FMM_Calc_Unit_Assign_DT, sqa);
                     }
                 }
 
@@ -2708,7 +2731,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateUser"] = si.UserName;
 
                         FMM_ApprConfig_DT.Rows.Add(new_DataRow);
-                        cmdBuilder.UpdateTableSimple(si, "FMM_ApprConfig", FMM_ApprConfig_DT, sqa, "ApprID");
+                        cmdBuilder.UpdateTable(si, "FMM_ApprConfig", FMM_ApprConfig_DT, sqa);
                         saveResult.IsOK = true;
                         saveResult.Message = "New Cube Config Saved.";
                         saveResult.ShowMessageBox = true;
@@ -2742,7 +2765,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     //                            rowToUpdate["UpdateDate"] = DateTime.Now;
                     //                            rowToUpdate["UpdateUser"] = si.UserName;
 
-                    //                            cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa, "CubeID");
+                    //                            cmdBuilder.UpdateTable(si, "FMM_CubeConfig", FMM_CubeConfig_DT, sqa);
 
                     //                            saveResult.IsOK = true;
                     //                            saveResult.Message = "Cube Config Updates Saved.";
@@ -2882,7 +2905,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     //                    {
                     //                        saveResult.IsOK = true;
                     //                        saveResult.ShowMessageBox = false;
-                    //                        cmdBuilder.UpdateTableComposite(si, "FMM_ApprStep_Config", FMM_ApprStepConfig_DT, sqa, "CubeID", "ApprID", "ApprStepID");
+                    //                        cmdBuilder.UpdateTable(si, "FMM_ApprStep_Config", FMM_ApprStepConfig_DT, sqa, "CubeID", "ApprID", "ApprStepID");
                     //                    }
                 }
 
@@ -3044,7 +3067,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         }
 
-                        cmdBuilder.UpdateTableSimple(si, "FMM_ApprStep_Config", FMM_ApprStepConfig_DT, sqa, "ApprStepID");
+                        cmdBuilder.UpdateTable(si, "FMM_ApprStep_Config", FMM_ApprStepConfig_DT, sqa);
 
 
                     }
@@ -3167,7 +3190,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ////                    {
                     ////                        saveResult.IsOK = true;
                     ////                        saveResult.ShowMessageBox = false;
-                    ////                        cmdBuilder.UpdateTableSimple(si, "FMM_RegConfig", FMM_RegConfig_DT, sqa, "RegConfigID");
+                    ////                        cmdBuilder.UpdateTable(si, "FMM_RegConfig", FMM_RegConfig_DT, sqa, "RegConfigID");
                     ////                    }
                     ////                    foreach (var newRegConfigID in new_Reg_List)
                     ////                    {
@@ -3253,7 +3276,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         loop_times += 1;
                     }
 
-                    cmdBuilder.UpdateTableSimple(si, "FMM_CalcUnitConfig", FMM_CalcUnitConfig_DT, sqa, "CalcUnitID");
+                    cmdBuilder.UpdateTable(si, "FMM_CalcUnitConfig", FMM_CalcUnitConfig_DT, sqa);
 
                     return saveResult;
                 }
@@ -4244,7 +4267,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                     FMM_Col_Config_DT.Rows.Add(new_DataRow);
                 }
-                cmdBuilder.UpdateTableSimple(si, "FMM_Col_Config", FMM_Col_Config_DT, sqa, "Col_ID");
+                cmdBuilder.UpdateTable(si, "FMM_Col_Config", FMM_Col_Config_DT, sqa);
             }
         }
 
@@ -4424,11 +4447,70 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         }
 
         #region "Solution Setup"
-        private XFSelectionChangedTaskResult Create_Schema_New_Install(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
+        private XFSelectionChangedTaskResult SolutionTableSetup(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
-            var selectionChangedTaskResult = new XFSelectionChangedTaskResult();
-            return selectionChangedTaskResult;
+            try
+            {
+                var selectionChangedTaskResult = new XFSelectionChangedTaskResult();
 
+                // Create connection to application database
+                using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
+                {
+                    if (!DbSql.DoesTableExist(dbConnApp, "FMM_CubeConfig") &&
+                        !DbSql.DoesTableExist(dbConnApp, "FMM_ActConfig") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_ActivityClassItems") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_ActivityTypes") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_ExecutionList") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_Plan") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_Register") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_RegisterDetail") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_ControlListItems") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_GlobalDrivers") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_AuditLog") &&
+                        !DbSql.DoesTableExist(dbConnApp, "XFW_PLP_RegisterActions"))
+                    {
+                        // FIRST TIME INSTALL
+                        var setupFileName = "FMM_TableSetup.txt";
+                        var fileResource = BRApi.Dashboards.FileResources.GetFileResource(si, false, Guid.Empty, setupFileName);
+
+                        if (fileResource == null)
+                        {
+                            selectionChangedTaskResult.IsOK = false;
+                            selectionChangedTaskResult.ShowMessageBox = true;
+                            selectionChangedTaskResult.Message = $"Table Setup File ({setupFileName}) is missing or invalid.";
+                            return selectionChangedTaskResult;
+                        }
+
+                        // CREATE THE SCHEMA
+                        try
+                        {
+                            string sqlScript = System.Text.Encoding.UTF8.GetString(fileResource.FileBytes);
+                            BRApi.Database.ExecuteActionQuery(dbConnApp, sqlScript, false, true);
+
+                            selectionChangedTaskResult.IsOK = true;
+                            selectionChangedTaskResult.ShowMessageBox = true;
+                            selectionChangedTaskResult.Message = "Solution Tables Created";
+                        }
+                        catch (Exception)
+                        {
+                            selectionChangedTaskResult.IsOK = false;
+                            selectionChangedTaskResult.ShowMessageBox = true;
+                            selectionChangedTaskResult.Message = "Error: Solution Tables NOT Created";
+                        }
+                    }
+                    else
+                    {
+                        selectionChangedTaskResult.IsOK = true;
+                        selectionChangedTaskResult.ShowMessageBox = false;
+                    }
+                }
+
+                return selectionChangedTaskResult;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
         }
 
         #endregion
@@ -4660,22 +4742,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 {
 
                 }
-                cmdBuilder.UpdateTableSimple(si, "FMM_ActConfig", tgt_FMM_ActConfig_DT, sqa, "ActID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_UnitConfig", tgt_FMM_UnitConfig_DT, sqa, "UnitID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_AcctConfig", tgt_FMM_AcctConfig_DT, sqa, "AcctID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_RegConfig", tgt_FMM_RegConfig_DT, sqa, "RegConfigID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_Col_Config", tgt_FMM_Col_Config_DT, sqa, "Col_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_ApprConfig", tgt_FMM_ApprConfig_DT, sqa, "ApprID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_ApprStep_Config", tgt_FMM_ApprStepConfig_DT, sqa, "ApprStepID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_Models", tgt_FMM_Models_DT, sqa, "ModelID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_CalcConfig", tgt_FMM_CalcConfig_DT, sqa, "CalcID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_DestCell", tgt_FMM_DestCell_DT, sqa, "DestCell_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_SrcCell", tgt_FMM_SrcCell_DT, sqa, "CellID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_ModelGrpAssign", tgt_FMM_ModelGrpAssign_DT, sqa, "Model_Grp_Assign_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_CalcUnitConfig", tgt_FMM_CalcUnitConfig_DT, sqa, "CalcUnitID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_Calc_Unit_Assign", tgt_FMM_Calc_Unit_Assign_DT, sqa, "Calc_Unit_Assign_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_ModelGrps", tgt_FMM_ModelGrps_DT, sqa, "Model_Grp_Config_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", tgt_FMM_CubeConfig_DT, sqa, "CubeID");
+                cmdBuilder.UpdateTable(si, "FMM_ActConfig", tgt_FMM_ActConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_UnitConfig", tgt_FMM_UnitConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_AcctConfig", tgt_FMM_AcctConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_RegConfig", tgt_FMM_RegConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_Col_Config", tgt_FMM_Col_Config_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ApprConfig", tgt_FMM_ApprConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ApprStep_Config", tgt_FMM_ApprStepConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_Models", tgt_FMM_Models_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_CalcConfig", tgt_FMM_CalcConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_DestCell", tgt_FMM_DestCell_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_SrcCell", tgt_FMM_SrcCell_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ModelGrpAssign", tgt_FMM_ModelGrpAssign_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_CalcUnitConfig", tgt_FMM_CalcUnitConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_Calc_Unit_Assign", tgt_FMM_Calc_Unit_Assign_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ModelGrps", tgt_FMM_ModelGrps_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_CubeConfig", tgt_FMM_CubeConfig_DT, sqa);
             }
         }
 
@@ -4908,22 +4990,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 }
 
-                cmdBuilder.UpdateTableSimple(si, "FMM_ActConfig", tgt_FMM_ActConfig_DT, sqa, "ActID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_UnitConfig", tgt_FMM_UnitConfig_DT, sqa, "UnitID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_AcctConfig", tgt_FMM_AcctConfig_DT, sqa, "AcctID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_RegConfig", tgt_FMM_RegConfig_DT, sqa, "RegConfigID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_Col_Config", tgt_FMM_Col_Config_DT, sqa, "Col_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_ApprConfig", tgt_FMM_ApprConfig_DT, sqa, "ApprID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_ApprStep_Config", tgt_FMM_ApprStepConfig_DT, sqa, "ApprStepID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_Models", tgt_FMM_Models_DT, sqa, "ModelID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_CalcConfig", tgt_FMM_CalcConfig_DT, sqa, "CalcID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_DestCell", tgt_FMM_DestCell_DT, sqa, "DestCell_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_SrcCell", tgt_FMM_SrcCell_DT, sqa, "CellID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_ModelGrpAssign", tgt_FMM_ModelGrpAssign_DT, sqa, "Model_Grp_Assign_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_CalcUnitConfig", tgt_FMM_CalcUnitConfig_DT, sqa, "CalcUnitID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_Calc_Unit_Assign", tgt_FMM_Calc_Unit_Assign_DT, sqa, "Calc_Unit_Assign_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_ModelGrps", tgt_FMM_ModelGrps_DT, sqa, "Model_Grp_Config_ID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_CubeConfig", tgt_FMM_CubeConfig_DT, sqa, "CubeID");
+                cmdBuilder.UpdateTable(si, "FMM_ActConfig", tgt_FMM_ActConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_UnitConfig", tgt_FMM_UnitConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_AcctConfig", tgt_FMM_AcctConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_AcctConfig", tgt_FMM_AcctConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_RegConfig", tgt_FMM_RegConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_Col_Config", tgt_FMM_Col_Config_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ApprConfig", tgt_FMM_ApprConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ApprStep_Config", tgt_FMM_ApprStepConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_Models", tgt_FMM_Models_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_CalcConfig", tgt_FMM_CalcConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_DestCell", tgt_FMM_DestCell_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_SrcCell", tgt_FMM_SrcCell_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ModelGrpAssign", tgt_FMM_ModelGrpAssign_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_CalcUnitConfig", tgt_FMM_CalcUnitConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_Calc_Unit_Assign", tgt_FMM_Calc_Unit_Assign_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ModelGrps", tgt_FMM_ModelGrps_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_CubeConfig", tgt_FMM_CubeConfig_DT, sqa);
             }
         }
 
@@ -5039,9 +5122,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
                 #endregion
 
-                cmdBuilder.UpdateTableSimple(si, "FMM_CalcConfig", tgt_FMM_CalcConfig_DT, sqa, "CalcID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_DestCell", tgt_FMM_DestCell_DT, sqa, "CellID");
-                cmdBuilder.UpdateTableSimple(si, "FMM_SrcCell", tgt_FMM_SrcCell_DT, sqa, "CellID");
+                cmdBuilder.UpdateTable(si, "FMM_CalcConfig", tgt_FMM_CalcConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_DestCell", tgt_FMM_DestCell_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_SrcCell", tgt_FMM_SrcCell_DT, sqa);
 
             }
         }

@@ -174,16 +174,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
 
                     // Set primary key if Cell_ID column exists in the result set
-                    if (currentTable.Columns.Contains("CellID") && currentTable.Columns["CellID"] != null)
+                    if (currentTable.Columns.Contains("SrcCellID") && currentTable.Columns["SrcCellID"] != null)
                     {
-                        currentTable.PrimaryKey = new[] { currentTable.Columns["CellID"]! };
+                        currentTable.PrimaryKey = new[] { currentTable.Columns["SrcCellID"]! };
                     }
 
                     // Merge the new/updated records with existing data
                     // preserveChanges=false: Overwrite existing rows with new values (upsert behavior)
                     currentTable.Merge(mergeTable, false, MissingSchemaAction.Add);
 
-                    cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "CellID");
+                    cmdBuilder.UpdateTable(this.si, this.TableName, currentTable, sqa);
                 }
             }
             catch (Exception ex)
@@ -436,7 +436,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     // Create the starter row with minimal required fields
                     var row = currentTable.NewRow();
-                    SetColumnValue(row, "CellID", nextCellId);
                     SetColumnValue(row, "CubeID", CubeID);
                     SetColumnValue(row, "ActID", ActID);
                     SetColumnValue(row, "ModelID", ModelID);
@@ -451,7 +450,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     currentTable.Rows.Add(row);
 
-                    cmdBuilder.UpdateTableSimple(this.si, this.TableName, currentTable, sqa, "CellID");
+                    cmdBuilder.UpdateTable(this.si, this.TableName, currentTable, sqa);
                 }
             }
             catch (Exception ex)

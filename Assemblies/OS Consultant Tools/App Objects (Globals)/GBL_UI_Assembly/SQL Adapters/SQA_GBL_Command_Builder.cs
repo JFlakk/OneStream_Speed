@@ -31,9 +31,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         }
 
 
-        public void UpdateTable(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa, string[] primaryKeyColumns, string[] excludeFromUpdate, string[] excludeFromInsert)
+        public void UpdateTable(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa)
         {
             _ = si;
+            var builder = new GBL_SQL_Command_Builder(_connection, tableName, dt);
+
+            var tableDef = builder.gettableDefsfromConfig(si, tableName);
 
             string[] FilterColumns(IEnumerable<string>? columns) =>
             (columns ?? Array.Empty<string>())
@@ -42,19 +45,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 .ToArray();
 
 
-            var resolvedPrimaryKeys = FilterColumns(primaryKeyColumns);
+            var resolvedPrimaryKeys = FilterColumns(tableDef.PKs);
             if (resolvedPrimaryKeys.Length == 0)
             {
                 throw new XFException("Primary key columns must exist in the DataTable.");
             }
 
-            var updateExclusions = FilterColumns(excludeFromUpdate);
-            var insertExclusions = FilterColumns(excludeFromInsert);
+            var updateExclusions = FilterColumns(tableDef.UpdEx);
+            var insertExclusions = FilterColumns(tableDef.InsEx);
 
             using var transaction = _connection.BeginTransaction();
             try
             {
-                var builder = new GBL_SQL_Command_Builder(_connection, tableName, dt);
 
                 builder.SetPrimaryKey(resolvedPrimaryKeys);
 
@@ -85,27 +87,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 sqa.UpdateCommand = null;
                 sqa.DeleteCommand = null;
             }
-        }
-
-
-        public void UpdateTableSimple(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa, string primaryKeyColumn)
-        {
-            // Standard pattern: exclude primary key and common audit columns from updates
-            var excludeFromUpdate = new string[] { primaryKeyColumn, "CreateDate", "CreateUser" };
-            var excludeFromInsert = new string[] { "CustTableID" };
-            BRApi.ErrorLog.LogMessage(si, "Hit Update");
-            UpdateTable(si, tableName, dt, sqa, new[] { primaryKeyColumn }, excludeFromUpdate, excludeFromInsert);
-        }
-
-        public void UpdateTableComposite(SessionInfo si, string tableName, DataTable dt, SqlDataAdapter sqa, params string[] primaryKeyColumns)
-        {
-            // Build exclusion list: all primary keys plus standard audit columns
-            var excludeList = new List<string>(primaryKeyColumns);
-            excludeList.Add("Create_Date");
-            excludeList.Add("Create_User");
-            var excludeFromInsert = new string[] { "Audit" };
-
-            UpdateTable(si, tableName, dt, sqa, primaryKeyColumns, excludeList.ToArray(), excludeFromInsert);
         }
 
         public GBL_SQL_Command_Builder GetCommandBuilder(SessionInfo si, string tableName, DataTable dt)
