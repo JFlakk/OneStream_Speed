@@ -7,3 +7,10 @@
 .onestream-selections.json
 # OneStream authentication tokens
 onestream-token-*
+
+# Build artifacts
+bin/
+obj/
+*.cache
+*.FileListAbsolute.txt
+*.GlobalUsings.g.cs
