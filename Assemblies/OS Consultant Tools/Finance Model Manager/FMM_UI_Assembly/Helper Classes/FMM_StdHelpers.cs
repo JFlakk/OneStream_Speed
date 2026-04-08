@@ -21,6 +21,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
     public class FMM_StdHelpers
     {
+        private const string DefaultCubeWorkspace = "OS Consultant Tools";
+        private const string DefaultCubeSequence = "Run_FMM_Custom_Cube_Calcs";
+        private const string DefaultConsolidateWorkspace = "OS Build Toolkit";
+        private const string DefaultConsolidateSequence = "Run_FMM_Consolidation";
+
         public SessionInfo si;
         public BRGlobals globals;
         public FinanceRulesApi api;
@@ -33,15 +38,30 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string flowValue,
             List<int> models)
         {
+            var cubeName = GetDataRowString(row, "CubeName");
+            var entityName = GetDataRowString(row, "Entity");
             var customSubstVars = new Dictionary<string, string>
             {
-                { "FMM_Cube", GetDataRowString(row, "CubeName") },
-                { "FMM_Entity", $"E#[{GetDataRowString(row, "Entity")}]" },
+                { "FMM_Cube", cubeName },
                 { "FMM_Consol", "C#[Aggregated]" },
                 { "FMM_Scenario", FormatScenarioFilter(scenarioValue) },
                 { "FMM_Time", "T#Pov" },
                 { "FMM_ModelIDs", string.Join(", ", models ?? new List<int>()) }
             };
+
+            if (string.IsNullOrWhiteSpace(cubeName))
+            {
+                BRApi.ErrorLog.LogMessage(si, "FMM calc execution warning: required column 'CubeName' is missing or empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(entityName))
+            {
+                BRApi.ErrorLog.LogMessage(si, "FMM calc execution warning: required column 'Entity' is missing or empty.");
+            }
+            else
+            {
+                customSubstVars["FMM_Entity"] = $"E#[{entityName}]";
+            }
 
             if (!string.IsNullOrWhiteSpace(accountValue) && !accountValue.XFEqualsIgnoreCase("NA"))
             {
@@ -63,8 +83,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             Dictionary<string, string> customSubstVars)
         {
             var calcTypeKey = NormalizeCalcTypeKey(calcType);
-            var workspaceArgKey = $"FMM_{calcTypeKey}_Workspace";
-            var sequenceArgKey = $"FMM_{calcTypeKey}_DM_Sequence";
+            GetCalcConstructArgKeys(calcTypeKey, out string workspaceArgKey, out string sequenceArgKey);
 
             if (!TryResolveCalcConstruct(nameValuePairs, calcType, out string workspaceName, out string sequenceName))
             {
@@ -77,8 +96,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             try
             {
                 var workspaceID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, workspaceName);
-                var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, sequenceName, customSubstVars ?? new Dictionary<string, string>());
-                return taskActivityItem != null;
+                return BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, sequenceName, customSubstVars ?? new Dictionary<string, string>()) != null;
             }
             catch (Exception ex)
             {
@@ -102,8 +120,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
 
             var calcTypeKey = NormalizeCalcTypeKey(calcType);
-            var workspaceArgKey = $"FMM_{calcTypeKey}_Workspace";
-            var sequenceArgKey = $"FMM_{calcTypeKey}_DM_Sequence";
+            GetCalcConstructArgKeys(calcTypeKey, out string workspaceArgKey, out string sequenceArgKey);
 
             if (nameValuePairs != null)
             {
@@ -134,14 +151,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             if (calcTypeKey.XFEqualsIgnoreCase("CUBE"))
             {
-                workspaceName = "OS Consultant Tools";
-                sequenceName = "Run_FMM_Custom_Cube_Calcs";
+                workspaceName = DefaultCubeWorkspace;
+                sequenceName = DefaultCubeSequence;
             }
             else if (calcTypeKey.XFEqualsIgnoreCase("CONSOLIDATE"))
             {
-                workspaceName = "OS Build Toolkit";
-                sequenceName = "Run_FMM_Consolidation";
+                workspaceName = DefaultConsolidateWorkspace;
+                sequenceName = DefaultConsolidateSequence;
             }
+        }
+
+        private static void GetCalcConstructArgKeys(string calcTypeKey, out string workspaceArgKey, out string sequenceArgKey)
+        {
+            workspaceArgKey = $"FMM_{calcTypeKey}_Workspace";
+            sequenceArgKey = $"FMM_{calcTypeKey}_DM_Sequence";
         }
 
         private static string GetDataRowString(DataRow row, string columnName)

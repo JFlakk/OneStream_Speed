@@ -182,11 +182,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                                     flowValue,
                                     models);
 
-                                _ = stdHelpers.ExecuteConfiguredCalcConstruct(
+                                var executed = stdHelpers.ExecuteConfiguredCalcConstruct(
                                     si,
                                     args.NameValuePairs,
                                     calcType,
                                     customSubstVars_Dict);
+
+                                if (!executed)
+                                {
+                                    throw new XFException(si, $"Calc construct '{calcType}' failed to execute due to missing or invalid configuration.");
+                                }
                             }
 
                         }
