@@ -62,15 +62,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             string calcType,
             Dictionary<string, string> customSubstVars)
         {
+            var calcTypeKey = NormalizeCalcTypeKey(calcType);
+            var workspaceArgKey = $"FMM_{calcTypeKey}_Workspace";
+            var sequenceArgKey = $"FMM_{calcTypeKey}_DM_Sequence";
+
             if (!TryResolveCalcConstruct(nameValuePairs, calcType, out string workspaceName, out string sequenceName))
             {
-                BRApi.ErrorLog.LogMessage(si, $"No configured workspace/sequence found for calc construct '{calcType}'.");
+                BRApi.ErrorLog.LogMessage(
+                    si,
+                    $"No configured workspace/sequence found for calc construct '{calcType}'. Expected args: '{workspaceArgKey}' and '{sequenceArgKey}'.");
                 return false;
             }
 
-            var workspaceID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, workspaceName);
-            BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, sequenceName, customSubstVars ?? new Dictionary<string, string>());
-            return true;
+            try
+            {
+                var workspaceID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, workspaceName);
+                var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, sequenceName, customSubstVars ?? new Dictionary<string, string>());
+                return taskActivityItem != null;
+            }
+            catch (Exception ex)
+            {
+                BRApi.ErrorLog.LogMessage(si, $"Failed to execute calc construct '{calcType}' via sequence '{sequenceName}' in workspace '{workspaceName}'. Error: {ex.Message}");
+                return false;
+            }
         }
 
         public bool TryResolveCalcConstruct(

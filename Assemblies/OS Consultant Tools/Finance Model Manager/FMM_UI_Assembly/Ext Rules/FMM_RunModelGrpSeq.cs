@@ -182,16 +182,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                                     flowValue,
                                     models);
 
-                                var executed = stdHelpers.ExecuteConfiguredCalcConstruct(
+                                _ = stdHelpers.ExecuteConfiguredCalcConstruct(
                                     si,
                                     args.NameValuePairs,
                                     calcType,
                                     customSubstVars_Dict);
-
-                                if (!executed)
-                                {
-                                    BRApi.ErrorLog.LogMessage(si, $"Skipped calc construct '{calcType}' because no DM configuration was found.");
-                                }
                             }
 
                         }
