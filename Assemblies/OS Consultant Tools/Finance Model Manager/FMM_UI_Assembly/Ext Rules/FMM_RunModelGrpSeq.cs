@@ -84,6 +84,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
 
                 // Helper class
                 var calcHelper = new DashboardExtender.FMM_Solution_Calc_Helper.MainClass();
+                var stdHelpers = new global::Workspace.__WsNamespacePrefix.__WsAssemblyName.FMM_StdHelpers();
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
 
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -172,73 +173,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.Extender.F
                                 // Process table logic
                                 calcHelper.Process_TableModel();
                             }
-                            else if (calcType == "Cube")
+                            else
                             {
-                                var workspace_ID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Consultant Tools");
+                                var customSubstVars_Dict = stdHelpers.BuildModelCalcSubstVars(
+                                    row,
+                                    scenarioValue,
+                                    accountValue,
+                                    flowValue,
+                                    models);
 
-                                var customSubstVars_Dict = new Dictionary<string, string>
+                                var executed = stdHelpers.ExecuteConfiguredCalcConstruct(
+                                    si,
+                                    args.NameValuePairs,
+                                    calcType,
+                                    customSubstVars_Dict);
+
+                                if (!executed)
                                 {
-                                    { "FMM_Cube", row["CubeName"].ToString()},
-                                    { "FMM_Entity", "E#[" + row["Entity"].ToString() +"]"},
-                                    { "FMM_Consol", "C#[Aggregated]"},
-                                    { "FMM_Scenario", scenarioValue},
-                                    { "FMM_Time", "T#Pov"}, // TODO: Figure out time from associated scenario or custom table
-									{ "FMM_ModelIDs" , string.Join(", ", models)}
-                                };
-
-                                //BRApi.ErrorLog.LogMessage(si, "cube name: " + row["CubeName"].ToString());
-
-                                var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspace_ID, "Run_FMM_Custom_Cube_Calcs", customSubstVars_Dict);
-                            }
-                            else if (calcType == "Consolidate")
-                            {
-                                var workspace_ID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Build Toolkit");
-                                var customSubstVars_Dict = new Dictionary<string, string>
-                                {
-                                    { "FMM_Cube", row["CubeName"].ToString()},
-                                    { "FMM_Entity", "E#[" + row["Entity"].ToString() +"]"},
-                                    { "FMM_Consol", "C#[Aggregated]"},  //Grab Consol approach from Cube Config
-									{ "FMM_Scenario", "S#[" + scenarioValue + "]"},
-                                    { "FMM_Time", "T#Pov"}, // TODO: Figure out time from associated scenario or custom table
-									{ "FMM_ModelIDs" , string.Join(", ", models)}
-                                };
-                                var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspace_ID, "Run_FMM_Consolidation", customSubstVars_Dict);
-                            }
-                            else if (calcType == "BR_Table_to_Cube")
-                            {
-                                var workspace_ID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Build Toolkit");
-                                var customSubstVars_Dict = new Dictionary<string, string>
-                                {
-
-                                };
-                                var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspace_ID, "test", customSubstVars_Dict);
-                            }
-                            else if (calcType == "Import_Table_to_Cube")
-                            {
-                                var workspace_ID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Build Toolkit");
-                                var customSubstVars_Dict = new Dictionary<string, string>
-                                {
-
-                                };
-                                var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspace_ID, "test", customSubstVars_Dict);
-                            }
-                            else if (calcType == "Complete_WF")
-                            {
-                                var workspace_ID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Build Toolkit");
-                                var customSubstVars_Dict = new Dictionary<string, string>
-                                {
-
-                                };
-                                var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspace_ID, "test", customSubstVars_Dict);
-                            }
-                            else if (calcType == "Revert_WF")
-                            {
-                                var workspace_ID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Build Toolkit");
-                                var customSubstVars_Dict = new Dictionary<string, string>
-                                {
-
-                                };
-                                var taskActivityItem = BRApi.Utilities.ExecuteDataMgmtSequence(si, workspace_ID, "test", customSubstVars_Dict);
+                                    BRApi.ErrorLog.LogMessage(si, $"Skipped calc construct '{calcType}' because no DM configuration was found.");
+                                }
                             }
 
                         }

@@ -26,6 +26,135 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public FinanceRulesApi api;
         public FinanceRulesArgs args;
 
+        public Dictionary<string, string> BuildModelCalcSubstVars(
+            DataRow row,
+            string scenarioValue,
+            string accountValue,
+            string flowValue,
+            List<int> models)
+        {
+            var customSubstVars = new Dictionary<string, string>
+            {
+                { "FMM_Cube", GetDataRowString(row, "CubeName") },
+                { "FMM_Entity", $"E#[{GetDataRowString(row, "Entity")}]" },
+                { "FMM_Consol", "C#[Aggregated]" },
+                { "FMM_Scenario", FormatScenarioFilter(scenarioValue) },
+                { "FMM_Time", "T#Pov" },
+                { "FMM_ModelIDs", string.Join(", ", models ?? new List<int>()) }
+            };
+
+            if (!string.IsNullOrWhiteSpace(accountValue) && !accountValue.XFEqualsIgnoreCase("NA"))
+            {
+                customSubstVars["FMM_Account"] = accountValue;
+            }
+
+            if (!string.IsNullOrWhiteSpace(flowValue) && !flowValue.XFEqualsIgnoreCase("NA"))
+            {
+                customSubstVars["FMM_Flow"] = flowValue;
+            }
+
+            return customSubstVars;
+        }
+
+        public bool ExecuteConfiguredCalcConstruct(
+            SessionInfo si,
+            NameValuePairs nameValuePairs,
+            string calcType,
+            Dictionary<string, string> customSubstVars)
+        {
+            if (!TryResolveCalcConstruct(nameValuePairs, calcType, out string workspaceName, out string sequenceName))
+            {
+                BRApi.ErrorLog.LogMessage(si, $"No configured workspace/sequence found for calc construct '{calcType}'.");
+                return false;
+            }
+
+            var workspaceID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, workspaceName);
+            BRApi.Utilities.ExecuteDataMgmtSequence(si, workspaceID, sequenceName, customSubstVars ?? new Dictionary<string, string>());
+            return true;
+        }
+
+        public bool TryResolveCalcConstruct(
+            NameValuePairs nameValuePairs,
+            string calcType,
+            out string workspaceName,
+            out string sequenceName)
+        {
+            workspaceName = string.Empty;
+            sequenceName = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(calcType))
+            {
+                return false;
+            }
+
+            var calcTypeKey = NormalizeCalcTypeKey(calcType);
+            var workspaceArgKey = $"FMM_{calcTypeKey}_Workspace";
+            var sequenceArgKey = $"FMM_{calcTypeKey}_DM_Sequence";
+
+            if (nameValuePairs != null)
+            {
+                workspaceName = nameValuePairs.XFGetValue(workspaceArgKey, string.Empty);
+                sequenceName = nameValuePairs.XFGetValue(sequenceArgKey, string.Empty);
+            }
+
+            if (string.IsNullOrWhiteSpace(workspaceName) || string.IsNullOrWhiteSpace(sequenceName))
+            {
+                GetDefaultCalcConstructConfig(calcTypeKey, out string defaultWorkspace, out string defaultSequence);
+                workspaceName = string.IsNullOrWhiteSpace(workspaceName) ? defaultWorkspace : workspaceName;
+                sequenceName = string.IsNullOrWhiteSpace(sequenceName) ? defaultSequence : sequenceName;
+            }
+
+            return !string.IsNullOrWhiteSpace(workspaceName) && !string.IsNullOrWhiteSpace(sequenceName);
+        }
+
+        private static string NormalizeCalcTypeKey(string calcType)
+        {
+            var normalized = calcType.Trim().Replace(" ", "_").Replace("-", "_");
+            return normalized.ToUpperInvariant();
+        }
+
+        private static void GetDefaultCalcConstructConfig(string calcTypeKey, out string workspaceName, out string sequenceName)
+        {
+            workspaceName = string.Empty;
+            sequenceName = string.Empty;
+
+            if (calcTypeKey.XFEqualsIgnoreCase("CUBE"))
+            {
+                workspaceName = "OS Consultant Tools";
+                sequenceName = "Run_FMM_Custom_Cube_Calcs";
+            }
+            else if (calcTypeKey.XFEqualsIgnoreCase("CONSOLIDATE"))
+            {
+                workspaceName = "OS Build Toolkit";
+                sequenceName = "Run_FMM_Consolidation";
+            }
+        }
+
+        private static string GetDataRowString(DataRow row, string columnName)
+        {
+            if (row == null || string.IsNullOrWhiteSpace(columnName) || !row.Table.Columns.Contains(columnName) || row[columnName] == DBNull.Value)
+            {
+                return string.Empty;
+            }
+
+            return row[columnName].ToString();
+        }
+
+        private static string FormatScenarioFilter(string scenarioValue)
+        {
+            if (string.IsNullOrWhiteSpace(scenarioValue))
+            {
+                return string.Empty;
+            }
+
+            if (scenarioValue.StartsWith("S#", StringComparison.OrdinalIgnoreCase))
+            {
+                return scenarioValue;
+            }
+
+            return $"S#[{scenarioValue}]";
+        }
+
         #region "Component Selection Changed Helpers"     
         public XFSelectionChangedTaskResult Lock_Workflow(SessionInfo si, BRGlobals globals, object api, DashboardExtenderArgs args)
         {
