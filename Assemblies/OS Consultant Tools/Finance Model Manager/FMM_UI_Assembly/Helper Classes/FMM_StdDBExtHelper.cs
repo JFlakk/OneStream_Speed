@@ -19,8 +19,8 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-	public class FMM_Run_Calcs
-	{
+    public class FMM_StdDBExtHelper
+    {
         public object Test(SessionInfo si)
         {
             try
@@ -32,5 +32,5 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 throw new XFException(si, ex);
             }
         }
-	}
+    }
 }

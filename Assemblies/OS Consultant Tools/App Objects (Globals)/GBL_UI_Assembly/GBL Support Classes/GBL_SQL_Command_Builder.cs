@@ -56,6 +56,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             var tableDef = new Dictionary<string, (string[] PKs, string[] UpdEx, string[] InsEx)>(StringComparer.OrdinalIgnoreCase)
             {
                 { "FMM_CustTable", (new[] { "CustTableID" }, new[] { "CustTableID", "CreateDate", "CreateUser" }, new[] { "CustTableID" }) },
+                { "FMM_CustTableDef", (new[] { "CustTableColID" }, new[] { "CustTableColID", "CustTableID", "CreateDate", "CreateUser" }, new[] { "CustTableColID" }) },
                 { "FMM_CustTableFK", (new[] { "CustTableFKID" }, new[] { "CustTableFKID", "CreateDate" }, new[] { "CustTableFKID" }) }
             };
 
