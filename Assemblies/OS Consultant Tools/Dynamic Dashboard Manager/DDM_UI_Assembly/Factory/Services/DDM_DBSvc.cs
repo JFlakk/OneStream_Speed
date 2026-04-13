@@ -20,7 +20,7 @@ using OneStreamWorkspacesApi.V820;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-    public class DDM_DB_Svc : IWsasDashboardV800
+    public class DDM_DBSvc : IWsasDashboardV800
     {
         public XFLoadDashboardTaskResult ProcessLoadDashboardTask(SessionInfo si, BRGlobals brGlobals, DashboardWorkspace workspace, DashboardExtenderArgs args)
         {

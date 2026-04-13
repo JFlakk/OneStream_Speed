@@ -66,6 +66,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 {
                     return Get_CalcDB();
                 }
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_AddVisible"))
+                {
+                    return Get_AddVisible();
+                }
                 return null;
 
             }
@@ -142,17 +146,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             var unitID = args.NameValuePairs.XFGetValue("UnitID", "0");
             var acctID = args.NameValuePairs.XFGetValue("AcctID", "0");
             var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
-            if (currDB.XFEqualsIgnoreCase("FMM_UnitAcctConfig_C2R2"))
+            if (currDB.XFEqualsIgnoreCase("FMM_UnitAcctConfig_C2R2") || currDB.XFEqualsIgnoreCase("FMM_UnitAcctConfig_C2R2C2"))
             {
                 var isUpdate = acctConfigType.XFEqualsIgnoreCase("Update");
                 int.TryParse(unitID, out var intUnitID);
 
                 if (isUpdate && intUnitID == 0)
                 {
-                    return "FMM_UnitAcctConfig_C2R2_Blank";
+                    return $"{currDB}_Blank";
                 }
 
-                return "FMM_UnitAcctConfig_C2R2_AddUpdate";
+                return $"{currDB}_AddUpdate";
             }
             else
             {
@@ -164,6 +168,47 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 }
 
                 return $"{currDB}_Add";
+            }
+            return currDB;
+        }
+
+        private string Get_UIConfigDB()
+        {
+            var CalcAddUpdate = args.NameValuePairs.XFGetValue("CalcAddUpdate", "NA");
+            var CalcType = args.NameValuePairs.XFGetValue("CalcType", "NA");
+            var CalcID = args.NameValuePairs.XFGetValue("CalcID", "0");
+            var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
+            if (currDB.XFEqualsIgnoreCase("FMM_Model_C2C2"))
+            {
+                var isUpdate = CalcAddUpdate.XFEqualsIgnoreCase("Update");
+                int.TryParse(CalcID, out var calcId);
+
+                if (isUpdate && calcId == 0)
+                {
+                    return "FMM_Model_C2C2_Blank";
+                }
+
+                return "FMM_Model_C2C2_AddUpdate";
+            }
+            return currDB;
+        }
+        private string Get_ApprConfigDB()
+        {
+            var CalcAddUpdate = args.NameValuePairs.XFGetValue("CalcAddUpdate", "NA");
+            var CalcType = args.NameValuePairs.XFGetValue("CalcType", "NA");
+            var CalcID = args.NameValuePairs.XFGetValue("CalcID", "0");
+            var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
+            if (currDB.XFEqualsIgnoreCase("FMM_Model_C2C2"))
+            {
+                var isUpdate = CalcAddUpdate.XFEqualsIgnoreCase("Update");
+                int.TryParse(CalcID, out var calcId);
+
+                if (isUpdate && calcId == 0)
+                {
+                    return "FMM_Model_C2C2_Blank";
+                }
+
+                return "FMM_Model_C2C2_AddUpdate";
             }
             return currDB;
         }
@@ -262,6 +307,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             return null;
         }
 
+        private string Get_AddVisible()
+        {
+            return "False";
+        }
         public class ColumnConfig
         {
             public string ColumnName { get; set; }

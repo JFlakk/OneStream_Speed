@@ -46,6 +46,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     var col = args.NameValuePairs.XFGetValue("col");
                     return Get_DDM_ColFormat(curr_TED, curr_DB, col);
                 }
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_MenuDB"))
+                {
+                    return Get_MenuDB();
+                }
                 else if (args.FunctionName.XFEqualsIgnoreCase("Get_DDM_Config_Menu_Layout_DB"))
                 {
                     return this.Get_DDM_Config_Menu_Layout_DB();
@@ -58,6 +62,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 {
                     BRApi.ErrorLog.LogMessage(si, "hit");
                     return this.Get_DDM_Config_IsVisible();
+                }
+
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_DDM_Config_IsVisibleHdr"))
+                {
+
+                    return this.Get_DDM_Config_IsVisibleHdr();
                 }
 
                 return null;
@@ -103,6 +113,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             return null;
         }
 
+        private string Get_MenuDB()
+        {
+            var CalcAddUpdate = args.NameValuePairs.XFGetValue("CalcAddUpdate", "NA");
+            var CalcType = args.NameValuePairs.XFGetValue("CalcType", "NA");
+            var CalcID = args.NameValuePairs.XFGetValue("CalcID", "0");
+            var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
+            if (currDB.XFEqualsIgnoreCase("FMM_Model_C2C2"))
+            {
+                var isUpdate = CalcAddUpdate.XFEqualsIgnoreCase("Update");
+                int.TryParse(CalcID, out var calcId);
+
+                if (isUpdate && calcId == 0)
+                {
+                    return "FMM_Model_C2C2_Blank";
+                }
+
+                return "FMM_Model_C2C2_AddUpdate";
+            }
+            return currDB;
+        }
+
         public string Get_DDM_Config_Menu_Layout_DB()
         {
             var OptionType = args.CustomSubstVars.XFGetValue("DL_DDM_Layout_Type", "0").XFConvertToInt();
@@ -121,7 +152,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 
         public string Get_DDM_Config_Hdr_Ctrl_DB()
         {
-            var hdrCtrlType = args.CustomSubstVars.XFGetValue("DL_DDM_Hdr_Ctrl_Option_Type", "0").XFConvertToInt();
+            var hdrCtrlType = args.CustomSubstVars.XFGetValue("DL_DDM_Hdr_Type", "0").XFConvertToInt();
             var configHelpers = new DDM_ConfigHelpers();
             var hdrCtrlConfig = configHelpers.Get_Hdr_Ctrl_Option_Type_Config(hdrCtrlType);
             if (hdrCtrlConfig != null)
@@ -163,6 +194,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     return string.Empty;
             }
         }
+
+        public string Get_DDM_Config_IsVisibleHdr()
+        {
+            var fltrHdrType = args.NameValuePairs.XFGetValue("HdrType", "NA");
+
+            return fltrHdrType switch
+            {
+                "1" => "True",
+                "2" or "3" or "4" => "False",
+                _ => "True" // Default case
+            };
+        }
+
+
         public class ColumnConfig
         {
             public string ColumnName { get; set; }
@@ -192,10 +237,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
         {
             public static readonly Dictionary<string, ColumnConfig[]> ConfigColumns = new Dictionary<string, ColumnConfig[]>
             {
-                { "DDM_WFP_Config", new ColumnConfig[]
+                { "DDM_ConfigWFP", new ColumnConfig[]
                     {
                         new ColumnConfig { ColumnName = "DDM_ConfigID", IsVisible = false, AllowUpdates = false},
-                        new ColumnConfig { ColumnName = "ProfileKey", Description = "[Profile Name]", IsVisible = true, AllowUpdates = false, DefaultValue = "|!IV_DDM_trv_WFP!|", ParameterName = "BL_DDM_RootWFP" },
+                        new ColumnConfig { ColumnName = "ProfileKey", Description = "[Profile Name]", IsVisible = true, AllowUpdates = false, DefaultValue = "|!IV_DDM_trv_WFP!|", ParameterName = "BL_DDM_AllWFP" },
                         new ColumnConfig { ColumnName = "ProfileStepType", Description = "[Profile Step Type]", IsVisible = true, AllowUpdates = false, ParameterName = "DL_DDM_Profile_Step_Type" },
                         new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
                         new ColumnConfig { ColumnName = "CreateDate", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },

@@ -21,6 +21,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
     public class GBL_Helpers
     {
+        public static void DictKeyAddUpdate(Dictionary<string, string> dict, string key, string value)
+        {
+            if (dict == null)
+            {
+                throw new ArgumentNullException(nameof(dict));
+            }
+
+            if (dict.ContainsKey(key))
+            {
+                dict[key] = value;
+            }
+            else
+            {
+                dict.Add(key, value);
+            }
+        }
+
         public void UpdateCustomSubstVar(ref XFSelectionChangedTaskResult result, string key, string value)
         {
             if (result.ModifiedCustomSubstVars.ContainsKey(key))

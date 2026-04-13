@@ -76,14 +76,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
                 //args.CustomSubstVars.
                 var wfUserPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
-                var dt = new DataTable("DDM_Config_Menu");
+                // BRApi.ErrorLog.LogMessage(si, $"Here {wfUserPk.ProfileKey}");
+                var dt = new DataTable("DDM_ConfigMenu");
                 // Define the SQL Statement
-                var sql = @"Select Menu.DDM_Menu_ID, Menu.Name
+                var sql = @"Select Menu.DDM_MenuID, Menu.Name
 		                    FROM DDM_Config Cnfg
-		                    JOIN DDM_Config_Menu_Layout Menu
-		                    ON Cnfg.DDM_Config_ID = Menu.DDM_Config_ID
-		                    WHERE Cnfg.Profile_Key = @ProfileKey
-		                    ORDER BY Sort_Order";
+		                    JOIN DDM_ConfigMenuLayout Menu
+		                    ON Cnfg.DDM_ConfigID = Menu.DDM_ConfigID
+		                   WHERE Cnfg.ProfileKey = @ProfileKey
+		                    ORDER BY SortOrder";
 
                 // Return the DataTable
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -101,6 +102,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
 
                     sql_GBL_Get_DataSets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
+
                 return dt;
             }
             catch (Exception ex)

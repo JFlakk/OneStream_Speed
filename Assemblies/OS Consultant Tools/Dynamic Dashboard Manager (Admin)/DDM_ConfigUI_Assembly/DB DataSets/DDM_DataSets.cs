@@ -18,9 +18,6 @@ using OneStream.Stage.Engine;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardDataSet.DDM_DataSets
 {
-    /// <summary>
-    /// MainClass provides data retrieval methods for Dynamic Dashboard Manager datasets.
-    /// </summary>
     public class MainClass
     {
         #region "Global Variables"
@@ -30,10 +27,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         private DashboardDataSetArgs args;
         #endregion
 
-        /// <summary>
-        /// Main entry point for the Dashboard DataSet business rule.
-        /// Handles requests for dataset names and data retrieval based on function type and dataset name.
-        /// </summary>
         public object Main(SessionInfo si, BRGlobals globals, object api, DashboardDataSetArgs args)
         {
             try
@@ -47,15 +40,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     case DashboardDataSetFunctionType.GetDataSetNames:
                         break;
                     case DashboardDataSetFunctionType.GetDataSet:
-                        // Return WF Root Profiles
-                        if (args.DataSetName.XFEqualsIgnoreCase("Get_Root_WFProfiles"))
+                        if (args.DataSetName.XFEqualsIgnoreCase("Get_RootWFP"))
                         {
-                            return Get_Root_WFProfiles();
+                            return Get_RootWFP();
                         }
-                        // Return WF Profile Hierarchy for selected root profile
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFProfile_TreeView"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFP_ScenTypes"))
                         {
-                            return Get_WFProfile_TreeView();
+                            return Get_WFP_ScenTypes();
+                        }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFP_trv"))
+                        {
+                            return Get_WFP_trv();
                         }
                         // Return WF Profile Hierarchy for selected root profile
                         else if (args.DataSetName.XFEqualsIgnoreCase("Get_WSMU_TreeView"))
@@ -90,10 +85,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return Get_Config_Hdr_Ctrls();
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("Get_WFP_ScenTypes"))
-                        {
-                            return Get_WFP_ScenTypes();
-                        }
                         break;
                 }
                 return null;
@@ -106,10 +97,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
         #region "Get WF Profiles"
-        /// <summary>
-        /// Retrieves the root workflow profiles (HierarchyLevel = 1, not templates).
-        /// </summary>
-        private DataTable Get_Root_WFProfiles()
+        private DataTable Get_RootWFP()
         {
             try
             {
@@ -124,7 +112,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
                 {
                     DataTable dt = BRApi.Database.ExecuteSql(dbConnApp, sql, false);
-                    dt.TableName = "Root_WFProfiles";
+                    dt.TableName = "RootWFP";
                     return dt;
                 }
             }
@@ -141,7 +129,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var dt = new DataTable();
                 dt.Columns.Add("Key", typeof(int));
                 dt.Columns.Add("Value", typeof(string));
-                var topWFP = "Army_RMW_Consol_CMD_PGM";
+                var topWFP = args.NameValuePairs.XFGetValue("topWFP", String.Empty);
                 var cubeList = BRApi.Finance.Cubes.GetTopLevelCubesForWorkflow(si);
 
                 foreach (Cube topCube in cubeList)
@@ -168,14 +156,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         /// <summary>
         /// Retrieves the workflow profile hierarchy as a tree view for the selected root profile.
         /// </summary>
-        private DataSet Get_WFProfile_TreeView()
+        private DataSet Get_WFP_trv()
         {
             try
             {
                 var hierarchy = new XFTreeItemCollection();
                 var hierarchy_mbrs = new List<XFTreeItem>();
                 var parent_child = new Dictionary<string, string>();
-                string rootProfileName = args.CustomSubstVars.XFGetValue("BL_DDM_Root_WFP");
+                string rootProfileName = args.CustomSubstVars.XFGetValue("BL_DDM_RootWFP");
 
                 var dt = new DataTable();
 
@@ -213,13 +201,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         parentProf.ProfileName as ParentProfileName, 
                         rcte.HierarchyLevel,
                         rcte.HierarchyIndex,
-                        DDM.DDM_Config_ID
+                        DDM.DDM_ConfigID
                     FROM 
                         RecursiveCTE rcte
                     LEFT JOIN 
                         WorkflowProfileHierarchy parentProf ON rcte.ParentProfileKey = parentProf.ProfileKey
                     LEFT JOIN
-                        DDM_Config DDM ON DDM.Profile_Key = rcte.ProfileKey
+                        DDM_Config DDM ON DDM.ProfileKey = rcte.ProfileKey
                     ORDER BY 
                         rcte.HierarchyLevel DESC, 
                         rcte.HierarchyIndex";
@@ -248,7 +236,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     string parentprofileName = row["ParentProfileName"].ToString();
                     string parentprofileKey = row["ParentProfileKey"].ToString();
                     var Bold_WFProfile = true;
-                    if (row["DDM_Config_ID"] == DBNull.Value)
+                    if (row["DDM_ConfigID"] == DBNull.Value)
                     {
                         Bold_WFProfile = false;
                     }
@@ -576,10 +564,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var ddm_Config_ID = args.NameValuePairs.XFGetValue("IV_DDM_Config_ID", "0");
                 var ddm_Config_Menu_DT = new DataTable("DDM_Config_Menu");
                 // Define the SQL Statement
-                var sql = @"SELECT CONCAT(Sort_Order,'-',Name) as Name, DDM_Menu_ID as Value
-							FROM DDM_Config_Menu_Layout
-							WHERE DDM_Config_ID = @DDM_Config_ID
-							ORDER BY Sort_Order";
+                var sql = @"SELECT CONCAT(SortOrder,'-',Name) as Name, DDM_MenuID as Value
+							FROM DDM_ConfigMenuLayout
+							WHERE DDM_ConfigID = @DDM_Config_ID
+							ORDER BY SortOrder";
 
                 // Return the DataTable
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);

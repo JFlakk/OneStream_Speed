@@ -19,8 +19,8 @@ using OneStreamWorkspacesApi.V800;
 
 namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
-	public class DDM_DynDB_Svc : IWsasDynamicDashboardsV800
-	{
+    public class DDM_DynDBSvc : IWsasDynamicDashboardsV800
+    {
         public WsDynamicDashboardEx GetEmbeddedDynamicDashboard(SessionInfo si, IWsasDynamicDashboardsApiV800 api, DashboardWorkspace workspace, DashboardMaintUnit maintUnit,
             WsDynamicComponentEx parentDynamicComponentEx, Dashboard storedDashboard, Dictionary<string, string> customSubstVarsAlreadyResolved)
         {
@@ -28,23 +28,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-					var SA_DB = customSubstVarsAlreadyResolved.XFGetValue("StandAlone_DB","NA");
-					foreach (KeyValuePair<string, string> substvar in customSubstVarsAlreadyResolved)
-        			{
-						BRApi.ErrorLog.LogMessage(si,$"Hit {substvar.Key} - {substvar.Value}");
-					}
-					BRApi.ErrorLog.LogMessage(si,$"Hit Dyn DB Svc - {SA_DB} - {parentDynamicComponentEx.AncestorNameSuffix} - {customSubstVarsAlreadyResolved.Count}");
-		            return storedDashboard.Name switch
-		            {
-						// configurable header items
-		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.get_DynamicHdr(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),	
-		                // Dynamic Content
-		                "1a_DDM_App_Content_DB" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
-                        "1a_DDM_App_Content_CV" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+                    var SA_DB = customSubstVarsAlreadyResolved.XFGetValue("StandAlone_DB", "NA");
+                    //					foreach (KeyValuePair<string, string> substvar in customSubstVarsAlreadyResolved)
+                    //        			{
+                    //						BRApi.ErrorLog.LogMessage(si,$"Hit {substvar.Key} - {substvar.Value}");
+                    //					}
 
-		                _ => api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject)
-		            };
-				}
+                    BRApi.ErrorLog.LogMessage(si, $"Hit Dyn DB Svc - {SA_DB} - {parentDynamicComponentEx.AncestorNameSuffix} - {customSubstVarsAlreadyResolved.Count}");
+                    BRApi.ErrorLog.LogMessage(si, $"DEBUG: Switching on Dashboard Name: [{storedDashboard.Name}]");
+                    return storedDashboard.Name switch
+                    {
+                        // configurable header items
+                        //"DDM_App_Header" 
+                        "DDM_App_Hdr_ConfigItems_C2" => DDM_Header.get_DynamicHdr(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+                        // Dynamic Content
+                        "DDM_App_Content_DB" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+                        "DDM_App_Content_CV" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+                        "DDM_App_Content_1L_DB" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+
+                        _ => api.GetEmbeddedDynamicDashboard(si, workspace, parentDynamicComponentEx, storedDashboard, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject)
+                    };
+                }
 
                 return null;
             }
@@ -59,19 +63,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         {
             try
             {
+                BRApi.ErrorLog.LogMessage(si, $"Hit Get Dyn Components {dynamicDashboardEx.DynamicDashboard.Name.ToString()}");
                 if (api != null)
                 {
-		            return dynamicDashboardEx.DynamicDashboard.BasedOnName switch
-		            {
-		                "0b_DDM_App_Header_ConfigItems" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		                //"0b2_DDM_App_Header_Config_Btn" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),		                
-						// Dynamic Content
-		                "1a_DDM_App_Content_DB" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-		                "1a_DDM_App_Content_CV" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
-						
-		                _ => api.GetDynamicComponentsForDynamicDashboard(si, workspace, dynamicDashboardEx, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters)
-		            };
-				}
+                    return dynamicDashboardEx.DynamicDashboard.BasedOnName switch
+                    {
+                        //"0b_DDM_App_Header_ConfigItems" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+                        // "0b2_DDM_App_Header_Config_Btn" 
+                        "DDM_App_Hdr_ConfigItems_C2" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+                        // Dynamic Content
+                        "DDM_App_Content_DB" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+                        "DDM_App_Content_CV" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+
+                        _ => api.GetDynamicComponentsForDynamicDashboard(si, workspace, dynamicDashboardEx, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters)
+                    };
+                }
 
                 return null;
             }
@@ -124,7 +130,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    return api.GetDynamicParametersForDynamicComponent(si, workspace, dynamicComponentEx,string.Empty,dynamicComponentEx.TemplateSubstVars, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
+                    return api.GetDynamicParametersForDynamicComponent(si, workspace, dynamicComponentEx, string.Empty, dynamicComponentEx.TemplateSubstVars, TriStateBool.TrueValue, WsDynamicItemStateType.MinimalWithTemplateParameters);
                 }
 
                 return null;
@@ -134,5 +140,5 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 throw new XFException(si, ex);
             }
         }
-	}
+    }
 }

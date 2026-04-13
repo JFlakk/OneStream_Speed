@@ -137,6 +137,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
 						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "Audit" } } }
 					}
+				},
+				[SaveType.View] = new CustTableConfig
+				{
+					ParameterMappings = new()
+					{
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTable_Name", "Name" } } },
+						{ 1, new Dictionary<string, string> { { "DL_FMM_CustTable_Type", "Type" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CustTable_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CustTable_Audit", "Audit" } } }
+					}
 				}
 			};
 		}
@@ -217,7 +227,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		}
 		#endregion
 		#region "Validation Config"
-		 public class ValConfig
+		public class ValConfig
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -548,6 +558,21 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 			return null;
 		}
+
+		public static CustTableConfig Get_CustTableSaveType(string savetypeValue)
+		{
+			if (string.IsNullOrWhiteSpace(savetypeValue) || !Enum.TryParse<SaveType>(savetypeValue, out var saveType))
+			{
+				return null;
+			}
+
+			if (CustTableConfigRegistry.Configs.TryGetValue(saveType, out var config))
+			{
+				return config;
+			}
+			return null;
+		}
+
 		public static ModelConfig Get_ModelSaveType(string savetypeValue)
 		{
 			if (string.IsNullOrWhiteSpace(savetypeValue) || !Enum.TryParse<SaveType>(savetypeValue, out var saveType))
@@ -695,76 +720,95 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					foreach (var kvp in mapping)
 					{
 						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
-						SetOrAddDictEntry(substVars, kvp.Key, value);
+						GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
 					}
 				}
 			}
-		}
-
-		private static void SetOrAddDictEntry(Dictionary<string, string> dict, string key, string value)
-		{
-			if (dict.ContainsKey(key))
-				dict[key] = value;
-			else
-				dict.Add(key, value);
 		}
 
 		public static void SetCustTableParams(SessionInfo si, Dictionary<string, string> substVars)
 		{
-			var cubeIDStr = substVars.ContainsKey("IV_FMM_CubeID") ? substVars["IV_FMM_CubeID"] : "0";
-			var cubeID = 0;
-			Int32.TryParse(cubeIDStr, out cubeID);
-			BRApi.ErrorLog.LogMessage(si, $"Hit {cubeIDStr} - {substVars["IV_FMM_CubeConfig_AddUpdate"]}");
+			if (!Int32.TryParse(substVars.GetValueOrDefault("BL_FMM_CustTableID", substVars.GetValueOrDefault("IV_FMM_CustTableID", "0")), out var custTableID))
+			{
+				custTableID = 0;
+			}
 
-			var cubeConfig_DT = new DataTable("FMM_CubeConfig");
+			BRApi.ErrorLog.LogMessage(si, $"Hit CustTable {custTableID} - {substVars.GetValueOrDefault("IV_FMM_CustTable_AddUpdate", string.Empty)}");
+
+			var custTable_DT = new DataTable("FMM_CustTable");
 
 			try
 			{
 				using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
+				using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
 				{
-					using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
-					{
-						var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-						var sqa = new SqlDataAdapter();
-						var sql = "SELECT * FROM FMM_CubeConfig WHERE CubeID = @CubeID";
-						var sqlparams = new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = cubeID } };
+					var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+					var sqa = new SqlDataAdapter();
+					var sql = "SELECT * FROM FMM_CustTable WHERE CustTableID = @CustTableID";
+					var sqlparams = new[] { new SqlParameter("@CustTableID", SqlDbType.Int) { Value = custTableID } };
 
-						sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cubeConfig_DT, sql, sqlparams);
+					sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, custTable_DT, sql, sqlparams);
+				}
+			}
+			catch (Exception ex)
+			{
+				BRApi.ErrorLog.LogMessage(si, $"Error loading custom table config: {ex.Message}");
+			}
+
+			if (CustTableConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
+			{
+				var dataRow = custTable_DT.Rows.Count > 0 ? custTable_DT.Rows[0] : null;
+
+				foreach (var mapping in config.ParameterMappings.Values)
+				{
+					foreach (var kvp in mapping)
+					{
+						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
+						GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
 					}
 				}
 			}
-			catch (Exception ex) { }
+		}
 
-			Action<string, string> setVar = (key, val) =>
+		public static void SetModelParams(SessionInfo si, Dictionary<string, string> substVars)
+		{
+			if (!Int32.TryParse(substVars.GetValueOrDefault("IV_FMM_ModelID", "0"), out var modelID))
 			{
-				if (substVars.ContainsKey(key)) { substVars[key] = val; }
-				else { substVars.Add(key, val); }
-			};
+				modelID = 0;
+			}
 
-			if (cubeConfig_DT.Rows.Count > 0)
+			BRApi.ErrorLog.LogMessage(si, $"Hit Model {modelID} - {substVars.GetValueOrDefault("IV_FMM_Model_AddUpdate", string.Empty)}");
+
+			var model_DT = new DataTable("FMM_Models");
+
+			try
 			{
-				DataRow row = cubeConfig_DT.Rows[0];
-				if (CubeConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
+				using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
+				using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
 				{
-					foreach (var step in config.ParameterMappings)
-					{
-						foreach (var map in step.Value)
-						{
-							setVar(map.Key, row[map.Value].ToString());
-						}
-					}
+					var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+					var sqa = new SqlDataAdapter();
+					var sql = "SELECT * FROM FMM_Models WHERE ModelID = @ModelID";
+					var sqlparams = new[] { new SqlParameter("@ModelID", SqlDbType.Int) { Value = modelID } };
+
+					sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, model_DT, sql, sqlparams);
 				}
 			}
-			else
+			catch (Exception ex)
 			{
-				if (CubeConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
+				BRApi.ErrorLog.LogMessage(si, $"Error loading model config: {ex.Message}");
+			}
+
+			if (ModelConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
+			{
+				var dataRow = model_DT.Rows.Count > 0 ? model_DT.Rows[0] : null;
+
+				foreach (var mapping in config.ParameterMappings.Values)
 				{
-					foreach (var step in config.ParameterMappings)
+					foreach (var kvp in mapping)
 					{
-						foreach (var map in step.Value)
-						{
-							setVar(map.Key, string.Empty);
-						}
+						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
+						GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
 					}
 				}
 			}

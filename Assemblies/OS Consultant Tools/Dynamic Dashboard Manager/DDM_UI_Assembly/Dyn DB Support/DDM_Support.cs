@@ -24,9 +24,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     public class DDM_Support
     {
         //Params
-        public const string Param_CubeName = "IV_DDM_App_Cube_Name";
+        public const string Param_CubeName = "IV_DDM_App_CubeName";
         public const string Param_DashboardMenu = "BL_DDM_App_Menu";
-		
+
 
 
         public object Test(SessionInfo si)
@@ -137,9 +137,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 var sqa = new SqlDataAdapter();
 
-                var sql = @"Select DDM_Config_ID
+                var sql = @"Select DDM_ConfigID
                             From DDM_Config
-                            Where Profile_Key = @OS_ProfileKey";
+                            Where ProfileKey = @OS_ProfileKey";
 
                 var sqlparams = new SqlParameter[] {
                     new SqlParameter("@OS_ProfileKey", SqlDbType.UniqueIdentifier) { Value = profileKey }
@@ -153,7 +153,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             if (dt.Rows.Count > 0)
             {
-                profileID = Convert.ToInt32(dt.Rows[0]["DDM_Config_ID"]);
+                profileID = Convert.ToInt32(dt.Rows[0]["DDM_ConfigID"]);
             }
 
             return profileID;
@@ -162,7 +162,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public static DataTable get_ConfigMenu(SessionInfo si, int SelectedMenu)
         {
 
-            var dt = new DataTable("ddm_config_Menu_Layout_DT");
+            var dt = new DataTable("ddm_configMenuLayout_DT");
             if (SelectedMenu != -1)
             {
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -173,8 +173,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     var sqa = new SqlDataAdapter();
 
                     var sql = @"Select *
-                                From DDM_Config_Menu_Layout
-                                Where DDM_Menu_ID = @Menu_Option"; 
+                                From DDM_ConfigMenuLayout
+                                Where DDM_MenuID = @Menu_Option";
 
                     var sqlparams = new SqlParameter[] {
                         new SqlParameter("@Menu_Option", SqlDbType.Int) { Value = SelectedMenu }
@@ -183,7 +183,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
             }
-
+            // BRApi.ErrorLog.LogMessage(si, $" Get config menu {dt.Rows.Count}");
             return dt;
 
         }
@@ -217,16 +217,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var sqa = new SqlDataAdapter();
                 // Define the select query and parameters
                 var sql = @"Select *
-                            FROM DDM_Config_Hdr_Ctrls
-                            WHERE DDM_Menu_ID = @DDM_Menu_ID
+                            FROM DDM_ConfigHdrCtrls
+                            WHERE DDM_MenuID = @DDM_MenuID
 							AND Option_Type = @Option_Type
-                            ORDER BY Sort_Order";
+                            ORDER BY SortOrder";
 
                 // Create an array of SqlParameter objects
                 var sqlparams = new SqlParameter[]
                 {
-					new SqlParameter("@DDM_Menu_ID", SqlDbType.Int) { Value = menu_option},
-					new SqlParameter("@Option_Type", SqlDbType.Int) { Value = option_Type}
+                    new SqlParameter("@DDM_MenuID", SqlDbType.Int) { Value = menu_option},
+                    new SqlParameter("@Option_Type", SqlDbType.Int) { Value = option_Type}
                 };
 
                 if (!String.IsNullOrEmpty(menu_option))
@@ -234,7 +234,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
                 }
             }
-
+            // BRApi.ErrorLog.LogMessage(si, $" Get Header {dt.Rows.Count}");
             return dt;
         }
 
