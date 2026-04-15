@@ -720,15 +720,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					foreach (var kvp in mapping)
 					{
 						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
-						GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
+						GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
 					}
 				}
 			}
 		}
 
-		public static void SetCustTableParams(SessionInfo si, Dictionary<string, string> substVars)
+		public static void SetCustTableParams(SessionInfo si, ref Dictionary<string, string> substVars)
 		{
-			if (!Int32.TryParse(substVars.GetValueOrDefault("BL_FMM_CustTableID", substVars.GetValueOrDefault("IV_FMM_CustTableID", "0")), out var custTableID))
+			if (!Int32.TryParse(substVars.GetValueOrDefault("IV_FMM_CustTableID", "0"), out var custTableID))
 			{
 				custTableID = 0;
 			}
@@ -764,7 +764,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					foreach (var kvp in mapping)
 					{
 						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
-						GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
+						GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
 					}
 				}
 			}
@@ -808,7 +808,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					foreach (var kvp in mapping)
 					{
 						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
-						GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
+						GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
 					}
 				}
 			}

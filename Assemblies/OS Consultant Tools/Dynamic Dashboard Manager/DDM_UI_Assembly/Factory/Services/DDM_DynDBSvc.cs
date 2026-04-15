@@ -40,7 +40,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     {
                         // configurable header items
                         //"DDM_App_Header" 
-                        "DDM_App_Hdr_ConfigItems_C2" => DDM_Header.get_DynamicHdr(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
+                        //"DDM_App_Hdr_C2"  => DDM_Header.get_DynamicHdr(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),	
                         // Dynamic Content
                         "DDM_App_Content_DB" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
                         "DDM_App_Content_CV" => DDM_Content.get_DynamicContent(si, api, workspace, maintUnit, parentDynamicComponentEx, storedDashboard, customSubstVarsAlreadyResolved),
@@ -70,7 +70,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     {
                         //"0b_DDM_App_Header_ConfigItems" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
                         // "0b2_DDM_App_Header_Config_Btn" 
-                        "DDM_App_Hdr_ConfigItems_C2" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
+                        "DDM_App_Hdr_C2" => DDM_Header.get_DynamicHdrComponents(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
                         // Dynamic Content
                         "DDM_App_Content_DB" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),
                         "DDM_App_Content_CV" => DDM_Content.get_DynamicComponentContent(si, api, workspace, maintUnit, dynamicDashboardEx, customSubstVarsAlreadyResolved),

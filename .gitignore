@@ -13,3 +13,8 @@ obj/
 bin/
 *.user
 *.suo
+
+# OneStream DLLs - do not commit, upload manually to lib/
+lib/*.dll
+lib/*.pdb
+lib/*.xml

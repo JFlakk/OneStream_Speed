@@ -56,9 +56,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					{
 						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_T_Height", "T_Height" } } },
 						{ 1, new Dictionary<string, string > { { "DL_DDM_Layout_T_Content_Type", "T_ContentType" } } },
-						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_T_Name", "T_Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_DDM_Layout_T_Name", "T_Name" } } },
 						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_B_ContentType", "B_ContentType" } } },
-						{ 4, new Dictionary<string, string> { { "DL_DDM_Layout_B_Name", "B_Name" } } }
+						{ 4, new Dictionary<string, string> { { "IV_DDM_Layout_B_Name", "B_Name" } } }
 					}
 				},
 				[Layout_OptionType.Dashboard_LeftRight] = new LayoutConfig
@@ -120,7 +120,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					DashboardName = "DDM_Config_AddUpdate_1L2R_DB",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_DDM_Layout_Left_Width", "L_Width" } } },
+						{ 0, new Dictionary<string, string> { { "IV_DDM_MenuLayout_L_Width", "L_Width" } } },
 						{ 1, new Dictionary<string, string> { { "DL_DDM_Layout_Left_Content_Type", "L_ContentType" } } },
 						{ 2, new Dictionary<string, string> { { "DL_DDM_Layout_DB_Name_Left", "DB_Name_Left" } } },
 						{ 3, new Dictionary<string, string> { { "DL_DDM_Layout_CV_Name_Left", "CV_Name_Left" } } },

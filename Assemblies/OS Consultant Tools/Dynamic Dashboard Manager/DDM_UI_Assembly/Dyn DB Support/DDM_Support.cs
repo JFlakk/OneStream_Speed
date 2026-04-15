@@ -137,9 +137,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 var sqa = new SqlDataAdapter();
 
-                var sql = @"Select DDM_ConfigID
-                            From DDM_Config
-                            Where ProfileKey = @OS_ProfileKey";
+                var sql = @"Select DDM_DynDBConfigID
+                            From DDM_DynDBConfig
+                            Where WFPKey = @OS_ProfileKey";
 
                 var sqlparams = new SqlParameter[] {
                     new SqlParameter("@OS_ProfileKey", SqlDbType.UniqueIdentifier) { Value = profileKey }
@@ -153,7 +153,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             if (dt.Rows.Count > 0)
             {
-                profileID = Convert.ToInt32(dt.Rows[0]["DDM_ConfigID"]);
+                profileID = Convert.ToInt32(dt.Rows[0]["DDM_DynDBConfigID"]);
             }
 
             return profileID;
@@ -162,7 +162,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         public static DataTable get_ConfigMenu(SessionInfo si, int SelectedMenu)
         {
 
-            var dt = new DataTable("ddm_configMenuLayout_DT");
+            var dt = new DataTable("ddm_dynDBMenuLayoutConfig_DT");
             if (SelectedMenu != -1)
             {
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -173,8 +173,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     var sqa = new SqlDataAdapter();
 
                     var sql = @"Select *
-                                From DDM_ConfigMenuLayout
-                                Where DDM_MenuID = @Menu_Option";
+                                From DDM_DynDBMenuLayoutConfig
+                                Where DynDBMenuID = @Menu_Option";
 
                     var sqlparams = new SqlParameter[] {
                         new SqlParameter("@Menu_Option", SqlDbType.Int) { Value = SelectedMenu }
@@ -217,9 +217,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 var sqa = new SqlDataAdapter();
                 // Define the select query and parameters
                 var sql = @"Select *
-                            FROM DDM_ConfigHdrCtrls
-                            WHERE DDM_MenuID = @DDM_MenuID
-							AND Option_Type = @Option_Type
+                            FROM DDM_DynDBHdrConfig
+                            WHERE DynDBMenuID = @DDM_MenuID
+							AND HdrType = @Option_Type
                             ORDER BY SortOrder";
 
                 // Create an array of SqlParameter objects

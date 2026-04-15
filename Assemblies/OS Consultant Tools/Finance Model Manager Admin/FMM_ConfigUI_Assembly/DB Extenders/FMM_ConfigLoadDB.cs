@@ -49,12 +49,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {1, new string[] {"BL_FMM_CubeID"}}
         };
 
-        private Dictionary<int, string[]> ApprovalConfig = new Dictionary<int, string[]>()
-        {
-            {0, new string[] {"BL_FMM_CubeID"}},
-            {1, new string[] {"IV_FMM_ApprID"}}
-        };
-
         private Dictionary<int, string[]> UnitAcctConfig = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_CubeID_Table"}},
@@ -63,7 +57,32 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {3, new string[] {"IV_FMM_AcctConfig_AddUpdate"}}
         };
 
-        private Dictionary<int, string[]> RegisterConfig = new Dictionary<int, string[]>()
+        private Dictionary<int, string[]> CustTableDef = new Dictionary<int, string[]>()
+        {
+            {0, new string[] {"IV_FMM_CustTable_AddUpdate"}},
+            {1, new string[] {"BL_FMM_CustTableID"}}
+        };
+
+        private Dictionary<int, string[]> CustTableAssign = new Dictionary<int, string[]>()
+        {
+            {0, new string[] {"IV_FMM_CustTable_AddUpdate"}},
+            {1, new string[] {"BL_FMM_CustTableID"}}
+        };
+
+
+        private Dictionary<int, string[]> ApprConfig = new Dictionary<int, string[]>()
+        {
+            {0, new string[] {"BL_FMM_CubeID"}},
+            {1, new string[] {"IV_FMM_ApprID"}}
+        };
+
+        private Dictionary<int, string[]> UIConfig = new Dictionary<int, string[]>()
+        {
+            {0, new string[] {"BL_FMM_CubeID_Table"}},
+            {1, new string[] {"BL_FMM_ActID_Table"}}
+        };
+
+        private Dictionary<int, string[]> DataValConfig = new Dictionary<int, string[]>()
         {
             {0, new string[] {"BL_FMM_CubeID_Table"}},
             {1, new string[] {"BL_FMM_ActID_Table"}}
@@ -129,11 +148,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             HierarchyDict.Add("FMM_CubeConfig", CubeConfig);
             HierarchyDict.Add("FMM_UnitAcctConfig", UnitAcctConfig);
-            HierarchyDict.Add("FMM_CustTableDef", UnitAcctConfig);
-            HierarchyDict.Add("FMM_CustTableAssign", UnitAcctConfig);
-            HierarchyDict.Add("FMM_Appr", ApprovalConfig);
-            HierarchyDict.Add("FMM_RegCol", RegisterConfig);
-            HierarchyDict.Add("FMM_DatVal", UnitAcctConfig);
+            HierarchyDict.Add("FMM_CustTableDef", CustTableDef);
+            HierarchyDict.Add("FMM_CustTableAssign", CustTableAssign);
+            HierarchyDict.Add("FMM_ApprConfig", ApprConfig);
+            HierarchyDict.Add("FMM_UIConfig", UIConfig);
+            HierarchyDict.Add("FMM_DataValConfig", DataValConfig);
             HierarchyDict.Add("FMM_Model", BuildModel);
             HierarchyDict.Add("FMM_ModelGrp", BuildModelGroup);
             HierarchyDict.Add("FMM_ModelGrpSeq", BuildModelGroupSeq);
@@ -181,20 +200,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             return loadDbTaskResult;
         }
 
-        private void Load_CubeConfig(ref XFLoadDashboardTaskResult loadDbTaskResult)
-        {
-            FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
-        }
-
-        private void Load_AcctConfig(ref XFLoadDashboardTaskResult loadDbTaskResult)
-        {
-            FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
-        }
-
-        private void Load_CustTableConfig(ref XFLoadDashboardTaskResult loadDbTaskResult)
-        {
-            FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
-        }
         private XFLoadDashboardTaskResult Get_CalcType(XFLoadDashboardTaskResult loadDbTaskResult)
         {
             var xfLoadDbTaskResult = loadDbTaskResult;
@@ -438,6 +443,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private void ExecuteSpecificRefreshLogic(string dashboard, string mappedParam, ref XFLoadDashboardTaskResult taskResult)
         {
+            BRApi.ErrorLog.LogMessage(si, $"Hit {dashboard}");
             if (mappedParam == "IV_FMM_CubeID" && dashboard == "FMM_CubeConfig")
             {
                 Load_CubeConfig(ref taskResult);
@@ -453,10 +459,32 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 Get_CalcType(taskResult);
             }
 
+            if (mappedParam == "BL_FMM_CustTableID" && dashboard == "FMM_CustTableDef")
+            {
+                Load_CustTableDef(ref taskResult);
+            }
+
             if (mappedParam == "IV_FMM_ModelID" && dashboard == "3_FMM_Model_Dialog_Update")
             {
                 setupUpdateModelDialog(ref taskResult);
             }
+        }
+
+        private void Load_CubeConfig(ref XFLoadDashboardTaskResult loadDbTaskResult)
+        {
+            FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
+        }
+
+        private void Load_AcctConfig(ref XFLoadDashboardTaskResult loadDbTaskResult)
+        {
+            FMM_ConfigHelpers.SetCubeConfigParams(si, loadDbTaskResult.ModifiedCustomSubstVars);
+        }
+
+        private void Load_CustTableDef(ref XFLoadDashboardTaskResult loadDbTaskResult)
+        {
+            var modifiedVars = loadDbTaskResult.ModifiedCustomSubstVars;
+            FMM_ConfigHelpers.SetCustTableParams(si, ref modifiedVars);
+            loadDbTaskResult.ModifiedCustomSubstVars = modifiedVars;
         }
 
         private string getDefaultParam(string param, Dictionary<string, string> customSubstVars)

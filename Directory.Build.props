@@ -8,7 +8,7 @@
   
   <PropertyGroup>
     <!-- This placeholder will be replaced with the actual path from extension settings -->
-    <OneStreamLibPath>/workspaces/OneStream_Speed/obj/Debug/net8.0/ref/dlls</OneStreamLibPath>
+    <OneStreamLibPath>/workspaces/OneStream_Speed/lib</OneStreamLibPath>
   </PropertyGroup>
   
 </Project>

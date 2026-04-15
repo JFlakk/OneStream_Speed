@@ -3,7 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
+    <!-- CA1416: BRApi is Windows-only; suppress platform-compatibility warnings on Linux dev -->
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="obj/Debug/net8.0/ref/dlls/*.dll" />
+    <Reference Include="$(OneStreamLibPath)/*.dll" />
   </ItemGroup>
 </Project>

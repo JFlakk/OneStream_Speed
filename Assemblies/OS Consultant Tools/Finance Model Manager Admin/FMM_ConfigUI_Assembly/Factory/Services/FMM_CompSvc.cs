@@ -76,7 +76,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                     }
                 }
 
-                return null;
+                return null/* TODO Change to default(_) if this is not a reference type */;
             }
             catch (Exception ex)
             {
@@ -84,6 +84,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
+        // Utility functions to retrieve parameter values from components.
+        // Basically we need to figure out the dynamically-generated name of the parameter
+        // before we can retrieve it from CustomSubstVarsWithUserSelectedValues.
+        // Alternatively, you could use template variables everywhere, i.e. {wsmu}{myFunc}{id=[~!myID!~]}
         public string getDynamicParamValue(DashboardExtenderArgs args, string paramName, string defaultValue = null)
         {
             string paramValue = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues[this.buildDynamicParamName(args, paramName)];

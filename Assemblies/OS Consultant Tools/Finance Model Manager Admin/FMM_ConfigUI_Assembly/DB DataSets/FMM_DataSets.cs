@@ -219,7 +219,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     var sqa = new SqlDataAdapter();
 
-                    var sql = @"WITH ScenType_List AS (
+                    var sql = @"WITH ScenType_List (ScenType) AS (
                                     SELECT 'Actual' UNION ALL SELECT 'Administration' UNION ALL SELECT 'Budget' UNION ALL
                                     SELECT 'Control' UNION ALL SELECT 'Flash' UNION ALL SELECT 'Forecast' UNION ALL
                                     SELECT 'FXModel' UNION ALL SELECT 'History' UNION ALL SELECT 'LongTerm' UNION ALL
@@ -229,7 +229,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                     SELECT 'ScenarioType3' UNION ALL SELECT 'ScenarioType4' UNION ALL SELECT 'ScenarioType5' UNION ALL
                                     SELECT 'ScenarioType6' UNION ALL SELECT 'ScenarioType7' UNION ALL SELECT 'ScenarioType8'
                                 )
-                                SELECT ScenType FROM ScenType_List
+                                SELECT ScenType, ScenType as ScenTypeID FROM ScenType_List
                                 WHERE NOT EXISTS (
                                     SELECT 1 FROM FMM_CubeConfig
                                     WHERE ScenType = ScenType_List.ScenType AND Cube = @Cube)";

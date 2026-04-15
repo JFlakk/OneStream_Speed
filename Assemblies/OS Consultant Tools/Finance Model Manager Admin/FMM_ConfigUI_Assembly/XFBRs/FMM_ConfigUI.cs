@@ -114,6 +114,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             var CustTableConfigType = args.NameValuePairs.XFGetValue("custTableConfigType", "NA");
             var CustTableID = args.NameValuePairs.XFGetValue("custTableID", "0");
             var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
+            BRApi.ErrorLog.LogMessage(si, $"Hit {CustTableConfigType} - {CustTableID} - {currDB}");
             if (currDB.XFEqualsIgnoreCase("FMM_CustTableDef_C2"))
             {
                 var isUpdate = CustTableConfigType.XFEqualsIgnoreCase("Update");
@@ -123,6 +124,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 {
                     return "FMM_CustTableDef_C2_Blank";
                 }
+                BRApi.ErrorLog.LogMessage(si, $"Hit");
 
                 return "FMM_CustTableDef_C2_AddUpdate";
             }

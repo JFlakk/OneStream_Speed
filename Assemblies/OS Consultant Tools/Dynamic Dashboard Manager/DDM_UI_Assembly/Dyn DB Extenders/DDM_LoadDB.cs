@@ -171,17 +171,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 var sqa = new SqlDataAdapter();
                 // Define the select query and parameters
-                var sql = @"Select Menu.DDM_ConfigID,Menu.DDM_MenuID,Menu.Name,
+                var sql = @"Select Menu.DynDBConfigID,Menu.DynDBMenuID,Menu.Name,
 							Menu.LayoutType, Menu.CustomDBHdr_Name,
 							Menu.CustomDBContent_Name,
 							Menu.DB_Name,Menu.CV_Name
-							FROM DDM_Config Cnfg
-							JOIN DDM_ConfigMenuLayout Menu
-							ON Cnfg.DDM_ConfigID = Menu.DDM_ConfigID
-							WHERE Cnfg.ProfileKey = @OS_WFProfileKey ";
+							FROM DDM_DynDBConfig Cnfg
+							JOIN DDM_DynDBMenuLayoutConfig Menu
+							ON Cnfg.DynDBConfigID = Menu.DynDBConfigID
+							WHERE Cnfg.WFPKey = @OS_WFProfileKey ";
                 if (menu_option != String.Empty)
                 {
-                    sql += @"AND Menu.DDM_MenuID = @DDM_Menu_ID ";
+                    sql += @"AND Menu.DynDBMenuID = @DDM_Menu_ID ";
                 }
 
                 sql += @"ORDER BY SortOrder";
@@ -203,7 +203,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 DataRow row = dt.Rows[0];
 
-                UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, "BL_DDM_App_Menu", row["DDM_MenuID"].ToString());
+                UpdateCustomSubstVar(XF_Load_Dashboard_Task_Result, "BL_DDM_App_Menu", row["DynDBMenuID"].ToString());
 
             }
 

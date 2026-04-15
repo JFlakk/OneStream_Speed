@@ -158,12 +158,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 }
                 if (!templateSubstVars.ContainsKey(template_MbrList_btn_Text))
                 {
-                    templateSubstVars.Add(template_MbrList_btn_Text, row["Fltr_Btn_Lbl"].ToString());
+                    templateSubstVars.Add(template_MbrList_btn_Text, row["Fltr_BtnLbl"].ToString());
                 }
                 if (!templateSubstVars.ContainsKey(template_MbrList_btn_ToolTip))
                 {
                     BRApi.ErrorLog.LogMessage(si, $"Hit Here dyn hdr ToolTip");
-                    templateSubstVars.Add(template_MbrList_btn_ToolTip, row["Fltr_Btn_ToolTip"].ToString());
+                    templateSubstVars.Add(template_MbrList_btn_ToolTip, row["Fltr_BtnToolTip"].ToString());
                 }
                 if (!templateSubstVars.ContainsKey(template_MbrList_cbx_Visible))
                 {
@@ -172,11 +172,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 if (!templateSubstVars.ContainsKey(template_MbrList_cbx_Text))
                 {
                     // BRApi.ErrorLog.LogMessage(si,$"Hit Here dyn hdr 159 : {dimType} ");
-                    templateSubstVars.Add(template_MbrList_cbx_Text, row["Fltr_Cbx_Lbl"].ToString());
+                    templateSubstVars.Add(template_MbrList_cbx_Text, row["Fltr_CbxLbl"].ToString());
                 }
                 if (!templateSubstVars.ContainsKey(template_MbrList_cbx_ToolTip))
                 {
-                    templateSubstVars.Add(template_MbrList_cbx_ToolTip, row["Fltr_Cbx_ToolTip"].ToString());
+                    templateSubstVars.Add(template_MbrList_cbx_ToolTip, row["Fltr_CbxToolTip"].ToString());
                 }
                 if (!templateSubstVars.ContainsKey(template_MbrList_txt_Visible))
                 {
@@ -184,16 +184,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 }
                 if (!templateSubstVars.ContainsKey(template_MbrList_txt_Text))
                 {
-                    templateSubstVars.Add(template_MbrList_txt_Text, row["Fltr_Txt_Lbl"].ToString());
+                    templateSubstVars.Add(template_MbrList_txt_Text, row["Fltr_TxtLbl"].ToString());
                 }
                 if (!templateSubstVars.ContainsKey(template_MbrList_txt_ToolTip))
                 {
-                    templateSubstVars.Add(template_MbrList_txt_ToolTip, row["Fltr_Txt_ToolTip"].ToString());
+                    templateSubstVars.Add(template_MbrList_txt_ToolTip, row["Fltr_TxtToolTip"].ToString());
                 }
                 if (!templateSubstVars.ContainsKey(template_MbrList_txt_BoundParam))
                 {
                     // BRApi.ErrorLog.LogMessage(si,$"Hit Here dyn hdr 180 : {dimType} ");
-                    templateSubstVars.Add(template_MbrList_txt_BoundParam, $"ML_DDM_App_{dimType}_Mbr_List");
+                    templateSubstVars.Add(template_MbrList_txt_BoundParam, $"ML_DDM_App_{dimType}MbrList");
                 }
                 repeatArg_List.Add(new WsDynamicComponentRepeatArgs(dimType, templateSubstVars));
                 BRApi.ErrorLog.LogMessage(si, $"Hit Dyn hdr 181: {dimType} - {row["Fltr_Btn"].ToString()} - {row["Fltr_Btn_Lbl"].ToString()} - {row["Fltr_Btn_ToolTip"].ToString()}");
@@ -282,7 +282,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             // BRApi.ErrorLog.LogMessage(si, $"Stored Component Rows: {dt.Rows.Count}");
             foreach (var item in tempColl.Components)
             {
-                BRApi.ErrorLog.LogMessage(si, $"Item: {item.ToString()}");
+                BRApi.ErrorLog.LogMessage(si, $"Item: {item.DynamicComponentEx.DynamicComponent.BasedOnName.ToString()}");
+                BRApi.ErrorLog.LogMessage(si, $"Item: {item.DynamicComponentEx.DynamicComponent.IsDynamic.ToString()}");
+                BRApi.ErrorLog.LogMessage(si, $"Item: {item.DynamicComponentEx.DynamicComponent.Component.BoundParameterName.ToString()}");
+                BRApi.ErrorLog.LogMessage(si, $"Item: {item.DynamicComponentEx.DynamicComponent.Component.Name.ToString()}");
                 componentCollection.Components.Add(item);
             }
 
@@ -328,6 +331,33 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             foreach (DataRow row in headerItems.Rows)
             {
+                var dimTypeKeyValue = Convert.ToInt32(row["Fltr_DimType"]);
+                var dimType = Enum.GetName(typeof(DDM_ConfigHelpers.HdrDimType), dimTypeKeyValue);
+                var stored_param = new DashboardParamDisplayInfo();
+                var new_param = new WsDynamicParameter();
+                if (row["Fltr_BtnCbxBoundParam"].ToString() != string.Empty)
+                {
+                    stored_param = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, null, ws.WorkspaceID, $"{ws.NamespacePrefix}.ML_DDM_App_MbrList{dimType}");
+                    new_param = new WsDynamicParameter(true, stored_param.Parameter, stored_param.Parameter.UniqueID, stored_param.Parameter.Name, ws.Name);
+                    new_param.Parameter = new DashboardParameter();
+                    new_param.Parameter.UniqueID = Guid.NewGuid();
+                    //new_param.Parameter.Name = row["Fltr_BtnCbx_BoundParam"].ToString();
+                    new_param.Parameter.Name = $"{stored_param.Parameter.Name}";
+                    new_param.Parameter.ParameterType = DashboardParamType.MemberList;
+                    new_param.Parameter.DimTypeName = dimType;
+                    new_param.Parameter.CubeName = "Army";
+                    new_param.Parameter.MemberFilter = row["Fltr_MFB"].ToString();
+                    new_param.Parameter.DimName = row["Fltr_DimName"].ToString();
+                    //tempComp.DynamicComponent.Component.BoundParameterName = new_param.Parameter.Name;
+                }
+                else
+                {
+                    new_param = new WsDynamicParameter(true, stored_param.Parameter, Guid.NewGuid(), row["Fltr_TxtBoundParam"].ToString(), ws.Name);
+                    new_param.Parameter = new DashboardParameter();
+                    new_param.Parameter.Name = row["Fltr_TxtBoundParam"].ToString();
+                    new_param.Parameter.ParameterType = DashboardParamType.InputValue;
+                    //tempComp.DynamicComponent.Component.BoundParameterName = new_param.Parameter.Name;
+                }
                 BRApi.ErrorLog.LogMessage(si, $"Hit Hdr items :{headerItems.Rows.Count}");
                 templateSubstVars.Clear();
                 var tempCompMember = new WsDynamicDbrdCompMember();
@@ -336,9 +366,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                 var baseSearch = string.Empty;
 
-                var optTypeValue = Convert.ToInt32(row["Option_Type"]);
+                var optTypeValue = Convert.ToInt32(row["HdrType"]);
                 //BRApi.ErrorLog.LogMessage(si,$"Hit: {optType}");
-                var optType = Enum.GetName(typeof(DDM_ConfigHelpers.HdrCtrlType), optTypeValue);
+                var optType = Enum.GetName(typeof(DDM_ConfigHelpers.HdrType), optTypeValue);
 
                 var storedCompName_servertaskbtn = "btn_DDM_App_Complete_WF";
 
@@ -371,13 +401,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                 // if ((bool)row[baseSearch + "_" + colSuffix])
                                 {
                                     BRApi.ErrorLog.LogMessage(si, "Hit 3");
-                                    var dimTypeKeyValue = Convert.ToInt32(row[baseSearch + "_DimType"]);
 
-                                    var dimType = Enum.GetName(typeof(DDM_ConfigHelpers.HdrDimType), dimTypeKeyValue);
-
-                                    var stored_param = new DashboardParamDisplayInfo();
-                                    stored_param = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, null, ws.WorkspaceID, $"{ws.Name}.ML_DDM_App_{dimType}_Mbr_List");
-                                    // BRApi.ErrorLog.LogMessage(si,"Hit 3.5 JM");
                                     if (!templateSubstVars.ContainsKey(template_MbrList_cbxbtn_BoundParam))
                                     {
                                         templateSubstVars.Add(template_MbrList_cbxbtn_BoundParam, stored_param.Parameter.Name);
@@ -398,35 +422,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                     {
                                         templateSubstVars.Add(template_MbrList_Filter, row[baseSearch + "_MFB"].ToString());
                                     }
-                                    // BRApi.ErrorLog.LogMessage(si,$"Hit 3.5 JM{colSuffix}");
-                                    storedComponent = api.GetStoredComponentForDynamicDashboard(si, ws, dynamicDashboardEx.DynamicDashboard, colSuffix.ToLower() + "_DDM_App_Mbr_List");
-                                    //  BRApi.ErrorLog.LogMessage(si,$"Hit 3.5 JM {storedComponent}");
-                                    if (colSuffix.ToLower() == "btn" || colSuffix.ToLower() == "cbx")
+                                    BRApi.ErrorLog.LogMessage(si, $"Hit 3.5 JM{colSuffix}");
+                                    var storedCompName = string.Empty;
+                                    if (colSuffix.ToLower() == "btn")
                                     {
-                                        var new_param = new WsDynamicParameter(true, stored_param.Parameter, stored_param.Parameter.UniqueID, stored_param.Parameter.Name, ws.Name);
-                                        new_param.Parameter = new DashboardParameter();
-                                        //new_param.Parameter.UniqueID = Guid.NewGuid();
-                                        //new_param.Parameter.Name = row["Fltr_BtnCbx_BoundParam"].ToString();
-                                        new_param.Parameter.Name = $"{stored_param.Parameter.Name}_dynamic_{dimType}";
-                                        new_param.Parameter.ParameterType = DashboardParamType.MemberList;
-                                        new_param.Parameter.DimTypeName = dimType;
-                                        new_param.Parameter.CubeName = "Army";
-                                        new_param.Parameter.MemberFilter = row[baseSearch + "_MFB"].ToString();
-                                        new_param.Parameter.DimName = row[baseSearch + "_DimName"].ToString();
-                                        //tempComp.DynamicComponent.Component.BoundParameterName = new_param.Parameter.Name;
-
+                                        storedCompName = $"{colSuffix.ToLower()}_DDM_App_MbrList{dimType}";
                                     }
                                     else
                                     {
-
-                                        var new_param = new WsDynamicParameter(true, stored_param.Parameter, Guid.NewGuid(), row["Fltr_Txt_BoundParam"].ToString(), ws.Name);
-                                        new_param.Parameter = new DashboardParameter();
-                                        new_param.Parameter.Name = row["Fltr_Txt_BoundParam"].ToString();
-                                        new_param.Parameter.ParameterType = DashboardParamType.InputValue;
-                                        //tempComp.DynamicComponent.Component.BoundParameterName = new_param.Parameter.Name;
+                                        storedCompName = $"{colSuffix.ToLower()}_DDM_App_MbrList";
                                     }
-                                    tempComp = api.GetDynamicComponentForDynamicDashboard(si, ws, dynamicDashboardEx, storedComponent.Component, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
+                                    storedComponent = api.GetStoredComponentForDynamicDashboard(si, ws, dynamicDashboardEx.DynamicDashboard, storedCompName);
 
+                                    tempComp = api.GetDynamicComponentForDynamicDashboard(si, ws, dynamicDashboardEx, storedComponent.Component, string.Empty, null, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
+                                    //tempComp.DynamicComponent.Component.BoundParameterName = new_param.Parameter.Name;
                                     //BRApi.ErrorLog.LogMessage(si,$"Hit 3.6 JM {storedComponent.Component.Name}");
                                     tempComp.DynamicComponent.Component.ApplyParamValueToCurrentDbrd = true;
                                     //BRApi.ErrorLog.LogMessage(si,"Hit 3.7 JM");
@@ -434,8 +443,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                                     tempComp.DynamicComponent.Component.DashboardComponentType = dashboardTypeResolver[colSuffix];
                                     //BRApi.ErrorLog.LogMessage(si,"Hit 3.8 JM");
-                                    tempComp.DynamicComponent.Component.Text = row[baseSearch + "_" + colSuffix + "_Lbl"].ToString();
-                                    tempComp.DynamicComponent.Component.ToolTip = row[baseSearch + "_" + colSuffix + "_ToolTip"].ToString();
+                                    tempComp.DynamicComponent.Component.Text = row[baseSearch + "_" + colSuffix + "Lbl"].ToString();
+                                    tempComp.DynamicComponent.Component.ToolTip = row[baseSearch + "_" + colSuffix + "ToolTip"].ToString();
                                     tempComp.DynamicComponent.Component.Name = storedComponent.Component.Name;
                                     //BRApi.ErrorLog.LogMessage(si,"Hit 2");
                                     if (colSuffix == "Btn")
@@ -458,9 +467,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                         {
                                             compDefinition.Add(new XElement("SelectMemberInfo"));
                                         }
-                                        compDefinition.Element("SelectMemberInfo").SetElementValue("DimTypeName", row[baseSearch + "_DimType"].ToString());
+                                        compDefinition.Element("SelectMemberInfo").SetElementValue("DimTypeName", dimType);
                                         compDefinition.Element("SelectMemberInfo").SetElementValue("DimName", row[baseSearch + "_DimName"].ToString());
-                                        compDefinition.Element("SelectMemberInfo").SetElementValue("CubeName", "|!IV_DDM_App_CubeName!|");
+                                        compDefinition.Element("SelectMemberInfo").SetElementValue("CubeName", "Army");
                                         compDefinition.Element("SelectMemberInfo").SetElementValue("MemberFilter", row[baseSearch + "_MFB"].ToString());
                                         compDefinition.SetElementValue("ImageFileSourceType", "DashboardFile");
                                         compDefinition.SetElementValue("ImageUrlOrFullFileName", "Std_DB_Search.png"); // TODO: Add a col for allowing image input
@@ -484,7 +493,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                                     }
                                     BRApi.ErrorLog.LogMessage(si, "Hit 3.5");
                                     WsDynamicComponentEx filterCompEx = api.GetDynamicComponentForDynamicDashboard(si, ws, dynamicDashboardEx, tempComp.DynamicComponent.Component, dimType, templateSubstVars, TriStateBool.TrueValue, WsDynamicItemStateType.EntireObject);
-                                    BRApi.ErrorLog.LogMessage(si, "Hit 3.6");
+
+                                    BRApi.ErrorLog.LogMessage(si, $"Hit 3.6 {filterCompEx.DynamicComponent.Component.Name.ToString()}");
                                     wsDynCompMembers.Add(new WsDynamicDbrdCompMemberEx(tempCompMember, filterCompEx));
                                     BRApi.ErrorLog.LogMessage(si, "Hit 3.7");
                                     //add a secondary button component to handle text entry
@@ -517,10 +527,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                             compDefinition = buildButtonXML(optType);
                         }
 
-                        tempComp.DynamicComponent.Component.Text = row[baseSearch + "_Lbl"].ToString();
-                        tempComp.DynamicComponent.Component.ToolTip = row[baseSearch + "_ToolTip"].ToString();
+                        tempComp.DynamicComponent.Component.Text = row[baseSearch + "Lbl"].ToString();
+                        tempComp.DynamicComponent.Component.ToolTip = row[baseSearch + "ToolTip"].ToString();
                         compDefinition.SetElementValue("ImageFileSourceType", "DashboardFile");
-                        compDefinition.SetElementValue("ImageUrlOrFullFileName", row[baseSearch + "_Image_URL"].ToString());
+                        compDefinition.SetElementValue("ImageUrlOrFullFileName", row[baseSearch + "Image_URL"].ToString());
 
                         tempComp.DynamicComponent.Component.SelectionChangedUIActionType = row["Btn_Type"].ToString() == "Complete_WF" ? XFSelectionChangedUIActionType.OpenDialogApplyChangesAndRefresh : XFSelectionChangedUIActionType.Refresh;
 

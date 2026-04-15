@@ -77,13 +77,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 //args.CustomSubstVars.
                 var wfUserPk = BRApi.Workflow.General.GetWorkflowUnitPk(si);
                 // BRApi.ErrorLog.LogMessage(si, $"Here {wfUserPk.ProfileKey}");
-                var dt = new DataTable("DDM_ConfigMenu");
+                var dt = new DataTable("DDM_DynDBMenuConfig");
                 // Define the SQL Statement
-                var sql = @"Select Menu.DDM_MenuID, Menu.Name
-		                    FROM DDM_Config Cnfg
-		                    JOIN DDM_ConfigMenuLayout Menu
-		                    ON Cnfg.DDM_ConfigID = Menu.DDM_ConfigID
-		                   WHERE Cnfg.ProfileKey = @ProfileKey
+                var sql = @"Select Menu.DynDBMenuID, Menu.Name
+		                    FROM DDM_DynDBConfig Cnfg
+		                    JOIN DDM_DynDBMenuLayoutConfig Menu
+		                    ON Cnfg.DynDBConfigID = Menu.DynDBConfigID
+		                    WHERE Cnfg.WFPKey = @ProfileKey
 		                    ORDER BY SortOrder";
 
                 // Return the DataTable
