@@ -365,7 +365,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 var Cube = customSubstVarsWithValues.XFGetValue("BL_FMM_CubeConfig_Cubes", customSubstVars.XFGetValue("IV_FMM_CubeConfig_Name", string.Empty));
                 var ScenType = customSubstVars.XFGetValue("BL_FMM_CubeConfig_ScenType", customSubstVars.XFGetValue("IV_FMM_CubeConfig_ScenType", string.Empty));
-                var cubeID = runType == "Add" ? 0 : Convert.ToInt32(customSubstVarsWithValues.XFGetValue("IV_FMM_CubeID", "0"));
+                var cubeID = runType == "Add" ? 0 : Convert.ToInt32(customSubstVarsWithValues.XFGetValue("BL_FMM_CubeConfigID", "0"));
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -466,7 +466,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var selectResult = new XFSelectionChangedTaskResult();
             selectResult.ChangeCustomSubstVarsInDashboard = true;
             var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
-            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", string.Empty);
+            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeConfigID", string.Empty);
             return selectResult;
         }
 
@@ -475,12 +475,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var selectResult = new XFSelectionChangedTaskResult();
             selectResult.ChangeCustomSubstVarsInDashboard = true;
             var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
-            var existingCubeID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeID", "0").XFConvertToInt();
+            var existingCubeID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
 
-            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", existingCubeID.XFToString());
+            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeConfigID", existingCubeID.XFToString());
             gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeConfig_AddUpdate", "Update");
-            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeID", existingCubeID.XFToString());
-            FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
+            var modifiedVars = selectResult.ModifiedCustomSubstVars;
+            FMM_ConfigHelpers.SetCubeConfigParams(si, ref modifiedVars);
+            selectResult.ModifiedCustomSubstVars = modifiedVars;
 
             return selectResult;
         }
@@ -503,7 +504,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
                     var FMM_ActConfig_DT = new DataTable();
-                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                     Duplicate_Config("Initiate", "ActConfig", cubeID: CubeID);
 
                     var sql = @"SELECT * 
@@ -700,7 +701,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     else if (Convert.ToInt32(FMM_CubeConfig_Count_DT.Rows[0]["Count"]) > 0 && runType == "Update")
                     {
                         var cubeStatus = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Status", string.Empty);
-                        new_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_CubeID", "0"));
+                        new_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeConfigID", "0"));
                         sqlparams = new SqlParameter[]
                         {
                             new SqlParameter("@CubeID", SqlDbType.Int) { Value = new_CubeID }
@@ -957,12 +958,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var selectResult = new XFSelectionChangedTaskResult();
                 selectResult.ChangeCustomSubstVarsInDashboard = true;
-                var SaveTypeintValue = 1;
+                var SaveTypeintValue = 3;
                 var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
                 gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CustTableID", string.Empty);
                 FMM_ConfigHelpers.SaveType saveType = (FMM_ConfigHelpers.SaveType)SaveTypeintValue;
 
-                if (FMM_ConfigHelpers.CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
+                if (FMM_ConfigHelpers.CustTableConfigRegistry.Configs.TryGetValue(saveType, out var config))
                 {
                     foreach (var step in config.ParameterMappings)
                     {
@@ -983,25 +984,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
         private XFSelectionChangedTaskResult CustTable_Select()
         {
-            try
-            {
-                var selectResult = new XFSelectionChangedTaskResult();
-                selectResult.ChangeCustomSubstVarsInDashboard = true;
-                var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
-                var existingCustTableID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CustTableID", "0").XFConvertToInt();
+            var selectResult = new XFSelectionChangedTaskResult();
+            selectResult.ChangeCustomSubstVarsInDashboard = true;
+            var gbl_helpers = new GBL_UI_Assembly.GBL_Helpers();
+            var existingCustTableID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CustTableID", "0").XFConvertToInt();
+            BRApi.ErrorLog.LogMessage(si, $"Hit Select {existingCustTableID}");
+            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CustTableID", existingCustTableID.XFToString());
+            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CustTable_AddUpdate", "Update");
+            var modifiedVars = selectResult.ModifiedCustomSubstVars;
+            FMM_ConfigHelpers.SetCustTableParams(si, ref modifiedVars);
+            selectResult.ModifiedCustomSubstVars = modifiedVars;
+            BRApi.ErrorLog.LogMessage(si, $"Hit End Select {existingCustTableID}");
 
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CustTableID", existingCustTableID.XFToString());
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CustTable_AddUpdate", "Update");
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CustTableID", existingCustTableID.XFToString());
-                FMM_ConfigHelpers.SetCustTableParams(si, selectResult.ModifiedCustomSubstVars);
-
-                return selectResult;
-            }
-            catch (Exception ex)
-            {
-                // Log and rethrow exceptions for error handling.
-                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
-            }
+            return selectResult;
         }
 
         private XFSqlTableEditorSaveDataTaskResult CustTableDef_Save()
@@ -1175,7 +1170,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var existingModelID = this.args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_ModelID", "0").XFConvertToInt();
 
             gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_ModelID", existingModelID.XFToString());
-            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_Model_AddUpdate", "Update");
+            gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_ModelConfigAddUpdate", "Update");
             gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_ModelID", existingModelID.XFToString());
             FMM_ConfigHelpers.SetModelParams(si, selectResult.ModifiedCustomSubstVars);
 
@@ -1191,7 +1186,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var customSubstVarsWithValues = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
 
                 var actID = Convert.ToInt32(customSubstVars.XFGetValue("IV_FMM_ActID", "0"));
-                var cubeID = Convert.ToInt32(customSubstVars.XFGetValue("IV_FMM_CubeID", "0"));
+                var cubeID = Convert.ToInt32(customSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0"));
                 var modelID = runType == "Add" ? 0 : Convert.ToInt32(customSubstVarsWithValues.XFGetValue("IV_FMM_ModelID", customSubstVars.XFGetValue("IV_FMM_ModelID", "0")));
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -1201,48 +1196,48 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
-                    var FMM_Models_DT = new DataTable();
+                    var FMM_ModelConfig_DT = new DataTable();
 
                     Duplicate_Config("Initiate", "Model", cubeID: cubeID, actID: actID);
 
                     var sql = @"SELECT *
-                                FROM FMM_Models
+                                FROM FMM_ModelConfig
                                 WHERE ModelID = @ModelID";
                     var sqlParams = new SqlParameter[]
                     {
                         new SqlParameter("@ModelID", SqlDbType.Int)
                         {
-                            Value = modelID == 0 ? sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Models", "ModelID") : modelID
+                            Value = modelID == 0 ? sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ModelConfig", "ModelID") : modelID
                         }
                     };
                     modelID = (int)sqlParams[0].Value;
 
-                    cmdBuilder.FillDataTable(si, sqa, FMM_Models_DT, sql, sqlParams);
+                    cmdBuilder.FillDataTable(si, sqa, FMM_ModelConfig_DT, sql, sqlParams);
 
                     DataRow dataRow = null;
                     DataRow originalDataRow = null;
 
                     if (runType == "Add")
                     {
-                        dataRow = FMM_Models_DT.NewRow();
+                        dataRow = FMM_ModelConfig_DT.NewRow();
                         dataRow["CubeID"] = cubeID;
                         dataRow["ActID"] = actID;
                         dataRow["ModelID"] = modelID;
                         dataRow["Status"] = 1;
-                        FMM_Models_DT.Rows.Add(dataRow);
+                        FMM_ModelConfig_DT.Rows.Add(dataRow);
                     }
-                    else if (runType == "Update" && FMM_Models_DT.Rows.Count > 0)
+                    else if (runType == "Update" && FMM_ModelConfig_DT.Rows.Count > 0)
                     {
-                        dataRow = FMM_Models_DT.Rows[0];
-                        originalDataRow = FMM_Models_DT.NewRow();
+                        dataRow = FMM_ModelConfig_DT.Rows[0];
+                        originalDataRow = FMM_ModelConfig_DT.NewRow();
                         originalDataRow.ItemArray = (object[])dataRow.ItemArray.Clone();
                     }
-                    else if (runType == "Delete" && FMM_Models_DT.Rows.Count > 0)
+                    else if (runType == "Delete" && FMM_ModelConfig_DT.Rows.Count > 0)
                     {
-                        dataRow = FMM_Models_DT.Rows[0];
+                        dataRow = FMM_ModelConfig_DT.Rows[0];
                         Duplicate_Config("Update Row", "Model", "Delete", row: dataRow, cubeID: cubeID, actID: actID);
                         dataRow.Delete();
-                        cmdBuilder.UpdateTable(si, "FMM_Models", FMM_Models_DT, sqa);
+                        cmdBuilder.UpdateTable(si, "FMM_ModelConfig", FMM_ModelConfig_DT, sqa);
                         saveResult.IsOK = true;
                         saveResult.Message = "Model Deleted Successfully.";
                         saveResult.ShowMessageBox = true;
@@ -1290,7 +1285,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             return saveResult;
                         }
 
-                        cmdBuilder.UpdateTable(si, "FMM_Models", FMM_Models_DT, sqa);
+                        cmdBuilder.UpdateTable(si, "FMM_ModelConfig", FMM_ModelConfig_DT, sqa);
                         saveResult.IsOK = true;
                         saveResult.Message = runType == "Add" ? "New Model Saved." : "Model Updates Saved.";
                         saveResult.ShowMessageBox = true;
@@ -1329,7 +1324,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
                     var FMM_CalcUnitConfig_DT = new DataTable();
-                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                     Duplicate_Config("Initiate", "CalcUnitConfig", cubeID: CubeID);
 
                     var sql = @"SELECT * 
@@ -1429,7 +1424,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var saveTaskInfo = args.SelectionChangedTaskInfo;
 
                 var createNewDestCell = false;
-                var CubeID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                var CubeID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                 var ActID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ActID", "0").XFConvertToInt();
                 var ModelID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ModelID", "0").XFConvertToInt();
                 var calcListVal = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CalcList", "0").XFConvertToInt();
@@ -1585,7 +1580,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var saveTaskInfo = args.SelectionChangedTaskInfo;
 
                 gbl_CalcID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_CalcID", "0").XFConvertToInt();
-                var CubeID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                var CubeID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                 var ActID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ActID", "0").XFConvertToInt();
                 var ModelID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ModelID", "0").XFConvertToInt();
 
@@ -1640,7 +1635,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var saveTaskInfo = args.SelectionChangedTaskInfo;
 
                 gbl_CalcID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_CalcID", "0").XFConvertToInt();
-                var CubeID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                var CubeID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                 var ActID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ActID", "0").XFConvertToInt();
                 var ModelID = saveTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_ModelID", "0").XFConvertToInt();
 
@@ -1705,7 +1700,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
                     var FMM_UnitConfig_DT = new DataTable();
-                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                     var ActID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_ActID", "0").XFConvertToInt();
                     Duplicate_Config("Initiate", "UnitConfig", cubeID: CubeID, actID: ActID);
 
@@ -1818,7 +1813,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
                     var FMM_Col_Config_DT = new DataTable();
-                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                     var ActID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_ActID", "0").XFConvertToInt();
                     var RegConfigID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_RegConfigID", "0").XFConvertToInt();
                     Duplicate_Config("Initiate", "ColConfig", cubeID: CubeID, actID: ActID, regConfigID: RegConfigID);
@@ -2626,8 +2621,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             try
             {
                 var saveResult = new XFSelectionChangedTaskResult();
-                var new_OS_Model_Grp_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0"));
-                var new_Name = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Model_Grp_Name", "0");
+                var new_OS_Model_Grp_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0"));
+                var new_Name = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_ModelConfigGrp_Name", "0");
                 int new_Model_Grp_ID = 0;
                 if (new_Model_Grp_ID == 0)
                 {
@@ -2684,8 +2679,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             try
             {
                 var saveResult = new XFSelectionChangedTaskResult();
-                var new_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0"));
-                var new_Name = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_Model_Grp_Seq_Name", "0");
+                var new_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0"));
+                var new_Name = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_ModelConfigGrp_Seq_Name", "0");
                 int new_Model_Grp_Seq_ID = 0;
                 if (new_Model_Grp_Seq_ID == 0)
                 {
@@ -2695,15 +2690,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var sql_gbl_get_max_id = new SQL_GBL_Get_Max_ID(si, connection);
                         connection.Open();
 
-                        new_Model_Grp_Seq_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Model_Grp_Seqs", "Model_Grp_Seq_ID");
+                        new_Model_Grp_Seq_ID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ModelConfigGrp_Seqs", "Model_Grp_Seq_ID");
 
                         var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
-                        var FMM_Model_Grp_Seqs_DT = new DataTable();
+                        var FMM_ModelConfigGrp_Seqs_DT = new DataTable();
                         var sqa = new SqlDataAdapter();
 
                         string sql = @"
                                         SELECT * 
-                                        FROM FMM_Model_Grp_Seqs 
+                                        FROM FMM_ModelConfigGrp_Seqs 
                                         WHERE Model_Grp_Seq_ID = @Model_Grp_Seq_ID";
 
 
@@ -2712,9 +2707,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new SqlParameter("@Model_Grp_Seq_ID", SqlDbType.Int) { Value = new_Model_Grp_Seq_ID }
                         };
 
-                        cmdBuilder.FillDataTable(si, sqa, FMM_Model_Grp_Seqs_DT, sql, sqlparams);
+                        cmdBuilder.FillDataTable(si, sqa, FMM_ModelConfigGrp_Seqs_DT, sql, sqlparams);
 
-                        var new_DataRow = FMM_Model_Grp_Seqs_DT.NewRow();
+                        var new_DataRow = FMM_ModelConfigGrp_Seqs_DT.NewRow();
                         new_DataRow["CubeID"] = new_CubeID;
                         new_DataRow["Model_Grp_Seq_ID"] = new_Model_Grp_Seq_ID;
                         new_DataRow["Name"] = new_Name;
@@ -2723,9 +2718,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["CreateUser"] = si.UserName;
                         new_DataRow["UpdateDate"] = DateTime.Now;
                         new_DataRow["UpdateUser"] = si.UserName;
-                        FMM_Model_Grp_Seqs_DT.Rows.Add(new_DataRow);
+                        FMM_ModelConfigGrp_Seqs_DT.Rows.Add(new_DataRow);
 
-                        cmdBuilder.UpdateTable(si, "FMM_Model_Grp_Seqs", FMM_Model_Grp_Seqs_DT, sqa);
+                        cmdBuilder.UpdateTable(si, "FMM_ModelConfigGrp_Seqs", FMM_ModelConfigGrp_Seqs_DT, sqa);
                     }
                 }
 
@@ -2743,8 +2738,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var saveResult = new XFSelectionChangedTaskResult();
                 var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVars;
-                var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_CubeID", "0"));
-                var Model_Grp_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_ID", "0"));
+                var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_CubeConfigID", "0"));
+                var Model_Grp_ID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_ModelConfigGrp_ID", "0"));
                 var ModelID_List = custom_SubstVars.XFGetValue("IV_FMM_ModelID_Selection", "0");
                 int new_OS_Model_Grp_Assign_ID = 0;
                 if (ModelID_List.Length > 0 && new_OS_Model_Grp_Assign_ID == 0)
@@ -2817,10 +2812,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var saveResult = new XFSelectionChangedTaskResult();
                 var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVars;
-                var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_CubeID", "0"));
+                var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_CubeConfigID", "0"));
                 var CalcUnitID_List = custom_SubstVars.XFGetValue("IV_FMM_Calc_Unit_Selection", "0");
-                var Model_Grp_ID_List = custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_ID_Selection");
-                var Model_Grp_Seq_ID = custom_SubstVars.XFGetValue("IV_FMM_Model_Grp_Seq_ID");
+                var Model_Grp_ID_List = custom_SubstVars.XFGetValue("IV_FMM_ModelConfigGrp_ID_Selection");
+                var Model_Grp_Seq_ID = custom_SubstVars.XFGetValue("IV_FMM_ModelConfigGrp_Seq_ID");
                 int new_Calc_Unit_Assign_ID = 0;
                 if (Model_Grp_ID_List.Length > 0 && new_Calc_Unit_Assign_ID == 0)
                 {
@@ -2905,13 +2900,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
                     var FMM_ApprConfig_DT = new DataTable();
-                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                     var ActID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_ActID", "0").XFConvertToInt();
                     var new_ApprID = 0;
                     Duplicate_Config("Initiate", "ApprConfig", cubeID: CubeID);
 
                     var sql = @"SELECT * 
-                                    FROM FMM_ApprConfig
+                                    FROM FMM_ApprConfigConfig
                                     WHERE CubeID = @CubeID";
                     var sqlparams = new SqlParameter[]
                     {
@@ -2922,7 +2917,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     if (runType == "Add")
                     {
                         var sql_gbl_get_max_id = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(si, connection);
-                        new_ApprID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprConfig", "ApprID");
+                        new_ApprID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprConfigConfig", "ApprID");
 
                         sqlparams = new SqlParameter[]
                         {
@@ -2953,7 +2948,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         new_DataRow["UpdateUser"] = si.UserName;
 
                         FMM_ApprConfig_DT.Rows.Add(new_DataRow);
-                        cmdBuilder.UpdateTable(si, "FMM_ApprConfig", FMM_ApprConfig_DT, sqa);
+                        cmdBuilder.UpdateTable(si, "FMM_ApprConfigConfig", FMM_ApprConfig_DT, sqa);
                         saveResult.IsOK = true;
                         saveResult.Message = "New Cube Config Saved.";
                         saveResult.ShowMessageBox = true;
@@ -2961,7 +2956,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     //                    else if (Convert.ToInt32(FMM_CubeConfig_Count_DT.Rows[0]["Count"]) > 0 && runType == "Update")
                     //                    {
                     //                        var cubeStatus = args.SelectionChangedTaskInfo.CustomSubstVars.XFGetValue("DL_FMM_Status", string.Empty);
-                    //                        new_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("IV_FMM_CubeID", "0"));
+                    //                        new_CubeID = Convert.ToInt32(args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues.XFGetValue("BL_FMM_CubeConfigID", "0"));
                     //                        sqlparams = new SqlParameter[]
                     //                        {
                     //                            new SqlParameter("@CubeID", SqlDbType.Int) { Value = new_CubeID }
@@ -3031,12 +3026,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
                     var FMM_ApprStepConfig_DT = new DataTable();
-                    var CubeID = customSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
-                    var ApprID = customSubstVars.XFGetValue("IV_FMM_ApprID", "0").XFConvertToInt();
+                    var CubeID = customSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
+                    var ApprID = customSubstVars.XFGetValue("IV_FMM_ApprConfigID", "0").XFConvertToInt();
                     Duplicate_Config("Initiate", "ApprStepConfig", cubeID: CubeID, apprID: ApprID);
 
                     string sql = @"SELECT * 
-                                    FROM FMM_ApprStep_Config
+                                    FROM FMM_ApprConfigStep_Config
                                     WHERE CubeID = @CubeID
                                     AND ApprID = @ApprID";
                     var sqlparams = new SqlParameter[]
@@ -3127,7 +3122,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     //                    {
                     //                        saveResult.IsOK = true;
                     //                        saveResult.ShowMessageBox = false;
-                    //                        cmdBuilder.UpdateTable(si, "FMM_ApprStep_Config", FMM_ApprStepConfig_DT, sqa, "CubeID", "ApprID", "ApprStepID");
+                    //                        cmdBuilder.UpdateTable(si, "FMM_ApprConfigStep_Config", FMM_ApprStepConfig_DT, sqa, "CubeID", "ApprID", "ApprStepID");
                     //                    }
                 }
 
@@ -3146,8 +3141,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var saveResult = new XFSelectionChangedTaskResult();
                 var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
-                var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_CubeID", "0"));
-                var ApprID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_ApprID", "0"));
+                var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_CubeConfigID", "0"));
+                var ApprID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_ApprConfigID", "0"));
                 var wfProfile_Step = custom_SubstVars.XFGetValue("IV_FMM_trv_ApprStep_WFProfile", string.Empty);
 
                 var new_ApprStepID = 0;
@@ -3161,17 +3156,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                         var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                         connection.Open();
 
-                        new_ApprStepID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprStep_Config", "ApprStepID");
+                        new_ApprStepID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprConfigStep_Config", "ApprStepID");
 
                         var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                         var FMM_ApprStepConfig_DT = new DataTable();
-                        var FMM_ApprStep_WFProfile_DT = new DataTable();
+                        var FMM_ApprConfigStep_WFProfile_DT = new DataTable();
                         var FMM_CubeConfig_DT = new DataTable();
                         var FMM_Act_ApprStep_Config_DT = new DataTable(); // DataTable for FMM_Reg_Dtl_Cube_Map
                         var sqa = new SqlDataAdapter();
 
                         var sql = @"SELECT * 
-                                    FROM FMM_ApprStep_Config
+                                    FROM FMM_ApprConfigStep_Config
                                     WHERE CubeID = @CubeID
                                     AND ApprID = @ApprID";
 
@@ -3256,9 +3251,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                             new SqlParameter("@rootprofilename", SqlDbType.NVarChar) { Value = rootProfileName }
                         };
 
-                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_ApprStep_WFProfile_DT, sql, sqlparams);
+                        sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, FMM_ApprConfigStep_WFProfile_DT, sql, sqlparams);
 
-                        var filteredWFProfiles = from profile in FMM_ApprStep_WFProfile_DT.AsEnumerable()
+                        var filteredWFProfiles = from profile in FMM_ApprConfigStep_WFProfile_DT.AsEnumerable()
                                                  where profile["ProfileName"].ToString().Contains(wfProfile_Step)
                                                  select profile;
 
@@ -3289,7 +3284,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                         }
 
-                        cmdBuilder.UpdateTable(si, "FMM_ApprStep_Config", FMM_ApprStepConfig_DT, sqa);
+                        cmdBuilder.UpdateTable(si, "FMM_ApprConfigStep_Config", FMM_ApprStepConfig_DT, sqa);
 
 
                     }
@@ -3318,7 +3313,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(si, connection);
                     var sqa = new SqlDataAdapter();
                     var FMM_RegConfig_DT = new DataTable();
-                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_CubeID", "0").XFConvertToInt();
+                    var CubeID = saveTaskInfo.CustomSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0").XFConvertToInt();
                     var ActID = saveTaskInfo.CustomSubstVars.XFGetValue("IV_FMM_ActID", "0").XFConvertToInt();
                     Duplicate_Config("Initiate", "RegConfig", cubeID: CubeID, actID: ActID);
 
@@ -3435,7 +3430,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             {
                 var saveResult = new XFSelectionChangedTaskResult();
                 var custom_SubstVars = args.SelectionChangedTaskInfo.CustomSubstVarsWithUserSelectedValues;
-                var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("IV_FMM_CubeID", "0"));
+                var CubeID = Convert.ToInt32(custom_SubstVars.XFGetValue("BL_FMM_CubeConfigID", "0"));
                 var Calc_Unit_Entity_MFB = custom_SubstVars.XFGetValue("IV_FMM_Calc_Unit_Entity_MFB", "0");
                 var WF_Channels = custom_SubstVars.XFGetValue("BL_FMM_WFChannels", "0");
                 var new_CalcUnitID = 0;
@@ -3516,15 +3511,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var config_Key = string.Empty;
             var sql = configType switch
             {
-                "Model" => @"SELECT * FROM FMM_Models WHERE CubeID = @CubeID AND ActID = @ActID",
+                "Model" => @"SELECT * FROM FMM_ModelConfig WHERE CubeID = @CubeID AND ActID = @ActID",
                 "ActConfig" => @"SELECT * FROM FMM_ActConfig WHERE CubeID = @CubeID",
                 "CalcUnitConfig" => @"SELECT * FROM FMM_CalcUnitConfig WHERE CubeID = @CubeID",
                 "UnitConfig" => @"SELECT * FROM FMM_UnitConfig WHERE CubeID = @CubeID AND ActID = @ActID",
                 "AcctConfig" => @"SELECT * FROM FMM_AcctConfig WHERE CubeID = @CubeID AND ActID = @ActID AND UnitID = @UnitID",
                 "ColConfig" => @"SELECT * FROM FMM_Col_Config WHERE CubeID = @CubeID AND ActID = @ActID AND RegConfigID = @RegConfigID",
                 "CalcConfig" => @"SELECT * FROM FMM_CalcConfig WHERE CubeID = @CubeID AND ActID = @ActID AND ModelID = @ModelID",
-                "ApprConfig" => @"SELECT * FROM FMM_ApprConfig WHERE CubeID = @CubeID",
-                "ApprStepConfig" => @"SELECT * FROM FMM_ApprStep_Config WHERE CubeID = @CubeID AND ApprID = @ApprID",
+                "ApprConfig" => @"SELECT * FROM FMM_ApprConfigConfig WHERE CubeID = @CubeID",
+                "ApprStepConfig" => @"SELECT * FROM FMM_ApprConfigStep_Config WHERE CubeID = @CubeID AND ApprID = @ApprID",
                 "RegConfig" => @"SELECT * FROM FMM_RegConfig WHERE CubeID = @CubeID AND ActID = @ActID",
                 "CustTableDef" => @"SELECT * FROM FMM_CustTableDef WHERE CustTableID = @CustTableID",
                 _ => string.Empty
@@ -3783,8 +3778,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
 
                 gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeID", existingCubeID.XFToString());
                 gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeConfig_AddUpdate", "Update");
-                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "IV_FMM_CubeID", existingCubeID.XFToString());
-                FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
+                gbl_helpers.UpdateCustomSubstVar(ref selectResult, "BL_FMM_CubeConfigID", existingCubeID.XFToString());
+                // FMM_ConfigHelpers.SetCubeConfigParams(si, selectResult.ModifiedCustomSubstVars);
 
                 return selectResult;
             }
@@ -3848,8 +3843,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var tgt_FMM_RegConfig_DT = new DataTable();
             var src_FMM_Col_Config_DT = new DataTable();
             var tgt_FMM_Col_Config_DT = new DataTable();
-            var src_FMM_Models_DT = new DataTable();
-            var tgt_FMM_Models_DT = new DataTable();
+            var src_FMM_ModelConfig_DT = new DataTable();
+            var tgt_FMM_ModelConfig_DT = new DataTable();
             var src_FMM_CalcConfig_DT = new DataTable();
             var tgt_FMM_CalcConfig_DT = new DataTable();
             var src_FMM_DestCell_DT = new DataTable();
@@ -3905,7 +3900,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ref src_FMM_ApprConfig_DT, ref tgt_FMM_ApprConfig_DT, sql_gbl_get_max_id
                 );
 
-                get_FMM_ApprStep_Config_Data(
+                get_FMM_ApprConfigStep_Config_Data(
                     new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = src_CubeID } },
                     new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = tgt_CubeID } },
                     sql_gbl_get_datasets,
@@ -3926,11 +3921,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ref src_FMM_Col_Config_DT, ref tgt_FMM_Col_Config_DT, sql_gbl_get_max_id
                 );
 
-                get_FMM_Models_Data(
+                get_FMM_ModelConfig_Data(
                     new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = src_CubeID } },
                     new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = tgt_CubeID } },
                     sql_gbl_get_datasets,
-                    ref src_FMM_Models_DT, ref tgt_FMM_Models_DT, sql_gbl_get_max_id
+                    ref src_FMM_ModelConfig_DT, ref tgt_FMM_ModelConfig_DT, sql_gbl_get_max_id
                 );
 
                 get_FMM_CalcConfig_Data(
@@ -3989,7 +3984,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var colsByRegConfigId = BuildRowLookup(src_FMM_Col_Config_DT, "RegConfigID");
                 var approvalsByActId = BuildRowLookup(src_FMM_ApprConfig_DT, "ActID");
                 var apprStepsByApprId = BuildRowLookup(src_FMM_ApprStepConfig_DT, "ApprID");
-                var modelsByActId = BuildRowLookup(src_FMM_Models_DT, "ActID");
+                var modelsByActId = BuildRowLookup(src_FMM_ModelConfig_DT, "ActID");
                 var calcsByModelId = BuildRowLookup(src_FMM_CalcConfig_DT, "ModelID");
                 var destCellsByCalcId = BuildRowLookup(src_FMM_DestCell_DT, "CalcID");
                 var srcCellsByCalcId = BuildRowLookup(src_FMM_SrcCell_DT, "CalcID");
@@ -4029,7 +4024,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     foreach (DataRow models_ConfigRow in modelsByActId[curr_srcActivityID])
                     {
                         var curr_srcModelID = GetRowIntValue(models_ConfigRow, "ModelID");
-                        CopyModels(models_ConfigRow, ref tgt_FMM_Models_DT, tgt_CubeID, ref XFCopyTaskResult);
+                        CopyModels(models_ConfigRow, ref tgt_FMM_ModelConfig_DT, tgt_CubeID, ref XFCopyTaskResult);
                         foreach (DataRow CalcConfigRow in calcsByModelId[curr_srcModelID])
                         {
                             var curr_srcCalcID = GetRowIntValue(CalcConfigRow, "CalcID");
@@ -4059,9 +4054,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 cmdBuilder.UpdateTable(si, "FMM_AcctConfig", tgt_FMM_AcctConfig_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_RegConfig", tgt_FMM_RegConfig_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_Col_Config", tgt_FMM_Col_Config_DT, sqa);
-                cmdBuilder.UpdateTable(si, "FMM_ApprConfig", tgt_FMM_ApprConfig_DT, sqa);
-                cmdBuilder.UpdateTable(si, "FMM_ApprStep_Config", tgt_FMM_ApprStepConfig_DT, sqa);
-                cmdBuilder.UpdateTable(si, "FMM_Models", tgt_FMM_Models_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ApprConfigConfig", tgt_FMM_ApprConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ApprConfigStep_Config", tgt_FMM_ApprStepConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ModelConfig", tgt_FMM_ModelConfig_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_CalcConfig", tgt_FMM_CalcConfig_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_DestCell", tgt_FMM_DestCell_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_SrcCell", tgt_FMM_SrcCell_DT, sqa);
@@ -4093,8 +4088,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             var tgt_FMM_RegConfig_DT = new DataTable();
             var src_FMM_Col_Config_DT = new DataTable();
             var tgt_FMM_Col_Config_DT = new DataTable();
-            var src_FMM_Models_DT = new DataTable();
-            var tgt_FMM_Models_DT = new DataTable();
+            var src_FMM_ModelConfig_DT = new DataTable();
+            var tgt_FMM_ModelConfig_DT = new DataTable();
             var src_FMM_CalcConfig_DT = new DataTable();
             var tgt_FMM_CalcConfig_DT = new DataTable();
             var src_FMM_DestCell_DT = new DataTable();
@@ -4151,7 +4146,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ref src_FMM_ApprConfig_DT, ref tgt_FMM_ApprConfig_DT, sql_gbl_get_max_id
                 );
 
-                get_FMM_ApprStep_Config_Data(
+                get_FMM_ApprConfigStep_Config_Data(
                     new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = src_CubeID } },
                     new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = tgt_CubeID } },
                     sql_gbl_get_datasets,
@@ -4172,11 +4167,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     ref src_FMM_Col_Config_DT, ref tgt_FMM_Col_Config_DT, sql_gbl_get_max_id
                 );
 
-                get_FMM_Models_Data(
+                get_FMM_ModelConfig_Data(
                     new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = src_CubeID } },
                     new SqlParameter[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = tgt_CubeID } },
                     sql_gbl_get_datasets,
-                    ref src_FMM_Models_DT, ref tgt_FMM_Models_DT, sql_gbl_get_max_id
+                    ref src_FMM_ModelConfig_DT, ref tgt_FMM_ModelConfig_DT, sql_gbl_get_max_id
                 );
 
                 get_FMM_CalcConfig_Data(
@@ -4235,7 +4230,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 var colsByRegConfigId = BuildRowLookup(src_FMM_Col_Config_DT, "RegConfigID");
                 var approvalsByActId = BuildRowLookup(src_FMM_ApprConfig_DT, "ActID");
                 var apprStepsByApprId = BuildRowLookup(src_FMM_ApprStepConfig_DT, "ApprID");
-                var modelsByActId = BuildRowLookup(src_FMM_Models_DT, "ActID");
+                var modelsByActId = BuildRowLookup(src_FMM_ModelConfig_DT, "ActID");
                 var calcsByModelId = BuildRowLookup(src_FMM_CalcConfig_DT, "ModelID");
                 var destCellsByCalcId = BuildRowLookup(src_FMM_DestCell_DT, "CalcID");
                 var srcCellsByCalcId = BuildRowLookup(src_FMM_SrcCell_DT, "CalcID");
@@ -4275,7 +4270,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                     foreach (DataRow models_ConfigRow in modelsByActId[curr_srcActivityID])
                     {
                         var curr_srcModelID = GetRowIntValue(models_ConfigRow, "ModelID");
-                        CopyModels(models_ConfigRow, ref tgt_FMM_Models_DT, tgt_CubeID, ref XFCopyTaskResult);
+                        CopyModels(models_ConfigRow, ref tgt_FMM_ModelConfig_DT, tgt_CubeID, ref XFCopyTaskResult);
                         foreach (DataRow CalcConfigRow in calcsByModelId[curr_srcModelID])
                         {
                             var curr_srcCalcID = GetRowIntValue(CalcConfigRow, "CalcID");
@@ -4306,9 +4301,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 cmdBuilder.UpdateTable(si, "FMM_AcctConfig", tgt_FMM_AcctConfig_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_RegConfig", tgt_FMM_RegConfig_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_Col_Config", tgt_FMM_Col_Config_DT, sqa);
-                cmdBuilder.UpdateTable(si, "FMM_ApprConfig", tgt_FMM_ApprConfig_DT, sqa);
-                cmdBuilder.UpdateTable(si, "FMM_ApprStep_Config", tgt_FMM_ApprStepConfig_DT, sqa);
-                cmdBuilder.UpdateTable(si, "FMM_Models", tgt_FMM_Models_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ApprConfigConfig", tgt_FMM_ApprConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ApprConfigStep_Config", tgt_FMM_ApprStepConfig_DT, sqa);
+                cmdBuilder.UpdateTable(si, "FMM_ModelConfig", tgt_FMM_ModelConfig_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_CalcConfig", tgt_FMM_CalcConfig_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_DestCell", tgt_FMM_DestCell_DT, sqa);
                 cmdBuilder.UpdateTable(si, "FMM_SrcCell", tgt_FMM_SrcCell_DT, sqa);
@@ -4484,27 +4479,27 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
         {
             var sqa = new SqlDataAdapter();
             var whereClause = Construct_Where_Clause(src_sqlparams);
-            var sql = $@"SELECT * FROM FMM_ApprConfig {whereClause}";
+            var sql = $@"SELECT * FROM FMM_ApprConfigConfig {whereClause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_ApprConfig_DT, sql, src_sqlparams);
 
             whereClause = Construct_Where_Clause(tgt_sqlparams);
-            sql = $@"SELECT * FROM FMM_ApprConfig {whereClause}";
+            sql = $@"SELECT * FROM FMM_ApprConfigConfig {whereClause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, tgt_FMM_ApprConfig_DT, sql, tgt_sqlparams);
-            gbl_ApprID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprConfig", "ApprID");
+            gbl_ApprID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprConfigConfig", "ApprID");
         }
 
-        private void get_FMM_ApprStep_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, ref DataTable src_FMM_ApprStepConfig_DT, ref DataTable tgt_FMM_ApprStepConfig_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
+        private void get_FMM_ApprConfigStep_Config_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, ref DataTable src_FMM_ApprStepConfig_DT, ref DataTable tgt_FMM_ApprStepConfig_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
             var sqa = new SqlDataAdapter();
             var whereClause = Construct_Where_Clause(src_sqlparams);
-            var sql = $@"SELECT * FROM FMM_ApprStep_Config {whereClause}";
+            var sql = $@"SELECT * FROM FMM_ApprConfigStep_Config {whereClause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_ApprStepConfig_DT, sql, src_sqlparams);
 
             whereClause = Construct_Where_Clause(tgt_sqlparams);
-            sql = $@"SELECT * FROM FMM_ApprStep_Config {whereClause}";
+            sql = $@"SELECT * FROM FMM_ApprConfigStep_Config {whereClause}";
             sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, tgt_FMM_ApprStepConfig_DT, sql, tgt_sqlparams);
 
-            gbl_ApprStepID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprStep_Config", "ApprStepID");
+            gbl_ApprStepID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ApprConfigStep_Config", "ApprStepID");
         }
 
         private void get_FMM_RegConfig_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, ref DataTable src_FMM_RegConfig_DT, ref DataTable tgt_FMM_RegConfig_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
@@ -4535,18 +4530,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             gbl_ColID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Col_Config", "Col_ID");
         }
 
-        private void get_FMM_Models_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, ref DataTable src_FMM_Models_DT, ref DataTable tgt_FMM_Models_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
+        private void get_FMM_ModelConfig_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, ref DataTable src_FMM_ModelConfig_DT, ref DataTable tgt_FMM_ModelConfig_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
         {
             var sqa = new SqlDataAdapter();
             var whereClause = Construct_Where_Clause(src_sqlparams);
-            var sql = $@"SELECT * FROM FMM_Models {whereClause}";
-            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_Models_DT, sql, src_sqlparams);
+            var sql = $@"SELECT * FROM FMM_ModelConfig {whereClause}";
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, src_FMM_ModelConfig_DT, sql, src_sqlparams);
 
             whereClause = Construct_Where_Clause(tgt_sqlparams);
-            sql = $@"SELECT * FROM FMM_Models {whereClause}";
-            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, tgt_FMM_Models_DT, sql, tgt_sqlparams);
+            sql = $@"SELECT * FROM FMM_ModelConfig {whereClause}";
+            sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, tgt_FMM_ModelConfig_DT, sql, tgt_sqlparams);
 
-            gbl_ModelID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_Models", "ModelID");
+            gbl_ModelID = sql_gbl_get_max_id.Get_Max_ID(si, "FMM_ModelConfig", "ModelID");
         }
 
         private void get_FMM_CalcConfig_Data(SqlParameter[] src_sqlparams, SqlParameter[] tgt_sqlparams, SQL_GBL_Get_DataSets sql_gbl_get_datasets, ref DataTable src_FMM_CalcConfig_DT, ref DataTable tgt_FMM_CalcConfig_DT, SQL_GBL_Get_Max_ID sql_gbl_get_max_id)
@@ -4906,12 +4901,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 }
             }
         }
-        private void Copy_ApprSteps(DataRow src_FMM_ApprStep_Config_Row, ref DataTable tgt_FMM_ApprStepConfig_DT, int targetCubeID, ref XFSelectionChangedTaskResult XFCopyTaskResult)
+        private void Copy_ApprSteps(DataRow src_FMM_ApprConfigStep_Config_Row, ref DataTable tgt_FMM_ApprStepConfig_DT, int targetCubeID, ref XFSelectionChangedTaskResult XFCopyTaskResult)
         {
             var row_Status = "Build";
             bool isDuplicate = tgt_FMM_ApprStepConfig_DT.AsEnumerable()
-                .Any(row => row["StepNum"].ToString() == src_FMM_ApprStep_Config_Row["StepNum"].ToString() &&
-                            row["WFProfile_Step"].ToString() == src_FMM_ApprStep_Config_Row["WFProfile_Step"].ToString() &&
+                .Any(row => row["StepNum"].ToString() == src_FMM_ApprConfigStep_Config_Row["StepNum"].ToString() &&
+                            row["WFProfile_Step"].ToString() == src_FMM_ApprConfigStep_Config_Row["WFProfile_Step"].ToString() &&
                             row["ActID"].ToString() == gbl_CurrActID.ToString() &&
                             row["ApprID"].ToString() == gbl_CurrApprID.ToString());
 
@@ -4924,16 +4919,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
                 new_DestDataRow["ActID"] = gbl_ActID;
                 new_DestDataRow["ApprID"] = gbl_ApprID;
                 new_DestDataRow["ApprStepID"] = gbl_ApprStepID;
-                new_DestDataRow["StepNum"] = src_FMM_ApprStep_Config_Row.Field<int?>("StepNum") ?? 0;
-                new_DestDataRow["WFProfile_Step"] = src_FMM_ApprStep_Config_Row.Field<Guid?>("WFProfile_Step") ?? Guid.Empty;
-                new_DestDataRow["UserGroup"] = src_FMM_ApprStep_Config_Row.Field<string>("UserGroup") ?? string.Empty;
-                new_DestDataRow["Logic"] = src_FMM_ApprStep_Config_Row.Field<string>("Logic") ?? string.Empty;
-                new_DestDataRow["Item"] = src_FMM_ApprStep_Config_Row.Field<string>("Item") ?? string.Empty;
-                new_DestDataRow["Level"] = src_FMM_ApprStep_Config_Row.Field<int?>("Level") ?? 0;
-                new_DestDataRow["ApprConfig"] = src_FMM_ApprStep_Config_Row.Field<int?>("ApprConfig") ?? 0;
-                new_DestDataRow["InitStatus"] = src_FMM_ApprStep_Config_Row.Field<string>("InitStatus") ?? string.Empty;
-                new_DestDataRow["ApprStatus"] = src_FMM_ApprStep_Config_Row.Field<string>("ApprStatus") ?? string.Empty;
-                new_DestDataRow["RejStatus"] = src_FMM_ApprStep_Config_Row.Field<string>("RejStatus") ?? string.Empty;
+                new_DestDataRow["StepNum"] = src_FMM_ApprConfigStep_Config_Row.Field<int?>("StepNum") ?? 0;
+                new_DestDataRow["WFProfile_Step"] = src_FMM_ApprConfigStep_Config_Row.Field<Guid?>("WFProfile_Step") ?? Guid.Empty;
+                new_DestDataRow["UserGroup"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("UserGroup") ?? string.Empty;
+                new_DestDataRow["Logic"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("Logic") ?? string.Empty;
+                new_DestDataRow["Item"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("Item") ?? string.Empty;
+                new_DestDataRow["Level"] = src_FMM_ApprConfigStep_Config_Row.Field<int?>("Level") ?? 0;
+                new_DestDataRow["ApprConfig"] = src_FMM_ApprConfigStep_Config_Row.Field<int?>("ApprConfig") ?? 0;
+                new_DestDataRow["InitStatus"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("InitStatus") ?? string.Empty;
+                new_DestDataRow["ApprStatus"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("ApprStatus") ?? string.Empty;
+                new_DestDataRow["RejStatus"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("RejStatus") ?? string.Empty;
                 new_DestDataRow["Status"] = row_Status; // Set initial status as appropriate
                 new_DestDataRow["CreateDate"] = DateTime.Now;
                 new_DestDataRow["CreateUser"] = si.UserName; new_DestDataRow["UpdateDate"] = DateTime.Now;
@@ -4943,22 +4938,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardE
             else
             {
                 DataRow existing_DataRow = tgt_FMM_ApprStepConfig_DT.AsEnumerable()
-                    .FirstOrDefault(row => row["StepNum"].ToString() == src_FMM_ApprStep_Config_Row["StepNum"].ToString() &&
-                                           row["WFProfile_Step"].ToString() == src_FMM_ApprStep_Config_Row["WFProfile_Step"].ToString() &&
+                    .FirstOrDefault(row => row["StepNum"].ToString() == src_FMM_ApprConfigStep_Config_Row["StepNum"].ToString() &&
+                                           row["WFProfile_Step"].ToString() == src_FMM_ApprConfigStep_Config_Row["WFProfile_Step"].ToString() &&
                                            row["ActID"].ToString() == gbl_CurrActID.ToString() &&
                                            row["ApprID"].ToString() == gbl_CurrApprID.ToString());
 
                 if (existing_DataRow != null)
                 {
                     gbl_CurrApprStepID = existing_DataRow.Field<int>("ApprStepID");
-                    existing_DataRow["UserGroup"] = src_FMM_ApprStep_Config_Row.Field<string>("UserGroup") ?? string.Empty;
-                    existing_DataRow["Logic"] = src_FMM_ApprStep_Config_Row.Field<string>("Logic") ?? string.Empty;
-                    existing_DataRow["Item"] = src_FMM_ApprStep_Config_Row.Field<string>("Item") ?? string.Empty;
-                    existing_DataRow["Level"] = src_FMM_ApprStep_Config_Row.Field<int?>("Level") ?? 0;
-                    existing_DataRow["ApprConfig"] = src_FMM_ApprStep_Config_Row.Field<int?>("ApprConfig") ?? 0;
-                    existing_DataRow["InitStatus"] = src_FMM_ApprStep_Config_Row.Field<string>("InitStatus") ?? string.Empty;
-                    existing_DataRow["ApprStatus"] = src_FMM_ApprStep_Config_Row.Field<string>("ApprStatus") ?? string.Empty;
-                    existing_DataRow["RejStatus"] = src_FMM_ApprStep_Config_Row.Field<string>("RejStatus") ?? string.Empty;
+                    existing_DataRow["UserGroup"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("UserGroup") ?? string.Empty;
+                    existing_DataRow["Logic"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("Logic") ?? string.Empty;
+                    existing_DataRow["Item"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("Item") ?? string.Empty;
+                    existing_DataRow["Level"] = src_FMM_ApprConfigStep_Config_Row.Field<int?>("Level") ?? 0;
+                    existing_DataRow["ApprConfig"] = src_FMM_ApprConfigStep_Config_Row.Field<int?>("ApprConfig") ?? 0;
+                    existing_DataRow["InitStatus"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("InitStatus") ?? string.Empty;
+                    existing_DataRow["ApprStatus"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("ApprStatus") ?? string.Empty;
+                    existing_DataRow["RejStatus"] = src_FMM_ApprConfigStep_Config_Row.Field<string>("RejStatus") ?? string.Empty;
                     existing_DataRow["Status"] = row_Status; // Set initial status as appropriate
                     existing_DataRow["UpdateDate"] = DateTime.Now;
                     existing_DataRow["UpdateUser"] = si.UserName;

@@ -264,3 +264,40 @@ GO
 CREATE NONCLUSTERED INDEX [IX_RegPlan_Audit_WFScenario]
 ON [dbo].[RegPlan_Audit] ([WFScenarioName], [ProjectID]);
 GO
+
+-- =============================================
+-- Table: FMM_ValConfig
+-- Description: Validation rule configurations for FMM Data Validation
+-- Context: TABLE (relational table validations) or CUBE (OneStream cube validations)
+-- =============================================
+CREATE TABLE [dbo].[FMM_ValConfig] (
+    [ValConfigID]        INT            IDENTITY(1,1) NOT NULL,
+    [Name]               NVARCHAR(100)  NOT NULL,
+    [Descr]              NVARCHAR(500)  NULL,
+    [Validation_Context] NVARCHAR(20)   NOT NULL,  -- TABLE | CUBE
+    [Validation_Type]    NVARCHAR(50)   NOT NULL,  -- See FMM_VALIDATION_IMPLEMENTATION_SUMMARY.md
+    [Config_JSON]        NVARCHAR(MAX)  NULL,
+    [Is_Active]          BIT            NOT NULL DEFAULT 1,
+    [Status]             NVARCHAR(20)   NOT NULL DEFAULT 'Active',
+
+    -- Audit Fields
+    [CreateDate]         DATETIME       NULL,
+    [CreateUser]         NVARCHAR(50)   NULL,
+    [UpdateDate]         DATETIME       NULL,
+    [UpdateUser]         NVARCHAR(50)   NULL,
+
+    CONSTRAINT [PK_FMM_ValConfig] PRIMARY KEY CLUSTERED ([ValConfigID] ASC)
+);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_FMM_ValConfig_Context]
+ON [dbo].[FMM_ValConfig] ([Validation_Context]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_FMM_ValConfig_Type]
+ON [dbo].[FMM_ValConfig] ([Validation_Type]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_FMM_ValConfig_IsActive]
+ON [dbo].[FMM_ValConfig] ([Is_Active]);
+GO

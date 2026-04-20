@@ -3018,6 +3018,346 @@
                                 <dimName></dimName>
                                 <memberFilter></memberFilter>
                             </parameter>
+                            <parameter name="BL_FMM_ValConfigID" description="FMM Validation Config BoundList" userPrompt="" parameterType="BoundList" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Method</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>BusinessRule</methodType>
+                                <methodQuery>{Workspace.Current.FMM_UI_Assembly.FMM_DB_DataSets}{get_FMM_ValConfigs}{}</methodQuery>
+                                <resultsTableName>FMM_ValConfig</resultsTableName>
+                                <displayMember>Name</displayMember>
+                                <valueMember>ValConfigID</valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfigID" description="FMM Validation Config ID" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_AddUpdate" description="FMM Validation Config Add or Update mode" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue>Add</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_Name" description="FMM Validation Config Name" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_Descr" description="FMM Validation Config Description" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="DL_FMM_ValConfig_Context" description="FMM Validation Context - TABLE or CUBE" userPrompt="" parameterType="DelimitedList" sortOrder="400">
+                                <defaultValue>TABLE</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems>TABLE,CUBE</displayItems>
+                                <valueItems>TABLE,CUBE</valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_Context" description="FMM Validation Config Context value" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue>TABLE</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="DL_FMM_ValConfig_Type" description="FMM Validation Type - 14 types across TABLE and CUBE contexts" userPrompt="" parameterType="DelimitedList" sortOrder="400">
+                                <defaultValue>ColumnValueList</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems>ColumnValueList,ColumnValueRange,ColumnValuePattern,RequiredColumns,UniqueConstraint,ReferentialIntegrity,CustomTableSQL,ScenarioComparison,DimensionalBalance,CrossDimensionalRule,TemporalConsistency,AllocationValidation,VarianceThreshold,CustomCubeSQL</displayItems>
+                                <valueItems>ColumnValueList,ColumnValueRange,ColumnValuePattern,RequiredColumns,UniqueConstraint,ReferentialIntegrity,CustomTableSQL,ScenarioComparison,DimensionalBalance,CrossDimensionalRule,TemporalConsistency,AllocationValidation,VarianceThreshold,CustomCubeSQL</valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_Type" description="FMM Validation Config Type value" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue>ColumnValueList</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_ConfigJSON" description="FMM Validation Config JSON configuration" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_IsActive" description="FMM Validation Config Is Active flag" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue>1</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="DL_FMM_ValConfig_Status" description="FMM Validation Config Status" userPrompt="" parameterType="DelimitedList" sortOrder="400">
+                                <defaultValue>Active</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems>Active,Inactive</displayItems>
+                                <valueItems>Active,Inactive</valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_Status" description="FMM Validation Config Status value" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue>Active</defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_CreateDate" description="FMM Validation Config Create Date (read-only)" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_CreateUser" description="FMM Validation Config Create User (read-only)" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_UpdateDate" description="FMM Validation Config Update Date (read-only)" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
+                            <parameter name="IV_FMM_ValConfig_UpdateUser" description="FMM Validation Config Update User (read-only)" userPrompt="" parameterType="InputValue" sortOrder="400">
+                                <defaultValue></defaultValue>
+                                <resultFormatStringType>Default</resultFormatStringType>
+                                <resultCustomFormatString></resultCustomFormatString>
+                                <parameterCommandType>Unknown</parameterCommandType>
+                                <sqlQuery></sqlQuery>
+                                <dbLocation>Application</dbLocation>
+                                <externalDBConnName></externalDBConnName>
+                                <methodType>Unknown</methodType>
+                                <methodQuery></methodQuery>
+                                <resultsTableName></resultsTableName>
+                                <displayMember></displayMember>
+                                <valueMember></valueMember>
+                                <displayItems></displayItems>
+                                <valueItems></valueItems>
+                                <cubeName></cubeName>
+                                <dimType></dimType>
+                                <dimName></dimName>
+                                <memberFilter></memberFilter>
+                            </parameter>
                         </parameters>
                         <adapters>
                             <adapter name="DA_FMM_CalcUnitConfig" description="" commandType="SQL">
@@ -7410,6 +7750,192 @@
                                 </componentDefinition>
                                 <adapterMembers />
                             </component>
+                            <component name="lbx_FMM_ValConfigID" description="" xfText="Validation Rules" toolTip="" componentType="ListBox" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_ValConfigID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBRStageServer" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_lbx_Format!|, Width = Auto</displayFormat>
+                                <selectionChangedTaskArgs>{Workspace.Current.FMM_ConfigUI_Assembly.FMM_Config_Data}{ValConfig_Select}{}</selectionChangedTaskArgs>
+                                <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
+                                <adapterMembers />
+                            </component>
+                            <component name="btn_FMM_ValConfig_Add" description="" xfText="Add" toolTip="Add Validation Rule" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBRStageServer" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_btn_Format!|</displayFormat>
+                                <selectionChangedTaskArgs>{Workspace.Current.FMM_ConfigUI_Assembly.FMM_Config_Data}{ValConfig_Add}{}</selectionChangedTaskArgs>
+                                <dashboardsToRedraw>FMM_Data_Validation_C2</dashboardsToRedraw>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>DashboardFile</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName>Std_DB_Add.png</ImageUrlOrFullFileName>
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="btn_FMM_ValConfig_Delete" description="" xfText="Delete" toolTip="Delete Validation Rule" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBRStageServer" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_btn_Format!|</displayFormat>
+                                <selectionChangedTaskArgs>{Workspace.Current.FMM_ConfigUI_Assembly.FMM_Config_Data}{ValConfig_SaveDelete}{}</selectionChangedTaskArgs>
+                                <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>DashboardFile</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName>Std_DB_Delete.png</ImageUrlOrFullFileName>
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="btn_FMM_ValConfig_SaveAdd" description="" xfText="Save" toolTip="Save New Validation Rule" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBRStageServer" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_btn_Format!|</displayFormat>
+                                <selectionChangedTaskArgs>{Workspace.Current.FMM_ConfigUI_Assembly.FMM_Config_Data}{ValConfig_SaveAdd}{}</selectionChangedTaskArgs>
+                                <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>DashboardFile</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName>Std_DB_Save.png</ImageUrlOrFullFileName>
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="btn_FMM_ValConfig_SaveUpdate" description="" xfText="Save" toolTip="Save Validation Rule Updates" componentType="Button" templateParameterValues="" brText1="" brText2="" boundParameterName="" paramValueForButtonClick="" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="ExecuteDashboardExtenderBRStageServer" selectionChangedUIActionType="Refresh" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_btn_Format!|</displayFormat>
+                                <selectionChangedTaskArgs>{Workspace.Current.FMM_ConfigUI_Assembly.FMM_Config_Data}{ValConfig_SaveUpdate}{}</selectionChangedTaskArgs>
+                                <dashboardsToRedraw>FMM_App_Admin (OnePlace)</dashboardsToRedraw>
+                                <componentDefinition>
+                                    <XFButtonDefinition ButtonType="Standard">
+                                        <ImageFileSourceType>DashboardFile</ImageFileSourceType>
+                                        <ImageUrlOrFullFileName>Std_DB_Save.png</ImageUrlOrFullFileName>
+                                        <PageNumber />
+                                        <ExcelSheet />
+                                        <ExcelNamedRange />
+                                    </XFButtonDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="cbx_FMM_ValConfig_Context" description="" xfText="Validation Context:" toolTip="Select TABLE or CUBE validation context" componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_FMM_ValConfig_Context" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_cbx_Format!|, Width = 150</displayFormat>
+                                <adapterMembers />
+                            </component>
+                            <component name="cbx_FMM_ValConfig_Type" description="" xfText="Validation Type:" toolTip="Select validation type" componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_FMM_ValConfig_Type" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_cbx_Format!|, Width = 200</displayFormat>
+                                <adapterMembers />
+                            </component>
+                            <component name="cbx_FMM_ValConfig_Status" description="" xfText="Status:" toolTip="Select Status" componentType="ComboBox" templateParameterValues="" brText1="" brText2="" boundParameterName="DL_FMM_ValConfig_Status" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_cbx_Format!|, Width = 120</displayFormat>
+                                <adapterMembers />
+                            </component>
+                            <component name="txt_FMM_ValConfig_Name" description="" xfText="Rule Name:" toolTip="Enter validation rule name" componentType="TextBox" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_ValConfig_Name" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_txt_Format!|, Width = 250</displayFormat>
+                                <componentDefinition>
+                                    <XFTextBoxDefinition>
+                                        <AllowRichText>false</AllowRichText>
+                                        <EnableSpellCheck>false</EnableSpellCheck>
+                                        <Multiline>false</Multiline>
+                                    </XFTextBoxDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="txt_FMM_ValConfig_Descr" description="" xfText="Description:" toolTip="Enter validation rule description" componentType="TextBox" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_ValConfig_Descr" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_txt_Format!|, Width = 350</displayFormat>
+                                <componentDefinition>
+                                    <XFTextBoxDefinition>
+                                        <AllowRichText>false</AllowRichText>
+                                        <EnableSpellCheck>false</EnableSpellCheck>
+                                        <Multiline>false</Multiline>
+                                    </XFTextBoxDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="txt_FMM_ValConfig_ConfigJSON" description="" xfText="Config JSON:" toolTip="Enter JSON configuration for this validation rule" componentType="TextBox" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_ValConfig_ConfigJSON" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_txt_Format!|, Width = 350, Height = 120</displayFormat>
+                                <componentDefinition>
+                                    <XFTextBoxDefinition>
+                                        <AllowRichText>false</AllowRichText>
+                                        <EnableSpellCheck>false</EnableSpellCheck>
+                                        <Multiline>true</Multiline>
+                                    </XFTextBoxDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="chk_FMM_ValConfig_IsActive" description="" xfText="Is Active" toolTip="Toggle validation rule active state" componentType="CheckBox" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_ValConfig_IsActive" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_chk_Format!|</displayFormat>
+                                <adapterMembers />
+                            </component>
+                            <component name="txt_FMM_ValConfig_CreateDate" description="" xfText="Created:" toolTip="" componentType="TextBox" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_ValConfig_CreateDate" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_txt_Format!|, Width = 140, IsReadOnly = True</displayFormat>
+                                <componentDefinition>
+                                    <XFTextBoxDefinition>
+                                        <AllowRichText>false</AllowRichText>
+                                        <EnableSpellCheck>false</EnableSpellCheck>
+                                        <Multiline>false</Multiline>
+                                    </XFTextBoxDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="txt_FMM_ValConfig_CreateUser" description="" xfText="By:" toolTip="" componentType="TextBox" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_ValConfig_CreateUser" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_txt_Format!|, Width = 120, IsReadOnly = True</displayFormat>
+                                <componentDefinition>
+                                    <XFTextBoxDefinition>
+                                        <AllowRichText>false</AllowRichText>
+                                        <EnableSpellCheck>false</EnableSpellCheck>
+                                        <Multiline>false</Multiline>
+                                    </XFTextBoxDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="txt_FMM_ValConfig_UpdateDate" description="" xfText="Updated:" toolTip="" componentType="TextBox" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_ValConfig_UpdateDate" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_txt_Format!|, Width = 140, IsReadOnly = True</displayFormat>
+                                <componentDefinition>
+                                    <XFTextBoxDefinition>
+                                        <AllowRichText>false</AllowRichText>
+                                        <EnableSpellCheck>false</EnableSpellCheck>
+                                        <Multiline>false</Multiline>
+                                    </XFTextBoxDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="txt_FMM_ValConfig_UpdateUser" description="" xfText="By:" toolTip="" componentType="TextBox" templateParameterValues="" brText1="" brText2="" boundParameterName="IV_FMM_ValConfig_UpdateUser" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <displayFormat>|!LV_Std_txt_Format!|, Width = 120, IsReadOnly = True</displayFormat>
+                                <componentDefinition>
+                                    <XFTextBoxDefinition>
+                                        <AllowRichText>false</AllowRichText>
+                                        <EnableSpellCheck>false</EnableSpellCheck>
+                                        <Multiline>false</Multiline>
+                                    </XFTextBoxDefinition>
+                                </componentDefinition>
+                                <adapterMembers />
+                            </component>
+                            <component name="sp_BL_FMM_ValConfigID" description="" xfText="" toolTip="" componentType="SuppliedParameter" templateParameterValues="" brText1="" brText2="" boundParameterName="BL_FMM_ValConfigID" applyParamValueToCurrentDbrd="true" selectionChangedSaveType="NoAction" selectionChangedPovActionType="NoAction" selectionChangedTaskType="NoTask" selectionChangedUIActionType="NoAction" selectionChangedNavigationType="NoAction">
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded FMM_Data_Validation_C1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="FMM_Data_Validation_C1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded FMM_Data_Validation_C1R1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="FMM_Data_Validation_C1R1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded FMM_Data_Validation_C2" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="FMM_Data_Validation_C2" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded FMM_Data_Validation_C2R1" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="FMM_Data_Validation_C2R1" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded FMM_Data_Validation_C2R2" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="FMM_Data_Validation_C2R2" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded FMM_Data_Validation_C2R3" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="FMM_Data_Validation_C2R3" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded FMM_Data_Validation_C2R4" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="FMM_Data_Validation_C2R4" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <adapterMembers />
+                            </component>
+                            <component name="Embedded FMM_Data_Validation_C2R5" description="" xfText="" toolTip="" componentType="EmbeddedDashboard" embeddedDashboardName="FMM_Data_Validation_C2R5" templateNameSuffix="" templateParameterValues="" brText1="" brText2="">
+                                <adapterMembers />
+                            </component>
                         </components>
                         <dashboardGroups>
                             <dashboardGroup name="FMM Admin (OnePlace)" description="" accessGroup="Administrators">
@@ -11362,7 +11888,8 @@
                             </dashboardGroup>
                             <dashboardGroup name="FMM Data Validation Config" description="" accessGroup="Administrators">
                                 <dashboards>
-                                    <dashboard name="FMM_Data_Validation" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                    <dashboard name="FMM_Data_Validation" description="" pageCaption="" dashboardType="Embedded" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="ExecuteDashboardExtenderBRAllActions">
+                                        <loadDashboardTaskArgs>{Workspace.Current.FMM_ConfigUI_Assembly.FMM_Config_Load_DB}{Load_FMM_Dashboard}{}</loadDashboardTaskArgs>
                                         <DashboardDefinition>
                                             <ShowTitle>true</ShowTitle>
                                             <Notes />
@@ -11382,7 +11909,225 @@
                                             </GridLayoutDefinition>
                                             <ScrollPosition>Default</ScrollPosition>
                                         </DashboardDefinition>
-                                        <componentMembers />
+                                        <componentMembers>
+                                            <componentMember name="Embedded FMM_Data_Validation_C1" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded FMM_Data_Validation_C2" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="FMM_Data_Validation_C1" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Line" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded FMM_Data_Validation_C1R1" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="lbx_FMM_ValConfigID" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="FMM_Data_Validation_C1R1" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="btn_FMM_ValConfig_Add" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="btn_FMM_ValConfig_Delete" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="FMM_Data_Validation_C2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="*" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Line" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Line" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Line" Height="*" />
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="*" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="Embedded FMM_Data_Validation_C2R1" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded FMM_Data_Validation_C2R2" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded FMM_Data_Validation_C2R3" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded FMM_Data_Validation_C2R4" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="Embedded FMM_Data_Validation_C2R5" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="FMM_Data_Validation_C2R1" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="btn_FMM_ValConfig_SaveAdd" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="btn_FMM_ValConfig_SaveUpdate" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="FMM_Data_Validation_C2R2" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>BorderMarginLeft = 10</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="txt_FMM_ValConfig_Name" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_FMM_ValConfig_Descr" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="FMM_Data_Validation_C2R3" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>BorderMarginLeft = 10</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_FMM_ValConfig_Context" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="cbx_FMM_ValConfig_Type" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="chk_FMM_ValConfig_IsActive" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="FMM_Data_Validation_C2R4" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>BorderMarginLeft = 10</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                    <RowDefinition RowType="Component" Height="120" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="cbx_FMM_ValConfig_Status" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_FMM_ValConfig_ConfigJSON" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
+                                    </dashboard>
+                                    <dashboard name="FMM_Data_Validation_C2R5" description="" pageCaption="" dashboardType="Unknown" layoutType="Grid" isInitiallyVisible="true" loadDashboardTaskType="NoTask">
+                                        <displayFormat>BorderMarginLeft = 10</displayFormat>
+                                        <DashboardDefinition>
+                                            <ShowTitle>true</ShowTitle>
+                                            <Notes />
+                                            <DynamicDashboardDefinition>
+                                                <ComponentTemplateRepeatItems />
+                                            </DynamicDashboardDefinition>
+                                            <CustomControlDbrdDefinition RequiredInputParameters="" />
+                                            <GridLayoutDefinition>
+                                                <ColumnDefinitions>
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                    <ColumnDefinition ColumnType="Component" Width="Auto" />
+                                                </ColumnDefinitions>
+                                                <RowDefinitions>
+                                                    <RowDefinition RowType="Component" Height="Auto" />
+                                                </RowDefinitions>
+                                            </GridLayoutDefinition>
+                                            <ScrollPosition>Default</ScrollPosition>
+                                        </DashboardDefinition>
+                                        <componentMembers>
+                                            <componentMember name="txt_FMM_ValConfig_CreateDate" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_FMM_ValConfig_CreateUser" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_FMM_ValConfig_UpdateDate" left="" top="" width="" height="" dockPosition="Left" />
+                                            <componentMember name="txt_FMM_ValConfig_UpdateUser" left="" top="" width="" height="" dockPosition="Left" />
+                                        </componentMembers>
                                     </dashboard>
                                 </dashboards>
                             </dashboardGroup>
@@ -16915,6 +17660,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_WFProfiles("All");
                         }
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ValConfigs"))
+                        {
+                            return get_FMM_ValConfigs();
+                        }
 
                         break;
                 }
@@ -16927,6 +17676,30 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
         #region "Helper Queries"
+        private DataTable get_FMM_ValConfigs()
+        {
+            try
+            {
+                var dt = new DataTable("FMM_ValConfig");
+                var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+                using (var connection = new SqlConnection(dbConnApp.ConnectionString))
+                {
+                    var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+                    var sqa = new SqlDataAdapter();
+                    var sql = @"SELECT ValConfigID, Name, Validation_Context, Validation_Type, Is_Active, Status
+                                FROM FMM_ValConfig
+                                ORDER BY Name";
+                    var sqlparams = new SqlParameter[] { };
+                    sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
+                }
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                throw ErrorHandler.LogWrite(si, new XFException(si, ex));
+            }
+        }
+
         private DataTable get_FMM_Cube_Names()
         {
             try

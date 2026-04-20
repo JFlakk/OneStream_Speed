@@ -395,7 +395,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             try
             {
                 _ = workspaceId; // reserved for future workspace-specific defaults
-                var CubeID = customSubstVars.XFGetValue("IV_FMM_CubeID", "0");
+                var CubeID = customSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0");
                 var ActID = customSubstVars.XFGetValue("IV_FMM_ActID", "0");
                 var ModelID = customSubstVars.XFGetValue("IV_FMM_ModelID", "0");
                 var CalcID = customSubstVars.XFGetValue("BL_FMM_CalcList", "0");

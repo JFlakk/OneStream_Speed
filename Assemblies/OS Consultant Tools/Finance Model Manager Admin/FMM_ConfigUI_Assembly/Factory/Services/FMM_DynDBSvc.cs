@@ -28,7 +28,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    if (storedDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
+                    if (storedDashboard.Name.XFEqualsIgnoreCase("FMM_ModelConfigContent_Cube_R3R2"))
                     {
                         // retrieve our items
                         var src_CellDB = new FMM_SrcCellDB(si);
@@ -166,7 +166,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_Model_Content_Cube_R3R2"))
+                    if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_ModelConfigContent_Cube_R3R2"))
                     {
                         var repeatArgsList = dynamicDashboardEx.DynamicDashboard.Tag as List<WsDynamicComponentRepeatArgs>;
                         return api.GetDynamicComponentsRepeatedForDynamicDashboard(si, workspace, dynamicDashboardEx,
