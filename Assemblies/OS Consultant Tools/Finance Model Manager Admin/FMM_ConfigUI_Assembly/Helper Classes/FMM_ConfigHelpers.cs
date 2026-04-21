@@ -249,7 +249,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfigName", "Name" } } },
-						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfigCalcType", "CalcType" } } },
+						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfig_CalcType", "CalcType" } } },
 						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfigProcType", "ProcType" } } }
 					}
 				},
@@ -258,7 +258,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfigName", "Name" } } },
-						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfigCalcType", "CalcType" } } },
+						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfig_CalcType", "CalcType" } } },
 						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfigProcType", "ProcType" } } },
 						{ 3, new Dictionary<string, string> { { "DL_FMM_ModelConfigStatus", "Status" } } }
 					}
@@ -268,7 +268,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfigName", "Name" } } },
-						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfigCalcType", "CalcType" } } },
+						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfig_CalcType", "CalcType" } } },
 						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfigProcType", "ProcType" } } },
 						{ 3, new Dictionary<string, string> { { "DL_FMM_ModelConfigStatus", "Status" } } },
 						{ 4, new Dictionary<string, string> { { "IV_FMM_ModelConfigCreateDate", "CreateDate" } } },
@@ -297,41 +297,41 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					DashboardName = "FMM_ModelConfigTable",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_CalcConfig_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_CalcConfig_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_CalcConfig_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.Cube] = new CalcConfig
 				{
-					DashboardName = "FMM_ModelConfigCube",
+					DashboardName = "FMM_CalcConfig_Cube",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_CalcConfig_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_CalcConfig_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_CalcConfig_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.BRTabletoCube] = new CalcConfig
@@ -339,41 +339,41 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					DashboardName = "FMM_ModelConfigBRTabletoCube",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_CalcConfig_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_CalcConfig_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_CalcConfig_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.CubetoTable] = new CalcConfig
 				{
-					DashboardName = "FMM_ModelConfigCubetoTable",
+					DashboardName = "FMM_CalcConfig_CubetoTable",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_CalcConfig_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_CalcConfig_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_CalcConfig_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateUser", "UpdateUser" } } }
 					}
 				},
 				[CalcType.Consolidate] = new CalcConfig
@@ -381,20 +381,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 					DashboardName = "FMM_ModelConfigConsol",
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Sequence", "Sequence" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDimAlloc" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalc", "BRCalc" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_Calc_BRCalcName", "BRCalcName" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_Calc_TimePhase", "TimePhase" } } },
-						{ 8, new Dictionary<string, string> { { "IV_FMM_Calc_InputFreq", "InputFreq" } } },
-						{ 9, new Dictionary<string, string> { { "IV_FMM_Calc_Status", "Status" } } },
-						{ 10, new Dictionary<string, string> { { "IV_FMM_Calc_CreateDate", "CreateDate" } } },
-						{ 11, new Dictionary<string, string> { { "IV_FMM_Calc_CreateUser", "CreateUser" } } },
-						{ 12, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateDate", "UpdateDate" } } },
-						{ 13, new Dictionary<string, string> { { "IV_FMM_Calc_UpdateUser", "UpdateUser" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Sequence", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_CalcConfig_MultiDimAlloc", "MultiDimAlloc" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalc", "BRCalc" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_CalcConfig_BRCalcName", "BRCalcName" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_CalcConfig_TimePhase", "TimePhase" } } },
+						{ 8, new Dictionary<string, string> { { "IV_FMM_CalcConfig_InputFreq", "InputFreq" } } },
+						{ 9, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Status", "Status" } } },
+						{ 10, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateDate", "CreateDate" } } },
+						{ 11, new Dictionary<string, string> { { "IV_FMM_CalcConfig_CreateUser", "CreateUser" } } },
+						{ 12, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateDate", "UpdateDate" } } },
+						{ 13, new Dictionary<string, string> { { "IV_FMM_CalcConfig_UpdateUser", "UpdateUser" } } }
 					}
 				}
 			};
@@ -414,11 +414,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_Calc_Location", "Sequence" } } },
-						{ 1, new Dictionary<string, string> { { "IV_FMM_Calc_Name", "Name" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_Calc_Explanation", "Explanation" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_Calc_Condition", "Condition" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_Calc_MultiDimAlloc", "MultiDim_Alloc" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Location", "Sequence" } } },
+						{ 1, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Name", "Name" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Explanation", "Explanation" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Condition", "Condition" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_CalcConfig_MultiDimAlloc", "MultiDim_Alloc" } } }
 					}
 				},
 				[CalcType.Cube] = new DestConfig
@@ -553,9 +553,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			return null;
 		}
 
-		public static CubeConfig Get_CubeSaveType(int savetypeintValue)
+		public static CubeConfig Get_CubeSaveType(string savetypeValue)
 		{
-			var saveType = (SaveType)savetypeintValue;
+			if (string.IsNullOrWhiteSpace(savetypeValue) || !Enum.TryParse<SaveType>(savetypeValue, out var saveType))
+			{
+				return null;
+			}
 
 			if (CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
 			{
@@ -687,14 +690,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				throw new XFException(ex.Message, ex);
 			}
 		}
+
 		public static void SetCubeConfigParams(SessionInfo si, ref Dictionary<string, string> substVars)
 		{
-			if (!Int32.TryParse(substVars.GetValueOrDefault("BL_FMM_CubeConfigID", "0"), out var cubeID))
-			{
-				cubeID = 0;
-			}
+			var isUpdate = substVars.XFGetValue("IV_FMM_CubeConfig_AddUpdate", "NA") == "Update";
 
-			BRApi.ErrorLog.LogMessage(si, $"Hit {cubeID} - {substVars.GetValueOrDefault("IV_FMM_CubeConfig_AddUpdate", "")}");
+			var cubeConfigID = isUpdate && Int32.TryParse(substVars.GetValueOrDefault("BL_FMM_CubeConfigID"), out var parsedID)
+				? parsedID
+				: 0;
+
+			if (isUpdate == false)
+			{
+				GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, "BL_FMM_CubeConfigID", string.Empty);
+			}
 
 			var cubeConfig_DT = new DataTable("FMM_CubeConfig");
 
@@ -705,8 +713,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
 					var sqa = new SqlDataAdapter();
-					var sql = "SELECT * FROM FMM_CubeConfig WHERE CubeID = @CubeID";
-					var sqlparams = new[] { new SqlParameter("@CubeID", SqlDbType.Int) { Value = cubeID } };
+					var sql = "SELECT * FROM FMM_CubeConfig WHERE CubeConfigID = @CubeConfigID";
+					var sqlparams = new[] { new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = cubeConfigID } };
 
 					sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cubeConfig_DT, sql, sqlparams);
 				}
@@ -744,20 +752,24 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, "BL_FMM_CustTableID", string.Empty);
 			}
 
-
-			BRApi.ErrorLog.LogMessage(si, $"Hit CustTable {custTableID} - {substVars.GetValueOrDefault("IV_FMM_CustTable_AddUpdate", string.Empty)}");
-
 			var custTable_DT = new DataTable("FMM_CustTable");
 
-			using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
-			using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
+			try
 			{
-				var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-				var sqa = new SqlDataAdapter();
-				var sql = "SELECT * FROM FMM_CustTable WHERE CustTableID = @CustTableID";
-				var sqlparams = new[] { new SqlParameter("@CustTableID", SqlDbType.Int) { Value = custTableID } };
+				using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
+				using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
+				{
+					var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+					var sqa = new SqlDataAdapter();
+					var sql = "SELECT * FROM FMM_CustTable WHERE CustTableID = @CustTableID";
+					var sqlparams = new[] { new SqlParameter("@CustTableID", SqlDbType.Int) { Value = custTableID } };
 
-				sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, custTable_DT, sql, sqlparams);
+					sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, custTable_DT, sql, sqlparams);
+				}
+			}
+			catch (Exception ex)
+			{
+				BRApi.ErrorLog.LogMessage(si, $"Error loading cust table config: {ex.Message}");
 			}
 
 			if (CustTableConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
@@ -775,14 +787,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 		}
 
-		public static void SetModelParams(SessionInfo si, Dictionary<string, string> substVars)
+		public static void SetModelParams(SessionInfo si, ref Dictionary<string, string> substVars)
 		{
 			if (!Int32.TryParse(substVars.GetValueOrDefault("IV_FMM_ModelID", "0"), out var modelID))
 			{
 				modelID = 0;
 			}
-
-			BRApi.ErrorLog.LogMessage(si, $"Hit Model {modelID} - {substVars.GetValueOrDefault("IV_FMM_ModelConfigAddUpdate", string.Empty)}");
 
 			var model_DT = new DataTable("FMM_ModelConfig");
 

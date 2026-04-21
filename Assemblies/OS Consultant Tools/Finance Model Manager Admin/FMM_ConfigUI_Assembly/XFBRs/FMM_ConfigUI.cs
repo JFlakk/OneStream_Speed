@@ -81,30 +81,30 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 
         private string Get_CubeConfigDB()
         {
-            var CubeConfigType = args.NameValuePairs.XFGetValue("CubeConfigType", "NA");
-            var CubeID = args.NameValuePairs.XFGetValue("cubeID", "0");
+            var cubeConfigType = args.NameValuePairs.XFGetValue("CubeConfigType", "NA");
+            var cubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "0");
             var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
+            var isUpdate = cubeConfigType.XFEqualsIgnoreCase("Update");
             if (currDB.XFEqualsIgnoreCase("FMM_CubeConfig_C2"))
             {
-                var isUpdate = CubeConfigType.XFEqualsIgnoreCase("Update");
-                int.TryParse(CubeID, out var cubeId);
+                int.TryParse(cubeConfigID, out var cubeconfigID);
 
-                if (isUpdate && cubeId == 0)
+                if (isUpdate)
                 {
-                    return "FMM_CubeConfig_C2_Blank";
+                    if (cubeconfigID == 0)
+                    {
+                        return "FMM_CubeConfig_C2_Blank";
+                    }
+                    return "FMM_CubeConfig_C2_Update";
                 }
-
-                return "FMM_CubeConfig_C2_AddUpdate";
+                return "FMM_CubeConfig_C2_Add";
             }
             else
             {
-                var isUpdate = CubeConfigType.XFEqualsIgnoreCase("Update");
-
                 if (isUpdate)
                 {
                     return $"{currDB}_Update";
                 }
-
                 return $"{currDB}_Add";
             }
         }
@@ -114,7 +114,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             var CustTableConfigType = args.NameValuePairs.XFGetValue("custTableConfigType", "NA");
             var CustTableID = args.NameValuePairs.XFGetValue("custTableID", "0");
             var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
-            BRApi.ErrorLog.LogMessage(si, $"Hit {CustTableConfigType} - {CustTableID} - {currDB}");
             if (currDB.XFEqualsIgnoreCase("FMM_CustTableDef_C2"))
             {
                 var isUpdate = CustTableConfigType.XFEqualsIgnoreCase("Update");
@@ -124,8 +123,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 {
                     return "FMM_CustTableDef_C2_Blank";
                 }
-                BRApi.ErrorLog.LogMessage(si, $"Hit");
-
                 return "FMM_CustTableDef_C2_AddUpdate";
             }
             else
@@ -139,7 +136,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 
                 return $"{currDB}_Add";
             }
-            return currDB;
         }
 
         private string Get_AcctConfigDB()
@@ -178,14 +174,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
         {
             var CalcAddUpdate = args.NameValuePairs.XFGetValue("CalcAddUpdate", "NA");
             var CalcType = args.NameValuePairs.XFGetValue("CalcType", "NA");
-            var CalcID = args.NameValuePairs.XFGetValue("CalcID", "0");
+            var calcConfigID = args.NameValuePairs.XFGetValue("CalcConfigID", "0");
             var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
             if (currDB.XFEqualsIgnoreCase("FMM_ModelConfigC2C2"))
             {
                 var isUpdate = CalcAddUpdate.XFEqualsIgnoreCase("Update");
-                int.TryParse(CalcID, out var calcId);
+                int.TryParse(calcConfigID, out var calcconfigID);
 
-                if (isUpdate && calcId == 0)
+                if (isUpdate && calcconfigID == 0)
                 {
                     return "FMM_ModelConfigC2C2_Blank";
                 }
@@ -198,14 +194,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
         {
             var CalcAddUpdate = args.NameValuePairs.XFGetValue("CalcAddUpdate", "NA");
             var CalcType = args.NameValuePairs.XFGetValue("CalcType", "NA");
-            var CalcID = args.NameValuePairs.XFGetValue("CalcID", "0");
+            var calcConfigID = args.NameValuePairs.XFGetValue("CalcConfigID", "0");
             var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
             if (currDB.XFEqualsIgnoreCase("FMM_ModelConfigC2C2"))
             {
                 var isUpdate = CalcAddUpdate.XFEqualsIgnoreCase("Update");
-                int.TryParse(CalcID, out var calcId);
+                int.TryParse(calcConfigID, out var calcconfigID);
 
-                if (isUpdate && calcId == 0)
+                if (isUpdate && calcconfigID == 0)
                 {
                     return "FMM_ModelConfigC2C2_Blank";
                 }
@@ -338,8 +334,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             {
                 { "Table", new ColumnConfig[]
                     {
-                        new ColumnConfig { ColumnName = "CubeID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
-                        new ColumnConfig { ColumnName = "ActID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ActID!|" },
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
                         new ColumnConfig { ColumnName = "ModelID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ModelID!|" },
                         new ColumnConfig { ColumnName = "Sequence", Description = "Seq", IsVisible = true },
                         new ColumnConfig { ColumnName = "Name", Description = "[Calc Name]", IsVisible = true },
@@ -348,7 +344,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "MultiDim_Alloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
                         new ColumnConfig { ColumnName = "BR_Calc", Description = "[BR Calc]", IsVisible = true },
                         new ColumnConfig { ColumnName = "BR_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Time_Phasing", Description = "[Time Phasing]", IsVisible = true, ParameterName = "DL_FMM_Calc_Time_Phasing" },
+                        new ColumnConfig { ColumnName = "Time_Phasing", Description = "[Time Phasing]", IsVisible = true, ParameterName = "DL_FMM_CalcConfig_Time_Phasing" },
                         new ColumnConfig { ColumnName = "Input_Frequency", Description = "[Input Freq]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Create_Date", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
@@ -359,8 +355,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 },
                 { "Cube", new ColumnConfig[]
                     {
-                        new ColumnConfig { ColumnName = "CubeID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
-                        new ColumnConfig { ColumnName = "ActID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ActID!|" },
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
                         new ColumnConfig { ColumnName = "ModelID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ModelID!|" },
                         new ColumnConfig { ColumnName = "Sequence", Description = "Seq", IsVisible = true },
                         new ColumnConfig { ColumnName = "Name", Description = "[Calc Name]", IsVisible = true },
@@ -399,7 +395,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             {
                 { "Table", new ColumnConfig[]
                     {
-                        new ColumnConfig { ColumnName = "CalcID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Dest_Cell_ID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Location", Description = "Target Location", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Calc_Plan_Units", Description = "[Plan Units]", Width = "Auto", IsVisible = true },
@@ -423,7 +419,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 { "Cube", new ColumnConfig[]
                     {
                         new ColumnConfig { ColumnName = "Dest_Cell_ID", IsVisible = false },
-                        new ColumnConfig { ColumnName = "CalcID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Acct", Description = "Account", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "View", Description = "View", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Origin", Description = "Origin", Width = "Auto", IsVisible = true },
@@ -458,10 +454,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 { "Table", new ColumnConfig[]
                     {
                         new ColumnConfig { ColumnName = "Src_Cell_ID", IsVisible = false },
-                        new ColumnConfig { ColumnName = "CubeID", IsVisible = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
-                        new ColumnConfig { ColumnName = "ActID", IsVisible = false, DefaultValue = "|!IV_FMM_ActID!|" },
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
                         new ColumnConfig { ColumnName = "ModelID", IsVisible = false, DefaultValue = "|!IV_FMM_ModelID!|" },
-                        new ColumnConfig { ColumnName = "CalcID", IsVisible = false, DefaultValue = "|!IV_FMM_CalcID!|" },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_CalcConfigID!|" },
                         new ColumnConfig { ColumnName = "Src_Order", Description = "Order", IsVisible = true },
                         new ColumnConfig { ColumnName = "Src_Type", Description = "[Source/Calc Type]", ParameterName = "DL_FMM_Table_Calc_Src", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Src_Item", Description = "[Source/Calc Item]", Width = "Auto", IsVisible = true },
@@ -480,10 +476,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 { "Cube", new ColumnConfig[]
                     {
                         new ColumnConfig { ColumnName = "Cell_ID", IsVisible = false },
-                        new ColumnConfig { ColumnName = "CubeID", IsVisible = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
-                        new ColumnConfig { ColumnName = "ActID", IsVisible = false, DefaultValue = "|!IV_FMM_ActID!|" },
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
                         new ColumnConfig { ColumnName = "ModelID", IsVisible = false, DefaultValue = "|!IV_FMM_ModelID!|" },
-                        new ColumnConfig { ColumnName = "CalcID", IsVisible = false, DefaultValue = "|!IV_FMM_CalcID!|" },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_CalcConfigID!|" },
                         new ColumnConfig { ColumnName = "Src_Order", Description = "Order", IsVisible = true },
                         new ColumnConfig { ColumnName = "Open_Parens", Description = "(", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Math_Operator", Description = "Op", Width = "Auto", IsVisible = true },
