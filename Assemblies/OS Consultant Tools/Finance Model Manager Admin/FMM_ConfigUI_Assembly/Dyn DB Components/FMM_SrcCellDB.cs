@@ -23,7 +23,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
     public class FMM_SrcCellDB
     {
         // Database table that will contain our objects
-        public string TableName { get; } = "FMM_SrcCell";
+        public string TableName { get; } = "FMM_SrcCellConfig";
 
         // SessionInfo instance
         public SessionInfo si { get; }
@@ -34,20 +34,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             this.si = si;
         }
 
-        /// <summary>
-        /// Gets the list of column names that are necessary for a given CalcType
-        /// by using the FMM_Config_Helpers.SrcRegistry
-        /// </summary>
-        /// <param name="calcType">The calculation type</param>
-        /// <returns>List of database column names to include in queries</returns>
         public List<string> GetRequiredColumnsByCalcType(int calcType)
         {
             var columns = new List<string>();
 
-            // Always include core identification and common fields
             columns.AddRange(new[] {
-                "CellID", "CubeID", "ActID", "ModelID", "CalcID","Type",
-                "Src_Order","CreateDate","CreateUser","UpdateDate","UpdateUser"
+                "SrcCellConfigID", "CubeConfigID", "ActConfigID", "ModelConfigID", "CalcConfigID","Type","Item",
+                "SrcOrder","CreateDate","CreateUser","UpdateDate","UpdateUser"
             });
 
             var srcConfig = FMM_ConfigHelpers.Get_SrcConfigType(calcType);
@@ -58,7 +51,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     foreach (var dbColumn in mapping.Values)
                     {
-                        // Map the logical column name to the actual database column name
                         if (!columns.Contains(dbColumn) && !string.IsNullOrEmpty(dbColumn))
                         {
                             columns.Add(dbColumn);
@@ -70,30 +62,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             return columns;
         }
 
-        /// <summary>
-        /// Builds a SELECT statement with only the necessary columns for the given CalcType
-        /// </summary>
-        /// <param name="calcType">The calculation type</param>
-        /// <returns>Comma-separated list of columns for SELECT statement</returns>
         public string GetSelectColumnsForCalcType(int calcType)
         {
             var columns = GetRequiredColumnsByCalcType(calcType);
             return string.Join(", ", columns);
         }
 
-
-
-        /// <summary>
-        /// Retrieve a single FMM_SrcCellModel by Cell_ID
-        /// </summary>
-        public FMM_SrcCellModel GetSrcCell(int cellId, int calcType)
+        public FMM_SrcCellModel GetSrcCell(int srcCellConfigID, int calcType)
         {
             try
             {
                 var columns = GetSelectColumnsForCalcType(calcType);
-                string sql = $"SELECT {columns} FROM {this.TableName} WHERE CellID = @cellID";
+                string sql = $"SELECT {columns} FROM {this.TableName} WHERE SrcCellConfigID = @SrcCellConfigID";
 
-                List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@cellID", cellId) };
+                List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@SrcCellConfigID", srcCellConfigID) };
 
                 using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
@@ -110,19 +92,19 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             }
         }
 
-        /// <summary>
-        /// Retrieve all FMM_SrcCellModel objects for a given CalcID
-        /// </summary>
-        public List<FMM_SrcCellModel> GetSrcCellsByCalcId(int calcId, int calcType)
+        public List<FMM_SrcCellModel> GetSrcCellsByCalcConfigID(int calcConfigID, int calcType)
         {
             try
             {
-                calcId = string.IsNullOrWhiteSpace(calcId.XFToString()) ? 0 : calcId;
+                if (string.IsNullOrWhiteSpace(calcConfigID.XFToString()))
+                {
+                    calcConfigID = 0;
+                }
                 var columns = GetSelectColumnsForCalcType(calcType);
-                string sql = $"SELECT {columns} FROM {this.TableName} WHERE CalcID = @calcID";
-                BRApi.ErrorLog.LogMessage(si, $"Hit {sql}");
+                var sql = $"SELECT {columns} FROM {this.TableName} WHERE CalcConfigID = @CalcConfigID";
+                BRApi.ErrorLog.LogMessage(si, $"Hit {sql} - {calcConfigID}");
 
-                List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@calcID", calcId) };
+                List<DbParamInfo> paramList = new List<DbParamInfo> { new DbParamInfo("@CalcConfigID", calcConfigID) };
 
                 using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
                 {
@@ -142,9 +124,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 throw new XFException(si, ex);
             }
         }
-        /// <summary>
-        /// Merge a collection of source cells using the generic SQA process
-        /// </summary>
+
         public void Merge(List<FMM_SrcCellModel> models, int calcType)
         {
             if (models == null || models.Count == 0) return;
@@ -153,9 +133,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 var mergeTable = BuildMergeTable(models, calcType);
 
-                var calcId = models[0].CalcID;
+                var CalcConfigID = models[0].calcConfigID;
                 var selectColumns = GetSelectColumnsForCalcType(calcType);
-                var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE CalcID = @calcID";
+                var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE CalcConfigID = @CalcConfigID";
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(this.si);
 
@@ -168,15 +148,15 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     var sqlparams = new[]
                     {
-                        new SqlParameter("@calcID", SqlDbType.Int) { Value = calcId }
+                        new SqlParameter("@CalcConfigID", SqlDbType.Int) { Value = CalcConfigID }
                     };
 
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
 
                     // Set primary key if Cell_ID column exists in the result set
-                    if (currentTable.Columns.Contains("SrcCellID") && currentTable.Columns["SrcCellID"] != null)
+                    if (currentTable.Columns.Contains("SrcCellConfigID") && currentTable.Columns["SrcCellConfigID"] != null)
                     {
-                        currentTable.PrimaryKey = new[] { currentTable.Columns["SrcCellID"]! };
+                        currentTable.PrimaryKey = new[] { currentTable.Columns["SrcCellConfigID"]! };
                     }
 
                     // Merge the new/updated records with existing data
@@ -243,34 +223,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             if (!row.Table.Columns.Contains(columnName)) return;
             row[columnName] = value ?? DBNull.Value;
         }
-        /// <summary>
-        /// Retrieve all FMM_SrcCellModel objects
-        /// Note: Since CalcType may vary, this returns all columns
-        /// </summary>
-        public List<FMM_SrcCellModel> GetAllSrcCells()
-        {
-            try
-            {
-                string sql = $"SELECT * FROM {this.TableName} ORDER BY CalcID, Src_Order";
-
-                using (DbConnInfoApp dbConn = BRApi.Database.CreateApplicationDbConnInfo(this.si))
-                {
-                    DataTable dt = BRApi.Database.ExecuteSql(dbConn, sql, false);
-                    List<FMM_SrcCellModel> result = new List<FMM_SrcCellModel>();
-
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        result.Add(MapDataRowToModel(dr));
-                    }
-
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new XFException(si, ex);
-            }
-        }
 
         /// <summary>
         /// Maps a DataRow to FMM_SrcCellModel, safely handling null values
@@ -291,52 +243,52 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
             var model = new FMM_SrcCellModel(enabledProperties)
             {
-                CubeID = dr.Field<int>("CubeID"),
-                ActID = dr.Field<int>("ActID"),
-                ModelID = dr.Field<int>("ModelID"),
-                CalcID = dr.Field<int>("CalcID"),
-                CellID = dr.Field<int>("CellID"),
-                Src_Order = dr.Field<int?>("Src_Order") ?? 0,
-                Type = dr.Field<string>("Type") ?? string.Empty,
-                ItemType = dr.Field<string>("ItemType") ?? string.Empty
+                cubeConfigID = dr.Field<int>("CubeConfigID"),
+                actConfigID = dr.Field<int>("ActConfigID"),
+                modelConfigID = dr.Field<int>("ModelConfigID"),
+                calcConfigID = dr.Field<int>("CalcConfigID"),
+                srcCellConfigID = dr.Field<int>("SrcCellConfigID"),
+                srcOrder = dr.Field<int?>("SrcOrder") ?? 0,
+                type = dr.Field<string>("Type") ?? string.Empty,
+                item = dr.Field<string>("Item") ?? string.Empty
             };
+
 
             // Set dimension fields only if they exist in the column set and are enabled
             if (enabledProperties.Contains("Entity") && dr.Table.Columns.Contains("Entity"))
-                model.Entity = dr.Field<string>("Entity");
+                model.entity = dr.Field<string>("Entity");
             if (enabledProperties.Contains("Cons") && dr.Table.Columns.Contains("Cons"))
-                model.Cons = dr.Field<string>("Cons");
+                model.cons = dr.Field<string>("Cons");
             if (enabledProperties.Contains("Scenario") && dr.Table.Columns.Contains("Scenario"))
-                model.Scenario = dr.Field<string>("Scenario");
+                model.scenario = dr.Field<string>("Scenario");
             if (enabledProperties.Contains("Time") && dr.Table.Columns.Contains("Time"))
-                model.Time = dr.Field<string>("Time");
+                model.time = dr.Field<string>("Time");
             if (enabledProperties.Contains("View") && dr.Table.Columns.Contains("View"))
-                model.View = dr.Field<string>("View");
+                model.view = dr.Field<string>("View");
             if (enabledProperties.Contains("Acct") && dr.Table.Columns.Contains("Acct"))
-                model.Acct = dr.Field<string>("Acct");
+                model.acct = dr.Field<string>("Acct");
             if (enabledProperties.Contains("IC") && dr.Table.Columns.Contains("IC"))
-                model.IC = dr.Field<string>("IC");
+                model.ic = dr.Field<string>("IC");
             if (enabledProperties.Contains("Origin") && dr.Table.Columns.Contains("Origin"))
-                model.Origin = dr.Field<string>("Origin");
+                model.origin = dr.Field<string>("Origin");
             if (enabledProperties.Contains("Flow") && dr.Table.Columns.Contains("Flow"))
-                model.Flow = dr.Field<string>("Flow");
+                model.flow = dr.Field<string>("Flow");
             if (enabledProperties.Contains("UD1") && dr.Table.Columns.Contains("UD1"))
-                model.UD1 = dr.Field<string>("UD1");
+                model.ud1 = dr.Field<string>("UD1");
             if (enabledProperties.Contains("UD2") && dr.Table.Columns.Contains("UD2"))
-                model.UD2 = dr.Field<string>("UD2");
+                model.ud2 = dr.Field<string>("UD2");
             if (enabledProperties.Contains("UD3") && dr.Table.Columns.Contains("UD3"))
-                model.UD3 = dr.Field<string>("UD3");
+                model.ud3 = dr.Field<string>("UD3");
             if (enabledProperties.Contains("UD4") && dr.Table.Columns.Contains("UD4"))
-                model.UD4 = dr.Field<string>("UD4");
+                model.ud4 = dr.Field<string>("UD4");
             if (enabledProperties.Contains("UD5") && dr.Table.Columns.Contains("UD5"))
-                model.UD5 = dr.Field<string>("UD5");
+                model.ud5 = dr.Field<string>("UD5");
             if (enabledProperties.Contains("UD6") && dr.Table.Columns.Contains("UD6"))
-                model.UD6 = dr.Field<string>("UD6");
+                model.ud6 = dr.Field<string>("UD6");
             if (enabledProperties.Contains("UD7") && dr.Table.Columns.Contains("UD7"))
-                model.UD7 = dr.Field<string>("UD7");
+                model.ud7 = dr.Field<string>("UD7");
             if (enabledProperties.Contains("UD8") && dr.Table.Columns.Contains("UD8"))
-                model.UD8 = dr.Field<string>("UD8");
-
+                model.ud8 = dr.Field<string>("UD8");
 
             return model;
         }
@@ -382,7 +334,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
         /// </summary>
         public void Delete(FMM_SrcCellModel model)
         {
-            this.Delete(model.CellID);
+            this.Delete(model.srcCellConfigID);
         }
 
         /// <summary>
@@ -395,10 +347,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             try
             {
                 _ = workspaceId; // reserved for future workspace-specific defaults
-                var CubeID = customSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0");
-                var ActID = customSubstVars.XFGetValue("IV_FMM_ActID", "0");
-                var ModelID = customSubstVars.XFGetValue("IV_FMM_ModelID", "0");
-                var CalcID = customSubstVars.XFGetValue("BL_FMM_CalcList", "0");
+                var CubeConfigID = customSubstVars.XFGetValue("BL_FMM_CubeConfigID", "0");
+                var ActConfigID = customSubstVars.XFGetValue("BL_FMM_ActConfigID", "0");
+                var ModelConfigID = customSubstVars.XFGetValue("BL_FMM_ModelConfigID", "0");
+                var CalcConfigID = customSubstVars.XFGetValue("BL_FMM_CalcConfigID", "0").XFConvertToInt();
 
                 const int defaultCalcType = 1;
 
@@ -407,28 +359,25 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 {
                     connection.Open();
 
-                    // Compute next key
-                    var maxIdHelper = new GBL_UI_Assembly.SQL_GBL_Get_Max_ID(this.si, connection);
-                    var nextCellId = maxIdHelper.Get_Max_ID(this.si, this.TableName, "CellID");
-
                     // Pull current set (schema) using SQA builder
                     var cmdBuilder = new GBL_UI_Assembly.SQA_GBL_Command_Builder(this.si, connection);
                     var sqa = new SqlDataAdapter();
                     var currentTable = new DataTable();
 
                     var selectColumns = GetSelectColumnsForCalcType(defaultCalcType);
-                    if (!selectColumns.Split(',').Select(c => c.Trim()).Contains("CellID", StringComparer.OrdinalIgnoreCase))
+                    if (!selectColumns.Split(',').Select(c => c.Trim()).Contains("SrcCellConfigID", StringComparer.OrdinalIgnoreCase))
                     {
-                        selectColumns = $"CellID, {selectColumns}";
+                        selectColumns = $"SrcCellConfigID, {selectColumns}";
                     }
 
-                    var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE CalcID = @calcID";
-                    var sqlparams = new[] { new SqlParameter("@calcID", SqlDbType.Int) { Value = CalcID } };
+                    var currentSql = $"SELECT {selectColumns} FROM {this.TableName} WHERE CalcConfigID = @CalcConfigID";
+                    var sqlparams = new[] { new SqlParameter("@CalcConfigID", SqlDbType.Int) { Value = CalcConfigID } };
+                    BRApi.ErrorLog.LogMessage(si, $"SQL {currentSql}");
                     cmdBuilder.FillDataTable(this.si, sqa, currentTable, currentSql, sqlparams);
 
-                    if (currentTable.Columns.Contains("CellID"))
+                    if (currentTable.Columns.Contains("SrcCellConfigID"))
                     {
-                        currentTable.PrimaryKey = new[] { currentTable.Columns["CellID"]! };
+                        currentTable.PrimaryKey = new[] { currentTable.Columns["SrcCellConfigID"]! };
                     }
 
                     var now = DateTime.Now;
@@ -436,20 +385,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
                     // Create the starter row with minimal required fields
                     var row = currentTable.NewRow();
-                    SetColumnValue(row, "CubeID", CubeID);
-                    SetColumnValue(row, "ActID", ActID);
-                    SetColumnValue(row, "ModelID", ModelID);
-                    SetColumnValue(row, "CalcID", CalcID);
-                    SetColumnValue(row, "Src_Order", 1);
-                    SetColumnValue(row, "Type", string.Empty);
-                    SetColumnValue(row, "ItemType", string.Empty);
+                    SetColumnValue(row, "SrcCellConfigID", 1);
+                    SetColumnValue(row, "CubeConfigID", CubeConfigID);
+                    SetColumnValue(row, "ActConfigID", ActConfigID);
+                    SetColumnValue(row, "ModelConfigID", ModelConfigID);
+                    SetColumnValue(row, "CalcConfigID", CalcConfigID);
+                    SetColumnValue(row, "SrcOrder", 1);
+                    SetColumnValue(row, "Type", "Test");
+                    SetColumnValue(row, "Item", string.Empty);
                     SetColumnValue(row, "CreateDate", DateTime.Now);
                     SetColumnValue(row, "CreateUser", si.UserName);
                     SetColumnValue(row, "UpdateDate", DateTime.Now);
                     SetColumnValue(row, "UpdateUser", si.UserName);
-
+                    BRApi.ErrorLog.LogMessage(si, $"Hit {CalcConfigID}");
                     currentTable.Rows.Add(row);
 
+                    BRApi.ErrorLog.LogMessage(si, $"Hit 2: {CalcConfigID} - {this.TableName}");
                     cmdBuilder.UpdateTable(this.si, this.TableName, currentTable, sqa);
                 }
             }

@@ -41,10 +41,10 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 }
                 else if (args.FunctionName.XFEqualsIgnoreCase("Get_Model_Col_Format"))
                 {
-                    var curr_TED = args.NameValuePairs.XFGetValue("curr_TED");
-                    var curr_ModelType = args.NameValuePairs.XFGetValue("curr_ModelType");
+                    var currTED = args.NameValuePairs.XFGetValue("currTED");
+                    var currModelType = args.NameValuePairs.XFGetValue("currModelType");
                     var col = args.NameValuePairs.XFGetValue("col");
-                    return Get_Model_Col_Format(curr_TED, curr_ModelType, col);
+                    return Get_Model_Col_Format(currTED, currModelType, col);
                 }
                 else if (args.FunctionName.XFEqualsIgnoreCase("Get_CubeConfigDB"))
                 {
@@ -66,7 +66,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 {
                     return Get_ModelDB();
                 }
-                else if (args.FunctionName.XFEqualsIgnoreCase("Get_CalcDB"))
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_CalcConfigDB"))
                 {
                     return Get_CalcDB();
                 }
@@ -218,14 +218,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
         private string Get_ModelDB()
         {
             var ModelType = args.NameValuePairs.XFGetValue("ModelType", "NA");
-            var ModelID = args.NameValuePairs.XFGetValue("ModelID", "0");
+            var ModelConfigID = args.NameValuePairs.XFGetValue("ModelConfigID", "0");
             var currDB = args.NameValuePairs.XFGetValue("currDB", "NA");
             if (currDB.XFEqualsIgnoreCase("FMM_ModelConfigC1R2"))
             {
                 var isUpdate = ModelType.XFEqualsIgnoreCase("Update");
-                int.TryParse(ModelID, out var modelId);
+                int.TryParse(ModelConfigID, out var modelConfigID);
 
-                if (isUpdate && modelId == 0)
+                if (isUpdate && modelConfigID == 0)
                 {
                     return "FMM_ModelConfigC1R2_Blank";
                 }
@@ -249,9 +249,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
 
         private string Get_CalcDB()
         {
-            var calcType = args.NameValuePairs.XFGetValue("CalcType", "0");
-            int.TryParse(calcType, out int calctype);
-            var calcConfig = FMM_ConfigHelpers.Get_CalcConfigType(calctype);
+            var calcType = args.NameValuePairs.XFGetValue("CalcType", "0").XFConvertToInt();
+            var calcConfig = FMM_ConfigHelpers.Get_CalcConfigType(calcType);
             if (calcConfig != null)
             {
                 return calcConfig.DashboardName;
@@ -262,13 +261,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             }
         }
 
-        public static string Get_Model_Col_Format(string curr_TED, string curr_ModelType, string col)
+        public static string Get_CalcColFormat(string currTED, string currModelType, string col)
         {
-            if (curr_TED.Equals("Calc_Config", StringComparison.OrdinalIgnoreCase))
+            if (currTED.Equals("FMM_CalcConfig", StringComparison.OrdinalIgnoreCase))
             {
                 if (int.TryParse(col, out int colIndex) && colIndex > 0)
                 {
-                    var modelTypeKey = curr_ModelType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? "Table" : "Cube";
+                    var modelTypeKey = currModelType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? "Table" : "Cube";
 
                     if (ModelColumnFormatter.CalcConfigColumns.TryGetValue(modelTypeKey, out var columns) && colIndex <= columns.Length)
                     {
@@ -276,11 +275,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     }
                 }
             }
-            else if (curr_TED.Equals("Dest", StringComparison.OrdinalIgnoreCase))
+            else if (currTED.Equals("Dest", StringComparison.OrdinalIgnoreCase))
             {
                 if (int.TryParse(col, out int colIndex) && colIndex > 0)
                 {
-                    var modelTypeKey = curr_ModelType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? "Table" : "Cube";
+                    var modelTypeKey = currModelType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? "Table" : "Cube";
 
                     if (ModelColumnFormatter.DestCellColumns.TryGetValue(modelTypeKey, out var columns) && colIndex <= columns.Length)
                     {
@@ -288,11 +287,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     }
                 }
             }
-            else if (curr_TED.Equals("Src", StringComparison.OrdinalIgnoreCase))
+            else if (currTED.Equals("Src", StringComparison.OrdinalIgnoreCase))
             {
                 if (int.TryParse(col, out int colIndex) && colIndex > 0)
                 {
-                    var modelTypeKey = curr_ModelType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? "Table" : "Cube";
+                    var modelTypeKey = currModelType.Equals("Table", StringComparison.OrdinalIgnoreCase) ? "Table" : "Cube";
 
                     if (ModelColumnFormatter.SrcCellColumns.TryGetValue(modelTypeKey, out var columns) && colIndex <= columns.Length)
                     {
@@ -340,16 +339,54 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                     {
                         new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
                         new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
-                        new ColumnConfig { ColumnName = "ModelID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ModelID!|" },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ModelConfigID!|" },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false, AllowUpdates = false},
+                        new ColumnConfig { ColumnName = "Sequence", Description = "Seq", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Name", Description = "[Calc Name]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Explanation", Description = "[Calc Explanation]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Condition", Description = "[Conditional Logic]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MultiDimAlloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "BRCalc", Description = "[BR Calc]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "BRCalcName", Description = "[BR Calc Name]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimePhase", Description = "[Time Phasing]", IsVisible = true, ParameterName = "DL_FMM_CalcConfig_Time_Phasing" },
+                        new ColumnConfig { ColumnName = "InputFrequency", Description = "[Input Freq]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "CreateDate", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "CreateUser", Description = "[Create User]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "UpdateDate", Description = "[Update Date]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "UpdateUser", Description = "[Update User]", IsVisible = true, AllowUpdates = false }
+                    }
+                },
+                { "Consol", new ColumnConfig[]
+                    {
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ModelConfigID!|" },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false, AllowUpdates = false},
                         new ColumnConfig { ColumnName = "Sequence", Description = "Seq", IsVisible = true },
                         new ColumnConfig { ColumnName = "Name", Description = "[Calc Name]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Condition", Description = "[Conditional Logic]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Explanation", Description = "[Calc Explanation]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "MultiDim_Alloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "BR_Calc", Description = "[BR Calc]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MultiDimAlloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_Calc", Description = "[Mbr List Calc?]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_1_Dim", Description = "[Mbr List 1 Dim]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_1_Filter", Description = "[Mbr List 1 Filter]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_1_DimType", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_1_Filter", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_2_Dim", Description = "[Mbr List 2 Dim]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_2_Filter", Description = "[Mbr List 2 Filter]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_2_DimType", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_2_Filter", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_3_Dim", Description = "[Mbr List 3 Dim]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_3_Filter", Description = "[Mbr List 3 Filter]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_3_DimType", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_3_Filter", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_4_Dim", Description = "[Mbr List 4 Dim]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_4_Filter", Description = "[Mbr List 4 Filter]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_4_DimType", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_4_Filter", IsVisible = false },
+                        new ColumnConfig { ColumnName = "BR_Calc", Description = "[BR Calc?]", IsVisible = true },
                         new ColumnConfig { ColumnName = "BR_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Time_Phasing", Description = "[Time Phasing]", IsVisible = true, ParameterName = "DL_FMM_CalcConfig_Time_Phasing" },
-                        new ColumnConfig { ColumnName = "Input_Frequency", Description = "[Input Freq]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Create_Date", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
                         new ColumnConfig { ColumnName = "Create_User", Description = "[Create User]", IsVisible = true, AllowUpdates = false },
@@ -357,16 +394,54 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "Update_User", Description = "[Update User]", IsVisible = true, AllowUpdates = false }
                     }
                 },
-                { "Cube", new ColumnConfig[]
+                { "BRTabletoCube", new ColumnConfig[]
                     {
                         new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
                         new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
-                        new ColumnConfig { ColumnName = "ModelID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ModelID!|" },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ModelConfigID!|" },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false, AllowUpdates = false},
                         new ColumnConfig { ColumnName = "Sequence", Description = "Seq", IsVisible = true },
                         new ColumnConfig { ColumnName = "Name", Description = "[Calc Name]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Condition", Description = "[Conditional Logic]", IsVisible = true },
                         new ColumnConfig { ColumnName = "Explanation", Description = "[Calc Explanation]", IsVisible = true },
-                        new ColumnConfig { ColumnName = "MultiDim_Alloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MultiDimAlloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_Calc", Description = "[Mbr List Calc?]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_1_Dim", Description = "[Mbr List 1 Dim]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_1_Filter", Description = "[Mbr List 1 Filter]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_1_DimType", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_1_Filter", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_2_Dim", Description = "[Mbr List 2 Dim]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_2_Filter", Description = "[Mbr List 2 Filter]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_2_DimType", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_2_Filter", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_3_Dim", Description = "[Mbr List 3 Dim]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_3_Filter", Description = "[Mbr List 3 Filter]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_3_DimType", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_3_Filter", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_4_Dim", Description = "[Mbr List 4 Dim]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_4_Filter", Description = "[Mbr List 4 Filter]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MbrList_4_DimType", IsVisible = false },
+                        new ColumnConfig { ColumnName = "MbrList_4_Filter", IsVisible = false },
+                        new ColumnConfig { ColumnName = "BR_Calc", Description = "[BR Calc?]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "BR_Calc_Name", Description = "[BR Calc Name]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Status", Description = "[Status]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Create_Date", Description = "[Create Date]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "Create_User", Description = "[Create User]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "Update_Date", Description = "[Update Date]", IsVisible = true, AllowUpdates = false },
+                        new ColumnConfig { ColumnName = "Update_User", Description = "[Update User]", IsVisible = true, AllowUpdates = false }
+                    }
+                },
+                { "BRCubetoTable", new ColumnConfig[]
+                    {
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false, AllowUpdates = false, DefaultValue = "|!IV_FMM_ModelConfigID!|" },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false, AllowUpdates = false},
+                        new ColumnConfig { ColumnName = "Sequence", Description = "Seq", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Name", Description = "[Calc Name]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Condition", Description = "[Conditional Logic]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Explanation", Description = "[Calc Explanation]", IsVisible = true },
+                        new ColumnConfig { ColumnName = "MultiDimAlloc", Description = "[Multi-Dim Alloc]", IsVisible = true },
                         new ColumnConfig { ColumnName = "MbrList_Calc", Description = "[Mbr List Calc?]", IsVisible = true },
                         new ColumnConfig { ColumnName = "MbrList_1_Dim", Description = "[Mbr List 1 Dim]", IsVisible = true },
                         new ColumnConfig { ColumnName = "MbrList_1_Filter", Description = "[Mbr List 1 Filter]", IsVisible = true },
@@ -399,10 +474,13 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
             {
                 { "Table", new ColumnConfig[]
                     {
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false },
                         new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false },
-                        new ColumnConfig { ColumnName = "Dest_Cell_ID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "DestConfigID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Location", Description = "Target Location", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Calc_Plan_Units", Description = "[Plan Units]", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UoM", Description = "[Unit of Measure]", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Acct", Description = "Account", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "View", Description = "View", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "IC", Description = "IC", Width = "Auto", IsVisible = true },
@@ -415,15 +493,18 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Time_Filter", Description = "Time Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Conditional_Filter", Description = "Conditional Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimeFilter", Description = "Time Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ConditionalFilter", Description = "Conditional Filter", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }
                 },
                 { "Cube", new ColumnConfig[]
                     {
-                        new ColumnConfig { ColumnName = "Dest_Cell_ID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false },
                         new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "DestConfigID", IsVisible = false },
                         new ColumnConfig { ColumnName = "Acct", Description = "Account", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "View", Description = "View", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "Origin", Description = "Origin", Width = "Auto", IsVisible = true },
@@ -437,18 +518,118 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
                         new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Time_Filter", Description = "Time Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Acct_Filter", Description = "Account Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Origin_Filter", Description = "Origin Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "Flow_Filter", Description = "Flow Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "UD1_Filter", Description = "UD1 Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "UD2_Filter", Description = "UD2 Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "UD3_Filter", Description = "UD3 Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "UD4_Filter", Description = "UD4 Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "UD5_Filter", Description = "UD5 Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "UD6_Filter", Description = "UD6 Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "UD7_Filter", Description = "UD7 Filter", Width = "Auto", IsVisible = true },
-                        new ColumnConfig { ColumnName = "UD8_Filter", Description = "UD8 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Cube", Description = "Cube", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "EntFilter", Description = "Entity Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ParentFilter", Description = "Parent Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ConsFilter", Description = "Consolidation Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ScenFilter", Description = "Scenario Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimeFilter", Description = "Time Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "AcctFilter", Description = "Account Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "OriginFilter", Description = "Origin Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "FlowFilter", Description = "Flow Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD1Filter", Description = "UD1 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD2Filter", Description = "UD2 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD3Filter", Description = "UD3 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD4Filter", Description = "UD4 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD5Filter", Description = "UD5 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD6Filter", Description = "UD6 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD7Filter", Description = "UD7 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD8Filter", Description = "UD8 Filter", Width = "Auto", IsVisible = true },
+			            // Add more placeholders if needed
+			        }
+                },
+                { "Consol", new ColumnConfig[]
+                    {
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "DestConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "Cube", Description = "Cube", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "EntFilter", Description = "Entity Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ParentFilter", Description = "Parent Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ConsFilter", Description = "Consolidation Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ScenFilter", Description = "Scenario Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimeFilter", Description = "Time Filter", Width = "Auto", IsVisible = true }
+                    }
+                },
+                { "BRTabletoCube", new ColumnConfig[]
+                    {
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "DestConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "Acct", Description = "Account", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "View", Description = "View", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Origin", Description = "Origin", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "IC", Description = "IC", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Flow", Description = "Flow", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD1", Description = "UD1", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD2", Description = "UD2", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD3", Description = "UD3", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD4", Description = "UD4", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD5", Description = "UD5", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Cube", Description = "Cube", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "EntFilter", Description = "Entity Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ParentFilter", Description = "Parent Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ConsFilter", Description = "Consolidation Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ScenFilter", Description = "Scenario Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimeFilter", Description = "Time Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "AcctFilter", Description = "Account Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "OriginFilter", Description = "Origin Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "FlowFilter", Description = "Flow Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD1Filter", Description = "UD1 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD2Filter", Description = "UD2 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD3Filter", Description = "UD3 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD4Filter", Description = "UD4 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD5Filter", Description = "UD5 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD6Filter", Description = "UD6 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD7Filter", Description = "UD7 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD8Filter", Description = "UD8 Filter", Width = "Auto", IsVisible = true },
+			            // Add more placeholders if needed
+			        }
+                },
+                { "BRTabletoCube", new ColumnConfig[]
+                    {
+                        new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "DestConfigID", IsVisible = false },
+                        new ColumnConfig { ColumnName = "Acct", Description = "Account", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "View", Description = "View", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Origin", Description = "Origin", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "IC", Description = "IC", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Flow", Description = "Flow", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD1", Description = "UD1", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD2", Description = "UD2", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD3", Description = "UD3", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD4", Description = "UD4", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD5", Description = "UD5", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD6", Description = "UD6", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD7", Description = "UD7", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD8", Description = "UD8", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "Cube", Description = "Cube", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "EntFilter", Description = "Entity Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ParentFilter", Description = "Parent Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ConsFilter", Description = "Consolidation Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "ScenFilter", Description = "Scenario Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "TimeFilter", Description = "Time Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "AcctFilter", Description = "Account Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "OriginFilter", Description = "Origin Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "FlowFilter", Description = "Flow Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD1Filter", Description = "UD1 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD2Filter", Description = "UD2 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD3Filter", Description = "UD3 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD4Filter", Description = "UD4 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD5Filter", Description = "UD5 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD6Filter", Description = "UD6 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD7Filter", Description = "UD7 Filter", Width = "Auto", IsVisible = true },
+                        new ColumnConfig { ColumnName = "UD8Filter", Description = "UD8 Filter", Width = "Auto", IsVisible = true },
 			            // Add more placeholders if needed
 			        }
                 }
@@ -460,7 +641,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "Src_Cell_ID", IsVisible = false },
                         new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
                         new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
-                        new ColumnConfig { ColumnName = "ModelID", IsVisible = false, DefaultValue = "|!IV_FMM_ModelID!|" },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_ModelConfigID!|" },
                         new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_CalcConfigID!|" },
                         new ColumnConfig { ColumnName = "Src_Order", Description = "Order", IsVisible = true },
                         new ColumnConfig { ColumnName = "Src_Type", Description = "[Source/Calc Type]", ParameterName = "DL_FMM_Table_Calc_Src", Width = "Auto", IsVisible = true },
@@ -482,7 +663,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                         new ColumnConfig { ColumnName = "Cell_ID", IsVisible = false },
                         new ColumnConfig { ColumnName = "CubeConfigID", IsVisible = false, DefaultValue = "|!BL_FMM_CubeConfigID!|" },
                         new ColumnConfig { ColumnName = "ActConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_ActConfigID!|" },
-                        new ColumnConfig { ColumnName = "ModelID", IsVisible = false, DefaultValue = "|!IV_FMM_ModelID!|" },
+                        new ColumnConfig { ColumnName = "ModelConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_ModelConfigID!|" },
                         new ColumnConfig { ColumnName = "CalcConfigID", IsVisible = false, DefaultValue = "|!IV_FMM_CalcConfigID!|" },
                         new ColumnConfig { ColumnName = "Src_Order", Description = "Order", IsVisible = true },
                         new ColumnConfig { ColumnName = "Open_Parens", Description = "(", Width = "Auto", IsVisible = true },

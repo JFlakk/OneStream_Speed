@@ -28,107 +28,41 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    if (storedDashboard.Name.XFEqualsIgnoreCase("FMM_ModelConfigContent_Cube_R3R2"))
+                    if (storedDashboard.Name.XFEqualsIgnoreCase("FMM_SrcCellConfig_Cube_R2"))
                     {
-                        // retrieve our items
+                        var calcConfigID = customSubstVarsAlreadyResolved.XFGetValue("BL_FMM_CalcConfigID", "0").XFConvertToInt();
                         var src_CellDB = new FMM_SrcCellDB(si);
-                        var src_Cells = src_CellDB.GetSrcCellsByCalcId(4, 2);
+                        var src_Cells = src_CellDB.GetSrcCellsByCalcConfigID(calcConfigID, 1);
 
-                        // prepare a list of repeated components			
                         var repeatArgs = new List<WsDynamicComponentRepeatArgs>();
 
-                        // Get configuration to determine which properties to use
-                        var enabledProperties = FMM_ConfigHelpers.GetEnabledSrcProperties(2); // calcType = 1 (Table)
-
-                        // loop through our items, populating dictionaries that will contain Parameter values for each "row"
                         foreach (FMM_SrcCellModel cellModel in src_Cells)
                         {
-                            Dictionary<string, string> nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>();
-
-                            // Always add Cell_ID as the primary identifier
-                            nextLevelTemplateSubstVarsToAdd["CellID"] = cellModel.CellID.ToString();
-                            nextLevelTemplateSubstVarsToAdd["CalcID"] = cellModel.CalcID.ToString();
-                            //nextLevelTemplateSubstVarsToAdd["Order"] = cellModel.Order.ToString();
-
-                            // Add enabled properties from configuration
-                            foreach (var propName in enabledProperties)
+                            var nextLevelTemplateSubstVarsToAdd = new Dictionary<string, string>
                             {
-                                string propValue = string.Empty;
-                                switch (propName)
-                                {
-                                    case "Entity":
-                                        propValue = cellModel.Entity ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "Cons":
-                                        propValue = cellModel.Cons ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "Scenario":
-                                        propValue = cellModel.Scenario ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "Time":
-                                        propValue = cellModel.Time ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "View":
-                                        propValue = cellModel.View ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "Acct":
-                                        propValue = cellModel.Acct ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "IC":
-                                        propValue = cellModel.IC ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "Origin":
-                                        propValue = cellModel.Origin ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "Flow":
-                                        propValue = cellModel.Flow ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "UD1":
-                                        propValue = cellModel.UD1 ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "UD2":
-                                        propValue = cellModel.UD2 ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "UD3":
-                                        propValue = cellModel.UD3 ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "UD4":
-                                        propValue = cellModel.UD4 ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "UD5":
-                                        propValue = cellModel.UD5 ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "UD6":
-                                        propValue = cellModel.UD6 ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "UD7":
-                                        propValue = cellModel.UD7 ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                    case "UD8":
-                                        propValue = cellModel.UD8 ?? string.Empty;
-                                        nextLevelTemplateSubstVarsToAdd[propName] = propValue;
-                                        break;
-                                }
-                            }
+                                ["SrcCellConfigID"] = cellModel.srcCellConfigID.ToString(),
+                                ["CalcConfigID"] = cellModel.calcConfigID.ToString(),
+                                ["Entity"] = cellModel.entity,
+                                ["Cons"] = cellModel.cons,
+                                ["Scenario"] = cellModel.scenario,
+                                ["Time"] = cellModel.time,
+                                ["View"] = cellModel.view,
+                                ["Acct"] = cellModel.acct,
+                                ["IC"] = cellModel.ic,
+                                ["Origin"] = cellModel.origin,
+                                ["Flow"] = cellModel.flow,
+                                ["UD1"] = cellModel.ud1,
+                                ["UD2"] = cellModel.ud2,
+                                ["UD3"] = cellModel.ud3,
+                                ["UD4"] = cellModel.ud4,
+                                ["UD5"] = cellModel.ud5,
+                                ["UD6"] = cellModel.ud6,
+                                ["UD7"] = cellModel.ud7,
+                                ["UD8"] = cellModel.ud8,
+                            };
 
                             repeatArgs.Add(new WsDynamicComponentRepeatArgs(
-                                cellModel.CellID.ToString(),
+                                cellModel.srcCellConfigID.ToString(),
                                 nextLevelTemplateSubstVarsToAdd));
                         }
 
@@ -166,7 +100,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
             {
                 if (api != null)
                 {
-                    if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_ModelConfigContent_Cube_R3R2"))
+                    if (dynamicDashboardEx.DynamicDashboard.Name.XFEqualsIgnoreCase("FMM_SrcCellConfig_Cube_R2"))
                     {
                         var repeatArgsList = dynamicDashboardEx.DynamicDashboard.Tag as List<WsDynamicComponentRepeatArgs>;
                         return api.GetDynamicComponentsRepeatedForDynamicDashboard(si, workspace, dynamicDashboardEx,

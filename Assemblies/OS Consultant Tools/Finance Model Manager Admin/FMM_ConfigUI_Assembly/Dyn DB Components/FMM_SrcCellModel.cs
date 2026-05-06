@@ -29,45 +29,45 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
         public FMM_SrcCellModel(IEnumerable<string> enabledDimensions)
         {
-            Type = OpenParens = MathOperator = CloseParens = string.Empty;
-            Entity = Cons = Scenario = Time = View = Acct = IC = Origin = Flow = string.Empty;
-            UD1 = UD2 = UD3 = UD4 = UD5 = UD6 = UD7 = UD8 = string.Empty;
+            type = openParens = mathOperator = closeParens = string.Empty;
+            entity = cons = scenario = time = view = acct = ic = origin = flow = string.Empty;
+            ud1 = ud2 = ud3 = ud4 = ud5 = ud6 = ud7 = ud8 = string.Empty;
 
             _dimensionValues = enabledDimensions?
                 .ToDictionary(d => d, _ => string.Empty, StringComparer.OrdinalIgnoreCase)
                 ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public int CubeID { get; set; }
-        public int ActID { get; set; }
-        public int ModelID { get; set; }
-        public int CalcID { get; set; }
-        public int CellID { get; set; }
-        public int Src_Order { get; set; }
+        public int cubeConfigID { get; set; }
+        public int actConfigID { get; set; }
+        public int modelConfigID { get; set; }
+        public int calcConfigID { get; set; }
+        public int srcCellConfigID { get; set; }
+        public int srcOrder { get; set; }
 
-        public string Type { get; set; }
-        public string ItemType { get; set; }
-        public string OpenParens { get; set; }
-        public string MathOperator { get; set; }
-        public string CloseParens { get; set; }
+        public string type { get; set; } = string.Empty;
+        public string item { get; set; } = string.Empty;
+        public string openParens { get; set; } = string.Empty;
+        public string mathOperator { get; set; } = string.Empty;
+        public string closeParens { get; set; } = string.Empty;
 
-        public string Entity { get; set; }
-        public string Cons { get; set; }
-        public string Scenario { get; set; }
-        public string Time { get; set; }
-        public string View { get; set; }
-        public string Acct { get; set; }
-        public string IC { get; set; }
-        public string Origin { get; set; }
-        public string Flow { get; set; }
-        public string UD1 { get; set; }
-        public string UD2 { get; set; }
-        public string UD3 { get; set; }
-        public string UD4 { get; set; }
-        public string UD5 { get; set; }
-        public string UD6 { get; set; }
-        public string UD7 { get; set; }
-        public string UD8 { get; set; }
+        public string entity { get; set; } = string.Empty;
+        public string cons { get; set; } = string.Empty;
+        public string scenario { get; set; } = string.Empty;
+        public string time { get; set; } = string.Empty;
+        public string view { get; set; } = string.Empty;
+        public string acct { get; set; } = string.Empty;
+        public string ic { get; set; } = string.Empty;
+        public string origin { get; set; } = string.Empty;
+        public string flow { get; set; } = string.Empty;
+        public string ud1 { get; set; } = string.Empty;
+        public string ud2 { get; set; } = string.Empty;
+        public string ud3 { get; set; } = string.Empty;
+        public string ud4 { get; set; } = string.Empty;
+        public string ud5 { get; set; } = string.Empty;
+        public string ud6 { get; set; } = string.Empty;
+        public string ud7 { get; set; } = string.Empty;
+        public string ud8 { get; set; } = string.Empty;
 
 
         // Dynamic accessor based on passed-in dimension list

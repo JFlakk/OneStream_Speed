@@ -22,9 +22,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 {
 	public class FMM_ConfigHelpers
 	{
+		public interface IConfigMappings
+		{
+			Dictionary<int, Dictionary<string, string>> ParameterMappings { get; }
+		}
+
 		#region "Config Setup"
 		#region "Cube Config"
-		public class CubeConfig
+		public class CubeConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -38,11 +43,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "BL_FMM_CubeConfig_Cubes", "Cube" } } },
+						{ 0, new Dictionary<string, string> { { "BL_FMM_CubeConfig_Name", "Cube" } } },
 						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "ScenType" } } },
 						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
 						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "EntityMFB" } } },
-						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } }
+						{ 4, new Dictionary<string, string> { { "DL_FMM_CubeConfig_AggConsol", "AggConsol" } } },
+						{ 5, new Dictionary<string, string> { { "DL_FMM_CubeConfig_Status", "Status" } } }
 					}
 				},
 				[SaveType.Update] = new CubeConfig
@@ -73,7 +79,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		}
 		#endregion
 		#region "Acct Config"
-		public class AcctConfig
+		public class AcctConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -107,8 +113,8 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			};
 		}
 		#endregion
-		#region "CustTable Config"
-		public class CustTableConfig
+		#region "CustTableConfig Config"
+		public class CustTableConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -122,17 +128,17 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTable_Name", "Name" } } },
-						{ 1, new Dictionary<string, string> { { "DL_FMM_CustTable_Type", "Type" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_CustTable_Descr", "Descr" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_CustTable_Audit", "Audit" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTableConfig_Name", "Name" } } },
+						{ 1, new Dictionary<string, string> { { "DL_FMM_CustTableConfig_Type", "Type" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CustTableConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CustTableConfig_Audit", "Audit" } } }
 					}
 				},
 				[SaveType.Update] = new CustTableConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTable_Name", "Name" } } },
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTableConfig_Name", "Name" } } },
 						{ 1, new Dictionary<string, string> { { "BL_FMM_CubeConfig_ScenType", "Type" } } },
 						{ 2, new Dictionary<string, string> { { "IV_FMM_CubeConfig_Descr", "Descr" } } },
 						{ 3, new Dictionary<string, string> { { "IV_FMM_CubeConfig_EntityMFB", "Audit" } } }
@@ -142,23 +148,23 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTable_Name", "Name" } } },
-						{ 1, new Dictionary<string, string> { { "DL_FMM_CustTable_Type", "Type" } } },
-						{ 2, new Dictionary<string, string> { { "IV_FMM_CustTable_Descr", "Descr" } } },
-						{ 3, new Dictionary<string, string> { { "IV_FMM_CustTable_Audit", "Audit" } } }
+						{ 0, new Dictionary<string, string> { { "IV_FMM_CustTableConfig_Name", "Name" } } },
+						{ 1, new Dictionary<string, string> { { "DL_FMM_CustTableConfig_Type", "Type" } } },
+						{ 2, new Dictionary<string, string> { { "IV_FMM_CustTableConfig_Descr", "Descr" } } },
+						{ 3, new Dictionary<string, string> { { "IV_FMM_CustTableConfig_Audit", "Audit" } } }
 					}
 				}
 			};
 		}
 		#endregion
-		#region "CustTable Assignment"
+		#region "CustTableConfig Assignment"
 
 		#endregion
 		#region "UI Config"
 		#endregion
 		#region "Approval Config"
 
-		public class ApprConfig
+		public class ApprConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -192,7 +198,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			};
 		}
 
-		public class ApprStepConfig
+		public class ApprStepConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -227,14 +233,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		}
 		#endregion
 		#region "Validation Config"
-		public class ValConfig
+		public class ValConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
 		}
 		#endregion
 		#region "Model Config"
-		public class ModelConfig
+		public class ModelConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -248,40 +254,40 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfigName", "Name" } } },
+						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfig_Name", "Name" } } },
 						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfig_CalcType", "CalcType" } } },
-						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfigProcType", "ProcType" } } }
+						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfig_ProcType", "ProcType" } } }
 					}
 				},
 				[SaveType.Update] = new ModelConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfigName", "Name" } } },
+						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfig_Name", "Name" } } },
 						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfig_CalcType", "CalcType" } } },
-						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfigProcType", "ProcType" } } },
-						{ 3, new Dictionary<string, string> { { "DL_FMM_ModelConfigStatus", "Status" } } }
+						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfig_ProcType", "ProcType" } } },
+						{ 3, new Dictionary<string, string> { { "DL_FMM_ModelConfig_Status", "Status" } } }
 					}
 				},
 				[SaveType.View] = new ModelConfig
 				{
 					ParameterMappings = new()
 					{
-						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfigName", "Name" } } },
+						{ 0, new Dictionary<string, string> { { "IV_FMM_ModelConfig_Name", "Name" } } },
 						{ 1, new Dictionary<string, string> { { "DL_FMM_ModelConfig_CalcType", "CalcType" } } },
-						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfigProcType", "ProcType" } } },
-						{ 3, new Dictionary<string, string> { { "DL_FMM_ModelConfigStatus", "Status" } } },
-						{ 4, new Dictionary<string, string> { { "IV_FMM_ModelConfigCreateDate", "CreateDate" } } },
-						{ 5, new Dictionary<string, string> { { "IV_FMM_ModelConfigCreateUser", "CreateUser" } } },
-						{ 6, new Dictionary<string, string> { { "IV_FMM_ModelConfigUpdateDate", "UpdateDate" } } },
-						{ 7, new Dictionary<string, string> { { "IV_FMM_ModelConfigUpdateUser", "UpdateUser" } } }
+						{ 2, new Dictionary<string, string> { { "DL_FMM_ModelConfig_ProcType", "ProcType" } } },
+						{ 3, new Dictionary<string, string> { { "DL_FMM_ModelConfig_Status", "Status" } } },
+						{ 4, new Dictionary<string, string> { { "IV_FMM_ModelConfig_CreateDate", "CreateDate" } } },
+						{ 5, new Dictionary<string, string> { { "IV_FMM_ModelConfig_CreateUser", "CreateUser" } } },
+						{ 6, new Dictionary<string, string> { { "IV_FMM_ModelConfig_UpdateDate", "UpdateDate" } } },
+						{ 7, new Dictionary<string, string> { { "IV_FMM_ModelConfig_UpdateUser", "UpdateUser" } } }
 					}
 				}
 			};
 		}
 		#endregion
 		#region "Calc Config"
-		public class CalcConfig
+		public class CalcConfig : IConfigMappings
 		{
 			public string DashboardName { get; init; }
 
@@ -294,7 +300,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			{
 				[CalcType.Table] = new CalcConfig
 				{
-					DashboardName = "FMM_ModelConfigTable",
+					DashboardName = "FMM_CalcConfig_Table",
 					ParameterMappings = new()
 					{
 						{ 0, new Dictionary<string, string> { { "IV_FMM_CalcConfig_Sequence", "Sequence" } } },
@@ -400,7 +406,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			};
 		}
 
-		public class DestConfig
+		public class DestConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -451,7 +457,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			};
 		}
 
-		public class SrcConfig
+		public class SrcConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -468,13 +474,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 
 					}
 				},
-				[CalcType.Cube] = new SrcConfig
-				{
-					ParameterMappings = new()
-					{
-
-					}
-				},
 				[CalcType.BRTabletoCube] = new SrcConfig
 				{
 					ParameterMappings = new()
@@ -485,7 +484,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			};
 		}
 		#endregion
-		public class RegConfig
+		public class RegConfig : IConfigMappings
 		{
 
 			public Dictionary<int, Dictionary<string, string>> ParameterMappings { get; init; }
@@ -520,6 +519,16 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 		}
 		#endregion
 
+
+		public static void MapConfigValues(DataRow row, Dictionary<string, string> substVars, IConfigMappings config)
+		{
+			if (config == null) return;
+
+			foreach (var mapping in config.ParameterMappings.Values)
+				foreach (var kvp in mapping)
+					row[kvp.Value] = substVars.ContainsKey(kvp.Key) ? substVars[kvp.Key] : string.Empty;
+		}
+
 		public static CalcConfig Get_CalcConfigType(int calctypeintValue)
 		{
 			var calcType = (CalcType)calctypeintValue;
@@ -553,47 +562,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			return null;
 		}
 
-		public static CubeConfig Get_CubeSaveType(string savetypeValue)
-		{
-			if (string.IsNullOrWhiteSpace(savetypeValue) || !Enum.TryParse<SaveType>(savetypeValue, out var saveType))
-			{
-				return null;
-			}
-
-			if (CubeConfigRegistry.Configs.TryGetValue(saveType, out var config))
-			{
-				return config;
-			}
-			return null;
-		}
-
-		public static CustTableConfig Get_CustTableSaveType(string savetypeValue)
-		{
-			if (string.IsNullOrWhiteSpace(savetypeValue) || !Enum.TryParse<SaveType>(savetypeValue, out var saveType))
-			{
-				return null;
-			}
-
-			if (CustTableConfigRegistry.Configs.TryGetValue(saveType, out var config))
-			{
-				return config;
-			}
-			return null;
-		}
-
-		public static ModelConfig Get_ModelSaveType(string savetypeValue)
-		{
-			if (string.IsNullOrWhiteSpace(savetypeValue) || !Enum.TryParse<SaveType>(savetypeValue, out var saveType))
-			{
-				return null;
-			}
-
-			if (ModelConfigRegistry.Configs.TryGetValue(saveType, out var config))
-			{
-				return config;
-			}
-			return null;
-		}
 		public static List<string> GetEnabledSrcProperties(int calctypeintValue)
 		{
 			var properties = new List<string>();
@@ -654,7 +622,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 				}
 
 				var calcTypeInt = 0;
-				if (customSubstVarsWithUserSelectedValues.TryGetValue("IV_FMM_CalcType", out var calcTypeValue))
+				if (customSubstVarsWithUserSelectedValues.TryGetValue("DL_FMM_ModelConfig_CalcType", out var calcTypeValue))
 				{
 					int.TryParse(calcTypeValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out calcTypeInt);
 				}
@@ -691,142 +659,73 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			}
 		}
 
+		public static void SetConfigParams(SessionInfo si, ref Dictionary<string, string> substVars, string addUpdateFlag, string idSubstVar, string sql, string sqlParamName, string tableName, Func<SaveType, IConfigMappings> getConfig, IDictionary<string, string> idColumnToLookupSubstVar = null)
+		{
+			int idInt;
+			if (addUpdateFlag != null)
+			{
+				var isUpdate = substVars.XFGetValue(addUpdateFlag, "NA").XFEqualsIgnoreCase("Update");
+				idInt = isUpdate ? substVars.XFGetValue(idSubstVar, "0").XFConvertToInt() : 0;
+				if (!isUpdate)
+					GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(ref substVars, idSubstVar, string.Empty);
+			}
+			else
+			{
+				idInt = substVars.XFGetValue(idSubstVar, "0").XFConvertToInt();
+			}
+
+			var dt = new DataTable(tableName);
+			try
+			{
+				var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
+				using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
+				{
+					var gbl_dataset_helpers = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
+					var sqa = new SqlDataAdapter();
+					var sqlParams = new[] { new SqlParameter(sqlParamName, SqlDbType.Int) { Value = idInt } };
+					gbl_dataset_helpers.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlParams);
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new XFException(si, ex);
+			}
+
+			var config = getConfig(SaveType.View);
+			if (config == null) return;
+
+			var dataRow = dt.Rows.Count > 0 ? dt.Rows[0] : null;
+			foreach (var mapping in config.ParameterMappings.Values)
+				foreach (var kvp in mapping)
+				{
+					var rawValue = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
+
+					// If this column has a registered lookup substVar, resolve the ID to its display text.
+					var resolvedValue = rawValue;
+					if (idColumnToLookupSubstVar != null && idColumnToLookupSubstVar.TryGetValue(kvp.Value, out var lookupSubstVar))
+						resolvedValue = substVars.XFGetValue(lookupSubstVar, rawValue);
+
+					GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(ref substVars, kvp.Key, resolvedValue);
+				}
+		}
+
 		public static void SetCubeConfigParams(SessionInfo si, ref Dictionary<string, string> substVars)
 		{
-			var isUpdate = substVars.XFGetValue("IV_FMM_CubeConfig_AddUpdate", "NA") == "Update";
-
-			var cubeConfigID = isUpdate && Int32.TryParse(substVars.GetValueOrDefault("BL_FMM_CubeConfigID"), out var parsedID)
-				? parsedID
-				: 0;
-
-			if (isUpdate == false)
+			var idColumnToLookupSubstVar = new Dictionary<string, string>
 			{
-				GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, "BL_FMM_CubeConfigID", string.Empty);
-			}
-
-			var cubeConfig_DT = new DataTable("FMM_CubeConfig");
-
-			try
-			{
-				using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
-				using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
-				{
-					var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-					var sqa = new SqlDataAdapter();
-					var sql = "SELECT * FROM FMM_CubeConfig WHERE CubeConfigID = @CubeConfigID";
-					var sqlparams = new[] { new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = cubeConfigID } };
-
-					sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, cubeConfig_DT, sql, sqlparams);
-				}
-			}
-			catch (Exception ex)
-			{
-				BRApi.ErrorLog.LogMessage(si, $"Error loading cube config: {ex.Message}");
-			}
-
-			if (CubeConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
-			{
-				var dataRow = cubeConfig_DT.Rows.Count > 0 ? cubeConfig_DT.Rows[0] : null;
-
-				foreach (var mapping in config.ParameterMappings.Values)
-				{
-					foreach (var kvp in mapping)
-					{
-						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
-						GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
-					}
-				}
-			}
+				{ "Cube", "BL_FMM_All_Cube_Names" }
+			};
+			SetConfigParams(si, ref substVars, "IV_FMM_CubeConfig_AddUpdate", "BL_FMM_CubeConfigID", "SELECT * FROM FMM_CubeConfig WHERE CubeConfigID = @CubeConfigID", "@CubeConfigID", "FMM_CubeConfig", st => CubeConfigRegistry.Configs.GetValueOrDefault(st), idColumnToLookupSubstVar);
 		}
 
-		public static void SetCustTableParams(SessionInfo si, ref Dictionary<string, string> substVars)
+		public static void SetCustTableConfigParams(SessionInfo si, ref Dictionary<string, string> substVars)
 		{
-			var isUpdate = substVars.XFGetValue("IV_FMM_CustTable_AddUpdate", "NA") == "Update";
-
-			var custTableID = isUpdate && Int32.TryParse(substVars.GetValueOrDefault("BL_FMM_CustTableID"), out var parsedID)
-				? parsedID
-				: 0;
-
-			if (isUpdate == false)
-			{
-				GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, "BL_FMM_CustTableID", string.Empty);
-			}
-
-			var custTable_DT = new DataTable("FMM_CustTable");
-
-			try
-			{
-				using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
-				using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
-				{
-					var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-					var sqa = new SqlDataAdapter();
-					var sql = "SELECT * FROM FMM_CustTable WHERE CustTableID = @CustTableID";
-					var sqlparams = new[] { new SqlParameter("@CustTableID", SqlDbType.Int) { Value = custTableID } };
-
-					sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, custTable_DT, sql, sqlparams);
-				}
-			}
-			catch (Exception ex)
-			{
-				BRApi.ErrorLog.LogMessage(si, $"Error loading cust table config: {ex.Message}");
-			}
-
-			if (CustTableConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
-			{
-				var dataRow = custTable_DT.Rows.Count > 0 ? custTable_DT.Rows[0] : null;
-
-				foreach (var mapping in config.ParameterMappings.Values)
-				{
-					foreach (var kvp in mapping)
-					{
-						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
-						GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
-					}
-				}
-			}
+			SetConfigParams(si, ref substVars, "IV_FMM_CustTableConfig_AddUpdate", "BL_FMM_CustTableConfigID", "SELECT * FROM FMM_CustTableConfig WHERE CustTableConfigID = @CustTableConfigID", "@CustTableConfigID", "FMM_CustTableConfig", st => CustTableConfigRegistry.Configs.GetValueOrDefault(st));
 		}
 
-		public static void SetModelParams(SessionInfo si, ref Dictionary<string, string> substVars)
+		public static void SetModelConfigParams(SessionInfo si, ref Dictionary<string, string> substVars)
 		{
-			if (!Int32.TryParse(substVars.GetValueOrDefault("IV_FMM_ModelID", "0"), out var modelID))
-			{
-				modelID = 0;
-			}
-
-			var model_DT = new DataTable("FMM_ModelConfig");
-
-			try
-			{
-				using (DbConnInfo dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si))
-				using (SqlConnection connection = new SqlConnection(dbConnApp.ConnectionString))
-				{
-					var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
-					var sqa = new SqlDataAdapter();
-					var sql = "SELECT * FROM FMM_ModelConfig WHERE ModelID = @ModelID";
-					var sqlparams = new[] { new SqlParameter("@ModelID", SqlDbType.Int) { Value = modelID } };
-
-					sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, model_DT, sql, sqlparams);
-				}
-			}
-			catch (Exception ex)
-			{
-				BRApi.ErrorLog.LogMessage(si, $"Error loading model config: {ex.Message}");
-			}
-
-			if (ModelConfigRegistry.Configs.TryGetValue(SaveType.View, out var config))
-			{
-				var dataRow = model_DT.Rows.Count > 0 ? model_DT.Rows[0] : null;
-
-				foreach (var mapping in config.ParameterMappings.Values)
-				{
-					foreach (var kvp in mapping)
-					{
-						var value = dataRow != null ? dataRow[kvp.Value].ToString() : string.Empty;
-						GBL_UI_Assembly.GBL_Helpers.DictKeyAddUpdate(substVars, kvp.Key, value);
-					}
-				}
-			}
+			SetConfigParams(si, ref substVars, "IV_FMM_ModelConfig_AddUpdate", "BL_FMM_ModelConfigID", "SELECT * FROM FMM_ModelConfig WHERE ModelConfigID = @ModelConfigID", "@ModelConfigID", "FMM_ModelConfig", st => ModelConfigRegistry.Configs.GetValueOrDefault(st));
 		}
 
 		private static void SetPropertyIfExists(object target, IEnumerable<string> candidateNames, object value)
@@ -865,7 +764,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
 			View = 3
 		}
 
-		public enum CustTableType
+		public enum CustTableConfigType
 		{
 			None = 0,
 			Add = 1,

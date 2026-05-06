@@ -41,9 +41,9 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 {
                     case DashboardDataSetFunctionType.GetDataSet:
 
-                        if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_CubeNames"))
+                        if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_OSCubes"))
                         {
-                            return get_FMM_CubeNames();
+                            return get_FMM_OSCubes();
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ScenTypes"))
                         {
@@ -65,41 +65,37 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                             return get_FMM_Cubes("Target");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_Src"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ActConfigs_Src"))
                         {
-                            return get_FMM_Acts("Source");
+                            return get_FMM_ActConfigs("Source");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_Tgt"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ActConfigs_Tgt"))
                         {
-                            return get_FMM_Acts("Target");
+                            return get_FMM_ActConfigs("Target");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_Cube"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ActConfigs_Table"))
                         {
-                            return get_FMM_Acts("Cube");
+                            return get_FMM_ActConfigs("Table");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_Table"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ActConfigs"))
                         {
-                            return get_FMM_Acts("Table");
-                        }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Acts_All"))
-                        {
-                            return get_FMM_Acts("All");
+                            return get_FMM_ActConfigs("All");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ModelConfig_All"))
                         {
-                            return get_FMM_ModelConfig("All");
+                            return get_FMM_ModelConfigs("All");
                         }
-                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ModelConfig_Act"))
+                        else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ModelConfigs_Act"))
                         {
-                            return get_FMM_ModelConfig("Act");
+                            return get_FMM_ModelConfigs("Act");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ModelConfig_Src"))
                         {
-                            return get_FMM_ModelConfig("Source");
+                            return get_FMM_ModelConfigs("Source");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_ModelConfig_Tgt"))
                         {
-                            return get_FMM_ModelConfig("Target");
+                            return get_FMM_ModelConfigs("Target");
                         }
                         else if (args.DataSetName.XFEqualsIgnoreCase("get_FMM_Calcs_Model"))
                         {
@@ -187,11 +183,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         }
 
         #region "Helper Queries"
-        private DataTable get_FMM_CubeNames()
+        private DataTable get_FMM_OSCubes()
         {
             try
             {
-                var dt = new DataTable("Cubes");
+                var dt = new DataTable("FMM_OSCubes");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
                 {
@@ -264,20 +260,20 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                             FROM FMM_CubeConfig";
                 var tableName = "CubeConfig";
 
-                if (cubeType.XFEqualsIgnoreCase("Src"))
+                switch (cubeType.ToUpperInvariant())
                 {
-                    tableName = "CubeConfig_Src";
-                }
-                else if (cubeType.XFEqualsIgnoreCase("Tgt"))
-                {
-                    tableName = "CubeConfig_Tgt";
-                }
-                else if (cubeType.XFEqualsIgnoreCase("TableAct"))
-                {
-                    tableName = "CubeConfig_TableAct";
-                    sql = @"SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS Cube, Cube.CubeConfigID
+                    case "SRC":
+                        tableName = "CubeConfig_Src";
+                        break;
+                    case "TGT":
+                        tableName = "CubeConfig_Tgt";
+                        break;
+                    case "TABLEACT":
+                        tableName = "CubeConfig_TableAct";
+                        sql = @"SELECT DISTINCT CONCAT(Cube,' - ',Descr) AS Cube, Cube.CubeConfigID
                             FROM FMM_CubeConfig Cube
                             JOIN FMM_ActConfig Act ON Cube.CubeConfigID = Act.CubeConfigID";
+                        break;
                 }
 
                 var dt = new DataTable(tableName);
@@ -298,12 +294,12 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable get_FMM_Acts(string actType)
+        private DataTable get_FMM_ActConfigs(string actType)
         {
             try
             {
                 var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
-                var dt = new DataTable("Act_Config");
+                var dt = new DataTable("FMM_ActConfig");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
 
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -311,16 +307,30 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sql_gbl_get_datasets = new GBL_UI_Assembly.SQL_GBL_Get_DataSets(si, connection);
                     var sqa = new SqlDataAdapter();
 
-                    // Determine table name and SQL based on actType
-                    string tableName = actType.XFEqualsIgnoreCase("Src") ? "ActConfig_Src" :
-                                    actType.XFEqualsIgnoreCase("Tgt") ? "ActConfig_Tgt" :
-                                    actType.XFEqualsIgnoreCase("Cube") ? "ActConfig_Cube" :
-                                    actType.XFEqualsIgnoreCase("Table") ? "ActConfig_Table" :
-                                    "Act_Config";
+                    // Determine table name based on actType
+                    string tableName;
+                    switch (actType.ToUpperInvariant())
+                    {
+                        case "SRC":
+                            tableName = "ActConfig_Src";
+                            break;
+                        case "TGT":
+                            tableName = "ActConfig_Tgt";
+                            break;
+                        case "CUBE":
+                            tableName = "ActConfig_Cube";
+                            break;
+                        case "TABLE":
+                            tableName = "ActConfig_Table";
+                            break;
+                        default:
+                            tableName = "FMM_ActConfig";
+                            break;
+                    }
                     dt.TableName = tableName;
 
                     // Build SQL based on actType
-                    var sql = @"SELECT Name AS Act, ActConfigID
+                    var sql = @"SELECT Name, ActConfigID as Value
                             FROM FMM_CubeConfig Con
                             JOIN FMM_ActConfig Act ON Con.CubeConfigID = Act.CubeConfigID
                             WHERE Con.CubeConfigID = @CubeConfigID
@@ -377,9 +387,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
         {
             try
             {
-                var cases = string.Join(" ", Enum.GetValues(typeof(FMM_ConfigHelpers.CustTableType))
-                        .Cast<FMM_ConfigHelpers.CustTableType>()
-                        .Select(e => $"WHEN {(int)e} THEN '{e}'"));
+                var wsID = BRApi.Dashboards.Workspaces.GetWorkspaceIDFromName(si, false, "OS Consultant Tools");
+                var paramInfo = BRApi.Dashboards.Parameters.GetParameterDisplayInfo(si, false, args.NameValuePairs, wsID, "DL_FMM_CustTableConfig_Type");
+
+                var cases = string.Empty;
+                if (paramInfo.ComboBoxItemsForBoundList.Count > 0)
+                {
+                    cases = string.Join(" ", paramInfo.ComboBoxItemsForBoundList.Select(item => $"WHEN {item.Value} THEN '{item.Name}'"));
+                }
                 var dt = new DataTable("CustTable");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -391,20 +406,22 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                         {
                         };
 
-                    // Determine SQL and parameters based on actType
-                    if (custTableType.XFEqualsIgnoreCase("All"))
+                    // Determine SQL and parameters based on custTableType
+                    switch (custTableType.ToUpperInvariant())
                     {
-                        dt.TableName = "CustTable_All";
-                        sql = $@"SELECT CONCAT(Name, ' - ',
+                        case "ALL":
+                            dt.TableName = "FMM_CustTableConfig";
+                            sql = $@"SELECT CONCAT(Name, ' - ',
                                         CASE Type 
                                             {cases} 
                                         ELSE CAST(Type AS VARCHAR) 
-                                        END) AS CustTable,CustTableID
-                                        FROM FMM_CustTable
-                                        ORDER BY Name,Type";
-                        sqlparams = new SqlParameter[]
-                        {
-                        };
+                                        END) AS Name,CustTableConfigID as Value
+                                        FROM FMM_CustTableConfig
+                                        ORDER BY Type,Name";
+                            sqlparams = new SqlParameter[]
+                            {
+                            };
+                            break;
                     }
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
@@ -475,29 +492,47 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             }
         }
 
-        private DataTable get_FMM_ModelConfig(string modelType)
+        private DataTable get_FMM_ModelConfigs(string modelType)
         {
             try
             {
-                var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
-                var ActConfigID = args.NameValuePairs.XFGetValue("ActConfigID", "-1");
-                var dt = new DataTable("Models");
+                var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "0");
+                var ActConfigID = args.NameValuePairs.XFGetValue("ActConfigID", "0");
+                var dt = new DataTable("FMM_ModelConfig");
 
-                // Determine table name and SQL based on modelType
-                string tableName = modelType.XFEqualsIgnoreCase("Src") ? "Models_Src" :
-                                modelType.XFEqualsIgnoreCase("Tgt") ? "Models_Tgt" :
-                                modelType.XFEqualsIgnoreCase("Act") ? "Models_Act" :
-                                "Models";
-                dt.TableName = tableName;
-
-                string sql = modelType.XFEqualsIgnoreCase("Src") || modelType.XFEqualsIgnoreCase("Tgt") || modelType.XFEqualsIgnoreCase("Act")
-                    ? @"SELECT Name, ModelID
+                string tableName;
+                string sql;
+                switch (modelType.ToUpperInvariant())
+                {
+                    case "SRC":
+                        tableName = "Models_Src";
+                        sql = @"SELECT Name, ModelConfigID as Value
                         FROM FMM_ModelConfig
                         WHERE CubeConfigID = @CubeConfigID AND ActConfigID = @ActConfigID
-                        ORDER BY Name"
-                    : @"SELECT Name, ModelID
+                        ORDER BY Name";
+                        break;
+                    case "TGT":
+                        tableName = "Models_Tgt";
+                        sql = @"SELECT Name, ModelConfigID as Value
+                        FROM FMM_ModelConfig
+                        WHERE CubeConfigID = @CubeConfigID AND ActConfigID = @ActConfigID
+                        ORDER BY Name";
+                        break;
+                    case "ACT":
+                        tableName = "FMM_ModelConfig";
+                        sql = @"SELECT Name, ModelConfigID as Value
+                        FROM FMM_ModelConfig
+                        WHERE CubeConfigID = @CubeConfigID AND ActConfigID = @ActConfigID
+                        ORDER BY Name";
+                        break;
+                    default:
+                        tableName = "FMM_ModelConfig";
+                        sql = @"SELECT Name, ModelConfigID as Value
                         FROM FMM_ModelConfig
                         ORDER BY Name";
+                        break;
+                }
+                dt.TableName = tableName;
 
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -525,7 +560,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
                 var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "0").XFConvertToInt();
                 var ActConfigID = args.NameValuePairs.XFGetValue("ActConfigID", "0").XFConvertToInt();
-                var modelID = args.NameValuePairs.XFGetValue("ModelID", "0").XFConvertToInt();
+                var ModelConfigID = args.NameValuePairs.XFGetValue("ModelConfigID", "0").XFConvertToInt();
 
                 var dt = new DataTable("Calc_List");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -539,14 +574,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 FROM FMM_CalcConfig
                                 WHERE CubeConfigID = @CubeConfigID
                                 AND ActConfigID = @ActConfigID
-                                AND ModelID = @ModelID
+                                AND ModelConfigID = @ModelConfigID
                                 ORDER BY Name";
 
                     var sqlparams = new[]
                     {
                         new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = CubeConfigID },
                         new SqlParameter("@ActConfigID", SqlDbType.Int) { Value = ActConfigID },
-                        new SqlParameter("@ModelID", SqlDbType.Int) { Value = modelID }
+                        new SqlParameter("@ModelConfigID", SqlDbType.Int) { Value = ModelConfigID }
                     };
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
@@ -566,7 +601,7 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
             {
                 var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "0").XFConvertToInt();
                 var ActConfigID = args.NameValuePairs.XFGetValue("ActConfigID", "0").XFConvertToInt();
-                var modelID = args.NameValuePairs.XFGetValue("ModelID", "0").XFConvertToInt();
+                var ModelConfigID = args.NameValuePairs.XFGetValue("ModelConfigID", "0").XFConvertToInt();
 
                 var dt = new DataTable("FMM_CalcConfigs");
                 var dbConnApp = BRApi.Database.CreateApplicationDbConnInfo(si);
@@ -579,14 +614,14 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                                 FROM FMM_CalcConfig
                                 WHERE CubeConfigID = @CubeConfigID
                                 AND ActConfigID = @ActConfigID
-                                AND ModelID = @ModelID
+                                AND ModelConfigID = @ModelConfigID
                                 ORDER BY Name";
 
                     var sqlparams = new[]
                     {
                         new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = CubeConfigID },
                         new SqlParameter("@ActConfigID", SqlDbType.Int) { Value = ActConfigID },
-                        new SqlParameter("@ModelID", SqlDbType.Int) { Value = modelID }
+                        new SqlParameter("@ModelConfigID", SqlDbType.Int) { Value = ModelConfigID }
                     };
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);
@@ -665,55 +700,60 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                 var sql = string.Empty;
                 var sqlparams = new SqlParameter[] { };
 
-                if (registerType.XFEqualsIgnoreCase("By_Act"))
+                switch (registerType.ToUpperInvariant())
                 {
-                    var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
-                    var ActConfigID = args.NameValuePairs.XFGetValue("ActConfigID", "-1");
-                    dt.TableName = "RegConfigs_By_Act";
-                    sql = @"SELECT Name as Name, RegConfigID as RegConfigID
+                    case "BY_ACT":
+                        {
+                            var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
+                            var ActConfigID = args.NameValuePairs.XFGetValue("ActConfigID", "-1");
+                            dt.TableName = "RegConfigs_By_Act";
+                            sql = @"SELECT Name as Name, RegConfigID as RegConfigID
                             FROM FMM_UIConfig
                             WHERE CubeConfigID = @CubeConfigID
                             AND ActConfigID = @ActConfigID
                             ORDER BY Name";
-                    sqlparams = new SqlParameter[]
-                    {
-                        new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = Convert.ToInt16(CubeConfigID) },
-                        new SqlParameter("@ActConfigID", SqlDbType.Int) { Value = Convert.ToInt16(ActConfigID) }
-                    };
-                }
-                else if (registerType.XFEqualsIgnoreCase("Source"))
-                {
-                    var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
-                    dt.TableName = "RegConfigs_Source";
-                    sql = @"SELECT Name as Name, RegConfigID as RegConfigID
+                            sqlparams = new SqlParameter[]
+                            {
+                            new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = Convert.ToInt16(CubeConfigID) },
+                            new SqlParameter("@ActConfigID", SqlDbType.Int) { Value = Convert.ToInt16(ActConfigID) }
+                            };
+                            break;
+                        }
+                    case "SOURCE":
+                        {
+                            var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
+                            dt.TableName = "RegConfigs_Source";
+                            sql = @"SELECT Name as Name, RegConfigID as RegConfigID
                             FROM FMM_UIConfig
                             WHERE CubeConfigID = @CubeConfigID
                             ORDER BY Name";
-                    sqlparams = new SqlParameter[]
-                    {
-                        new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = Convert.ToInt16(CubeConfigID) }
-                    };
-                }
-                else if (registerType.XFEqualsIgnoreCase("Target"))
-                {
-                    var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
-                    dt.TableName = "RegConfigs_Target";
-                    sql = @"SELECT Name as Name, RegConfigID as RegConfigID
+                            sqlparams = new SqlParameter[]
+                            {
+                            new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = Convert.ToInt16(CubeConfigID) }
+                            };
+                            break;
+                        }
+                    case "TARGET":
+                        {
+                            var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
+                            dt.TableName = "RegConfigs_Target";
+                            sql = @"SELECT Name as Name, RegConfigID as RegConfigID
                             FROM FMM_UIConfig
                             WHERE CubeConfigID = @CubeConfigID
                             ORDER BY Name";
-                    sqlparams = new SqlParameter[]
-                    {
-                        new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = Convert.ToInt16(CubeConfigID) }
-                    };
-                }
-                else // Default: All
-                {
-                    dt.TableName = "RegConfigs";
-                    sql = @"SELECT Name as Name, RegConfigID as RegConfigID
+                            sqlparams = new SqlParameter[]
+                            {
+                            new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = Convert.ToInt16(CubeConfigID) }
+                            };
+                            break;
+                        }
+                    default:
+                        dt.TableName = "RegConfigs";
+                        sql = @"SELECT Name as Name, RegConfigID as RegConfigID
                             FROM FMM_UIConfig
                             ORDER BY Name";
-                    sqlparams = new SqlParameter[] { };
+                        sqlparams = new SqlParameter[] { };
+                        break;
                 }
 
                 using (var connection = new SqlConnection(dbConnApp.ConnectionString))
@@ -779,26 +819,29 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardD
                     var sql = string.Empty;
                     SqlParameter[] sqlparams;
 
-                    if (calcUnitType.XFEqualsIgnoreCase("By_Cube"))
+                    switch (calcUnitType.ToUpperInvariant())
                     {
-                        var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
-                        dt.TableName = "Calc_Units_By_Cube";
-                        sql = @"
+                        case "BY_CUBE":
+                            {
+                                var CubeConfigID = args.NameValuePairs.XFGetValue("CubeConfigID", "-1");
+                                dt.TableName = "Calc_Units_By_Cube";
+                                sql = @"
                                     SELECT CONCAT(EntityMFB, ' - ',WFChannel) as Calc_Unit_Desc,CalcUnitID
                                     FROM FMM_CalcUnitConfig
                                     WHERE CubeConfigID = @CubeConfigID";
-                        sqlparams = new SqlParameter[]
-                        {
-                                    new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = Convert.ToInt16(CubeConfigID) }
-                        };
-                    }
-                    else // "All" or default
-                    {
-                        dt.TableName = "FMM_CalcUnitConfig";
-                        sql = @"
+                                sqlparams = new SqlParameter[]
+                                {
+                                new SqlParameter("@CubeConfigID", SqlDbType.Int) { Value = Convert.ToInt16(CubeConfigID) }
+                                };
+                                break;
+                            }
+                        default: // "All" or default
+                            dt.TableName = "FMM_CalcUnitConfig";
+                            sql = @"
                                     SELECT CONCAT(EntityMFB, ' - ',WFChannel) as Calc_Unit_Desc,CalcUnitID
                                     FROM FMM_CalcUnitConfig";
-                        sqlparams = new SqlParameter[] { };
+                            sqlparams = new SqlParameter[] { };
+                            break;
                     }
 
                     sql_gbl_get_datasets.Fill_Get_GBL_DT(si, sqa, dt, sql, sqlparams);

@@ -29,7 +29,6 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName
                 return wsAssemblyServiceType switch
                 {
                     WsAssemblyServiceType.DynamicDashboards => new FMM_DynDBSvc(),
-                    WsAssemblyServiceType.Component => new FMM_CompSvc(),
 
                     _ => throw new NotImplementedException()
                 };
