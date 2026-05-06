@@ -54,7 +54,11 @@ namespace Workspace.__WsNamespacePrefix.__WsAssemblyName.BusinessRule.DashboardS
                 {
                     return Get_AcctConfigDB();
                 }
-                else if (args.FunctionName.XFEqualsIgnoreCase("Get_CustTableDB"))
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_CustTableConfigDB"))
+                {
+                    return Get_CustTableDB();
+                }
+                else if (args.FunctionName.XFEqualsIgnoreCase("Get_CustTableIndexConfigDB"))
                 {
                     return Get_CustTableDB();
                 }
